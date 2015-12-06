@@ -1,0 +1,16 @@
+[
+{
+  "modid": "Automation",
+  "name": "Inductive Automation",
+  "description": "Provides many helpful machines and tools. And allows automated building of even huge complicated structures.",
+  "version": "${version}",
+  "mcversion": "1.7.10",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["CD4017BE"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
