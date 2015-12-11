@@ -62,7 +62,7 @@
 
 \title{Inductive Automation Manual}
 \author{by CD4017BE}
-\date{mod version: 3.7.1}
+\date{mod version: 3.7.2}
 
 \begin{document}
  \maketitle
@@ -134,9 +134,10 @@ Some machines in this mod can be controlled by redstone signals (mostly turning 
 \includegraphics[width = \textwidth]{detector} \\
 In its GUI you can set 6 detecting conditions (one for each redstone output side of the block). The first button (most left) sets what should be checked: \includegraphics{detectItem} will check the amount of items in the block's inventory, \includegraphics{detectFluid} will check the amount of fluid in the block's internal tanks (counted in L or mB) and \includegraphics{detectEnergy} will check the amount of energy stored inside the connected block (counted in units of kJ) this also includes the redstone flux energy from Thermal Expansion (1kJ = 10RF) and when attached to cables it will count their internal stored energy (see energy section). The next button defines from which side the connected block should be accessed and the slot can be used to filter the item or fluid detection: put an item here to let the detector only count that item type or a fluid container to only count the fluid type it contains. The button with the $<$ or $>$ sign sets whether the output signal should be on if the detected value is less than the reference value ($<$) or if it needs to be greater or equal to it ($>$). In the text field you can set any number between -2147483648 (negative values usually doesn't make sense but it's possible) and +2147483647 as reference value. If the condition is fulfilled the arrow on the right will turn red and the detector will output a redstone signal to that side.
 
-With Computercraft installed the detector block can be also used as peripheral by computers to directly read inventory, fluid and energy data out of the connected block:
+With ComputerCraft or OpenComputers installed the detector block can be also used as peripheral or component to directly read inventory, fluid and energy data out of the connected block:
 \begin{lstlisting}
-0: m = peripheral.wrap("Automation-Detector_0")
+CC: m = peripheral.wrap("Automation-Detector_0")
+OC: m = component.proxy(component.list("Automation-Detector")())
 1: U, Umax = m.getVoltage(side) --In units of V
 2: E, Emax = m.getEnergy(side) --In units of kJ
 3: inv = m.getInventory(side)
@@ -304,9 +305,10 @@ The miner can be (re-)started with a redstone signal of min. strength 8 and will
 1200V & 25 Ohm & 16 x 64 x 16 / 8 blocks & 16 blocks/t \\ \hline
 \end{tabular}
 \end{tabularx} \\
-With the computer craft mod installed you can wrap a miner as peripheral and control it using these commands:
+With ComputerCraft or OpenComputers installed you can wrap a miner as peripheral or connect it as component and control it using these commands:
 \begin{lstlisting}
-0: m = peripheral.wrap("Automation-Miner_0") --(example name)
+CC: m = peripheral.wrap("Automation-Miner_0")
+OC: m = component.proxy(component.list("Automation-Miner")())
 1: sX, sY, sZ = m.getAreaSize() 
 2: b = m.isBlockAt(x, y, z) 
 3: success = m.mineBlock(x, y, z, doEvents)
@@ -315,6 +317,8 @@ With the computer craft mod installed you can wrap a miner as peripheral and con
 6: m.stopMining()
 \end{lstlisting}
 1: returns the size of the selected area. 2: returns true if there is a mineable block at the given position. 3: adds the mining of the block at given position to the machines processing queue and returns true or returns false if the processing queue is full (contains 16 operations). The miner will try to process these operations during the next game tick. The 'doEvents' parameter is optional and when given with a value of true whenever an operation is done the computer will receive a "mine\_block" event (4:) with the x, y, z position of the mined block and true if it was mined or false if there was no block to mine. 5: will clear the processing queue so all undone operations are canceled. 6: turns the miner off (miner must be off when controlled by computers otherwise 'mineBlock' commands return with an error). All coordinates are relative to the selected operating area and have values of: $x=\{0 \dots sX-1\}$, $y=\{0 \dots sY - 1\}$, $z=\{0 \dots sZ - 1\}$.
+
+When connected to OpenComputers devices the miner will provide power supply for them.
 
 \subsection{Automatic building}
 The \bf automatic builder \rm can build various even complicated structures out of blocks and fluids inside of its working area. The structure to build is defined in its GUI: \\
@@ -355,9 +359,10 @@ When using the \bf vertex selection tool\rm ,sneak-right-click cycles through th
 There are two ways to save a structure: when saved on a \bf book \rm it will remain exactly the same when loaded again but it can't be put into a builder. Therefore you need to save it on \bf paper \rm which will split every polygon into triangles. When loading a structure from paper, it will still look the same but contains more polygons with only three vertices each instead. To actually build a structure just put the paper its stored on into the stack slot on the right of the builder interface and supply the intended materials or textures. The builder will then build your structure instead of the usual filling operation.\\
 \includegraphics[width = \textwidth]{vertexEx}\\
 
-And if you want to do very special things like spheres, waves, or other smooth rounded structures you can  control the builder using computer craft if installed:
+And if you want to do very special things like spheres, waves, or other smooth rounded structures you can  control the builder using ComputerCraft or OpenComputers if installed:
 \begin{lstlisting}
-0: m = peripheral.wrap("Automation-Builder_0") --(example name)
+CC: m = peripheral.wrap("Automation-Builder_0")
+OC: m = component.proxy(component.list("Automation-Builder")())
 1: sX, sY, sZ = m.getAreaSize() 
 2: b = m.isBlockAt(x, y, z) 
 3: success = m.setBlock(x, y, z, slot, doEvents)
@@ -365,7 +370,9 @@ And if you want to do very special things like spheres, waves, or other smooth r
 5: m.clearQueue()
 6: m.stopBuilding()
 \end{lstlisting}
-1: returns the size of the selected area. 2: returns true if there is a block at the given position that can't be replaced by the builder (tall grass or fluids can). 3: adds the placement of a block at given position to the machines processing queue and returns true or returns false if the processing queue is full (contains 16 operations). The builder will try to process these operations during the next game tick. The 'slot' parameter defines which of the 17 configurations slot to use as material and must have a value of $\{ 0 \dots 16 \}$ (0,1,2 = frame slots; 3,4,5,6,7,8 = walls slots; 9-16 = fill slots). The 'doEvents' parameter is optional and when given with a value of true whenever an operation is done the computer will receive a "set\_block" event (4:) with the x, y, z position of the placed block and true if it was placed or false if there already was a non replacable block before. 5: will clear the processing queue so all undone operations are canceled. 6: will cancel the builder's current building operation that was started via the button in its GUI (manual defined and computer controlled building aren't allowed at the same time). All coordinates are relative to the selected operating area and have values of: $x=\{0 \dots sX-1\}$, $y=\{0 \dots sY - 1\}$, $z=\{0 \dots sZ - 1\}$. \\
+1: returns the size of the selected area. 2: returns true if there is a block at the given position that can't be replaced by the builder (tall grass or fluids can). 3: adds the placement of a block at given position to the machines processing queue and returns true or returns false if the processing queue is full (contains 16 operations). The builder will try to process these operations during the next game tick. The 'slot' parameter defines which of the 17 configurations slot to use as material and must have a value of $\{ 0 \dots 16 \}$ (0,1,2 = frame slots; 3,4,5,6,7,8 = walls slots; 9-16 = fill slots). The 'doEvents' parameter is optional and when given with a value of true whenever an operation is done the computer will receive a "set\_block" event (4:) with the x, y, z position of the placed block and true if it was placed or false if there already was a non replacable block before. 5: will clear the processing queue so all undone operations are canceled. 6: will cancel the builder's current building operation that was started via the button in its GUI (manual defined and computer controlled building aren't allowed at the same time). All coordinates are relative to the selected operating area and have values of: $x=\{0 \dots sX-1\}$, $y=\{0 \dots sY - 1\}$, $z=\{0 \dots sZ - 1\}$.
+
+Also the builder provides power supply for connected OpenComputers devices.\\
 
 Here an example program that would build a simple hollow sphere out of the material put in the Y-edge slot (at max speed of course):
 \begin{lstlisting}
@@ -444,14 +451,17 @@ Clicking on the "Teleport" button makes it change into "Loading..." and the tele
 
 This can also be controlled by a redstone signal if redstone control is turned on. When doing this, the signal needs to remain active until the machine is ready. After that it needs to turn off before it can start another teleportation again.\\
 
-Also this machine can be controlled using computer craft:
+Also this machine can be controlled via computers:
 \begin{lstlisting}
-0: m = peripheral.wrap("Automation-Teleporter_0") --(example)
+CC: m = peripheral.wrap("Automation-Teleporter_0")
+OC: m = component.proxy(component.list("Automation-Teleporter")())
 1: x, y, z = m.getPosition()
 2: m.setCoords(x, y, z, rel)
 3: m.teleport()
 \end{lstlisting}
-1: returns the current coordinates of the teleporter block. 2: will set the destination coordinates. With a given 'rel' parameter of true they are set in relative mode and with false in absolute mode. 3: lets the teleporter start accumulating energy and teleport its operating area. Note that computers will reset if they get teleported so it's recommended to run their program as "startup" and to save all important variables on a file when calling 'teleport()'. \\
+1: returns the current coordinates of the teleporter block. 2: will set the destination coordinates. With a given 'rel' parameter of true they are set in relative mode and with false in absolute mode. 3: lets the teleporter start accumulating energy and teleport its operating area. Note that computers from ComputerCraft will reset if they get teleported so it's recommended to run their program as "startup" and to save all important variables on a file when calling 'teleport()'. 
+
+Power supply for connected OpenComputers devices is only active while not accumulating energy for teleportation.\\
 
 Finally this table shows some technical data about the machine: \\
 \begin{tabular}{| c | c | c | c | c |} \hline
@@ -470,15 +480,15 @@ That would happen if you would release 120GJ of energy into the environment!
 
 \section{Processing machines}
 \imgtex
-\includegraphics[align = t]{blockCompressor} & The first machine to build is a \bf compression assembler \rm as it's needed to craft most parts required for other machines. Its recipes are shaped so every item must be placed into the correct slot. There are two tiers of this machine: The \bf steam pneumatic compressor \rm is powered by steam and requires 1 second per operation consuming 800L steam. And the \bf electromagnetic compressor \rm can do up to one operation per tick using 200KJ electric energy.\\ \hline
-\includegraphics[align = t]{blockAdvancedFurnace} & Next important is the \bf advanced furnace\rm . It is electric powered and its recipes are shapeless and can contain materials that are not needed for the current recipe. These recipes require different amounts of energy and some also require and/or produce fluids. The swap button will swap the contents of its input and output tank.\\ \hline
+\includegraphics[align = t]{blockCompressor} & One of the first machines to build is a \bf compression assembler \rm as it's needed to craft most parts required for other machines. Its recipes are shaped so every item must be placed into the correct slot. There are two tiers of this machine: The \bf steam pneumatic compressor \rm is powered by steam and requires 1 second per operation consuming 800L steam (used at the beginning in combination with a steam boiler). And the \bf electromagnetic compressor \rm can do up to one operation per tick using 200KJ electric energy.\\ \hline
+\includegraphics[align = t]{blockAdvancedFurnace} & Next important is the \bf advanced furnace\rm . It is electric powered and its recipes are shapeless and also allow materials that are not needed for the current recipe. These recipes require different amounts of energy and some also require and/or produce fluids. The swap button will swap the contents of its input and output tank.\\ \hline
 \includegraphics[align = t]{blockFurnace} & This mod provides two additional furnaces for basic smelting. The \bf geothermal furnace \rm is 25\% more efficient than a normal furnace and can be powered by furnace fuel burned at 2K/t or lava as it uses a conversion of $100L_{lava} \Leftrightarrow stone + 2000K$  to store heat. The red and green slots are for processing, the blue for fuel and the yellow for stone to store heat. It does 1 operation per second when powered by lava (4s with fuel). The \bf electric heated furnace \rm is powered by electric energy and can do up to one operation per tick using 200kJ. \\ \hline
 \end{tabularx}
 \imgtex
 \includegraphics[align = t]{blockAutoCrafter} & The \bf automatic crafter \rm has 9 input slots, 2 output slots and a 3x3 matrix of numbers that define which of the input slots should be used for each position in the crafting grid. It has 3 different operating modes: Always craft, craft while redstone signal active and craft every redstone pulse. The output slots need to be emptied before the next operation can happen if not in pulse mode. \\ \hline
 \includegraphics[align = t]{blockElectrolyser} & The \bf electrolyser \rm is used to produce hydrogen gas and do extended ore processing. Its recipes may also require and produce items which are put into the tanks' fluid container slots. The required energy per operation is recipe dependent. \\  \hline
-\includegraphics[align = t]{blockDecompCool} & The \bf decompression cooler \rm turns cold fluids into their gases to cool down other fluids or materials to even lower temperatures. Also uses the fluid container slots for required or produced items and has recipe dependent energy requirements. \\ \hline
-\includegraphics[align = t]{blockGraviCondens} & The \bf gravitational condenser \rm compacts items together with huge amounts of matter to create extremely dense materials. Matter is provided by filling any fluids or items into the red slot or tank (they get deleted). Adding matter will consume energy and the more energy is stored in the machines internal cable the more matter it can hold. If the machines matter storage is full, excess supplied materials will be deleted without providing matter. The recipes consume matter and will be processed within one tick as soon as the machine has enougth matter stored. $U_{max} = 16kV$\\ \hline
+\includegraphics[align = t]{blockDecompCool} & The \bf decompression cooler \rm turns cold fluids into their gases to cool down other fluids or materials to even lower temperatures. Also uses the fluid container slots for required or produced items and has recipe dependent energy requirements. \it Hint: you get required nitrogen from a collector. \rm \\ \hline
+\includegraphics[align = t]{blockGraviCondens} & The \bf gravitational condenser \rm compacts items together with huge amounts of matter to create extremely dense materials. Matter is provided by filling any fluids or items into the red slot or tank (they get deleted). Adding matter will consume energy and the more energy is stored in the machines internal cable the more matter it can hold. If the machines matter storage is full, excess supplied materials will be deleted without providing matter. The machine outputs redstone with strength representing the matter storage state. The recipes consume matter and will be processed within one tick as soon as the machine has enougth matter stored. $U_{max} = 16kV$\\ \hline
 \includegraphics[align = t]{blockBioreactor} & The \bf bio reactor \rm is a small multiblock machine and requires at least one and can have up to 16 \bf algae pool \rm blocks placed next to it. They can be placed in any shape touching each other and each block provides 8000L algae storage capacity to the machine. The machine requires water and organic items like food, seeds saplings and other plants to produce nutrient. Insert lilipads to get some algae which will then regrow themselves exponentially if supplied with nutrient and sunlight. The two slots in the algae tank can be used to fill them into glass bottles for storage. When the algae die they will turn into biomass filling the machine's output tank. Their fertility rate depends on the skylight level of the attached algae pools and their death rate depends on the fill state of their tank (overpopulation). $ 1L_{water} \xrightarrow{+items} 1L_{nutrient} \xrightarrow{+sunlight} 1L_{algae} \rightarrow 1L_{biomass} \rightarrow$ used to produce \bf dry biomass \rm (fuel item). \\ \hline
 \end{tabularx}
 All machine recipes are ore-dictionary compatible and will also allow other items of the same ore-dictionary type like the one shown by NEI.
@@ -529,9 +539,11 @@ There are \bf unbreakable stone \rm blocks in all 16 wool colors and \bf unbreak
 \subsection{Jetpack}
 The \bf jetpack \rm allows flying when worn in the chestplate slot and a \bf jetpack fuel container \rm or a charged \bf inventory energy container \rm is located anywhere in the inventory. There are two control keys added to your controls menu as "Jetpack on/off" and "Jetpack mode switch" that are required for using the jetpack. 
 
-If the jetpack is turned on it will show some additional things on your screen: The bar on the left shows the current force of the jetpack engine in units of $\frac{1}{10} G$ (1G = the gravitational acceleration of the earth), it can be increased by pressing the jump-key and decreased by pressing sneak. The green text in the top left corner displays the currently selected control mode which can be changed using the mode-switch-key and the red values displayed at bottom left are: Your current Y-position (Height), your current ascending/descending speed (Ascend) in m/s and your current total movement speed (Speed) in m/s.
+If the jetpack is turned on it will show some additional things on your screen: The bar on the left shows the current force of the jetpack engine in units of $\frac{1}{10} G$ (1G = the gravitational acceleration of the earth), it can be throttled by pressing the jump-key and throttled down pressing sneak. The green text in the top left corner displays the currently selected control mode which can be changed using the mode-switch-key and the red values displayed at bottom left are: Your current Y-position (Height), your current ascending/descending speed (Ascend) in m/s and your current total movement speed (Speed) in m/s.
 
-The control mode defines how the direction of the engine force is controlled: In default mode (which is the only available preexisting mode) the engine force will mainly push the player upwards and a small amount sidewards when pressing the movement keys. To create your own control modes press the mode-switch-key while the jetpack is turned off, it should then open a GUI where you can add, remove and edit control modes. The text field is used to edit the mode display name and the button next to it can be used to enable or disable the mode depending whether you currently need it or not. The slide bars below control the different properties: "Vertical" defines the force ratio between horizontal and vertical direction, smaller vertical component increases movement speed at the cost of upward force. "Acceleration" defines the acceleration speed when using the movement keys (1,0 = instant max power). "Angle Offset" defines the default force direction in degrees (0 = forward, +90 = up, -90 = down). "Angle factor" is a multiplier for the effect of view direction on the force direction (at 0 view direction has no effect).
+The control mode defines how the direction of the engine force is controlled: In "Default" mode (one of the two preexisting modes) the engine force will mainly push the player upwards and a small amount sidewards when pressing the movement keys. In "Flight" mode the engine force will push the player towards the camera relative up direction (flight is controlled with view direction) and the movement key sidewards boost is adjusted to move the player horizontal only (on max throttle, straight forward view and normal gravity). 
+
+To create your own control modes press the mode-switch-key while the jetpack is turned off, it should then open a GUI where you can add, remove and edit control modes. The text field is used to edit the mode display name and the button next to it can be used to enable or disable the mode depending whether you currently need it or not. The slide bars below control the different properties: "Vertical" defines the force ratio between horizontal and vertical direction, smaller vertical component increases movement speed at the cost of upward force. "Acceleration" defines the acceleration response speed when using the movement keys (0,0 = no response; 1,0 = instant response). "Angle Offset" defines the default force direction in degrees (0 = forward, +90 = up, -90 = down, 180 = back). "Angle factor" is a multiplier for the effect of view direction on the force direction (at 0 view direction has no effect).
 
 \subsection{Chunk loading and protection}
 The \bf chunk loading \& protection manager \rm can keep chunks loaded and/or prevent other players from editing the world within a specific chunk-based area and requires a continuous energy supply to function. In its GUI there is a 8x8 raster of colored squares. Each square represents one chunk (16x16 area from 0 to 256) of the world and the small cross in the middle shows the location of this machine.
@@ -546,6 +558,6 @@ When calculating the power consumption cost for chunk protection it will at firs
 
 Power consumption for chunk loading and chunk protection are seperate and both drain from the machine internal storage of 16000kJ. The machine has a maximum voltage of 1200V, a working resistance of 1 Ohm and its reference voltage can be set in the GUI right next to the storage bar. The buttons below are used to turn chunk loading or protection on and off independently or set them to be redstone controlled.
 
-If somebody else already set up a security system that it is turned on and supplied with energy, it is not possible to select chunks that are already protected by that machine. Also all the other world interacting machines in this mod will check if the last player that was editing the machine's settings is allowed to place or break blocks there. If the machine is processing commands from a Computercraft computer it will use "computer\#id" as user name, where 'id' is the ID number of the computer sending the commands. And an antimatter bomb that has any protected chunk within 256 blocks distance will just reset its countdown when reaching 0t instead of detonating.
+If somebody else already set up a security system that it is turned on and supplied with energy, it is not possible to select chunks that are already protected by that machine. Also all the other world interacting machines in this mod will check if the last player that was editing the machine's settings is allowed to place or break blocks there. If the machine is processing commands from a ComputerCraft computer it will use "computer\#id" as user name, where 'id' is the ID number of the computer sending the commands. For OpenComputers the last player editing the machine is used. And an antimatter bomb that has any protected chunk within 256 blocks distance will just reset its countdown when reaching 0t instead of detonating.
 
 \end{document}
