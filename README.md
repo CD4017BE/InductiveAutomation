@@ -2,10 +2,11 @@ InductiveAutomation is a Minecraft mod that adds various technical content to Mi
 It's mainly focused on providing automation systems for large otherwise extremely time consuming or annoying tasks.
 Another goal is to rather provide a few multifunctional machines instead of many specialized machines for only very specific tasks.
 
-For more information about the content see [InductiveAutomation Manual](https://dl.dropboxusercontent.com/u/68211316/Sonstiges/InductiveAutomationManual.pdf)
-
 Links:
 - [InductiveAutomation on Curse](http://minecraft.curseforge.com/projects/inductive-automation)
+
+##Wiki / Documentation
+- [InductiveAutomation Manual](InductiveAutomation/doc/manual/InductiveAutomationManual.pdf)
 
 #Download & Installation
 
