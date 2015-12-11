@@ -6,7 +6,7 @@ Links:
 - [InductiveAutomation on Curse](http://minecraft.curseforge.com/projects/inductive-automation)
 
 ##Wiki / Documentation
-- [InductiveAutomation Manual](InductiveAutomation/doc/manual/InductiveAutomationManual.pdf)
+- [InductiveAutomation Manual](https://github.com/CD4017BE/InductiveAutomation/blob/master/doc/manual/InductiveAutomationManual.pdf)
 
 #Download & Installation
 
