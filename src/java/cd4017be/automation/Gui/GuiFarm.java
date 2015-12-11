@@ -52,7 +52,7 @@ public class GuiFarm extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         this.drawItemConfig(tileEntity, -27, 7);
         this.drawEnergyConfig(tileEntity, -45, 7);
-        this.drawStringCentered("Automatic Farm", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 92, 0x404040);
     }
 

@@ -31,7 +31,7 @@ public class Electrolyser extends AutomatedTile implements ISidedInventory, IEne
 	{
             netData = new TileEntityData(2, 1, 3, 3);
 		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
-		inventory = new Inventory(this, 3, new Component(0, 1, -1), new Component(1, 2, 1), new Component(2, 3, 1)).setInvName("Electrolyser");
+		inventory = new Inventory(this, 3, new Component(0, 1, -1), new Component(1, 2, 1), new Component(2, 3, 1));
 		tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(0), new Tank(Config.tankCap[1], 1).setOut(1), new Tank(Config.tankCap[1], 1).setOut(2)).setNetLong(1);
 		/**
 		 * long: invcfg, tankcfg

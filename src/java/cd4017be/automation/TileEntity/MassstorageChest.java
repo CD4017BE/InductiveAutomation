@@ -37,7 +37,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
     
     public MassstorageChest()
     {
-        inventory = new Inventory(this, 65, new Component(0, 1, -1), new Component(1, 65, 1)).setInvName("Massstorage Chest");
+        inventory = new Inventory(this, 65, new Component(0, 1, -1), new Component(1, 65, 1));
         netData = new TileEntityData(1, 0, 0, 0);
     }
     

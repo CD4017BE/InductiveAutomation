@@ -175,12 +175,6 @@ public class ELink extends AutomatedTile implements IEnergy, IEnergyHandler
         netData.ints[0] = nbt.getInteger("Umin");
         netData.ints[1] = nbt.getInteger("Umax");
     }
-
-    @Override
-    public String getInventoryName() 
-    {
-        return "Energy Link";
-    }
     
     @Override
     public void initContainer(TileContainer container)

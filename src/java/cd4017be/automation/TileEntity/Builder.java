@@ -328,7 +328,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 
     public Builder()
     {
-        inventory = new Inventory(this, 50, new Component(17, 44, 0)).setInvName("Builder");
+        inventory = new Inventory(this, 50, new Component(17, 44, 0));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData = new TileEntityData(1, 0, 0, 0);
     }

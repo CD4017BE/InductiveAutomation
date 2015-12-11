@@ -32,7 +32,7 @@ public class FluidPacker extends AutomatedTile implements ISidedInventory, IFlui
     public FluidPacker()
     {
         netData = new TileEntityData(2, 0, 0, 4);
-        inventory = new Inventory(this, 7, new Component(0, 1, 1), new Component(1, 2, 1), new Component(2, 3, 1)).setInvName("Liquid Packer");
+        inventory = new Inventory(this, 7, new Component(0, 1, 1), new Component(1, 2, 1), new Component(2, 3, 1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[2], -1).setIn(3), new Tank(Config.tankCap[2], -1).setIn(4), new Tank(Config.tankCap[2], -1).setIn(5), new Tank(Config.tankCap[1], -1, Automation.L_antimatter).setIn(6)).setNetLong(1);
     }
 

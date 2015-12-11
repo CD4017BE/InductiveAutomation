@@ -8,14 +8,10 @@ package cd4017be.automation;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.IFuelHandler;
 import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.common.registry.LanguageRegistry;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-
 import org.apache.logging.log4j.Level;
 
 import cd4017be.api.automation.AreaProtect;
@@ -37,7 +33,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockMushroom;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemSeeds;
@@ -173,12 +168,6 @@ public class CommonProxy implements IFuelHandler
         }
     }
     
-    public void registerItem(Item item, String name)
-    {
-        GameRegistry.registerItem(item, item.getUnlocalizedName());
-        if (name != null) LanguageRegistry.addName(item, name);
-    }
-    
     public ItemStack getOre(String name, int n)
     {
     	List<ItemStack> list = OreDictionary.getOres(name);
@@ -190,10 +179,7 @@ public class CommonProxy implements IFuelHandler
         }
     }
     
-    public void registerBlocks()
-    {
-        
-    }
+    public void registerBlocks() {}
     
     public void configurableRecipe(String name, IRecipe recipe)
     {

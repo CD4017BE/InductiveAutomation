@@ -42,7 +42,7 @@ public class AntimatterAnihilator extends AutomatedTile implements ISidedInvento
         netData = new TileEntityData(1, 4, 1, 3);
         energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_heliumL).setIn(0), new Tank(Config.tankCap[1], 1, Automation.L_heliumG).setOut(1), new Tank(Config.tankCap[1], -1, Automation.L_antimatter).setIn(2));
-        inventory = new Inventory(this, 3).setInvName("Antimatter Anihilator");
+        inventory = new Inventory(this, 3);
         /**
          * long: tanks
          * int: voltage, power, drop, heat

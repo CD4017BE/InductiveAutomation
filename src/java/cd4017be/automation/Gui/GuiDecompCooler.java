@@ -70,7 +70,7 @@ public class GuiDecompCooler extends GuiMachine
         this.drawLiquidConfig(tileEntity, -45, 7);
         this.drawItemConfig(tileEntity, -90, 7);
         this.drawEnergyConfig(tileEntity, -108, 7);
-        this.drawStringCentered("Decompression Cooler", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered("" + tileEntity.netData.ints[0], this.guiLeft + 16, this.guiTop + 38, 0x404040);
     }

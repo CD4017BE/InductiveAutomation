@@ -40,7 +40,7 @@ public class AntimatterTank extends AutomatedTile implements ISidedInventory, IF
     {
         netData = new TileEntityData(2, 0, 0, 1);
     	tanks = new TankContainer(this, new Tank(Config.tankCap[4], 0, Automation.L_antimatter));
-    	inventory = new Inventory(this, 2, new Component(0, 1, 0), new Component(1, 2, 0)).setInvName("Antimatter Tank").setNetLong(1);
+    	inventory = new Inventory(this, 2, new Component(0, 1, 0), new Component(1, 2, 0)).setNetLong(1);
     }
     
     @Override

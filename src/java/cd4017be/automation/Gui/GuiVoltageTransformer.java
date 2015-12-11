@@ -65,7 +65,7 @@ public class GuiVoltageTransformer extends GuiMachine
             this.drawTexturedModalRect(this.guiLeft + 133, this.guiTop + 15, 212, (tileEntity.ctrMode & 2) == 0 ? 0 : 18, 36, 18);
         }
         this.drawStringCentered(String.format("%.1f x", (float)tileEntity.faktor * 0.1F), this.guiLeft + 43, this.guiTop + 20, 0x404040);
-        this.drawStringCentered("Voltage Transformer", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
     }
 
     @Override

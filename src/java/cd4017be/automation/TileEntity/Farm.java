@@ -68,7 +68,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
 
     public Farm()
     {
-        inventory = new Inventory(this, 38, new Component(20, 32, 1), new Component(8, 20, 0)).setInvName("Automatic Farm");
+        inventory = new Inventory(this, 38, new Component(20, 32, 1), new Component(8, 20, 0));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData = new TileEntityData(1, 0, 0, 0);
     }

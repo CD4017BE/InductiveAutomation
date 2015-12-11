@@ -35,7 +35,7 @@ public class Collector extends AutomatedTile implements IFluidHandler, ISidedInv
     public Collector()
     {
         netData = new TileEntityData(2, 3, 0, 1);
-        inventory = new Inventory(this, 1).setInvName("Collector");
+        inventory = new Inventory(this, 1);
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], 1).setOut(0)).setNetLong(1);
     }
 

@@ -76,7 +76,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     
     public Miner()
     {
-        inventory = new Inventory(this, 29, new Component(0, 6, -1), new Component(6, 24, 1)).setInvName("Automatic Miner");
+        inventory = new Inventory(this, 29, new Component(0, 6, -1), new Component(6, 24, 1));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData = new TileEntityData(1, 1, 0, 0);
     }

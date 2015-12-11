@@ -44,7 +44,7 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
     public FluidVent()
     {
         netData = new TileEntityData(1, 2, 0, 1);
-        inventory = new Inventory(this, 1).setInvName("Fluid Exhaust");
+        inventory = new Inventory(this, 1);
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(0));
     }
 

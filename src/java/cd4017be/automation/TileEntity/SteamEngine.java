@@ -96,12 +96,6 @@ public class SteamEngine extends AutomatedTile implements ISidedInventory, IEner
     }
     
     @Override
-    public String getInventoryName() 
-    {
-        return "Steam Engine";
-    }
-    
-    @Override
     public void initContainer(TileContainer container)
     {
         container.addEntitySlot(new SlotTank(this, 0, 89, 34));

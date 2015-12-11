@@ -67,7 +67,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     
     public Teleporter()
     {
-        inventory = new Inventory(this, 16, new Component(1, 2, 0)).setInvName("Teleporter");
+        inventory = new Inventory(this, 16, new Component(1, 2, 0));
         energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
         //mode[int 3]: 0x1 = use rst, 0x2 = rel coord, 0x4 = last rst, 0x8 = teleport, 0x10 = copy
         netData = new TileEntityData(1, 4, 2, 0);

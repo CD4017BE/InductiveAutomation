@@ -1,0 +1,370 @@
+// Blocks 
+// names
+tile.cd4017be.ore:0.name=Silver Ore
+tile.cd4017be.ore:1.name=Copper Ore
+tile.cd4017be.pool.name=Algae Pool
+tile.cd4017be.unbrStone:0.name=black unbreakable Stone
+tile.cd4017be.unbrStone:1.name=red unbreakable Stone
+tile.cd4017be.unbrStone:2.name=green unbreakable Stone
+tile.cd4017be.unbrStone:3.name=brown unbreakable Stone
+tile.cd4017be.unbrStone:4.name=blue unbreakable Stone
+tile.cd4017be.unbrStone:5.name=purple unbreakable Stone
+tile.cd4017be.unbrStone:6.name=cyan unbreakable Stone
+tile.cd4017be.unbrStone:7.name=light gray unbreakable Stone
+tile.cd4017be.unbrStone:8.name=gray unbreakable Stone
+tile.cd4017be.unbrStone:9.name=pink unbreakable Stone
+tile.cd4017be.unbrStone:10.name=lime unbreakable Stone
+tile.cd4017be.unbrStone:11.name=yellow unbreakable Stone
+tile.cd4017be.unbrStone:12.name=light blue unbreakable Stone
+tile.cd4017be.unbrStone:13.name=magenta unbreakable Stone
+tile.cd4017be.unbrStone:14.name=orange unbreakable Stone
+tile.cd4017be.unbrStone:15.name=white unbreakable Stone
+tile.cd4017be.unbrGlass.name=unbreakable Glass
+tile.cd4017be.lightShaft.name=Light Shaft
+tile.cd4017be.wireC.name=Copper Wire
+tile.cd4017be.wireA.name=Conductive Alloy Wire
+tile.cd4017be.wireH.name=Superconductive Hydrogen Wire
+tile.cd4017be.liquidPipe:0.name=Liquid Transport Pipe
+tile.cd4017be.liquidPipe:1.name=Liquid Extraction Pipe
+tile.cd4017be.liquidPipe:2.name=Liquid Injection Pipe
+tile.cd4017be.itemPipe:0.name=Item Transport Pipe
+tile.cd4017be.itemPipe:1.name=Item Extraction Pipe
+tile.cd4017be.itemPipe:2.name=Item Injection Pipe
+tile.cd4017be.itemWarpPipe.name=Item Warp Pipe
+tile.cd4017be.liquidWarpPipe.name=Liquid Warp Pipe
+tile.cd4017be.voltageTransformer.name=Voltage Transformer
+tile.cd4017be.SCSU.name=Single-Cell Storage Unit
+tile.cd4017be.OCSU.name=Octa-Cell Storage Unit
+tile.cd4017be.CCSU.name=Crystall-Cell Storage Unit
+tile.cd4017be.steamEngine.name=Steam Engine
+tile.cd4017be.steamTurbine.name=Steam Turbine
+tile.cd4017be.steamGenerator.name=Steam Generator
+tile.cd4017be.steamBoiler.name=Steam Boiler
+tile.cd4017be.lavaCooler.name=Geothermal Heat Exchanger
+tile.cd4017be.energyFurnace.name=Electric Heated Furnace
+tile.cd4017be.solarpanel.name=Basic Solarpanel
+tile.cd4017be.farm.name=Automatic Farm
+tile.cd4017be.miner.name=Automatic Miner
+tile.cd4017be.magnet.name=Electric Magnet
+tile.cd4017be.link.name=Energy Link
+tile.cd4017be.linkHV.name=HV Energy Link
+tile.cd4017be.texMaker.name=Texture drawing Table
+tile.cd4017be.builder.name=Automatic Builder
+tile.cd4017be.algaePool.name=Bio Reactor
+tile.cd4017be.teslaTransmitterLV.name=LV Tesla Transmitter
+tile.cd4017be.teslaTransmitter.name=HV Tesla Transmitter
+tile.cd4017be.teleporter.name=Teleporter
+tile.cd4017be.advancedFurnace.name=Advanced Furnace
+tile.cd4017be.pump.name=Automatic Pump
+tile.cd4017be.massstorageChest.name=Massstorage Chest
+tile.cd4017be.matterOrb.name=Matter Orb
+tile.cd4017be.antimatterBombE.name=Raw Antimatter Bomb
+tile.cd4017be.antimatterBombF.name=Fusable Antimatter Bomb
+tile.cd4017be.antimatterTank.name=Antimatter Tank
+tile.cd4017be.antimatterFabricator.name=Antimatter Fabricator
+tile.cd4017be.antimatterAnihilator.name=Antimatter Annihilator
+tile.cd4017be.hpSolarpanel.name=High efficiency Solarpanel
+tile.cd4017be.autoCrafting.name=Automatic Crafter
+tile.cd4017be.geothermalFurnace.name=Geothermal Furnace
+tile.cd4017be.steamCompressor.name=Steam-Pneumatic Compression Assembler
+tile.cd4017be.electricCompressor.name=Electromagnetic Compression Assembler
+tile.cd4017be.tank.name=Liquid Tank
+tile.cd4017be.security.name=Chunk loading & protection Manager
+tile.cd4017be.decompCooler.name=Decompression Cooler
+tile.cd4017be.collector.name=Fluid Collector
+tile.cd4017be.trash.name=Trash
+tile.cd4017be.electrolyser.name=Electrolyser
+tile.cd4017be.fuelCell.name=Hydrogen Fuel Cell
+tile.cd4017be.detector.name=Detector
+tile.cd4017be.itemSorter.name=Item Sorter
+tile.cd4017be.wormhole.name=Interdimensional Wormhole
+tile.cd4017be.matterInterfaceB.name=Matter Interface
+tile.cd4017be.fluidPacker.name=Fluid Stabilizer
+tile.cd4017be.hugeTank.name=Massstorage Tank
+tile.cd4017be.fluidVent.name=Fluid Exhaust
+tile.cd4017be.gravCond.name=Gravitational Condenser
+tile.cd4017be.itemBuffer.name=Item Flow Regulator
+tile.cd4017be.quantumTank.name=Quantum Tank
+tile.cd4017be.vertShemGen.name=3D-Vertex Schematic Printer
+// tooltips
+tile.cd4017be.placementHelper.tip=You shouldn't be able to get this.\nJust throw it away it's useless for you.\nPlacement controllers will temporary place\nthese blocks to click items against them.
+tile.cd4017be.pool.tip=Place directly or indirectly next to an BioReactor.\nIncreases Algae capacity by \<AI.FluidTiers.TankCap:1>L.\nOptimal if it has access to sunlight.
+tile.cd4017be.unbrStone.tip=Unbreakable with infinite explosion resistance\nSneak-click is the only possible way to remove it.
+tile.cd4017be.unbrGlass.tip=Unbreakable with infinite explosion resistance\nSneak-click is the only possible way to remove it.
+tile.cd4017be.lightShaft.tip=Emits skylight so you can also run\nSolarpanels & Bio Reactors below surface.\nOnly works if the world has a sky.\nNote: day/night still affects brightness.
+tile.cd4017be.wireC.tip=Umax = \<AI.EnergyTiers.Umax:0> V\nRcond = \<AF.EnergyTiers.Rcond:0> Ohm\nClick with solid Blocks to cover.
+tile.cd4017be.wireA.tip=Umax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nClick with solid Blocks to cover.
+tile.cd4017be.wireH.tip=Umax = \<AI.EnergyTiers.Umax:2> V\nRcond = \<AF.EnergyTiers.Rcond:2> Ohm\nClick with solid Blocks to cover.
+tile.cd4017be.liquidPipe:0.tip=Transfers fluids from extraction to injection pipes.\nMoves \<AI.FluidTiers.TankCap:0> L/t from red to green connections.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.liquidPipe:1.tip=Fills fluids into connected tanks/machines.\nCan be upgraded with a Fluid Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.liquidPipe:2.tip=Pumps fluids out of connected tanks/machines.\nCan be upgraded with a Fluid Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.liquidWarpPipe.tip=Transfers fluids between connected tanks/machines instantly\nwithout internal storage at unlimited pump rate.\nClick with Liquid extraction/injection Pipe on\nside to extract/inject fluids from that side.\nFluid Pipe Filters can be applied per connected side.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.itemPipe:0.tip=Transfers items from extraction to injection pipes.\nMoves 1 stack/t from red to green connections.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.itemPipe:1.tip=Puts items into connected inventories.\nCan be upgraded with an Item Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.itemPipe:2.tip=Pulls items out of connected inventories.\nCan be upgraded with an Item Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.itemWarpPipe.tip=Transfers items between connected inventories instantly\nwithout internal storage at 1 stack/t extraction rate.\nClick with Item extraction/injection Pipe on\nside to extract/inject items from that side.\nItem Pipe Filters are applied per connected side.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.voltageTransformer.tip=Conducts Energy between two\nnetworks of different Voltage.\nHV = LV * VoltageFactor
+tile.cd4017be.SCSU.tip=Can store Energy and charge tools.\nUmax = \<AI.EnergyTiers.Umax:0> V\nRcond = \<AF.EnergyTiers.Rcond:0> Ohm
+tile.cd4017be.OCSU.tip=Can store Energy and charge tools.\nUmax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm
+tile.cd4017be.CCSU.tip=Can store Energy and charge tools.\nUmax = \<AI.EnergyTiers.Umax:2> V\nRcond = \<AF.EnergyTiers.Rcond:2> Ohm
+tile.cd4017be.steamEngine.tip=Converts Steam into Water and Energy.\nPmax = \<AF.SteamGen.Pmax:0> kW\nUmax = \<AI.EnergyTiers.Umax:0> V\nRcond = \<AF.EnergyTiers.Rcond:0> Ohm
+tile.cd4017be.steamTurbine.tip=Converts Steam into Water and Energy.\nPmax = \<AF.SteamGen.Pmax:2> kW\nUmax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm
+tile.cd4017be.steamGenerator.tip=Converts Steam into Water and Energy.\nPmax = \<AF.SteamGen.Pmax:1> kW\nUmax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm
+tile.cd4017be.steamBoiler.tip=Converts Furnace-fuel and Water into Steam.\nPmax = 40 L/t
+tile.cd4017be.lavaCooler.tip=Converts Lava and Water into Steam\nand optional Cobblestone/Stone/Obsidian\nP = 20 L/t
+tile.cd4017be.energyFurnace.tip=A furnace powered by electric Energy\nEuse = \<F.Mach.Furnace.Euse> kJ/op\nRwork = configurable\nUmax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.solarpanel.tip=Produces Energy from sunlight.\n(and a very tiny amount from blocklight)\nPsun = 500 W , Pblock = 2.2 W\nUmax = 120 V\nRcond = \<AF.EnergyTiers.Rcond:0> Ohm
+tile.cd4017be.farm.tip=Places specific plants and harvests blocks that drop a specific\nitem and can be broken by hand inside of a cuboid area.\nSelection tool needed to set area.\nEuse = \<F.Mach.Farm.Euse> kJ/place,harvest\nRwork = 25 Ohm\nUmax = \<AI.EnergyTiers.Umax:1> V (can be upgraded)\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 block/t)
+tile.cd4017be.miner.tip=Breaks blocks inside of a cuboid area. Needs\nDrills for blocks that can't be harvested by hand.\nSelection tool needed to set area.\nEuse = dependsOnBlockHardness\nRwork = 25 Ohm\nUmax = \<AI.EnergyTiers.Umax:1> V (can be upgraded)\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 16 blocks/t)\nUse as Computercraft peripheral for more detailed control.
+tile.cd4017be.magnet.tip=Attracts Entities and collects Items.\nItems are stored in adjacent inventories.\nP = 0.1 W/t/entity\nUmax = \<AI.EnergyTiers.Umax:2> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nRange = U * 0.015625 m/V
+tile.cd4017be.link.tip=Stores Energy inside of a connected Block.\nThese may be: Storage units, cables,\nThermalExpansion storage devices\nUmax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm
+tile.cd4017be.linkHV.tip=Stores Energy inside of a connected Block.\n(see standard Energy Link)\nUmax = \<AI.EnergyTiers.Umax:2> V\nRcond = \<AF.EnergyTiers.Rcond:2> Ohm
+tile.cd4017be.texMaker.tip=Used to draw block layers for the builder.
+tile.cd4017be.builder.tip=Can build layers of different blocks into an cuboid area.\nUse Builder Textures if layers should be built out of multiple block types.\nSelection tool needed to set area.\nEuse = \<F.Mach.Builder.Euse> kJ/block\nRwork = 25 Ohm\nUmax = \<AI.EnergyTiers.Umax:1> V (can be upgraded)\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 16 blocks/t)\nUse as Computercraft peripheral for more detailed control.
+tile.cd4017be.algaePool.tip=Converts Water and organic stuff into Biomass using Algae.\nThe algae will reproduce when fed and die over time producing biomass.\nPut Lilly Pads into the reactor to get a first amount of algae to start with.\n(needs Algae Pools and sunlight to function)
+tile.cd4017be.teslaTransmitter.tip=Transfers Energy to other transmitters with equal frequency.\nClick with Ender Matrix to make it Interdimensional -> distance <= 200m\nTransferRate = (U2^2 - U1^2) / distance^2 * 1Fm^2\nUmax = \<AI.EnergyTiers.Umax:4> V\n(stores up to 14.400.000 kJ)
+tile.cd4017be.teslaTransmitterLV.tip=Transfers Energy to other transmitters with equal frequency.\nClick with Ender Matrix to make it Interdimensional -> distance <= 200m\nTransferRate = (U2^2 - U1^2) / distance^2 * 1Fm^2\nUmax = \<AI.EnergyTiers.Umax:3> V\n(stores up to 576.000 kJ)
+tile.cd4017be.teleporter.tip=Teleports an entire cuboid area of blocks\nand entities to specific coordinates.\nSelection tool needed to set area.\nEuse = areaVolume * distance * \<F.Mach.Teleport.Emult> kJ/m^4\nRwork = 50 Ohm\nUmax = \<AI.EnergyTiers.Umax:2> V (can be upgraded)\nRcond = \<AF.EnergyTiers.Rcond:2> Ohm\nUse as Computercraft peripheral for more detailed control.
+tile.cd4017be.advancedFurnace.tip=A multifunctional crafting Machine for:\nAlloy smelting, Magma smelting, Steam crushing, ...\nEuse = dependsOnRecipe\nRwork = configurable\nUmax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.pump.tip=Can pump liquids out of a cuboid area or from entire lakes.\nSelection tool needed to set area.\nEuse = \<F.Mach.Pump.Euse> kJ/fluidBlock\nRwork = 25 Ohm\nUmax = \<AI.EnergyTiers.Umax:1> V (can be upgraded)\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 block/t)
+tile.cd4017be.massstorageChest.tip=A chest with 64 slots each holding up to 4096 items.\n(keeps its content when broken)
+tile.cd4017be.matterOrb.tip=Can store up to 256 different item types\neach holding up to 2.147.483.647 items.\nItems can only be piped in.\nPut into a Matter Interface to access contents.
+tile.cd4017be.antimatterBombE.tip=Needs to be crafted into the fuseable form.\nThe internal Matterorb contains all the loot collected\nby the antimatter explosion, it should be pulled out\nbefore crafting this into the fuseable version again.
+tile.cd4017be.antimatterBombF.tip=Fill this with antimatter, place it anywhere (better far away),\napply a redstone signal and RUN! When it detonates don't\nlook at the bomb or stand in clear sight to it (High-Energy-Gamma-Rays).\nWill detonate 10s after rst.-signal, break block to defuse.\nExplosion strength depends on the amount of antimatter filled in.
+tile.cd4017be.antimatterTank.tip=Stores up to 160 milligrams of antimatter.\n(equivalent Energy capacity: 14.4 TJ)
+tile.cd4017be.antimatterFabricator.tip=Creates pairs of Matter & Antimatter out of Energy.\nNeeds to be cooled with liquid helium.\nEuse = 90 kJ/ng (E=mc^2)\nPmax = 14.400 kW\nUmax = \<AI.EnergyTiers.Umax:2> V\nRcond = \<AF.EnergyTiers.Rcond:2> Ohm
+tile.cd4017be.antimatterAnihilator.tip=Anihilates Antimatter with Matter back to Energy.\nNeeds to be cooled with liquid helium.\nEgen = 90 kJ/ng (E=mc^2)\nPmax = 14.400 kW\nUmax = \<AI.EnergyTiers.Umax:2> V\nRcond = \<AF.EnergyTiers.Rcond:2> Ohm
+tile.cd4017be.hpSolarpanel.tip=Produces Energy from sunlight.\n(and a tiny amount from blocklight and in the END)\nPsun = 4 kW , Pend = 148 W , Pblock = 17.8 W\nUmax = \<AI.EnergyTiers.Umax:0> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm
+tile.cd4017be.autoCrafting.tip=Can automatically craft stuff using a slot-index-pattern.
+tile.cd4017be.geothermalFurnace.tip=A furnace powered by Lava.\nCan also run from Furnace-fuel\nor use it to produce Lava out of Stone.\n25% more fuel efficient than normal Furnace.
+tile.cd4017be.steamCompressor.tip=Used to assemble casings, circuits, and other parts.\nPowered by Steam-pressure: uses 800 L/op
+tile.cd4017be.electricCompressor.tip=Used to assemble casings, circuits, and other parts.\nPowered by Electricity: uses \<F.Mach.ElCompr.Euse> kJ/op\nRwork = configurable\nUmax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.tank.tip=64.000 L Fluid storage.\nKeeps its content when broken.\nCan be used as Fluid container in other tanks.
+tile.cd4017be.security.tip=Can keep chunks loaded and/or protect them from\nbeing grieved by non whitelisted players.\nRequires constant power supply to function.\nUmax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm
+tile.cd4017be.decompCooler.tip=Used to pump heat out of a material into another material.\nEuse = dependsOnRecipe\nRwork = configurable\nUmax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.collector.tip=Sucks in liquid blocks in front of it\nor optionally extracts Oxygen/Nitrogen from air.
+tile.cd4017be.trash.tip=Deletes items and liquids.
+tile.cd4017be.electrolyser.tip=Separates materials into their chemical compounds.\nEuse = dependsOnRecipe\nRwork = configurable\nUmax = \<AI.EnergyTiers.Umax:1> V\nRcond = \<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.fuelCell.tip=Lets Hydrogen & Oxygen react into\nSteam to produce electric Energy\nPmax = 80 L/t + 144 kW\nUmax = \<AI.EnergyTiers.Umax:2> V\nRcond = \<AF.EnergyTiers.Rcond:2> Ohm
+tile.cd4017be.detector.tip=Emits redstone signals depending on configurable triggers for:\nitem storage, fluid storage and energy storage (also MJ,RF,EU).\nUse as Computercraft peripheral for more detailed control.
+tile.cd4017be.itemSorter.tip=Routes items into 5 different slots with 4 Item Filters + else.
+tile.cd4017be.wormhole.tip=Creates an interdimensional link between two points being anywhere.\nWalk into this block to get teleported to its link.\nCan transfer entities, items, fluids & energy (also RF).\nCan be used by Teleporters to teleport between dimensions:\nClick this block with paper to get the coordinates.
+tile.cd4017be.matterInterfaceB.tip=Used to automatically insert/extract items from a Matterorb.
+tile.cd4017be.fluidPacker.tip=Converts fluids into an item-version that can be stored in chests etc.\nNeeds 1 ng antimatter per 1000 L fluid.
+tile.cd4017be.hugeTank.tip=A bigger tank with 4.096.000 L capacity.
+tile.cd4017be.fluidVent.tip=Can fill liquids into valleys or holes in landscape.
+tile.cd4017be.gravCond.tip=Compacts huge amounts of matter with\nmaterials to create more dense materials.\nActs like a trash, must be supplied\nwith any items or fluids to operate.\nUses \<F.Mach.GravCond.Euse> J/kg consumed\nNeeds \<F.Mach.GravCond.Eforce> J/kg storage\nUmax = \<I.Mach.GravCond.Umax> V\n(emits redstone proportional to fill state)
+tile.cd4017be.itemBuffer.tip=Distributes incoming items over two\noutputs at a specific ratio and/or\ncombines them to higher stack sizes to\nuse slow pipes more efficiently. 
+tile.cd4017be.quantumTank.tip=Another even bigger tank with 2.097.152.000 L capacity.
+tile.cd4017be.vertShemGen.tip=Used to print 3D-Vertex schematics\nto let a Builder build them automated.\n(A Vertex Selection Tool can be used\ninstead of typing in coordinates manually)
+
+//Fluid names
+fluid.steam.name=Steam
+fluid.biomass.name=Biomass
+fluid.antimatter.name=Antimatter
+fluid.nitrogenG.name=Gaseous Nitrogen
+fluid.nitrogenL.name=Liquid Nitrogen
+fluid.heliumG.name=Gaseous Helium
+fluid.heliumL.name=Liquid Helium
+fluid.hydrogenG.name=Gaseous Hydrogen
+fluid.hydrogenL.name=Liquid Hydrogen
+fluid.oxygenG.name=Gaseous Oxygen
+fluid.oxygenL.name=Liquid Oxygen
+
+//Items
+//Material names
+item.cd4017be.material:CopperI.name=Copper Ingot
+item.cd4017be.material:SilverI.name=Silver Ingot
+item.cd4017be.material:ElectrumI.name=Electrum Ingot
+item.cd4017be.material:SteelI.name=Steel Ingot
+item.cd4017be.material:RstMetall.name=Redstone Metall Ingot
+item.cd4017be.material:CondIA.name=Conductive Alloy Ingot
+item.cd4017be.material:Graphite.name=Graphite Ingot
+item.cd4017be.material:SiliconI.name=Silicon Ingot
+item.cd4017be.material:HydrogenI.name=Superconductive Hydrogen Ingot
+item.cd4017be.material:ElectrumR.name=Electrum Dust
+item.cd4017be.material:CondRA.name=Conductive Alloy Dust
+item.cd4017be.material:WoodC.name=Wood Casing
+item.cd4017be.material:GlassC.name=Glass Casing
+item.cd4017be.material:IronC.name=Iron Casing
+item.cd4017be.material:StoneC.name=Stone Casing
+item.cd4017be.material:SteelH.name=Steel Casing
+item.cd4017be.material:GDPlate.name=Graphite Casing
+item.cd4017be.material:unbrC.name=unbreakable Casing
+item.cd4017be.material:CoilH.name=Heating Coil
+item.cd4017be.material:CoilCp.name=Copper Coil
+item.cd4017be.material:CoilC.name=Conductive Coil
+item.cd4017be.material:CoilSC.name=Superconductive Coil
+item.cd4017be.material:Motor.name=Motor
+item.cd4017be.material:Turbine.name=Electric Turbine
+item.cd4017be.material:Circut.name=Redstone Circuit
+item.cd4017be.material:EMatrix.name=Ender Matrix
+item.cd4017be.material:Vent.name=Liquid Heat Exchanger
+item.cd4017be.material:JetTurbine.name=Jetpack Turbine
+item.cd4017be.material:Control.name=Control Interface
+item.cd4017be.material:Strap.name=Chest straps
+item.cd4017be.material:LCAlgae.name=Algae Bottle
+item.cd4017be.material:LCBiomass.name=Biomass Bottle
+item.cd4017be.material:LCNitrogen.name=Liquid Nitrogen Bottle
+item.cd4017be.material:LCOxygen.name=Liquid Oxygen Bottle
+item.cd4017be.material:LCHydrogen.name=Liquid Hydrogen Bottle
+item.cd4017be.material:LCHelium.name=Liquid Helium Bottle
+item.cd4017be.material:Biomass.name=Dry Biomass
+item.cd4017be.material:Acelerator.name=Particle accelerator
+item.cd4017be.material:AnihilationC.name=Anihilation Chamber
+item.cd4017be.material:QSGen.name=Quantum entangler
+item.cd4017be.material:BHGen.name=Hyperspace Wormhole
+item.cd4017be.material:QAlloyI.name=Quantum integrated Ingot
+item.cd4017be.material:QMatrix.name=Quantum Matrix
+item.cd4017be.material:Breaker.name=Electric Block Harvester
+item.cd4017be.material:Placer.name=Electric Block Placer
+item.cd4017be.material:AreaFrame.name=Tool Motion Frame
+item.cd4017be.material:mAccelerator.name=Matter accelerator
+item.cd4017be.material:amAcelerator.name=Antimatter accelerator
+item.cd4017be.material:Fokus.name=Particle Fokus-module
+item.cd4017be.material:IronOD.name=Iron Ore Dust
+item.cd4017be.material:GoldOD.name=Gold Ore Dust
+item.cd4017be.material:CopperOD.name=Copper Ore Dust
+item.cd4017be.material:SilverOD.name=Silver Ore Dust
+item.cd4017be.material:IronD.name=Iron Dust
+item.cd4017be.material:GoldD.name=Gold Dust
+item.cd4017be.material:CopperD.name=Copper Dust
+item.cd4017be.material:SilverD.name=Silver Dust
+item.cd4017be.material:DenseM.name=Ultra dense Material
+item.cd4017be.material:Neutron.name=Neutronium-10^42
+item.cd4017be.material:BlackHole.name=Black Hole
+//Tool names
+item.cd4017be.selectionTool.name=Area configuration Tool
+item.cd4017be.voltMeter.name=Volt Meter
+item.cd4017be.energyCell.name=Energy Cell
+item.cd4017be.chisle.name=Electric Chisel
+item.cd4017be.cutter.name=Electric Cutter
+item.cd4017be.portableMagnet.name=Portable Magnet
+item.cd4017be.builderTexture.name=Building Texture
+item.cd4017be.teleporterCoords.name=Teleport Point:
+item.cd4017be.stoneDrill.name=Miner Stone-Drill
+item.cd4017be.ironDrill.name=Miner Iron-Drill
+item.cd4017be.diamondDrill.name=Miner Diamond-Drill
+item.cd4017be.amLaser.name=Antimatter Laser
+item.cd4017be.mCannon.name=Matter Cannon
+item.cd4017be.contLiquidAir.name=Liquid Air Container
+item.cd4017be.contAlgaeFood.name=Algae Food Container
+item.cd4017be.contInvEnergy.name=Inventory Energy Container
+item.cd4017be.contJetFuel.name=Jetpack Fuel Container
+item.cd4017be.jetpack.name=Jetpack
+item.cd4017be.jetpackIron.name=Iron armored Jetpack
+item.cd4017be.jetpackSteel.name=Steel armored Jetpack
+item.cd4017be.jetpackGraphite.name=Carbon armored Jetpack
+item.cd4017be.jetpackUnbr.name=Unbreakable armored Jetpack
+item.cd4017be.matterInterface.name=Portable Matter Interface
+item.cd4017be.fluidDummy.name=Stabilized Fluid
+item.cd4017be.fluidUpgrade.name=Pipe Liquid-Filter
+item.cd4017be.itemUpgrade.name=Pipe Item-Filter
+item.cd4017be.portableFurnace.name=Portable Electric Furnace
+item.cd4017be.portableInventory.name=Portable Item Storage
+item.cd4017be.portableCrafter.name=Portable Automatic Crafter
+item.cd4017be.portableGenerator.name=Portable Generator
+item.cd4017be.portableRemoteInv.name=Portable Inventory Remote
+item.cd4017be.portableTeleporter.name=Portable Teleporter
+item.cd4017be.portablePump.name=Portable Pump
+item.cd4017be.translocator.name=Block Translocator
+item.cd4017be.portableTesla.name=Portable Tesla Transmitter
+item.cd4017be.placement.name=Block placement controller
+item.cd4017be.synchronizer.name=Machine co-op synchronizer
+item.cd4017be.remBlockType.name=Remove block pattern
+item.cd4017be.vertexSel.name=Vertex Selection Tool
+// tooltips
+item.cd4017be.material.tip=(just crafting parts)
+item.cd4017be.selectionTool.tip=Used to define the working-area of machines.\nSneak-click on machine to link/unlink.\nSneak-click in air to change mode.\nClick block/air to perform selected action.\nUse configure mode to install upgrades.
+item.cd4017be.voltMeter.tip=Displays cable-voltage.\nClick on machine/cable to link.
+item.cd4017be.energyCell.tip=Can be charged/discharged in storage units.
+item.cd4017be.chisle.tip=Pickaxe, Axe & Shovel in one\nUses \<I.Tool.Chisle.Euse>kJ to break a block.
+item.cd4017be.cutter.tip=Shears & Sword in one\nHits faster than normal weapon (8 damage).\nUses \<I.Tool.Cutter.Euse>kJ to hit an entity / break a block.
+item.cd4017be.portableMagnet.tip=Pulls nearby items and XP towards you if on.\nClick to turn on/off or put in\nmost top right inventory slot to disable.\nUses 1kW while pulling stuff.
+item.cd4017be.builderTexture.tip=Used in a Builder to build layers of different block types.\nPut Paper into a Texture drawing table to create this.
+item.cd4017be.teleporterCoords.tip=Stores locations for a Teleporter.\nClick to set position.\nSneak-click to set previous position\nrelative to clicked position.\nPut Paper into a Teleporter to create this.
+item.cd4017be.stoneDrill.tip=Lets a Miner break blocks with harvest-lvl stone.\nLasts for \<AS.minerDrill.durability:0> blocks.\nCan be enchanted & repaired in anvil.\nRepair material: Stone (x20)
+item.cd4017be.ironDrill.tip=Lets a Miner break blocks with harvest-lvl iron.\nLasts for \<AS.minerDrill.durability:1> blocks.\nCan be enchanted & repaired in anvil.\nRepair material: Iron (x16)
+item.cd4017be.diamondDrill.tip=Lets a Miner break blocks with harvest-lvl diamond.\nLasts for \<AS.minerDrill.durability:2> blocks.\nCan be enchanted & repaired in anvil.\nRepair material: Diamond (x12)
+item.cd4017be.amLaser.tip=Click to insta-break any block within 128m distance.\nDropped items are stored in internal Matterorb.\nSneak-click only causes entity damage.\nSneak-scroll to cycle between operation modes.\nSneak-middle-click to open Enchantment GUI.\nUses \<I.Tool.AMLaser.Euse>kJ + antimatter depending on explosion resistance.
+item.cd4017be.mCannon.tip=Click to interact any block within 128m distance\nusing the currently selected item in internal Matterorb.\nSneak-scroll to change selected item.\nSneak-middle-click to change operation mode.\nUses \<I.Tool.MCannon.Euse>kJ per operation.
+item.cd4017be.contLiquidAir.tip=Refills air underwater for \<I.Tool.AirTank.dur> seconds.
+item.cd4017be.contAlgaeFood.tip=Refills your food bar for \<I.Tool.AlgaeFood.dur> food-points.
+item.cd4017be.contInvEnergy.tip=Charges your tools held in hotbar if on.\nClick to turn on/off.\nCan be also used instead of Jetpack Fuel.
+item.cd4017be.contJetFuel.tip=Needs to be in inventory when using Jetpack.
+item.cd4017be.jetpack.tip=Equip in chestplate-slot to use.\nPress Jump to increase / Sneak to decrease thrust.\nPress control-mode when off to open config menu.\nPress control-mode when on to toggle between configured modes.\n(open controls-menu to view keys)
+item.cd4017be.jetpackIron.tip=Provides armor like iron chestplate.\nBecomes normal Jetpack when armor breaks.\n(see Jetpack item for more info)
+item.cd4017be.jetpackSteel.tip=Provides a bit more armor than iron chestplate.\nBecomes normal Jetpack when armor breaks.\n(see Jetpack item for more info)
+item.cd4017be.jetpackGraphite.tip=Provides armor like diamond chestplate.\nBecomes normal Jetpack when armor breaks.\n(see Jetpack item for more info)
+item.cd4017be.jetpackUnbr.tip=Provides armor like diamond chestplate.\nArmor will never break.\n(see Jetpack item for more info)
+item.cd4017be.matterInterface.tip=Used to access the content of a Matterorb.\nClick to open GUI.
+item.cd4017be.fluidDummy:0.tip=This item is used to display Errors.
+item.cd4017be.fluidDummy.tip=Contains 1000L of liquid.\nCan be filled in tanks or placed in world.\nCreated in Fluid Stabilizer or by Antimatter Bombs.
+item.cd4017be.fluidUpgrade.tip=A filter for liquid extraction/injection pipes.\nClick in air to open GUI.\nClick on pipe to insert.
+item.cd4017be.itemUpgrade.tip=A filter for item extraction/injection pipes & item sorter.\nClick in air to open GUI.\nClick on pipe to insert.
+item.cd4017be.portableFurnace.tip=An electric furnace that runs in your inventory.\nInsert an Item Pipe Filter to auto smelt specific items.\nClick to open GUI.\nUses \<I.Tool.Furnace.Euse> kJ/op
+item.cd4017be.portableInventory.tip=Offers additional item storage space.\nInsert Item Pipe Filters to move specific items\nbetween your inventory and this storage automatically.\nClick to open GUI.
+item.cd4017be.portableCrafter.tip=Can perform a configured recipe to either\ncraft a specific total amount of items or\ncraft items if their amount is below a specific value.\nClick to open GUI.
+item.cd4017be.portableGenerator.tip=Charges electric tools in inventory using furnace fuel.\nInsert an Item Pipe Filter to insert fuel automatically.\nClick to open GUI.\nPower: \<AF.SteamGen.Pmax:0> kW
+item.cd4017be.portableRemoteInv.tip=Allowes remote access to a block's inventory.\nInsert Item Pipe Filters to move specific items between\nyour inventory and the linked block automatically.\nClick on block to link.\nClick in air to open GUI.
+item.cd4017be.portableTeleporter.tip=Sneak-click to teleport to the block looking at.\nClick to open waypoint list.\nUses \<F.Tool.Teleport.Emult> kJ/m teleported.\n(entities standing close are moved with you)
+item.cd4017be.portablePump.tip=Click on liquid blocks to drain (16m range).\nStores 16000L of liquid internally.\nAutomatically outputs into fluid containers in your inventory.\nUses \<I.Tool.Pump.Euse> kJ/block.
+item.cd4017be.translocator.tip=Click on Block to pickup then click\nsomewhere else to place down.\nThe moved Block will keep all its data/content.
+item.cd4017be.portableTesla.tip=Functions like a LV Tesla Transmitter.\nCan charge items in your inventory\nusing its stored energy.\nClick in air to open GUI. 
+item.cd4017be.placement.tip=Will perform the block and item placement\noperations configured in GUI using items\nfrom your inventory when clicked on the ground.\nClick in air to open GUI.\nCan be used by the Builder and Farm. 
+item.cd4017be.synchronizer:0.tip=Used to let a machine work for another machine.\nSneak-click on a machine to link.\nUse a Selection Tool in configure-mode to insert.\nFunctions as upgrade for another machine.
+item.cd4017be.synchronizer:1.tip=This machine can't be used by other machines!
+item.cd4017be.synchronizer:2.tip=Insert into Miner to let it also "mine" fluids.\nInsert into Builder to drain fluid blocks before replacing them.
+item.cd4017be.synchronizer:3.tip=Insert into Builder to let it break already existing blocks.\nInsert into Farm to allow it harvesting stronger blocks.
+item.cd4017be.synchronizer:4.tip=Insert into Pump or Miner to let them replace drained/mined blocks\nusing the material set in the Builders first config-slot.
+item.cd4017be.remBlockType.tip=If a Builder is upgraded with a Pump or Miner you\ncan use this as material type to let it remove blocks.
+item.cd4017be.vertexSel.tip=Sneak-click on a 3D-Vertex Schematic Printer to link.\nSneak-click in air to switch between the\nvertices of the currently selected Polygon\nand right-click on block/air to set it's position.\nclick in air with "open GUI" mode to open linked machine. 
+
+//GUI
+//Inventory names
+gui.cd4017be.steamEngine=Steam Engine
+gui.cd4017be.steamGenerator=Steam Generator
+gui.cd4017be.steamTurbine=Steam Turbine
+gui.cd4017be.steamBoiler=Steam Boiler
+gui.cd4017be.lavaCooler=Geothermal Heat Exchanger
+gui.cd4017be.energyFurnace=Electric Heated Furnace
+gui.cd4017be.SCSU=Energy Storage Unit
+gui.cd4017be.OCSU=Energy Storage Unit
+gui.cd4017be.CCSU=Energy Storage Unit
+gui.cd4017be.farm=Automatic Farm
+gui.cd4017be.miner=Automatic Miner
+gui.cd4017be.link=Energy Link
+gui.cd4017be.linkHV=Energy Link
+gui.cd4017be.builder=Automatic Builder
+gui.cd4017be.algaePool=Bio Reactor
+gui.cd4017be.voltageTransformer=Voltage Transformer
+gui.cd4017be.teslaTransmitter=Tesla Transmitter
+gui.cd4017be.teslaTransmitterLV=Tesla Transmitter
+gui.cd4017be.teleporter=Teleporter
+gui.cd4017be.advancedFurnace=Advanced Furnace
+gui.cd4017be.pump=Pump
+gui.cd4017be.massstorageChest=Massstorage Chest
+gui.cd4017be.antimatterTank=Antimatter Tank
+gui.cd4017be.antimatterFabricator=Antimatter Fabricator
+gui.cd4017be.antimatterAnihilator=Antimatter Annihilator
+gui.cd4017be.autoCrafting=Automatic Crafter
+gui.cd4017be.geothermalFurnace=Geothermal Furnace
+gui.cd4017be.steamCompressor=Compression Assembler
+gui.cd4017be.electricCompressor=Compression Assembler
+gui.cd4017be.tank=Tank
+gui.cd4017be.hugeTank=Tank
+gui.cd4017be.quantumTank=Tank
+gui.cd4017be.security=Chunk load/protection manager
+gui.cd4017be.decompCooler=Decompression Cooler
+gui.cd4017be.collector=Collector
+gui.cd4017be.trash=Trash
+gui.cd4017be.electrolyser=Electrolyser
+gui.cd4017be.fuelCell=Hydrogen Fuel Cell
+gui.cd4017be.detector=Detector
+gui.cd4017be.itemSorter=Item Sorter
+gui.cd4017be.matterInterfaceB=Matter Interface
+gui.cd4017be.fluidPacker=Fluid Stabilizer
+gui.cd4017be.fluidVent=Exhaust
+gui.cd4017be.gravCond=Gravitational Condenser
+gui.cd4017be.itemBuffer=Item Flow Regulator
+gui.cd4017be.vertShemGen=3D-Vertex Schematic Printer

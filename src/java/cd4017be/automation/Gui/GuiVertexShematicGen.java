@@ -144,7 +144,7 @@ public class GuiVertexShematicGen extends GuiMachine
         	int c = colors[p.texId & 0x7];
         	this.fontRendererObj.drawString(i + ": " + p.vert.length + "V", this.guiLeft + 97, this.guiTop + 16 + 8 * (i - scroll1), c);
         }
-        this.drawStringCentered("3D-Vertex Schematic Printer", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tile.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 83, 0x404040);
     }
 

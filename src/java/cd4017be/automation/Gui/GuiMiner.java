@@ -59,7 +59,7 @@ public class GuiMiner extends GuiMachine
         if (tileEntity.active()) this.drawTexturedModalRect(this.guiLeft + 115, this.guiTop + 15, 176, 0, 18, 18);
         this.drawItemConfig(tileEntity, -27, 7);
         this.drawEnergyConfig(tileEntity, -45, 7);
-        this.drawStringCentered("Automatic Miner", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
 

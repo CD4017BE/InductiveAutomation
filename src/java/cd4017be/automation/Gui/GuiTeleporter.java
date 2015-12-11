@@ -96,7 +96,7 @@ public class GuiTeleporter extends GuiMachine
         tfY.drawTextBox();
         tfZ.drawTextBox();
         name.drawTextBox();
-        this.drawStringCentered("Teleporter", this.guiLeft + this.xSize / 4, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 4, this.guiTop + 4, 0x404040);
         this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered((tileEntity.netData.ints[3] & 16) != 0?"Copy Mode":"Move Mode", this.guiLeft + this.xSize * 3 / 4, this.guiTop + 4, 0xff4040);
         showWarning();

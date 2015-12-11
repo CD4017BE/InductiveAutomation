@@ -68,7 +68,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
     public Pump()
     {
         netData = new TileEntityData(2, 1, 0, 1);
-        inventory = new Inventory(this, 6).setInvName("Automatic Pump");
+        inventory = new Inventory(this, 6);
         tanks = new TankContainer(this, new Tank(Config.tankCap[1] * 2, 1).setOut(0)).setNetLong(1);
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
     }

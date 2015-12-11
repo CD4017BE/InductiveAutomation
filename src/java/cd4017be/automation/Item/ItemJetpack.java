@@ -6,8 +6,6 @@
 
 package cd4017be.automation.Item;
 
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -20,8 +18,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 
@@ -206,5 +204,17 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
             world.spawnParticle("flame", player.posX, player.posY - 0.8D, player.posZ, mov.x, mov.y, mov.z);
         }
     }
+
+	@Override
+	public String getUnlocalizedName(ItemStack item) 
+	{
+		return super.getUnlocalizedName().replaceFirst("item.", "item.cd4017be.");
+	}
+
+	@Override
+	public String getItemStackDisplayName(ItemStack item) 
+	{
+		return StatCollector.translateToLocal(this.getUnlocalizedName(item) + ".name");
+	}
     
 }

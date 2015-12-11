@@ -31,7 +31,7 @@ public class MatterInterface extends AutomatedTile implements IAutomatedInv
     
     public MatterInterface()
     {
-        inventory = new Inventory(this, 5, new Component(1, 2, -1), new Component(2, 3, 1), new Component(0, 1, 0)).setInvName("Matter Interface");
+        inventory = new Inventory(this, 5, new Component(1, 2, -1), new Component(2, 3, 1), new Component(0, 1, 0));
         netData = new TileEntityData(1, 1, 0, 0);
     }
 

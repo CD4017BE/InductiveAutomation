@@ -43,7 +43,7 @@ public class AlgaePool extends AutomatedTile implements ISidedInventory, IFluidH
     public AlgaePool()
     {
         netData = new TileEntityData(2, 1, 2, 2);
-        inventory = new Inventory(this, 5, new Component(4, 5, -1)).setInvName("Bio Reactor");
+        inventory = new Inventory(this, 5, new Component(4, 5, -1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_water).setIn(2), new Tank(Config.tankCap[1], 1, Automation.L_biomass).setOut(3)).setNetLong(1);
         
     }

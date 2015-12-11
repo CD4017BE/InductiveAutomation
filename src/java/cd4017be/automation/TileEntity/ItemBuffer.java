@@ -21,7 +21,7 @@ public class ItemBuffer extends AutomatedTile implements ISidedInventory
 	
 	public ItemBuffer()
 	{
-		inventory = new Inventory(this, 21, new Component(0, 18, -1), new Component(18, 19, 1), new Component(19, 20, 1), new Component(20, 21, 1)).setInvName("Item Flow Regulator");
+		inventory = new Inventory(this, 21, new Component(0, 18, -1), new Component(18, 19, 1), new Component(19, 20, 1), new Component(20, 21, 1));
 		netData = new TileEntityData(1, 3, 0, 0);
 	}
 

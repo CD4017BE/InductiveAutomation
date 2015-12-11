@@ -70,7 +70,7 @@ public class GuiSteamBoiler extends GuiMachine
         this.drawLiquidTank(tileEntity.tanks, 1, 134, 16, true);
         this.drawLiquidConfig(tileEntity, -27, 7);
         this.drawItemConfig(tileEntity, -45, 7);
-        this.drawStringCentered("Steam Boiler", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
 

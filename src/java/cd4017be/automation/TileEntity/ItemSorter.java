@@ -36,7 +36,7 @@ public class ItemSorter extends AutomatedTile implements IAutomatedInv, IItemPip
     
     public ItemSorter()
     {
-        inventory = new Inventory(this, 9, new Component(0, 1, 1), new Component(2, 3, 1), new Component(4, 5, 1), new Component(6, 7, 1), new Component(8, 9, 1)).setInvName("Item Sorter");
+        inventory = new Inventory(this, 9, new Component(0, 1, 1), new Component(2, 3, 1), new Component(4, 5, 1), new Component(6, 7, 1), new Component(8, 9, 1));
         /**
          * long: cfg
          * int: flags

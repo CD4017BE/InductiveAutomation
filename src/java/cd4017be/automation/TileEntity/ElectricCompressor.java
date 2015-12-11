@@ -36,7 +36,7 @@ public class ElectricCompressor extends AutomatedTile implements ISidedInventory
     
     public ElectricCompressor()
     {
-        inventory = new Inventory(this, 6, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, -1), new Component(3, 4, -1), new Component(4, 5, 1)).setInvName("Electromagnetic Compressor");
+        inventory = new Inventory(this, 6, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, -1), new Component(3, 4, -1), new Component(4, 5, 1));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData = new TileEntityData(1, 1, 2, 0);
         netData.ints[0] = Config.Rmin;

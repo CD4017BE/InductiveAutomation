@@ -70,7 +70,7 @@ public class GuiBuilder extends GuiMachine
         this.drawStringCentered(steps[tileEntity.step], this.guiLeft + 34, this.guiTop + 20, 0x404040);
         this.drawStringCentered("< Frame", this.guiLeft + 142, this.guiTop + 20, 0x404040);
         this.drawStringCentered("< Walls", this.guiLeft + 142, this.guiTop + 38, 0x404040);
-        this.drawStringCentered("Builder", this.guiLeft + this.xSize / 2, this.guiTop + 6, 0x404040);
+        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 6, 0x404040);
         this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 145, 0x404040);
     }
 

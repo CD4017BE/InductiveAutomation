@@ -35,7 +35,7 @@ public class GraviCond extends AutomatedTile implements IEnergy, ISidedInventory
 		 * ints: storage
 		 */
 		netData = new TileEntityData(2, 2, 1, 1);
-		inventory = new Inventory(this, 4, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, 1)).setInvName("Gravitational Condenser");
+		inventory = new Inventory(this, 4, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, 1));
 		tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(3)).setNetLong(1);
 		energy = new PipeEnergy(maxVoltage, Config.Rcond[2]);
 	}

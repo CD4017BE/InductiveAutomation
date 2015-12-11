@@ -38,7 +38,7 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
     public GeothermalFurnace()
     {
         netData = new TileEntityData(2, 5, 0, 1);
-        inventory = new Inventory(this, 7, new Component(4, 5, -1), new Component(5, 6, 1), new Component(0, 1, -1), new Component(1, 2, 0)).setInvName("Geothermal Furnace");
+        inventory = new Inventory(this, 7, new Component(4, 5, -1), new Component(5, 6, 1), new Component(0, 1, -1), new Component(1, 2, 0));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], 0, Automation.L_lava).setIn(2).setOut(3)).setNetLong(1);
         
     }

@@ -57,7 +57,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
     
     public Detector()
     {
-        inventory = new Inventory(this, 6).setInvName("Detector");
+        inventory = new Inventory(this, 6);
         /**
          * long:
          * int: modes, ref0, ref1, ref2, ref3, ref4, ref5, sides

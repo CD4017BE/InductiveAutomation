@@ -35,7 +35,7 @@ public class EnergyFurnace extends AutomatedTile implements ISidedInventory, IEn
     
     public EnergyFurnace()
     {
-        inventory = new Inventory(this, 5, new Component(0, 2, -1), new Component(2, 4, 1)).setInvName("Electric Heated Furnace");
+        inventory = new Inventory(this, 5, new Component(0, 2, -1), new Component(2, 4, 1));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData = new TileEntityData(1, 1, 2, 0);
         netData.ints[0] = Config.Rmin;

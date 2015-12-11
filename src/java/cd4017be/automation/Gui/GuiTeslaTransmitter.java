@@ -70,7 +70,7 @@ public class GuiTeslaTransmitter extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 40, this.xSize, this.ySize);
         textField.drawTextBox();
         this.drawStringCentered("Energy = " + (int)(tileEntity.netData.floats[0] / 1000F) + "kJ", this.guiLeft + 115, this.guiTop + 20, 0xffdf40);
-        this.drawStringCentered((tileEntity.interdim ? "Interdimensional " : "") + "Tesla Transmitter", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered((tileEntity.interdim ? "Interdimensional " : "") + tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
     }
     
     @Override

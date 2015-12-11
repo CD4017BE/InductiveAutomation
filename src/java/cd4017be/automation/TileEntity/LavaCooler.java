@@ -67,7 +67,7 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
     public LavaCooler()
     {
         netData = new TileEntityData(2, 2, 0, 3);
-        inventory = new Inventory(this, 5, new Component(0, 2, 1)).setInvName("Geothermal Heat Exchanger");
+        inventory = new Inventory(this, 5, new Component(0, 2, 1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_water).setIn(3), new Tank(Config.tankCap[1], -1, Automation.L_lava).setIn(2), new Tank(Config.tankCap[1], 1, Automation.L_steam).setOut(4)).setNetLong(1);
     }
 

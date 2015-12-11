@@ -36,21 +36,6 @@ public class ItemMaterial extends DefaultItem
         "DenseM", "Neutron", "BlackHole"
     };
     
-    private static final String[] names = {
-        "Copper Ingot", "Silver Ingot", "Electrum Ingot", "Steel Ingot", "Redstone Metall Ingot", "Conductive Alloy Ingot", "Graphite Ingot", "Silicon Ingot", "Superconductive Hydrogen Ingot",
-        "Electrum Dust", "Conductive Alloy Dust",
-        "Wood Casing", "Glass Casing", "Iron Casing", "Stone Casing", "Steel Casing", "Graphite Casing", "unbreakable Casing",
-        "Heating Coil", "Copper Coil", "Conductive Coil", "Superconductive Coil",
-        "Motor", "Electric Turbine", "Redstone Circuit", "Ender Matrix",
-        "Liquid Heat Exchanger", "Jetpack Turbine", "Control Interface", "Chest straps",
-        "Algae Bottle", "Biomass Bottle", "Liquid Nitrogen Bottle", "Liquid Oxygen Bottle", "Liquid Hydrogen Bottle", "Liquid Helium Bottle",
-        "Dry Biomass",
-        "Particle accelerator", "Anihilation Chamber", "Quantum entangler", "Hyperspace Wormhole", "Quantum integrated Ingot", "Quantum Matrix", "Electric Block Harvester", "Electric Block Placer", "Tool Motion Frame",
-        "Matter accelerator", "Antimatter accelerator", "Particle Fokus-module",
-        "Iron Ore Dust", "Gold Ore Dust", "Copper Ore Dust", "Silver Ore Dust", "Iron Dust", "Gold Dust", "Copper Dust", "Silver Dust",
-        "Ultra dense Material", "Neutronium-10^42", "Black Hole"
-    };
-    
     private IIcon[] textures = new IIcon[types.length];
     
     public ItemMaterial(String id, String tex) 
@@ -84,20 +69,17 @@ public class ItemMaterial extends DefaultItem
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack itemStack) 
+	public String getUnlocalizedName(ItemStack item) 
     {
-        int n = itemStack.getItemDamage();
-        if (n >= names.length || n < 0) return "Invalid Item";
-        return names[n];
-    }
+    	int n = item.getItemDamage();
+        if (n >= types.length || n < 0) return super.getUnlocalizedName(item);
+    	return super.getUnlocalizedName(item).replaceFirst(":" + n, ":" + types[n]);
+	}
 
     @Override
     public void getSubItems(Item id, CreativeTabs par2CreativeTabs, List list) 
     {
-        for (int i = 0; i < types.length; i++)
-        {
-            list.add(new ItemStack(id, 1, i));
-        }
+        for (int i = 0; i < types.length; i++) list.add(new ItemStack(id, 1, i));
     }
     
 }

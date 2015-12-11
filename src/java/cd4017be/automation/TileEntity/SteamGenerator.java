@@ -16,9 +16,4 @@ public class SteamGenerator extends SteamEngine
     protected int getTier() {return 1;}
     @Override
     public float getPower() {return Config.PsteamGen[1];}
-    @Override
-    public String getInventoryName() 
-    {
-        return "Steam Generator";
-    }
 }

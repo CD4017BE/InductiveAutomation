@@ -37,7 +37,7 @@ public class AutoCrafting extends AutomatedTile implements IAutomatedInv
     
     public AutoCrafting()
     {
-        inventory = new Inventory(this, 11, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, -1), new Component(3, 9, -1), new Component(9, 11, 1)).setInvName("Automatic Crafter");
+        inventory = new Inventory(this, 11, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, -1), new Component(3, 9, -1), new Component(9, 11, 1));
         netData = new TileEntityData(2, 0, 0, 0);
     }
     

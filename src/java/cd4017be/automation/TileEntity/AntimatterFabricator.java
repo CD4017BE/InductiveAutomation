@@ -38,7 +38,7 @@ public class AntimatterFabricator extends AutomatedTile implements IFluidHandler
     {
         netData = new TileEntityData(1, 3, 2, 3);
         energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
-        inventory = new Inventory(this, 3).setInvName("Antimatter Fabricator");
+        inventory = new Inventory(this, 3);
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_heliumL).setIn(0), new Tank(Config.tankCap[1], 1, Automation.L_heliumG).setOut(1), new Tank(Config.tankCap[1], 1, Automation.L_antimatter).setOut(2));
         /**
          * long: tcfg

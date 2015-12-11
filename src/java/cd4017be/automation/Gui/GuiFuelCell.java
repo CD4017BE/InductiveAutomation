@@ -57,7 +57,7 @@ protected FuelCell tileEntity;
         this.drawLiquidTank(tileEntity.tanks, 2, 62, 16, false);
         this.drawLiquidConfig(tileEntity, -36, 7);
         this.drawEnergyConfig(tileEntity, -54, 7);
-        this.drawStringCentered("Hydrogen Fuel Cell", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 133, this.guiTop + 20, 0x404040);
         this.drawStringCentered("P = " + tileEntity.netData.ints[1] + " kW", this.guiLeft + 133, this.guiTop + 38, 0x804040);

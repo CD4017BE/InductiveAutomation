@@ -41,7 +41,7 @@ public class AdvancedFurnace extends AutomatedTile implements IEnergy, ISidedInv
     public AdvancedFurnace()
     {
         netData = new TileEntityData(2, 1, 3, 2);
-        inventory = new Inventory(this, 8, new Component(2, 5, -1), new Component(5, 8, 1)).setInvName("Advanced Furnace");
+        inventory = new Inventory(this, 8, new Component(2, 5, -1), new Component(5, 8, 1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(0), new Tank(Config.tankCap[1], 1).setOut(1)).setNetLong(1);
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData.ints[0] = Config.Rmin;

@@ -33,7 +33,7 @@ public class Trash extends AutomatedTile implements ISidedInventory, IFluidHandl
     public Trash()
     {
         netData = new TileEntityData(2, 1, 0, 1);
-        inventory = new Inventory(this, 2, new Component(0, 1, -1)).setInvName("Trash");
+        inventory = new Inventory(this, 2, new Component(0, 1, -1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(1)).setNetLong(1);
         
     }

@@ -92,7 +92,7 @@ public class GuiSecuritySys extends GuiMachine
         drawArea(this.guiLeft + 8, this.guiTop + 16);
         this.drawTexturedModalRect(this.guiLeft + 62 + ((tileEntity.xCoord + 8) & 15), this.guiTop + 70 + ((tileEntity.zCoord + 8) & 15), 179, 64, 4, 4);
         this.drawEnergyConfig(tileEntity, -18, 7);
-        this.drawStringCentered("Chunk load/protection manager", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 163, this.guiTop + 38, 0x404040);
         this.drawStringCentered("Power:", this.guiLeft + 154, this.guiTop + 89, 0x404040);
         this.drawStringCentered("L:" + tileEntity.netData.ints[3] + "kW", this.guiLeft + 154, this.guiTop + 97, 0x405757);

@@ -37,7 +37,7 @@ public class DecompCooler extends AutomatedTile implements IEnergy, IFluidHandle
     public DecompCooler()
     {
         netData = new TileEntityData(2, 1, 3, 4);
-        inventory = new Inventory(this, 4, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, 1), new Component(3, 4, 1)).setInvName("Decompression Freezer");
+        inventory = new Inventory(this, 4, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, 1), new Component(3, 4, 1));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(0), new Tank(Config.tankCap[1], -1).setIn(1), new Tank(Config.tankCap[1], 1).setOut(2), new Tank(Config.tankCap[1], 1).setOut(3)).setNetLong(1);
        

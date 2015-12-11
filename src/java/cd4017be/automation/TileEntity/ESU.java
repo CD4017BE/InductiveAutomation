@@ -40,7 +40,7 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     public ESU()
     {
         energy = new PipeEnergy(0, 0);
-    	inventory = new Inventory(this, 2, new Component(0, 1, 0), new Component(1, 2, 0)).setInvName("Energy Storage Unit");
+    	inventory = new Inventory(this, 2, new Component(0, 1, 0), new Component(1, 2, 0));
         netData = new TileEntityData(1, 1, 2, 0);
     }
     

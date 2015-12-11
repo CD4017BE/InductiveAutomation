@@ -36,7 +36,7 @@ public class SteamBoiler extends AutomatedTile implements ISidedInventory, IFlui
     public SteamBoiler()
     {
         netData = new TileEntityData(2, 5, 0, 2);
-        inventory = new Inventory(this, 5, new Component(0, 3, -1)).setInvName("Steam Boiler");
+        inventory = new Inventory(this, 5, new Component(0, 3, -1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_water, Automation.L_biomass).setIn(3), new Tank(Config.tankCap[1], 1, Automation.L_steam).setOut(4)).setNetLong(1);
         
         netData.ints[4] = 1;

@@ -63,7 +63,7 @@ public class GuiLavaCooler extends GuiMachine
         this.drawLiquidTank(tileEntity.tanks, 2, 134, 16, true);
         this.drawLiquidConfig(tileEntity, -36, 7);
         this.drawItemConfig(tileEntity, -54, 7);
-        this.drawStringCentered("Lava Cooler", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
