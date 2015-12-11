@@ -12,7 +12,8 @@ Links:
 
 Choose a [release version](https://github.com/CD4017BE/InductiveAutomation/releases)
 - For normal playing with Forge-Modloader download the file that just ends with `.jar`
-- For use in deobfuscated ForgeGradle environment download the `-deobf.jar` file
+- For use in deobfuscated ForgeGradle environment download the `-deobf.jar` file.
+
 **Important:** Also download the required version of CD4017BE_lib that is linked in the release description.
 These files then just go into the `mods` folder of your Minecraft-installation, Modpack or Gradle-project.
 
