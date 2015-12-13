@@ -47,11 +47,11 @@ public class GuiBuilder extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(116, 16, 52, 16, "\\i", "gui.builder.frame");
-        this.drawInfo(116, 34, 52, 16, "\\i", "gui.builder.wall");
-        this.drawInfo(152, 52, 16, 16, "\\i", "gui.builder.stack");
-        this.drawInfo(7, 75, 144, 6, "\\i", "gui.builder.size");
-        this.drawInfo(152, 70, 16, 16, "\\i", "gui.builder.dir");
+        this.drawInfo(116, 16, 52, 16, "\\i", "builder.frame");
+        this.drawInfo(116, 34, 52, 16, "\\i", "builder.wall");
+        this.drawInfo(152, 52, 16, 16, "\\i", "builder.stack");
+        this.drawInfo(7, 75, 144, 6, "\\i", "builder.size");
+        this.drawInfo(152, 70, 16, 16, "\\i", "builder.dir");
     }
     
     @Override

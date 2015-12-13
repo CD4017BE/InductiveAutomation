@@ -33,8 +33,8 @@ public class GuiPortableInventory extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(7, 33, 18, 9, "\\i", "gui.inputFilter");
-        this.drawInfo(7, 42, 18, 9, "\\i", "gui.outputFilter");
+        this.drawInfo(7, 33, 18, 9, "\\i", "inputFilter");
+        this.drawInfo(7, 42, 18, 9, "\\i", "outputFilter");
     }
     
     @Override

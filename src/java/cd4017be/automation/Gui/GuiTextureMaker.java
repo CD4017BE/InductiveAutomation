@@ -86,22 +86,22 @@ public class GuiTextureMaker extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(59 + oX, 98 + oY, 16, 16, "\\i", "gui.tex.draw");
-        this.drawInfo(75 + oX, 98 + oY, 16, 16, "\\i", "gui.tex.fill");
-        this.drawInfo(91 + oX, 98 + oY, 16, 16, "\\i", "gui.tex.repl");
-        this.drawInfo(59 + oX, 116 + oY, 16, 16, "\\i", "gui.tex.sel");
-        this.drawInfo(75 + oX, 116 + oY, 16, 16, "\\i", "gui.tex.copy");
-        this.drawInfo(91 + oX, 116 + oY, 16, 16, "\\i", "gui.tex.move");
-        this.drawInfo(5 + oX, 98 + oY, 16, 16, "\\i", "gui.tex.load");
-        this.drawInfo(5 + oX, 116 + oY, 16, 16, "\\i", "gui.tex.save");
-        this.drawInfo(23 + oX, 98 + oY, 16, 16, "\\i", "gui.tex.mirH");
-        this.drawInfo(23 + oX, 116 + oY, 16, 16, "\\i", "gui.tex.mirV");
-        this.drawInfo(41 + oX, 98 + oY, 16, 16, "\\i", "gui.tex.rotR");
-        this.drawInfo(41 + oX, 116 + oY, 16, 16, "\\i", "gui.tex.del");
-        this.drawInfo(5 + oX, 156 + oY, 16, 16, "\\i", "gui.tex.ext");
-        this.drawInfo(41 + oX, 156 + oY, 16, 16, "\\i", "gui.tex.size");
-        this.drawInfo(84 + oX, 156 + oY, 16, 16, "\\i", "gui.tex.ofs");
-        this.drawInfo(25 + oX, 136 + oY, 82, 16, "\\i", "gui.tex.name");
+        this.drawInfo(59 + oX, 98 + oY, 16, 16, "\\i", "tex.draw");
+        this.drawInfo(75 + oX, 98 + oY, 16, 16, "\\i", "tex.fill");
+        this.drawInfo(91 + oX, 98 + oY, 16, 16, "\\i", "tex.repl");
+        this.drawInfo(59 + oX, 116 + oY, 16, 16, "\\i", "tex.sel");
+        this.drawInfo(75 + oX, 116 + oY, 16, 16, "\\i", "tex.copy");
+        this.drawInfo(91 + oX, 116 + oY, 16, 16, "\\i", "tex.move");
+        this.drawInfo(5 + oX, 98 + oY, 16, 16, "\\i", "tex.load");
+        this.drawInfo(5 + oX, 116 + oY, 16, 16, "\\i", "tex.save");
+        this.drawInfo(23 + oX, 98 + oY, 16, 16, "\\i", "tex.mirH");
+        this.drawInfo(23 + oX, 116 + oY, 16, 16, "\\i", "tex.mirV");
+        this.drawInfo(41 + oX, 98 + oY, 16, 16, "\\i", "tex.rotR");
+        this.drawInfo(41 + oX, 116 + oY, 16, 16, "\\i", "tex.del");
+        this.drawInfo(5 + oX, 156 + oY, 16, 16, "\\i", "tex.ext");
+        this.drawInfo(41 + oX, 156 + oY, 16, 16, "\\i", "tex.size");
+        this.drawInfo(84 + oX, 156 + oY, 16, 16, "\\i", "tex.ofs");
+        this.drawInfo(25 + oX, 136 + oY, 82, 16, "\\i", "tex.name");
     }
     
     @Override

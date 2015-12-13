@@ -40,7 +40,7 @@ public class GuiMassstorageChest extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(182, 164, 16, 16, "\\i", "gui.massstorage");
+        this.drawInfo(182, 164, 16, 16, "\\i", "massstorage");
     }
     
     @Override

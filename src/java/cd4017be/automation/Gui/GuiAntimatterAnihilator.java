@@ -49,7 +49,7 @@ public class GuiAntimatterAnihilator extends GuiMachine
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawInfo(48, 16, 8, 52, "Heat:", String.format("%d / %d K", tileEntity.netData.ints[3], AntimatterAnihilator.MaxTemp));
         this.drawInfo(98, 38, 70, 8, String.format("= %d kW", tileEntity.netData.ints[1] * AntimatterAnihilator.AMEnergy / 1000));
-        this.drawInfo(118, 16, 30, 16, "\\i", "gui.voltage");
+        this.drawInfo(118, 16, 30, 16, "\\i", "voltage");
     }
     
     @Override

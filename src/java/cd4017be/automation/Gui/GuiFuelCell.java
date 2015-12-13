@@ -39,7 +39,7 @@ protected FuelCell tileEntity;
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(118, 16, 30, 16, "\\i", "gui.voltage");
+        this.drawInfo(118, 16, 30, 16, "\\i", "voltage");
     }
     
     @Override

@@ -36,10 +36,10 @@ private final ItemBuffer tileEntity;
 	protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
 		super.drawGuiContainerForegroundLayer(mx, my);
-		this.drawInfo(8, 52, 16, 16, "\\i", "gui.buffer.stack");
-		this.drawInfo(44, 56, 16, 8, "\\i", "gui.buffer.overfl");
-		this.drawInfo(89, 56, 16, 8, "\\i", "gui.buffer.split");
-		this.drawInfo(134, 56, 16, 8, "\\i", "gui.buffer.split");
+		this.drawInfo(8, 52, 16, 16, "\\i", "buffer.stack");
+		this.drawInfo(44, 56, 16, 8, "\\i", "buffer.overfl");
+		this.drawInfo(89, 56, 16, 8, "\\i", "buffer.split");
+		this.drawInfo(134, 56, 16, 8, "\\i", "buffer.split");
 	}
 
 	@Override

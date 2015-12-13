@@ -46,12 +46,12 @@ public class GuiAreaUpgrade extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(26, 16, 88, 16, "\\i", "gui.areaCfg.size");
-        this.drawInfo(26, 34, 70, 16, "\\i", "gui.areaCfg.dist");
-        this.drawInfo(26, 52, 70, 16, "\\i", "gui.areaCfg.Umax");
-        this.drawInfo(116, 16, 16, 16, "\\i", "gui.areaCfg.copy");
-        this.drawInfo(152, 16, 16, 16, "\\i", "gui.areaCfg.dspl");
-        this.drawInfo(134, 16, 16, 16, "\\i", "gui.areaCfg.synch");
+        this.drawInfo(26, 16, 88, 16, "\\i", "areaCfg.size");
+        this.drawInfo(26, 34, 70, 16, "\\i", "areaCfg.dist");
+        this.drawInfo(26, 52, 70, 16, "\\i", "areaCfg.Umax");
+        this.drawInfo(116, 16, 16, 16, "\\i", "areaCfg.copy");
+        this.drawInfo(152, 16, 16, 16, "\\i", "areaCfg.dspl");
+        this.drawInfo(134, 16, 16, 16, "\\i", "areaCfg.synch");
     }
     
     @Override

@@ -46,8 +46,8 @@ public class GuiMiner extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(117, 52, 16, 16, "\\i", "gui.miner.drill");
-        this.drawInfo(115, 34, 16, 16, "\\i", "gui.miner.res");
+        this.drawInfo(117, 52, 16, 16, "\\i", "miner.drill");
+        this.drawInfo(115, 34, 16, 16, "\\i", "miner.res");
     }
     
     @Override

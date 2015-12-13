@@ -46,8 +46,8 @@ public class GuiAutoCrafting extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(152, 16, 16, 16, "\\i", "gui.rstCtr");
-        this.drawInfo(67, 31, 7, 8, "\\i", "gui.autoCrafting");
+        this.drawInfo(152, 16, 16, 16, "\\i", "rstCtr");
+        this.drawInfo(67, 31, 7, 8, "\\i", "autoCrafting");
     }
     
     @Override

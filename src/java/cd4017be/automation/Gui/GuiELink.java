@@ -46,11 +46,11 @@ public class GuiELink extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(8, 16, 160, 8, "\\i", "gui.link.link");
-        this.drawInfo(8, 24, 160, 8, "\\i", "gui.link.int");
-        this.drawInfo(7, 51, 36, 18, "\\i", "gui.rstCtr");
-        this.drawInfo(118, 52, 30, 16, "\\i", "gui.link.ref0");
-        this.drawInfo(118, 34, 30, 16, "\\i", "gui.link.ref1");
+        this.drawInfo(8, 16, 160, 8, "\\i", "link.link");
+        this.drawInfo(8, 24, 160, 8, "\\i", "link.int");
+        this.drawInfo(7, 51, 36, 18, "\\i", "rstCtr");
+        this.drawInfo(118, 52, 30, 16, "\\i", "link.ref0");
+        this.drawInfo(118, 34, 30, 16, "\\i", "link.ref1");
     }
     
     @Override

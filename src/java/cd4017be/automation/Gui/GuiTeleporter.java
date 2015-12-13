@@ -70,10 +70,10 @@ public class GuiTeleporter extends GuiMachine
     {
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawInfo(8, 34, 88, 16, "Energy:", String.format("%.0f / %.0f kJ", tileEntity.netData.floats[0] / 1000F, tileEntity.netData.floats[1] / 1000F));
-        this.drawInfo(134, 52, 16, 16, "\\i", "gui.teleport.rw");
-        this.drawInfo(98, 34, 16, 16, "\\i", "gui.rstCtr");
-        this.drawInfo(116, 34, 16, 16, "\\i", "gui.teleport." + ((tileEntity.netData.ints[3] & 2) == 0 ? "abs" : "rel"));
-        this.drawInfo(134, 34, 34, 16, "\\i", "gui.teleport.name");
+        this.drawInfo(134, 52, 16, 16, "\\i", "teleport.rw");
+        this.drawInfo(98, 34, 16, 16, "\\i", "rstCtr");
+        this.drawInfo(116, 34, 16, 16, "\\i", "teleport." + ((tileEntity.netData.ints[3] & 2) == 0 ? "abs" : "rel"));
+        this.drawInfo(134, 34, 34, 16, "\\i", "teleport.name");
         this.drawInfo(8, 52, 34, 16, "X");
         this.drawInfo(44, 52, 34, 16, "Y");
         this.drawInfo(80, 52, 34, 16, "Z");

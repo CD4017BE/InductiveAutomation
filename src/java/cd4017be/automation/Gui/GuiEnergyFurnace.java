@@ -48,7 +48,7 @@ public class GuiEnergyFurnace extends GuiMachine
     {
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawInfo(26, 16, 8, 52, PipeEnergy.getEnergyInfo(tileEntity.netData.floats[1], 0F, (float)tileEntity.netData.ints[0]));
-        this.drawInfo(8, 36, 16, 12, "\\i", "gui.resistor");
+        this.drawInfo(8, 36, 16, 12, "\\i", "resistor");
     }
     
     @Override

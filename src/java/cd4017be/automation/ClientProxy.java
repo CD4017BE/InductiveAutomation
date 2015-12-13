@@ -72,7 +72,6 @@ import static cd4017be.lib.BlockItemRegistry.blockId;
 import cd4017be.lib.templates.PipeRenderer;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.ResourceLocation;
 
 
 /**
@@ -108,8 +107,7 @@ public class ClientProxy extends CommonProxy
         RenderingRegistry.registerEntityRenderingHandler(EntityAntimatterExplosion1.class, amBombRender);
         TickHandler.init();
         ClientInputHandler.init();
-        TooltipInfo.loadInfoFile(new ResourceLocation("automation", "lang/toolTips.txt"));
-        TooltipInfo.replaceReferences(Config.data);
+        TooltipInfo.addConfigReference(Config.data);
     }
 
     @Override

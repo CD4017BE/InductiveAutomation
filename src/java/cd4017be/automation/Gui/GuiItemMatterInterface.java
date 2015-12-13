@@ -59,8 +59,8 @@ public class GuiItemMatterInterface extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(26, 34, 16, 16, "\\i", "gui.matterI.next");
-        this.drawInfo(7, 51, 18, 9, "\\i", "gui.matterI.put");
+        this.drawInfo(26, 34, 16, 16, "\\i", "matterI.next");
+        this.drawInfo(7, 51, 18, 9, "\\i", "matterI.put");
     }
     
     @Override

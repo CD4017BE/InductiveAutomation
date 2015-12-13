@@ -52,12 +52,12 @@ public class GuiDetector extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(7, 15, 18, 108, "\\i", "gui.detector.obj");
-        this.drawInfo(25, 15, 18, 108, "\\i", "gui.detector.dir");
-        this.drawInfo(43, 15, 18, 108, "\\i", "gui.detector.filter");
-        this.drawInfo(65, 15, 10, 108, "\\i", "gui.detector.comp");
-        this.drawInfo(100, 15, 30, 108, "\\i", "gui.detector.ref");
-        this.drawInfo(152, 15, 16, 108, "\\i", "gui.detector.out");
+        this.drawInfo(7, 15, 18, 108, "\\i", "detector.obj");
+        this.drawInfo(25, 15, 18, 108, "\\i", "detector.dir");
+        this.drawInfo(43, 15, 18, 108, "\\i", "detector.filter");
+        this.drawInfo(65, 15, 10, 108, "\\i", "detector.comp");
+        this.drawInfo(100, 15, 30, 108, "\\i", "detector.ref");
+        this.drawInfo(152, 15, 16, 108, "\\i", "detector.out");
     }
     
     @Override

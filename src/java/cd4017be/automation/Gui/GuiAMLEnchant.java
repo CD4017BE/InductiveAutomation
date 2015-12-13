@@ -24,7 +24,7 @@ public class GuiAMLEnchant extends GuiMachine
 	protected void drawGuiContainerForegroundLayer(int mx, int my) 
 	{
 		super.drawGuiContainerForegroundLayer(mx, my);
-		this.drawInfo(49, 20, 7, 8, "\\i", "gui.amlE.info");
+		this.drawInfo(49, 20, 7, 8, "\\i", "amlE.info");
 	}
 
 	@Override

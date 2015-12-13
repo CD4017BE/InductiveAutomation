@@ -46,8 +46,8 @@ public class GuiAntimatterFabricator extends GuiMachine
     {
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawInfo(62, 38, 70, 8, String.format("Progress: %d / %d kJ", (int)(tileEntity.netData.floats[0] / 1000F), AntimatterFabricator.AMEnergy / 1000));
-        this.drawInfo(73, 16, 30, 16, "\\i", "gui.voltage");
-        this.drawInfo(53, 52, 16, 16, "\\i", "gui.rstCtr");
+        this.drawInfo(73, 16, 30, 16, "\\i", "voltage");
+        this.drawInfo(53, 52, 16, 16, "\\i", "rstCtr");
     }
     
     @Override

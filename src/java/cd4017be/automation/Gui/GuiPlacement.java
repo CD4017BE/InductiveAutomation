@@ -9,7 +9,6 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.oredict.OreDictionary;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 
@@ -41,11 +40,11 @@ public class GuiPlacement extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(152, 16, 16, 16, "\\i", "gui.place.useBlock");
-        this.drawInfo(8, 34, 16, 16, "\\i", "gui.place.dir");
-        this.drawInfo(134, 34, 16, 16, "\\i", "gui.place.sneak");
-        this.drawInfo(152, 34, 16, 16, "\\i", "gui.filter.meta");
-        this.drawInfo(28, 36, 102, 12, "\\i", "gui.place.aim");
+        this.drawInfo(152, 16, 16, 16, "\\i", "place.useBlock");
+        this.drawInfo(8, 34, 16, 16, "\\i", "place.dir");
+        this.drawInfo(134, 34, 16, 16, "\\i", "place.sneak");
+        this.drawInfo(152, 34, 16, 16, "\\i", "filter.meta");
+        this.drawInfo(28, 36, 102, 12, "\\i", "place.aim");
     }
     
     @Override

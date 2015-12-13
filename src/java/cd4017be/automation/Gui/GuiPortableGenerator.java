@@ -44,7 +44,7 @@ public class GuiPortableGenerator extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(61, 15, 18, 18, "\\i", "gui.inputFilter");
+        this.drawInfo(61, 15, 18, 18, "\\i", "inputFilter");
     }
     
     @Override

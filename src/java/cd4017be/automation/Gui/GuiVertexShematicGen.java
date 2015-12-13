@@ -89,22 +89,22 @@ public class GuiVertexShematicGen extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(152, 51, 16, 16, "\\i", "gui.vertex.schematic");
-        this.drawInfo(134, 71, 34, 8, "\\i", "gui.vertex.name");
-        this.drawInfo(133, 59, 18, 9, "\\i", "gui.vertex.load");
-        this.drawInfo(133, 48, 18, 9, "\\i", "gui.vertex.save");
-        this.drawInfo(133, 37, 36, 9, "\\i", "gui.vertex.saveSel");
-        this.drawInfo(133, 26, 36, 9, "\\i", "gui.vertex.delSel");
-        this.drawInfo(133, 15, 36, 9, "\\i", "gui.vertex.clear");
-        this.drawInfo(66, 71, 18, 9, "\\i", "gui.vertex.new");
-        this.drawInfo(66, 51, 18, 9, "\\i", "gui.vertex.add");
-        this.drawInfo(48, 51, 18, 9, "\\i", "gui.vertex.del");
-        this.drawInfo(48, 61, 36, 9, "\\i", "gui.vertex.autoTex");
-        this.drawInfo(7, 70, 10, 10, "\\i", "gui.vertex.extDir");
-        this.drawInfo(20, 71, 25, 8, "\\i", "gui.vertex.extAm");
-        this.drawInfo(53, 72, 8, 7, "\\i", "gui.vertex.texId");
-        this.drawInfo(8, 16, 10, 30, "\\i", "gui.vertex.blockC");
-        this.drawInfo(8, 49, 10, 19, "\\i", "gui.vertex.texC");
+        this.drawInfo(152, 51, 16, 16, "\\i", "vertex.schematic");
+        this.drawInfo(134, 71, 34, 8, "\\i", "vertex.name");
+        this.drawInfo(133, 59, 18, 9, "\\i", "vertex.load");
+        this.drawInfo(133, 48, 18, 9, "\\i", "vertex.save");
+        this.drawInfo(133, 37, 36, 9, "\\i", "vertex.saveSel");
+        this.drawInfo(133, 26, 36, 9, "\\i", "vertex.delSel");
+        this.drawInfo(133, 15, 36, 9, "\\i", "vertex.clear");
+        this.drawInfo(66, 71, 18, 9, "\\i", "vertex.new");
+        this.drawInfo(66, 51, 18, 9, "\\i", "vertex.add");
+        this.drawInfo(48, 51, 18, 9, "\\i", "vertex.del");
+        this.drawInfo(48, 61, 36, 9, "\\i", "vertex.autoTex");
+        this.drawInfo(7, 70, 10, 10, "\\i", "vertex.extDir");
+        this.drawInfo(20, 71, 25, 8, "\\i", "vertex.extAm");
+        this.drawInfo(53, 72, 8, 7, "\\i", "vertex.texId");
+        this.drawInfo(8, 16, 10, 30, "\\i", "vertex.blockC");
+        this.drawInfo(8, 49, 10, 19, "\\i", "vertex.texC");
         this.drawInfo(87, 16, 8, 63, "Polygons");
         this.drawInfo(49, 16, 8, 32, "Vertices");
     }

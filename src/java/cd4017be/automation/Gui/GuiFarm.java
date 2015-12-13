@@ -40,8 +40,8 @@ public class GuiFarm extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(79, 52, 16, 16, "\\i", "gui.farm.in");
-        this.drawInfo(81, 70, 16, 16, "\\i", "gui.farm.out");
+        this.drawInfo(79, 52, 16, 16, "\\i", "farm.in");
+        this.drawInfo(81, 70, 16, 16, "\\i", "farm.out");
     }
     
     @Override

@@ -45,8 +45,8 @@ public class GuiVoltageTransformer extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(28, 16, 30, 16, "\\i", "gui.transf");
-        this.drawInfo(97, 15, 92, 18, "\\i", "gui.rstCtr");
+        this.drawInfo(28, 16, 30, 16, "\\i", "transf");
+        this.drawInfo(97, 15, 92, 18, "\\i", "rstCtr");
     }
     
     @Override

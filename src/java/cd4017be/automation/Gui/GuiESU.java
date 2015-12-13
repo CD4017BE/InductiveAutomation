@@ -48,7 +48,7 @@ public class GuiESU extends GuiMachine
         super.drawGuiContainerForegroundLayer(mx, my);
         double I = tileEntity.netData.floats[1] / (tileEntity.netData.floats[1] <= 0 ? -(float)tileEntity.netData.ints[0] : (float)Math.sqrt((double)tileEntity.netData.ints[0] * (double)tileEntity.netData.ints[0] + (double)tileEntity.netData.floats[1]));
         this.drawInfo(8, 46, 160, 4, "Energy Transfer:", String.format("%+.1f kW @ %.0f A", tileEntity.netData.floats[1] / 1000F, I));
-        this.drawInfo(28, 16, 30, 16, "\\i", "gui.voltage");
+        this.drawInfo(28, 16, 30, 16, "\\i", "voltage");
     }
     
     @Override

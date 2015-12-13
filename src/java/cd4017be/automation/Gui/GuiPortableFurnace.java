@@ -49,7 +49,7 @@ public class GuiPortableFurnace extends GuiMachine {
     {
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawInfo(116, 16, 34, 16, String.format("Energy: %d / %d kJ", energy, capacity));
-        this.drawInfo(61, 15, 18, 18, "\\i", "gui.inputFilter");
+        this.drawInfo(61, 15, 18, 18, "\\i", "inputFilter");
     }
     
     @Override

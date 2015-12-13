@@ -58,15 +58,15 @@ public class GuiSecuritySys extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(136, 134, 36, 10, "\\i", "gui.security.add");
-        this.drawInfo(136, 69, 18, 18, "\\i", "gui.security.rstL");
-        this.drawInfo(154, 69, 18, 18, "\\i", "gui.security.rstP");
-        this.drawInfo(155, 36, 16, 12, "\\i", "gui.voltage");
-        this.drawInfo(137, 145, 34, 12, "\\i", "gui.security.load");
-        this.drawInfo(137, 157, 34, 12, "\\i", "gui.security.admin");
-        this.drawInfo(137, 169, 34, 24, "\\i", "gui.security.special");
-        this.drawInfo(137, 96, 34, 8, "\\i", "gui.security.costL");
-        this.drawInfo(137, 105, 34, 8, "\\i", "gui.security.costP");
+        this.drawInfo(136, 134, 36, 10, "\\i", "security.add");
+        this.drawInfo(136, 69, 18, 18, "\\i", "security.rstL");
+        this.drawInfo(154, 69, 18, 18, "\\i", "security.rstP");
+        this.drawInfo(155, 36, 16, 12, "\\i", "voltage");
+        this.drawInfo(137, 145, 34, 12, "\\i", "security.load");
+        this.drawInfo(137, 157, 34, 12, "\\i", "security.admin");
+        this.drawInfo(137, 169, 34, 24, "\\i", "security.special");
+        this.drawInfo(137, 96, 34, 8, "\\i", "security.costL");
+        this.drawInfo(137, 105, 34, 8, "\\i", "security.costP");
         this.drawInfo(137, 16, 16, 52, "Energy:", (int)tileEntity.netData.floats[0] + "kJ");
     }
 

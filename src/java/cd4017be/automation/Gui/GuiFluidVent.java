@@ -47,8 +47,8 @@ public class GuiFluidVent extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(183, 73, 18, 18, "\\i", "gui.pump.update");
-        this.drawInfo(201, 73, 18, 18, "\\i", "gui.vent.range");
+        this.drawInfo(183, 73, 18, 18, "\\i", "pump.update");
+        this.drawInfo(201, 73, 18, 18, "\\i", "vent.range");
     }
 
     @Override

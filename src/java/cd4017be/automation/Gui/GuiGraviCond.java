@@ -33,8 +33,8 @@ public class GuiGraviCond extends GuiMachine
     {
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawInfo(133, 37, 18, 10, "Needed:", Utils.formatNumber((double)tileEntity.netData.ints[1] * 1000D, 4, 0) + "g");
-        this.drawInfo(26, 16, 70, 12, "\\i", "gui.grav.energy");
-        this.drawInfo(26, 34, 70, 12, "\\i", "gui.grav.trash");
+        this.drawInfo(26, 16, 70, 12, "\\i", "grav.energy");
+        this.drawInfo(26, 34, 70, 12, "\\i", "grav.trash");
     }
     
     @Override

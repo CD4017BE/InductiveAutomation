@@ -59,13 +59,13 @@ public class GuiPortableTesla extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(44, 16, 16, 16, "\\i", "gui.tesla.set");
-        this.drawInfo(62, 25, 16, 7, "\\i", "gui.teslaP.kJ");
-        this.drawInfo(80, 25, 16, 7, "\\i", "gui.teslaP.RF");
-        this.drawInfo(98, 25, 16, 7, "\\i", "gui.teslaP.EU");
-        this.drawInfo(116, 25, 16, 7, "\\i", "gui.teslaP.invH");
-        this.drawInfo(134, 25, 16, 7, "\\i", "gui.teslaP.invM");
-        this.drawInfo(152, 25, 16, 7, "\\i", "gui.teslaP.invA");
+        this.drawInfo(44, 16, 16, 16, "\\i", "tesla.set");
+        this.drawInfo(62, 25, 16, 7, "\\i", "teslaP.kJ");
+        this.drawInfo(80, 25, 16, 7, "\\i", "teslaP.RF");
+        this.drawInfo(98, 25, 16, 7, "\\i", "teslaP.EU");
+        this.drawInfo(116, 25, 16, 7, "\\i", "teslaP.invH");
+        this.drawInfo(134, 25, 16, 7, "\\i", "teslaP.invM");
+        this.drawInfo(152, 25, 16, 7, "\\i", "teslaP.invA");
     }
     
     @Override

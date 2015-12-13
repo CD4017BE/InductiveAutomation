@@ -59,7 +59,7 @@ public class GuiTeslaTransmitter extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(44, 16, 16, 16, "\\i", "gui.tesla.set");
+        this.drawInfo(44, 16, 16, 16, "\\i", "tesla.set");
     }
     
     @Override

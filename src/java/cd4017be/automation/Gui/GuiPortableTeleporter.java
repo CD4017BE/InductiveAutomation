@@ -81,9 +81,9 @@ public class GuiPortableTeleporter extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(8, 82, 16, 16, "\\i", "gui.teleporter.add");
-        this.drawInfo(26, 82, 34, 16, "\\i", "gui.teleporter.save");
-        this.drawInfo(134, 16, 34, 64, "\\i", "gui.teteporter.move");
+        this.drawInfo(8, 82, 16, 16, "\\i", "teleporter.add");
+        this.drawInfo(26, 82, 34, 16, "\\i", "teleporter.save");
+        this.drawInfo(134, 16, 34, 64, "\\i", "teleporter.move");
     }
     
     @Override

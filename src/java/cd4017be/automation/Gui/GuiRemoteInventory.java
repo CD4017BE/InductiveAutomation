@@ -33,8 +33,8 @@ public class GuiRemoteInventory extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(11, 67 + container.ofsY, 10, 18, "\\i", "gui.inputFilter");
-        this.drawInfo(29, 67 + container.ofsY, 10, 18, "\\i", "gui.outputFilter");
+        this.drawInfo(11, 67 + container.ofsY, 10, 18, "\\i", "inputFilter");
+        this.drawInfo(29, 67 + container.ofsY, 10, 18, "\\i", "outputFilter");
     }
     
     @Override
