@@ -53,7 +53,7 @@ import net.minecraftforge.common.DimensionManager;
  *
  * @author CD4017BE
  */
-@Optional.InterfaceList(value = {@Interface(iface = "IPeripheral", modid = "ComputerCraft"), @Interface(iface = "Environment", modid = "OpenComputers")})
+@Optional.InterfaceList(value = {@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft"), @Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")})
 public class Teleporter extends AutomatedTile implements IOperatingArea, IAutomatedInv, IEnergy, IPeripheral, Environment
 {
 	private static final float resistor = 50F;

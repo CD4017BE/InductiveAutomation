@@ -70,7 +70,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
  *
  * @author CD4017BE
  */
-@Optional.InterfaceList(value = {@Interface(iface = "IPeripheral", modid = "ComputerCraft"), @Interface(iface = "Environment", modid = "OpenComputers")})
+@Optional.InterfaceList(value = {@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft"), @Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")})
 public class Builder extends AutomatedTile implements ISidedInventory, IOperatingArea, IEnergy, IPeripheral, Environment
 {
 	public static class VectorConstruction 

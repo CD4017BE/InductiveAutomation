@@ -17,7 +17,7 @@ buildscript {
 
 apply plugin: 'forge'
 
-version = "1.7.10-3.7.2"
+version = "1.7.10-3.7.3"
 group= "com.cd4017be.automation" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "InductiveAutomation"
 
@@ -62,8 +62,8 @@ artifacts {
 }
 
 dependencies {
-	compile files('C:/Users/CD4017BE/Minecraft Modding/Mods-1.7.10/CD4017BE_lib/build/libs/CD4017BE_lib-1.7.10-2.7.2-deobf.jar')
-	
+	compile files('C:/Users/CD4017BE/Minecraft Modding/Mods-1.7.10/CD4017BE_lib/build/libs/CD4017BE_lib-1.7.10-2.7.3-deobf.jar')
+	compile files('C:/Users/CD4017BE/Minecraft Modding/Mods-1.7.10/CD4017BE_lib/libs/ComputerCraft1.75.jar')
 }
 
 processResources
