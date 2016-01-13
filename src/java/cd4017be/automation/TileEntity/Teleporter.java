@@ -9,20 +9,19 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import li.cil.oc.api.API;
-import li.cil.oc.api.Network;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.Optional.Interface;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.Visibility;
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
+import cd4017be.api.computers.ComputerAPI;
 import cd4017be.automation.Config;
 import cd4017be.automation.Item.ItemTeleporterCoords;
 import cd4017be.lib.BlockItemRegistry;
@@ -54,6 +53,7 @@ import net.minecraftforge.common.DimensionManager;
  *
  * @author CD4017BE
  */
+@Optional.InterfaceList(value = {@Interface(iface = "IPeripheral", modid = "ComputerCraft"), @Interface(iface = "Environment", modid = "OpenComputers")})
 public class Teleporter extends AutomatedTile implements IOperatingArea, IAutomatedInv, IEnergy, IPeripheral, Environment
 {
 	private static final float resistor = 50F;
@@ -104,8 +104,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
             	netData.ints[3] &= ~8;
             }
         }
-        if ((netData.ints[3] & 8) != 0)
-        {
+        if ((netData.ints[3] & 8) != 0) {
             if (netData.floats[0] < netData.floats[1]) {
                 netData.floats[0] += energy.getEnergy(0, resistor);
                 energy.Ucap *= eScale;
@@ -114,14 +113,11 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
                 netData.floats[1] = 0;
                 teleport();
             }
+        } else if (node != null && netData.floats[0] < 1000F) {
+        	netData.floats[0] += energy.getEnergy(0, resistor);
+        	energy.Ucap *= eScale;
         }
-        if (node != null) {
-        	if (node.network() == null) Network.joinOrCreateNetwork(this);
-        	if ((netData.ints[3] & 8) == 0){//Power supply only active while not teleporting
-        		if(netData.floats[0] < 1000F) netData.floats[0] += energy.getEnergy(0, resistor);
-        		netData.floats[0] = (float)node.changeBuffer(netData.floats[0] * 0.001D) * 1000F;
-        	}
-        }
+        netData.floats[0] -= ComputerAPI.update(this, node, (netData.ints[3] & 8) == 0 ? netData.floats[0] : 0);
     }
     
     private void initTeleportation()
@@ -448,19 +444,22 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 	}
 
 	//ComputerCraft:
-	
+
+	@Optional.Method(modid = "ComputerCraft")
     @Override
     public String getType() 
     {
         return "Automation-Teleporter";
     }
 
+	@Optional.Method(modid = "ComputerCraft")
     @Override
     public String[] getMethodNames() 
     {
         return new String[]{"getPosition", "setCoords", "teleport"};
     }
 
+	@Optional.Method(modid = "ComputerCraft")
     @Override
     public Object[] callMethod(IComputerAccess computer, ILuaContext lua, int cmd, Object[] par) throws LuaException 
     {
@@ -484,12 +483,15 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         } else return null;
     }
 
+	@Optional.Method(modid = "ComputerCraft")
     @Override
     public void attach(IComputerAccess computer) {}
 
+	@Optional.Method(modid = "ComputerCraft")
     @Override
     public void detach(IComputerAccess computer) {}
 
+	@Optional.Method(modid = "ComputerCraft")
     @Override
     public boolean equals(IPeripheral peripheral) 
     {
@@ -498,49 +500,56 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 
 	//OpenComputers:
 	
-    private ComponentConnector node = API.network == null ? null : API.network.newNode(this, Visibility.Network).withComponent(this.getType()).withConnector().create();
+    private Object node = ComputerAPI.newOCnode(this, "Automation-Teleporter", true);
     
+    @Optional.Method(modid = "OpenComputers")
 	@Override
 	public Node node() 
 	{
-		return node;
+		return (Node)node;
 	}
 
 	@Override
 	public void invalidate() 
 	{
 		super.invalidate();
-		if (node != null) node.remove();
+		ComputerAPI.removeOCnode(node);
 	}
 
 	@Override
 	public void onChunkUnload() 
 	{
 		super.onChunkUnload();
-		if (node != null) node.remove();
+		ComputerAPI.removeOCnode(node);
 	}
 
+	@Optional.Method(modid = "OpenComputers")
 	@Override
 	public void onConnect(Node node) {}
 
+	@Optional.Method(modid = "OpenComputers")
 	@Override
 	public void onDisconnect(Node node) {}
 
+	@Optional.Method(modid = "OpenComputers")
 	@Override
 	public void onMessage(Message message) {}
     
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function():int{sizeX, sizeY, sizeZ, baseX, baseY, baseZ} --returns the operating area size and position", direct = true)
 	public Object[] getArea(Context cont, Arguments args) 
 	{
 		return new Object[]{area[3] - area[0], area[4] - area[1], area[5] - area[2], area[0], area[1], area[2]};
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function():int{xCoord, yCoord, zCoord} --returns the position of the teleporter block", direct = true)
 	public Object[] getPosition(Context cont, Arguments args)
 	{
 		return new Object[]{xCoord, yCoord, zCoord};
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function(x:int, y:int, z:int, rel:bool) --sets the teleporter target position in relative (rel=true) or absolute (rel=false) coordinates", direct = true)
 	public Object[] setCoords(Context cont, Arguments args)
 	{
@@ -553,6 +562,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         return null;
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function():bool --starts teleportation energy accumulation and returns true if succeed", direct = true)
 	public Object[] teleport(Context cont, Arguments args)
 	{

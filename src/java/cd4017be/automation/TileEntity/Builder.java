@@ -12,17 +12,13 @@ import java.util.List;
 import java.util.UUID;
 
 import cpw.mods.fml.common.Optional;
-
-import li.cil.oc.api.API;
-import li.cil.oc.api.Network;
+import cpw.mods.fml.common.Optional.Interface;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.ComponentConnector;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.Visibility;
 
 import com.mojang.authlib.GameProfile;
 
@@ -30,6 +26,7 @@ import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
+import cd4017be.api.computers.ComputerAPI;
 import cd4017be.automation.Config;
 import cd4017be.automation.Gui.InventoryPlacement;
 import cd4017be.automation.Item.ItemBuilderAirType;
@@ -73,6 +70,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
  *
  * @author CD4017BE
  */
+@Optional.InterfaceList(value = {@Interface(iface = "IPeripheral", modid = "ComputerCraft"), @Interface(iface = "Environment", modid = "OpenComputers")})
 public class Builder extends AutomatedTile implements ISidedInventory, IOperatingArea, IEnergy, IPeripheral, Environment
 {
 	public static class VectorConstruction 
@@ -358,11 +356,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
             storage += energy.getEnergy(0, resistor);
             energy.Ucap *= eScale;
         }
-        if (node != null) {
-        	if (node.network() == null) Network.joinOrCreateNetwork(this);
-        	double d = storage * 0.5D; //using max 50% of power supply
-        	storage -= d - node.changeBuffer(d * 0.001D) * 1000D;
-        }
+        storage -= ComputerAPI.update(this, node, storage * 0.5D);
         for (int i = 0; i < Config.taskQueueSize; i++) 
         	if (!build()) break;
     }
@@ -875,13 +869,8 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
             Block block = builder.worldObj.getBlock(x, y, z);
             boolean can = block == null || block.isReplaceable(builder.worldObj, x, y, z);
             if (builder.setBlock(x, y, z, builder.inventory.items[s])) {
-            	if (src != null && src instanceof IComputerAccess) {
-            		if (evType) ((IComputerAccess)src).queueEvent("set_block", new Object[]{Double.valueOf(x - builder.area[0]), Double.valueOf(y - builder.area[1]), Double.valueOf(z - builder.area[2]), Boolean.valueOf(can)});
-            		else if (builder.sheduledTasks.size() == 1) ((IComputerAccess)src).queueEvent("set_done", new Object[0]);
-            	} else if (src != null && src instanceof Context) {
-            		if (evType) ((Context)src).signal("set_block", x - builder.area[0], y - builder.area[1], z - builder.area[2], can);
-            		else if (builder.sheduledTasks.size() == 1) ((Context)src).signal("set_done");
-            	}
+            	if (evType) ComputerAPI.sendEvent(src, "set_block", x - builder.area[0], y - builder.area[1], z - builder.area[2], can);
+            	else if (builder.sheduledTasks.size() == 1) ComputerAPI.sendEvent(src, "set_done");
             	return true;
             } else return false;
     	}
@@ -891,18 +880,21 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     
     //Computercraft:
     
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public String getType() 
     {
         return "Automation-Builder";
     }
 
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public String[] getMethodNames() 
     {
         return new String[]{"getAreaSize", "setBlock", "stopBuilding", "isBlockAt", "clearQueue"};
     }
 
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public Object[] callMethod(IComputerAccess computer, ILuaContext lua, int cmd, Object[] par) throws LuaException
     {
@@ -944,12 +936,15 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         } else return null;
     }
 
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public void attach(IComputerAccess computer) {}
 
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public void detach(IComputerAccess computer) {}
 
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public boolean equals(IPeripheral peripheral) 
     {
@@ -958,49 +953,56 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     
     //OpenComputers:
 	
-    private ComponentConnector node = API.network == null ? null : API.network.newNode(this, Visibility.Network).withComponent(this.getType()).withConnector().create();
+    private Object node = ComputerAPI.newOCnode(this, "Automation-Builder", true);
     
+    @Optional.Method(modid = "OpenComputers")
 	@Override
 	public Node node() 
 	{
-		return node;
+		return (Node)node;
 	}
 
 	@Override
 	public void invalidate() 
 	{
 		super.invalidate();
-		if (node != null) node.remove();
+		ComputerAPI.removeOCnode(node);
 	}
 
 	@Override
 	public void onChunkUnload() 
 	{
 		super.onChunkUnload();
-		if (node != null) node.remove();
+		ComputerAPI.removeOCnode(node);
 	}
 
+	@Optional.Method(modid = "OpenComputers")
 	@Override
 	public void onConnect(Node node) {}
 
+	@Optional.Method(modid = "OpenComputers")
 	@Override
 	public void onDisconnect(Node node) {}
 
+	@Optional.Method(modid = "OpenComputers")
 	@Override
 	public void onMessage(Message message) {}
-    
+
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function():int{sizeX, sizeY, sizeZ, baseX, baseY, baseZ} --returns the operating area size and position", direct = true)
 	public Object[] getArea(Context cont, Arguments args) 
 	{
 		return new Object[]{area[3] - area[0], area[4] - area[1], area[5] - area[2], area[0], area[1], area[2]};
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function():bool --returns true if a user initiated building process is running, in this case computer controlled building is not allowed", direct = true)
 	public Object[] isBuilding(Context cont, Arguments args)
 	{
 		return new Object[]{step != S_Offline};
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function():int --returns the amount of sheduled unfinished block placement tasks and cancels them all", direct = true)
 	public Object[] clearQueue(Context cont, Arguments args)
 	{
@@ -1012,6 +1014,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 		return new Object[]{n};
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function(x:int, y:int, z:int):bool --returns true if there is a not replaceable block at given operating-area-relative position", direct = true)
 	public Object[] isBlockAt(Context cont, Arguments args)
 	{
@@ -1023,6 +1026,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         else return new Object[]{Boolean.FALSE};
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function(x:int, y:int, z:int, material:int[, notify:bool]):bool --will add the placement of the material in given slot at given position to the processing queue or returns false if queue is full. if notify is given, the caller will receive a \"set_block\"{x:int, y:int, z:int, success:bool} event when executed on true or a \"set_done\" event when processing queue finished on false", direct = true)
 	public Object[] setBlock(Context cont, Arguments args) throws Exception
 	{

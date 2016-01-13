@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Level;
 
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.AutomationRecipes;
+import cd4017be.api.computers.ComputerAPI;
 import cd4017be.automation.Block.BlockItemPipe;
 import cd4017be.automation.Block.BlockLiquidPipe;
 import cd4017be.automation.Block.BlockOre;
@@ -135,7 +136,6 @@ import cd4017be.lib.ModFluid;
 import cd4017be.lib.TileBlock;
 import cd4017be.lib.templates.BlockPipe;
 import cd4017be.lib.templates.BlockSuperfluid;
-import cd4017be.lib.templates.ComputerPeripheralProvider;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockMushroom;
 import net.minecraft.block.material.Material;
@@ -250,7 +250,7 @@ public class Automation implements IWorldGenerator
         proxy.registerCoolerRecipes();
         proxy.registerElectrolyserRecipes();
         proxy.registerTrashRecipes();
-        ComputerPeripheralProvider.register();
+        ComputerAPI.register();
     }
     
     /**

@@ -10,20 +10,19 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 
-import li.cil.oc.api.API;
-import li.cil.oc.api.Network;
+import cpw.mods.fml.common.Optional;
+import cpw.mods.fml.common.Optional.Interface;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
-import li.cil.oc.api.network.Component;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
-import li.cil.oc.api.network.Visibility;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.circuits.IRedstone8bit;
 import cd4017be.api.circuits.RedstoneHandler;
+import cd4017be.api.computers.ComputerAPI;
 import cd4017be.api.energy.EnergyAPI;
 import cd4017be.api.energy.IEnergyAccess;
 import cd4017be.lib.TileContainer;
@@ -52,6 +51,7 @@ import net.minecraftforge.fluids.IFluidHandler;
  *
  * @author CD4017BE
  */
+@Optional.InterfaceList(value = {@Interface(iface = "IPeripheral", modid = "ComputerCraft"), @Interface(iface = "Environment", modid = "OpenComputers")})
 public class Detector extends AutomatedTile implements IRedstone8bit, IPeripheral, Environment
 {
     
@@ -70,7 +70,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
     {
         super.updateEntity();
         if (worldObj.isRemote) return;
-        if (node != null && node.network() == null) Network.joinOrCreateNetwork(this); //OpenComputers
+        ComputerAPI.update(this, node, 0);
         if (netData.ints[0] == 0) return;
         int s = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
         TileEntity te = Utils.getTileOnSide(this, (byte)s);
@@ -242,18 +242,21 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
 
     //ComputerCraft:
     
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public String getType() 
     {
         return "Automation-Detector";
     }
 
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public String[] getMethodNames() 
     {
         return new String[]{"getVoltage", "getInventory", "getFluidTank", "getEnergy"};
     }
 
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public Object[] callMethod(IComputerAccess computer, ILuaContext lua, int cmd, Object[] par) throws LuaException 
     {
@@ -330,12 +333,15 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
         } else return null;
     }
 
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public void attach(IComputerAccess paramIComputerAccess) {}
 
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public void detach(IComputerAccess paramIComputerAccess) {}
 
+    @Optional.Method(modid = "ComputerCraft")
     @Override
     public boolean equals(IPeripheral peripheral) 
     {
@@ -344,37 +350,42 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
 
     //OpenComputers:
     
-    private Component node = API.network == null ? null : API.network.newNode(this, Visibility.Network).withComponent(this.getType()).create();
+    private Object node = ComputerAPI.newOCnode(this, "Automation-Detector", false);
     
+    @Optional.Method(modid = "OpenComputers")
 	@Override
 	public Node node() 
 	{
-		return node;
+		return (Node)node;
 	}
 
 	@Override
 	public void invalidate() 
 	{
 		super.invalidate();
-		if (node != null) node.remove();
+		ComputerAPI.removeOCnode(node);
 	}
 
 	@Override
 	public void onChunkUnload() 
 	{
 		super.onChunkUnload();
-		if (node != null) node.remove();
+		ComputerAPI.removeOCnode(node);
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Override
 	public void onConnect(Node node) {}
 
+	@Optional.Method(modid = "OpenComputers")
 	@Override
 	public void onDisconnect(Node node) {}
 
+	@Optional.Method(modid = "OpenComputers")
 	@Override
 	public void onMessage(Message message) {}
     
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "" ,direct = true)
 	public Object[] getVoltage(Context cont, Arguments args) throws Exception
 	{
@@ -389,6 +400,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
         return new Object[]{Double.valueOf(0), Double.valueOf(0)};
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "" ,direct = true)
 	public Object[] getInventory(Context cont, Arguments args) throws Exception
 	{
@@ -420,6 +432,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
         } else return null;
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "" ,direct = true)
 	public Object[] getFluidTank(Context cont, Arguments args) throws Exception
 	{
@@ -449,6 +462,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
         } else return null;
 	}
 	
+	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "" ,direct = true)
 	public Object[] getEnergy(Context cont, Arguments args) throws Exception
 	{
