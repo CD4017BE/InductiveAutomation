@@ -6,6 +6,7 @@ package cd4017be.automation.Gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -39,7 +40,7 @@ public class GuiSteamEngine extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(57, 16, 8, 52, "Speed:", String.format("%d ", tileEntity.getPowerScaled(100)).concat("%"));
+        this.drawFormatInfo(57, 16, 8, 52, "steamEng.speed", tileEntity.getPowerScaled(100));
     }
     
     @Override
@@ -55,10 +56,8 @@ public class GuiSteamEngine extends GuiMachine
         this.drawLiquidConfig(tileEntity, -27, 7);
         this.drawEnergyConfig(tileEntity, -45, 7);
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
-        this.drawStringCentered("Power", this.guiLeft + 142, this.guiTop + 20, 0xc06060);
-        this.drawStringCentered(String.format("%.1f kW", tileEntity.getEnergyOut()), this.guiLeft + 142, this.guiTop + 32, 0xc06060);
-        this.drawStringCentered(String.format("max %d kW", (int)tileEntity.getPower()), this.guiLeft + 142, this.guiTop + 48, 0xc06060);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawLocString(this.guiLeft + 120, this.guiTop + 24, 12, 0xc06060, "steamEng.power", tileEntity.getEnergyOut(), (int)tileEntity.getPower());
     }
     
     @Override

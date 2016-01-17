@@ -10,6 +10,7 @@ import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 public class GuiPortableGenerator extends GuiMachine 
 {
@@ -59,7 +60,7 @@ public class GuiPortableGenerator extends GuiMachine
         	this.drawStringCentered(energy + " kJ", this.guiLeft + 142, this.guiTop + 20, 0x404040);
         }
         this.drawStringCentered(this.container.inventory.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
     }
 
 	@Override

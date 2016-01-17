@@ -6,6 +6,7 @@ package cd4017be.automation.Gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -45,7 +46,7 @@ public class GuiTank extends GuiMachine
         this.drawLiquidTank(tileEntity.tanks, 0, 184, 16, true);
         this.drawLiquidConfig(tileEntity, -18, 7);
         this.drawItemConfig(tileEntity, -45, 7);
-        this.drawStringCentered("Inventory", this.guiLeft + 88, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + 88, this.guiTop + 4, 0x404040);
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + 201, this.guiTop + 4, 0x404040);
     }
     

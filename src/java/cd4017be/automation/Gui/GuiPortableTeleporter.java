@@ -18,6 +18,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 public class GuiPortableTeleporter extends GuiMachine 
 {
@@ -105,7 +106,7 @@ public class GuiPortableTeleporter extends GuiMachine
         tfZ.drawTextBox();
         name.drawTextBox();
         this.drawStringCentered("Waypoints", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 120, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 120, 0x404040);
     }
     
     @Override

@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -60,11 +61,11 @@ public class GuiFluidVent extends GuiMachine
         if ((tileEntity.netData.ints[0] & 0x100) != 0) this.drawTexturedModalRect(this.guiLeft + 183, this.guiTop + 73, 226, 0, 18, 18);
         this.drawLiquidTank(tileEntity.tanks, 0, 184, 16, true);
         this.drawLiquidConfig(tileEntity, -18, 7);
-        this.drawStringCentered("Inventory", this.guiLeft + 88, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + 88, this.guiTop + 4, 0x404040);
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + 201, this.guiTop + 4, 0x404040);
         int n = tileEntity.netData.ints[0] & 0xff;
         this.drawStringCentered(n == 0 ? "off" : "" + n, this.guiLeft + 210, this.guiTop + 78, 0x404040);
-        //this.drawStringCentered(String.format("X= %d , Y= %d , Z= %d", (byte)tileEntity.netData.ints[1], (byte)(tileEntity.netData.ints[1] >> 8), (byte)(tileEntity.netData.ints[1] >> 16)), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize, 0xffffff);
+        this.drawStringCentered(String.format("X= %d , Y= %d , Z= %d", (byte)tileEntity.netData.ints[1], (byte)(tileEntity.netData.ints[1] >> 8), (byte)(tileEntity.netData.ints[1] >> 16)), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize, 0xffffff);
     }
 
     @Override

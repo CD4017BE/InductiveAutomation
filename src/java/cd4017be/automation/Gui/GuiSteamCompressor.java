@@ -6,6 +6,7 @@ package cd4017be.automation.Gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -39,8 +40,7 @@ public class GuiSteamCompressor extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(48, 16, 8, 52, "Pressure:", String.format("%d / %d kJ", tileEntity.netData.ints[0], 640));
-        this.drawInfo(108, 37, 32, 10, "160 kJ / Operation");
+        this.drawFormatInfo(48, 16, 8, 52, "steamComp.press", tileEntity.netData.ints[0], 640);
     }
     
     @Override
@@ -57,7 +57,7 @@ public class GuiSteamCompressor extends GuiMachine
         this.drawLiquidConfig(tileEntity, -18, 7);
         this.drawItemConfig(tileEntity, -72, 7);
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override

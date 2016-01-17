@@ -10,6 +10,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import cd4017be.automation.TileEntity.VertexShematicGen;
 import cd4017be.automation.TileEntity.VertexShematicGen.Polygon;
 import cd4017be.lib.BlockGuiHandler;
@@ -105,8 +106,8 @@ public class GuiVertexShematicGen extends GuiMachine
         this.drawInfo(53, 72, 8, 7, "\\i", "vertex.texId");
         this.drawInfo(8, 16, 10, 30, "\\i", "vertex.blockC");
         this.drawInfo(8, 49, 10, 19, "\\i", "vertex.texC");
-        this.drawInfo(87, 16, 8, 63, "Polygons");
-        this.drawInfo(49, 16, 8, 32, "Vertices");
+        this.drawInfo(87, 16, 8, 63, "\\i", "vertex.pol");
+        this.drawInfo(49, 16, 8, 32, "\\i", "vertex.vert");
     }
     
     @Override
@@ -145,7 +146,7 @@ public class GuiVertexShematicGen extends GuiMachine
         	this.fontRendererObj.drawString(i + ": " + p.vert.length + "V", this.guiLeft + 97, this.guiTop + 16 + 8 * (i - scroll1), c);
         }
         this.drawStringCentered(tile.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 83, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 83, 0x404040);
     }
 
     @Override

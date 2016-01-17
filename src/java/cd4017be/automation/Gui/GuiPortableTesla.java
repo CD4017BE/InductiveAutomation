@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 
@@ -80,9 +81,9 @@ public class GuiPortableTesla extends GuiMachine
         	else if (Ipos[i] == 2) this.drawTexturedModalRect(guiLeft + 115 + i * 18, guiTop + 24, 176 + i * 18, 18, 18, 9);
         }
         freq.drawTextBox();
-        this.drawStringCentered("Energy = " + Estore + "kJ", this.guiLeft + 115, this.guiTop + 16, 0xffdf40);
-        this.drawStringCentered("Portable Tesla Transmitter", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
+        this.drawLocString(this.guiLeft + 115, this.guiTop + 16, 8, 0xffdf40, "gui.cd4017be.tesla.stor", Estore);
+        this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.portableTesla.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
     }
     
     @Override

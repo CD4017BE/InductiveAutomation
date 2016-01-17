@@ -4,6 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 import cd4017be.automation.TileEntity.GraviCond;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.templates.GuiMachine;
@@ -32,7 +33,7 @@ public class GuiGraviCond extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(133, 37, 18, 10, "Needed:", Utils.formatNumber((double)tileEntity.netData.ints[1] * 1000D, 4, 0) + "g");
+        this.drawFormatInfo(133, 37, 18, 10, "grav.need", Utils.formatNumber((double)tileEntity.netData.ints[1] * 1000D, 4, 0));
         this.drawInfo(26, 16, 70, 12, "\\i", "grav.energy");
         this.drawInfo(26, 34, 70, 12, "\\i", "grav.trash");
     }
@@ -52,12 +53,11 @@ public class GuiGraviCond extends GuiMachine
         this.drawLiquidConfig(tileEntity, -18, 7);
         this.drawItemConfig(tileEntity, -54, 7);
         this.drawEnergyConfig(tileEntity, -72, 7);
-        this.drawStringCentered("Matter:", this.guiLeft + 61, this.guiTop + 52, 0x404040);
-        this.drawStringCentered(Utils.formatNumber((double)tileEntity.netData.ints[0] * 1000D, 4, 0) + "g", this.guiLeft + 61, this.guiTop + 60, 0x404040);
+        this.drawLocString(this.guiLeft + 26, this.guiTop + 52, 8, 0x404040, "grav.matter", Utils.formatNumber((double)tileEntity.netData.ints[0] * 1000D, 4, 0));
         this.drawStringCentered(String.format("%.0f kJ", tileEntity.netData.floats[0] / 1000F), this.guiLeft + 61, this.guiTop + 18, 0x404040);
         this.drawStringCentered(tileEntity.getMatterScaled(100) + " %", this.guiLeft + 61, this.guiTop + 36, 0x404040);
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override

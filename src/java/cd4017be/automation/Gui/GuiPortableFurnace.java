@@ -12,6 +12,7 @@ import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 public class GuiPortableFurnace extends GuiMachine {
 	
@@ -48,7 +49,7 @@ public class GuiPortableFurnace extends GuiMachine {
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(116, 16, 34, 16, String.format("Energy: %d / %d kJ", energy, capacity));
+        this.drawFormatInfo(116, 16, 34, 16, "storage", energy, capacity);
         this.drawInfo(61, 15, 18, 18, "\\i", "inputFilter");
     }
     
@@ -61,7 +62,7 @@ public class GuiPortableFurnace extends GuiMachine {
         this.drawTexturedModalRect(this.guiLeft + 116, this.guiTop + 16, 176, 0, energy * 34 / capacity, 16);
         if (this.furnace.isFilterOn(0)) this.drawTexturedModalRect(this.guiLeft + 61, this.guiTop + 19, 176, 16, 18, 10);
         this.drawStringCentered(this.furnace.inventory.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
     }
 
 	@Override

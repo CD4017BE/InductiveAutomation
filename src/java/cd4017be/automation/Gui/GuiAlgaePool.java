@@ -6,6 +6,7 @@ package cd4017be.automation.Gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -39,8 +40,8 @@ public class GuiAlgaePool extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(62, 16, 16, 52, "Nutrients", String.format("%d", tileEntity.getNutrientsScaled(100)).concat("%"));
-        this.drawInfo(80, 16, 34, 52, "Algae", String.format("%d / %d L", (int)tileEntity.netData.floats[0], tileEntity.netData.ints[0]));
+        this.drawFormatInfo(62, 16, 16, 52, "algae.nutr", tileEntity.getNutrientsScaled(100));
+        this.drawFormatInfo(80, 16, 34, 52, "algae.algae", (int)tileEntity.netData.floats[0], tileEntity.netData.ints[0]);
     }
     
     @Override
@@ -58,7 +59,7 @@ public class GuiAlgaePool extends GuiMachine
         this.drawLiquidConfig(tileEntity, -27, 7);
         this.drawItemConfig(tileEntity, -45, 7);
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
 
     @Override

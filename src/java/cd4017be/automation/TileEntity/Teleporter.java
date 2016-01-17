@@ -90,16 +90,12 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     {
         super.updateEntity();
         if (worldObj.isRemote) return;
-        if ((netData.ints[3] & 1) == 1)
-        {
+        if ((netData.ints[3] & 1) == 1) {
             boolean r = worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) > 0;
-            if (r && (netData.ints[3] & 4) == 0)
-            {
+            if (r && (netData.ints[3] & 4) == 0 && isInWorldBounds()) {
             	netData.ints[3] ^= 4;
                 initTeleportation();
-            } else
-            if (!r && (netData.ints[3] & 4) == 4)
-            {
+            } else if (!r && (netData.ints[3] & 4) == 4) {
             	netData.ints[3] ^= 4;
             	netData.ints[3] &= ~8;
             }
@@ -118,6 +114,14 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         	energy.Ucap *= eScale;
         }
         netData.floats[0] -= ComputerAPI.update(this, node, (netData.ints[3] & 8) == 0 ? netData.floats[0] : 0);
+    }
+    
+    public boolean isInWorldBounds()
+    {
+        int yn = area[1] + netData.ints[1];
+        int yp = area[4] + netData.ints[1];
+        if ((netData.ints[3] & 2) == 0) {yn -= yCoord; yp -= yCoord;}
+        return area[1] >= 0 && area[4] < 256 && yn >= 0 && yp < 256;
     }
     
     private void initTeleportation()
@@ -139,7 +143,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         if ((dx != 0 || dy != 0 || dz != 0) && (sx <= maxS[0] && sy <= maxS[1] && sz <= maxS[2]))
         {
         	netData.ints[3] |= 8;
-            netData.floats[1] = (float)(sx * sy * sz) * (float)Math.sqrt(dx*dx + dy*dy + dz*dz) * Energy;
+            netData.floats[1] = (float)sx * (float)sy * (float)sz * (float)Math.sqrt((double)dx * (double)dx + (double)dy * (double)dy + (double)dz * (double)dz) * Energy;
             TileEntity te = worldObj.getTileEntity(xCoord + dx, yCoord + dy, zCoord + dz);
             if (te != null && te instanceof InterdimHole) {
                 InterdimHole idwh = (InterdimHole)te;
@@ -217,7 +221,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     
     public int getStorageScaled(int s)
     {
-        return netData.floats[1] <= 0 ? 0 : (int)(netData.floats[0] * s / netData.floats[1]);
+        return netData.floats[1] <= 0 ? 0 : (int)(netData.floats[0] * (float)s / netData.floats[1]);
     }
 
     @Override
@@ -478,6 +482,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         } else if (cmd == 2) {
             if (par != null && par.length > 0) throw new LuaException("This method does not take any parameters");
             lastUser = "#Computer" + computer.getID();
+            if (!isInWorldBounds()) throw new LuaException("Area out of world bounds! For safety reasons this teleport was denied!");
             if ((netData.ints[3] & 8) == 0) initTeleportation();
             return new Object[]{Boolean.valueOf((netData.ints[3] & 8) != 0)};
         } else return null;
@@ -564,8 +569,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 	
 	@Optional.Method(modid = "OpenComputers")
 	@Callback(doc = "function():bool --starts teleportation energy accumulation and returns true if succeed", direct = true)
-	public Object[] teleport(Context cont, Arguments args)
+	public Object[] teleport(Context cont, Arguments args) throws Exception
 	{
+		if (!isInWorldBounds()) throw new Exception("Area out of world bounds! For safety reasons this teleport was denied!");
 		if ((netData.ints[3] & 8) == 0) initTeleportation();
         return new Object[]{(netData.ints[3] & 8) != 0};
 	}

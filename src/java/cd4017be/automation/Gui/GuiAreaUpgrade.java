@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -61,15 +62,11 @@ public class GuiAreaUpgrade extends GuiMachine
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/areaConfig.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         for (GuiTextField gui: areaDsp) gui.drawTextBox();
-        this.fontRendererObj.drawString(String.format("Size: %dx%dx%d", sx, sy, sz), this.guiLeft + 26, this.guiTop + 16, 0x404040);
-        this.fontRendererObj.drawString(String.format("Max: %dx%dx%d", mx, my, mz), this.guiLeft + 26, this.guiTop + 24, 0x404040);
-        this.fontRendererObj.drawString("Distance:", this.guiLeft + 26, this.guiTop + 34, 0x404040);
-        if (maxDist == Integer.MAX_VALUE) this.fontRendererObj.drawString(String.format("%d", distance), this.guiLeft + 26, this.guiTop + 42, 0x404040);
-        else this.fontRendererObj.drawString(String.format("%d / %d", distance, maxDist), this.guiLeft + 26, this.guiTop + 42, 0x404040);
-        this.fontRendererObj.drawString("Max Voltage:", this.guiLeft + 26, this.guiTop + 52, 0x404040);
-        this.fontRendererObj.drawString(String.format("%d V", Umax), this.guiLeft + 26, this.guiTop + 60, 0x404040);
-        this.drawStringCentered("Machine Area Configurations", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawLocString(this.guiLeft + 26, this.guiTop + 16, 8, 0x404040, "areaCfg.size_", sx, sy, sz, mx, my, mz);
+        this.drawLocString(this.guiLeft + 26, this.guiTop + 34, 8, 0x404040, "areaCfg.dist_", distance, maxDist == Integer.MAX_VALUE ? "inf" : "" + maxDist);
+        this.drawLocString(this.guiLeft + 26, this.guiTop + 52, 8, 0x404040, "areaCfg.Umax_", Umax);
+        this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.selectionTool.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override

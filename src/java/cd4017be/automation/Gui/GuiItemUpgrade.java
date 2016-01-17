@@ -11,6 +11,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -68,7 +69,7 @@ public class GuiItemUpgrade extends GuiMachine
         if ((this.container.inventory.upgrade.mode & 64) != 0) this.drawTexturedModalRect(this.guiLeft + 115, this.guiTop + 15, (this.container.inventory.upgrade.mode & 128) != 0 ? 194 : 176, 18, 18, 18);
         this.drawStringCentered("" + this.container.inventory.upgrade.priority, this.guiLeft + 142, this.guiTop + 20, 0x404040);
         this.drawStringCentered(this.container.inventory.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 54, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 54, 0x404040);
     }
     
     @Override

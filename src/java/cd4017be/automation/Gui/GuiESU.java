@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -47,7 +48,7 @@ public class GuiESU extends GuiMachine
     {
         super.drawGuiContainerForegroundLayer(mx, my);
         double I = tileEntity.netData.floats[1] / (tileEntity.netData.floats[1] <= 0 ? -(float)tileEntity.netData.ints[0] : (float)Math.sqrt((double)tileEntity.netData.ints[0] * (double)tileEntity.netData.ints[0] + (double)tileEntity.netData.floats[1]));
-        this.drawInfo(8, 46, 160, 4, "Energy Transfer:", String.format("%+.1f kW @ %.0f A", tileEntity.netData.floats[1] / 1000F, I));
+        this.drawFormatInfo(8, 46, 160, 4, "esu.energyFlow", tileEntity.netData.floats[1] / 1000F, I);
         this.drawInfo(28, 16, 30, 16, "\\i", "voltage");
     }
     
@@ -68,7 +69,7 @@ public class GuiESU extends GuiMachine
         this.drawItemConfig(tileEntity, -27, 7);
         this.drawEnergyConfig(tileEntity, -45, 7);
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 43, this.guiTop + 20, 0x404040);
         this.drawStringCentered((int)(tileEntity.netData.floats[0] / 1000F) + "/" + tileEntity.getMaxStorage() + " kJ", this.guiLeft + 88, this.guiTop + 56, 0x404040);
     }

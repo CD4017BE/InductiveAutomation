@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -74,7 +75,7 @@ public class GuiELink extends GuiMachine
         this.drawStringCentered("Umin=", this.guiLeft + 79, this.guiTop + 56, 0x404040);
         this.drawStringCentered("Umax=", this.guiLeft + 79, this.guiTop + 38, 0x404040);
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 74, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 74, 0x404040);
     }
     
     @Override

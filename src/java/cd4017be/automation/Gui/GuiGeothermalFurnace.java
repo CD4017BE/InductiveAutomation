@@ -6,6 +6,7 @@ package cd4017be.automation.Gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -40,10 +41,9 @@ public class GuiGeothermalFurnace extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(84, 16, 8, 52, "Furnace Heat:", String.format("%d / %d K", tileEntity.netData.ints[2], 640));
-        this.drawInfo(48, 16, 8, 52, "Lava Heat:", String.format("%d / %d K", tileEntity.netData.ints[3], 2000));
-        this.drawInfo(62, 34, 16, 16, "Fuel Heat:", String.format("%d K", tileEntity.netData.ints[1]));
-        this.drawInfo(117, 37, 32, 10, "160 K / Operation");
+        this.drawFormatInfo(84, 16, 8, 52, "heat", tileEntity.netData.ints[2], 640);
+        this.drawFormatInfo(48, 16, 8, 52, "lavaHeat", tileEntity.netData.ints[3], 2000);
+        this.drawFormatInfo(62, 34, 16, 16, "fuelHeat", tileEntity.netData.ints[1]);
     }
     
     @Override
@@ -64,7 +64,7 @@ public class GuiGeothermalFurnace extends GuiMachine
         this.drawLiquidConfig(tileEntity, -18, 7);
         this.drawItemConfig(tileEntity, -63, 7);
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override

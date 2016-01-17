@@ -11,6 +11,7 @@ import java.io.IOException;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -33,6 +34,8 @@ public class GuiTeleporter extends GuiMachine
     private GuiTextField tfY;
     private GuiTextField tfZ;
     private GuiTextField name;
+    
+    private byte warned = 0;
     
     public GuiTeleporter(Teleporter tileEntity, EntityPlayer player)
     {
@@ -69,7 +72,7 @@ public class GuiTeleporter extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(8, 34, 88, 16, "Energy:", String.format("%.0f / %.0f kJ", tileEntity.netData.floats[0] / 1000F, tileEntity.netData.floats[1] / 1000F));
+        this.drawFormatInfo(8, 34, 88, 16, "storage", (long)Math.floor(tileEntity.netData.floats[0] / 1000F), (long)Math.floor(tileEntity.netData.floats[1] / 1000F));
         this.drawInfo(134, 52, 16, 16, "\\i", "teleport.rw");
         this.drawInfo(98, 34, 16, 16, "\\i", "rstCtr");
         this.drawInfo(116, 34, 16, 16, "\\i", "teleport." + ((tileEntity.netData.ints[3] & 2) == 0 ? "abs" : "rel"));
@@ -91,24 +94,23 @@ public class GuiTeleporter extends GuiMachine
         this.drawItemConfig(tileEntity, -18, 7);
         this.drawEnergyConfig(tileEntity, -36, 7);
         this.drawStringCentered((tileEntity.netData.ints[3] & 2) == 0 ? "abs" : "rel", this.guiLeft + 124, this.guiTop + 38, 0x404040);
-        this.drawStringCentered((tileEntity.netData.ints[3] & 4) == 0 ? "Teleport" : "Loading...", this.guiLeft + 52, this.guiTop + 38, 0x404040);
+        this.drawLocString(this.guiLeft + 9, this.guiTop + 38, 0, 0x404040, "teleport." + ((tileEntity.netData.ints[3] & 4) == 0 ? "teleport" : "charge"));
         tfX.drawTextBox();
         tfY.drawTextBox();
         tfZ.drawTextBox();
         name.drawTextBox();
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 4, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
-        this.drawStringCentered((tileEntity.netData.ints[3] & 16) != 0?"Copy Mode":"Move Mode", this.guiLeft + this.xSize * 3 / 4, this.guiTop + 4, 0xff4040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.teleport." + ((tileEntity.netData.ints[3] & 16) != 0 ?"copy":"move")), this.guiLeft + this.xSize * 3 / 4, this.guiTop + 4, 0xff4040);
         showWarning();
     }
     
-    private void showWarning()
-    {
-        int[] area = tileEntity.getOperatingArea();
-        int yn = area[1] + tileEntity.netData.ints[1];
-        int yp = area[4] + tileEntity.netData.ints[1];
-        if ((tileEntity.netData.ints[3] & 2) == 0) {yn -= tileEntity.yCoord; yp -= tileEntity.yCoord;}
-        if (yn < 0 || yp >= 256){ this.drawStringCentered("Warning: Target area not completely inside the world -> Blocks will be lost!", this.guiLeft + this.xSize / 2, this.guiTop + this.ySize, 0xff8080); return;}
+    private void showWarning() {
+        if (!tileEntity.isInWorldBounds()) {
+        	this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.teleport.warning"), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize, 0xff8080);
+        	if (warned == 0) warned = 1;
+        	if (warned == 2) this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.teleport.warning2"), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize + 12, 0xffc040);
+        } else warned = 0;
     }
 
     @Override
@@ -122,9 +124,9 @@ public class GuiTeleporter extends GuiMachine
         int kb = -1;
         this.clickItemConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
         this.clickEnergyConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
-        if (this.func_146978_c(7, 33, 90, 18, x, y))
-        {
-            kb = 0;
+        if (this.func_146978_c(7, 33, 90, 18, x, y)) {
+            if (warned == 1 && (tileEntity.netData.ints[3] & 4) == 0) warned = 2;
+            else kb = 0;
         } else
         if (this.func_146978_c(97, 33, 18, 18, x, y))
         {

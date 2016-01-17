@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -52,7 +53,7 @@ public class GuiCollector extends GuiMachine
         this.drawLiquidTank(tileEntity.tanks, 0, 184, 16, true);
         this.drawLiquidConfig(tileEntity, -18, 7);
         fontRendererObj.drawString(tileEntity.getInventoryName(), this.guiLeft + this.xSize - 8 - fontRendererObj.getStringWidth(tileEntity.getInventoryName()), this.guiTop + 4, 0x404040);
-        fontRendererObj.drawString("Inventory", this.guiLeft + 8, this.guiTop + 4, 0x404040);
+        fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), this.guiLeft + 8, this.guiTop + 4, 0x404040);
     }
     
     @Override

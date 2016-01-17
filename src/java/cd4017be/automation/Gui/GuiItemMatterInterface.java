@@ -12,6 +12,7 @@ import java.io.IOException;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
@@ -74,9 +75,9 @@ public class GuiItemMatterInterface extends GuiMachine
         for (int i = scroll; i < scroll + 6 && i < list.length; i++) {
             fontRendererObj.drawString(String.format("%d %s", list[i].stackSize, list[i].getDisplayName()), this.guiLeft + 70, this.guiTop + 17 + (i - scroll) * 8, 0x7fffff);
         }
-        this.drawStringCentered(amount > 0 ? "" + amount : "All", this.guiLeft + 16, this.guiTop + 52, 0x808040);
+        this.drawStringCentered(amount > 0 ? "" + amount : "ALL", this.guiLeft + 16, this.guiTop + 52, 0x808040);
         this.drawStringCentered(this.container.inventory.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override

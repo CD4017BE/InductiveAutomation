@@ -9,6 +9,7 @@ import org.lwjgl.opengl.GL11;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 public class GuiPortableInventory extends GuiMachine 
 {
@@ -46,7 +47,7 @@ public class GuiPortableInventory extends GuiMachine
         if (this.container.isFilterOn(0)) this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 34, 176, 0, 18, 8);
         if (this.container.isFilterOn(1)) this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 42, 176, 8, 18, 8);
         this.drawStringCentered(this.container.inventory.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override

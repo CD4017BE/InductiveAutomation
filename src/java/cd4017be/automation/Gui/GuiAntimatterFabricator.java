@@ -10,6 +10,7 @@ import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
@@ -45,7 +46,7 @@ public class GuiAntimatterFabricator extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(62, 38, 70, 8, String.format("Progress: %d / %d kJ", (int)(tileEntity.netData.floats[0] / 1000F), AntimatterFabricator.AMEnergy / 1000));
+        this.drawFormatInfo(62, 38, 70, 8, "progress", (int)(tileEntity.netData.floats[0] / 1000F), AntimatterFabricator.AMEnergy / 1000);
         this.drawInfo(73, 16, 30, 16, "\\i", "voltage");
         this.drawInfo(53, 52, 16, 16, "\\i", "rstCtr");
     }
@@ -67,7 +68,7 @@ public class GuiAntimatterFabricator extends GuiMachine
         this.drawStringCentered(String.format("%." + (tileEntity.netData.floats[1] >= 100 ? "0" : "1") + "f kW", tileEntity.netData.floats[1]), this.guiLeft + 97, this.guiTop + 56, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 88, this.guiTop + 20, 0x404040);
         this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered("Inventory", this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
 
     @Override
