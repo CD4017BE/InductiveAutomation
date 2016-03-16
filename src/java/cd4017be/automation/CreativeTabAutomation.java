@@ -6,7 +6,6 @@
 
 package cd4017be.automation;
 
-import cd4017be.lib.BlockItemRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +25,7 @@ public class CreativeTabAutomation extends CreativeTabs
     @Override
     public ItemStack getIconItemStack() 
     {
-        return BlockItemRegistry.stack("tile.miner", 1);
+        return new ItemStack(Objects.miner);
     }
 
     @Override
@@ -38,7 +37,7 @@ public class CreativeTabAutomation extends CreativeTabs
 	@Override
 	public Item getTabIconItem() 
 	{
-		return BlockItemRegistry.itemId("tile.miner");
+		return Item.getItemFromBlock(Objects.miner);
 	}
     
 }

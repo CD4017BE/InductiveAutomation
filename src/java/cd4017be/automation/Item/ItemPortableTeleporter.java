@@ -1,24 +1,19 @@
 package cd4017be.automation.Item;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.api.automation.EnergyItemHandler.IEnergyItem;
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
 import cd4017be.automation.Gui.ContainerPortableTeleporter;
 import cd4017be.automation.Gui.GuiPortableTeleporter;
-import cd4017be.automation.TileEntity.ESU;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.IGuiItem;
 import cd4017be.lib.MovedBlock;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.block.material.Material;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,22 +22,24 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, IEnergyItem 
 {
 	
 	public static float energyUse = 8.0F;
 	
-	public ItemPortableTeleporter(String id, String tex) 
+	public ItemPortableTeleporter(String id) 
 	{
-		super(id, tex, Config.Ecap[1]);
+		super(id, Config.Ecap[1]);
 		this.setMaxDamage(16);
 		this.setMaxStackSize(1);
 	}
@@ -50,7 +47,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, 
 	@Override
 	public EnumRarity getRarity(ItemStack item) 
     {
-		return EnumRarity.rare;
+		return EnumRarity.RARE;
 	}
 
 	@Override
@@ -67,7 +64,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, 
 	}
 
 	@Override
-	public void onPlayerCommand(World world, EntityPlayer player, DataInputStream dis) throws IOException 
+	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
 		ItemStack item = player.getCurrentEquippedItem();
 		if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
@@ -84,7 +81,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, 
 			if (y < 0 || y > 256) {
 				player.addChatMessage(new ChatComponentText("Destination outside the world!"));
 				return;
-			} else if (world.getBlock(x, y, z).getMaterial().blocksMovement() || world.getBlock(x, y + 1, z).getMaterial().blocksMovement()) {
+			} else if (world.getBlockState(new BlockPos(x, y, z)).getBlock().getMaterial().blocksMovement() || world.getBlockState(new BlockPos(x, y + 1, z)).getBlock().getMaterial().blocksMovement()) {
 				player.addChatMessage(new ChatComponentText("Destination obscured!"));
 				return;
 			}
@@ -109,7 +106,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, 
 			tag.setInteger("x", dis.readInt());
 			tag.setInteger("y", dis.readInt());
 			tag.setInteger("z", dis.readInt());
-			tag.setString("n", dis.readUTF());
+			tag.setString("n", dis.readStringFromBuffer(32));
 		} else if (cmd == 3) {//delete Point
 			int i = dis.readByte();
 			if (i >= 0 && i < points.tagCount()) points.removeTag(i);
@@ -129,9 +126,9 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, 
 	{
 		if (player.isSneaking()) {
 			if (world.isRemote) return item;
-			Vec3 pos = Vec3.createVectorHelper(player.posX, player.posY + 1.62D - player.yOffset, player.posZ);
+			Vec3 pos = new Vec3(player.posX, player.posY + 1.62D - player.getYOffset(), player.posZ);
 	        Vec3 dir = player.getLookVec();
-	        MovingObjectPosition obj = world.func_147447_a(pos, pos.addVector(dir.xCoord * 256, dir.yCoord * 256, dir.zCoord * 256), false, true, false);
+	        MovingObjectPosition obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 256, dir.yCoord * 256, dir.zCoord * 256), false, true, false);
 	        if (obj == null) return item;
 	        int[] t = this.findTarget(obj, world);
 	        if (t != null) {
@@ -147,19 +144,18 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, 
 	
 	private int[] findTarget(MovingObjectPosition pos, World world)
 	{
-		if (!world.getBlock(pos.blockX, pos.blockY + 1, pos.blockZ).getMaterial().blocksMovement() && !world.getBlock(pos.blockX, pos.blockY + 2, pos.blockZ).getMaterial().blocksMovement())
-			return new int[]{pos.blockX, pos.blockY + 1, pos.blockZ};
-		ForgeDirection side = ForgeDirection.getOrientation(pos.sideHit);
-		if (side == ForgeDirection.UP || side == ForgeDirection.UNKNOWN) return null;
-		if (side == ForgeDirection.DOWN) {
-			if (!world.getBlock(pos.blockX, pos.blockY - 1, pos.blockZ).getMaterial().blocksMovement() && !world.getBlock(pos.blockX, pos.blockY - 2, pos.blockZ).getMaterial().blocksMovement())
-				return new int[]{pos.blockX, pos.blockY - 2, pos.blockZ};
+		if (!world.getBlockState(pos.getBlockPos().up()).getBlock().getMaterial().blocksMovement() && !world.getBlockState(pos.getBlockPos().up(2)).getBlock().getMaterial().blocksMovement())
+			return new int[]{pos.getBlockPos().getX(), pos.getBlockPos().getY() + 1, pos.getBlockPos().getZ()};
+		if (pos.sideHit == EnumFacing.UP) return null;
+		if (pos.sideHit == EnumFacing.DOWN) {
+			if (!world.getBlockState(pos.getBlockPos().down()).getBlock().getMaterial().blocksMovement() && !world.getBlockState(pos.getBlockPos().down(2)).getBlock().getMaterial().blocksMovement())
+				return new int[]{pos.getBlockPos().getX(), pos.getBlockPos().getY() - 2, pos.getBlockPos().getZ()};
 			else return null;
 		}
-		int x = pos.blockX + side.offsetX, y = pos.blockY + side.offsetY, z = pos.blockZ + side.offsetZ;
-		if (world.getBlock(x, y, z).getMaterial().blocksMovement()) return null;
-		else if (!world.getBlock(x, y - 1, z).getMaterial().blocksMovement()) return new int[]{x, y - 1, z};
-		else if (!world.getBlock(x, y + 1, z).getMaterial().blocksMovement()) return new int[]{x, y, z};
+		BlockPos p = pos.getBlockPos().offset(pos.sideHit);
+		if (world.getBlockState(p).getBlock().getMaterial().blocksMovement()) return null;
+		else if (!world.getBlockState(p.down()).getBlock().getMaterial().blocksMovement()) return new int[]{p.getX(), p.getY() - 1, p.getZ()};
+		else if (!world.getBlockState(p.up()).getBlock().getMaterial().blocksMovement()) return new int[]{p.getX(), p.getY(), p.getZ()};
 		else return null;
 	}
 	
@@ -174,15 +170,15 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, 
 			player.addChatMessage(new ChatComponentText("Not enough Energy: " + e + " kJ needed!"));
 			return;
 		}
-		if (!AreaProtect.instance.isInteractingAllowed(player.getCommandSenderName(), world, x >> 4, z >> 4)) {
+		if (!AreaProtect.instance.isInteractingAllowed(player.getName(), world, x >> 4, z >> 4)) {
 			player.addChatMessage(new ChatComponentText("Destination protected!"));
 			return;
 		}
 		EnergyItemHandler.addEnergy(item, -e, false);
 		int dim = player.dimension;
-		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(x0, y0, z0, x0 + 1, y0 + 2, z0 + 1));
+		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(x0, y0, z0, x0 + 1, y0 + 2, z0 + 1));
 		for (Entity entity : entities) {
-			MovedBlock.moveEntity(entity, dim, (double)x + 0.5D, (double)y + (double)(entity.ySize - entity.yOffset), (double)z + 0.5D);
+			MovedBlock.moveEntity(entity, dim, (double)x + 0.5D, (double)y, (double)z + 0.5D);
 		}
 	}
 

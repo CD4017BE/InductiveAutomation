@@ -1,9 +1,7 @@
 package cd4017be.automation.Item;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 
-import cofh.api.energy.IEnergyContainerItem;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -12,10 +10,10 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.api.automation.TeslaNetwork;
-import cd4017be.api.energy.EnergyThermalExpansion;
 import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
 import cd4017be.automation.Gui.ContainerPortableTesla;
@@ -23,16 +21,15 @@ import cd4017be.automation.Gui.GuiPortableTesla;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.DefaultItem;
 import cd4017be.lib.IGuiItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemPortableTesla extends DefaultItem implements IGuiItem
 {
 	
-	public ItemPortableTesla(String id, String tex) 
+	public ItemPortableTesla(String id) 
 	{
 		super(id);
-		this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxStackSize(1);
 	}
@@ -40,7 +37,7 @@ public class ItemPortableTesla extends DefaultItem implements IGuiItem
 	@Override
 	public EnumRarity getRarity(ItemStack item) 
     {
-		return EnumRarity.uncommon;
+		return EnumRarity.UNCOMMON;
 	}
 	
 	@Override
@@ -57,7 +54,7 @@ public class ItemPortableTesla extends DefaultItem implements IGuiItem
 	}
 
 	@Override
-	public void onPlayerCommand(World world, EntityPlayer player, DataInputStream dis) throws IOException 
+	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
 		ItemStack item = player.getCurrentEquippedItem();
 		if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
@@ -124,20 +121,20 @@ public class ItemPortableTesla extends DefaultItem implements IGuiItem
 	{
 		if (item == null) return 0;
 		else if (kJ && EnergyItemHandler.isEnergyItem(item)) return (double)EnergyItemHandler.addEnergy(item, (int)Math.floor(e * 0.001D), true) * 1000D;
-		else if (RF && item.getItem() instanceof IEnergyContainerItem) {
+		/*else if (RF && item.getItem() instanceof IEnergyContainerItem) {
 			IEnergyContainerItem cont = (IEnergyContainerItem)item.getItem();
 			return (double)cont.receiveEnergy(item, (int)Math.floor(e / EnergyThermalExpansion.E_Factor), false) * EnergyThermalExpansion.E_Factor;
-		} else return 0;
+		}*/ else return 0;//TODO reimplement
 	}
 	
 	private double dischargeItem(ItemStack item, double e, boolean kJ, boolean RF, boolean EU)
 	{
 		if (item == null) return 0;
 		if (kJ && EnergyItemHandler.isEnergyItem(item)) return -(double)EnergyItemHandler.addEnergy(item, -(int)Math.floor(e * 0.001D), true) * 1000D;
-		else if (RF && item.getItem() instanceof IEnergyContainerItem) {
+		/*else if (RF && item.getItem() instanceof IEnergyContainerItem) {
 			IEnergyContainerItem cont = (IEnergyContainerItem)item.getItem();
 			return (double)cont.extractEnergy(item, (int)Math.floor(e / EnergyThermalExpansion.E_Factor), false) * EnergyThermalExpansion.E_Factor;
-		} else return 0;
+		}*/ else return 0;//TODO reimplement
 	}
 
 }

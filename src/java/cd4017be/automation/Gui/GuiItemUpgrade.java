@@ -6,10 +6,10 @@
 
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -68,63 +68,60 @@ public class GuiItemUpgrade extends GuiMachine
         if ((this.container.inventory.upgrade.mode & 32) != 0) this.drawTexturedModalRect(this.guiLeft + 97, this.guiTop + 15, 212, 18, 18, 18);
         if ((this.container.inventory.upgrade.mode & 64) != 0) this.drawTexturedModalRect(this.guiLeft + 115, this.guiTop + 15, (this.container.inventory.upgrade.mode & 128) != 0 ? 194 : 176, 18, 18, 18);
         this.drawStringCentered("" + this.container.inventory.upgrade.priority, this.guiLeft + 142, this.guiTop + 20, 0x404040);
-        this.drawStringCentered(this.container.inventory.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(this.container.inventory.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 54, 0x404040);
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         byte a = -1;
-        if (this.func_146978_c(43, 15, 9, 18, x, y)) {
+        if (this.isPointInRegion(43, 15, 9, 18, x, y)) {
             a = 0;
             this.container.inventory.upgrade.mode ^= 2;
         } else
-        if (this.func_146978_c(52, 15, 9, 18, x, y)) {
+        if (this.isPointInRegion(52, 15, 9, 18, x, y)) {
             a = 0;
             this.container.inventory.upgrade.mode ^= 1;
         } else
-        if (this.func_146978_c(79, 24, 18, 9, x, y)) {
+        if (this.isPointInRegion(79, 24, 18, 9, x, y)) {
             a = 0;
             this.container.inventory.upgrade.mode ^= 4;
         } else
-        if (this.func_146978_c(79, 15, 18, 9, x, y)) {
+        if (this.isPointInRegion(79, 15, 18, 9, x, y)) {
             a = 0;
             this.container.inventory.upgrade.mode ^= 8;
         } else
-        if (this.func_146978_c(61, 15, 18, 18, x, y)) {
+        if (this.isPointInRegion(61, 15, 18, 18, x, y)) {
             a = 0;
             this.container.inventory.upgrade.mode ^= 16;
         } else
-        if (this.func_146978_c(97, 15, 18, 18, x, y)) {
+        if (this.isPointInRegion(97, 15, 18, 18, x, y)) {
             a = 0;
             this.container.inventory.upgrade.mode ^= 32;
         } else 
-        if (this.func_146978_c(115, 15, 18, 18, x, y))
+        if (this.isPointInRegion(115, 15, 18, 18, x, y))
         {
             a = 0;
             byte m = this.container.inventory.upgrade.mode;
             if ((m & 192) != 64) this.container.inventory.upgrade.mode ^= 64;
             if ((m & 64) != 0) this.container.inventory.upgrade.mode ^= 128;
         } else
-        if (this.func_146978_c(133, 15, 18, 5, x, y)) {
+        if (this.isPointInRegion(133, 15, 18, 5, x, y)) {
         	a = 1;
         	this.container.inventory.upgrade.priority += b == 0 ? 1 : 8;
         } else
-        if (this.func_146978_c(133, 28, 18, 5, x, y)) {
+        if (this.isPointInRegion(133, 28, 18, 5, x, y)) {
             a = 1;
             this.container.inventory.upgrade.priority -= b == 0 ? 1 : 8;
         }
         if (a >= 0)
         {
-            try {
-            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
             dos.writeByte(a);
             if (a == 0) dos.writeByte(this.container.inventory.upgrade.mode);
             if (a == 1) dos.writeByte(this.container.inventory.upgrade.priority);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
         super.mouseClicked(x, y, b);
     }

@@ -4,7 +4,8 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.api.automation.IEnergy;
@@ -43,15 +44,15 @@ public class EnergyFurnace extends AutomatedTile implements ISidedInventory, IEn
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (this.worldObj.isRemote) return;
         putItemStack(0, 1);
         putItemStack(2, 3);
         if (inventory.items[4] == null && inventory.items[1] != null)
         {
-            ItemStack item = FurnaceRecipes.smelting().getSmeltingResult(inventory.items[1]);
+            ItemStack item = FurnaceRecipes.instance().getSmeltingResult(inventory.items[1]);
             if (item != null)
             {
                 decrStackSize(1, 1);
@@ -94,7 +95,7 @@ public class EnergyFurnace extends AutomatedTile implements ISidedInventory, IEn
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) {
             netData.ints[0] = dis.readInt();

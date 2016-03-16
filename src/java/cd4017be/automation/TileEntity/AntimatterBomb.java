@@ -4,6 +4,8 @@
  */
 package cd4017be.automation.TileEntity;
 
+import net.minecraft.util.ITickable;
+
 import java.util.ArrayList;
 
 import cd4017be.api.automation.AreaProtect;
@@ -11,6 +13,7 @@ import cd4017be.api.automation.IAreaConfig;
 import cd4017be.automation.Entity.EntityAntimatterExplosion1;
 import cd4017be.lib.ModTileEntity;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -23,19 +26,18 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
  *
  * @author CD4017BE
  */
-public class AntimatterBomb extends ModTileEntity 
+public class AntimatterBomb extends ModTileEntity implements ITickable
 {
     
     public int antimatter;
     public int timer = -1;
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
         if (worldObj.isRemote) return;
         if (timer > 0) {
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(pos);
             timer--;
         }
         else if (timer == 0) {
@@ -43,21 +45,22 @@ public class AntimatterBomb extends ModTileEntity
                 timer = -1;
                 return;
             }
-            EntityAntimatterExplosion1 entity = new EntityAntimatterExplosion1(worldObj, xCoord, yCoord, zCoord, antimatter);
+            EntityAntimatterExplosion1 entity = new EntityAntimatterExplosion1(worldObj, pos.getX(), pos.getY(), pos.getZ(), antimatter);
             antimatter = -1;
-            int r = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+            IBlockState state = worldObj.getBlockState(pos);
+            int r = state.getBlock().getMetaFromState(state) - 4;
             entity.rotationYaw = r == 2 ? 90F : r == 5 ? 180F : r == 3 ? 270F : 0F;
             worldObj.spawnEntityInWorld(entity);
-            worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+            worldObj.setBlockToAir(pos);
         }
     }
     
     private boolean isProtected()
     {
-        int x = this.xCoord >> 4;
-        int z = this.zCoord >> 4;
+        int x = pos.getX() >> 4;
+        int z = pos.getZ() >> 4;
         int dx, dz;
-        ArrayList<IAreaConfig> list = AreaProtect.instance.loadedSS.get(this.worldObj.provider.dimensionId);
+        ArrayList<IAreaConfig> list = AreaProtect.instance.loadedSS.get(this.worldObj.provider.getDimensionId());
         if (list == null) return false;
         for (IAreaConfig area : list) {
             for (int[] e : area.getProtectedChunks("#antimatterBomb")) {
@@ -71,12 +74,12 @@ public class AntimatterBomb extends ModTileEntity
     @Override
     public void onNeighborBlockChange(Block b) 
     {
-        if (timer < 0 && worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) timer = 200;
+        if (timer < 0 && worldObj.isBlockPowered(pos)) timer = 200;
     }
 
     @Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
-    	timer = pkt.func_148857_g().getShort("timer");
+    	timer = pkt.getNbtCompound().getShort("timer");
 	}
 
     @Override
@@ -84,7 +87,7 @@ public class AntimatterBomb extends ModTileEntity
     {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setShort("timer", (short)timer);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, nbt);
+        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
     }
 
     @Override
@@ -114,7 +117,7 @@ public class AntimatterBomb extends ModTileEntity
     }
 
     @Override
-    public ArrayList<ItemStack> dropItem(int m, int fortune) 
+    public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) 
     {
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         ItemStack item = new ItemStack(this.getBlockType(), 1, 0);

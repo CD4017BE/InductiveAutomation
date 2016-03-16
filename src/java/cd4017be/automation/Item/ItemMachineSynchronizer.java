@@ -6,7 +6,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.automation.Automation;
@@ -21,19 +23,18 @@ public class ItemMachineSynchronizer extends DefaultItem
 
 	public static String[] types = {"Unlinked", "Linked", "Pump", "Miner", "Builder"};
 	
-	public ItemMachineSynchronizer(String id, String tex) 
+	public ItemMachineSynchronizer(String id) 
 	{
 		super(id);
-		this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxStackSize(1);
 	}
 	
 	@Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int s, float X, float Y, float Z) 
+	 public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
 	{
         if (player.isSneaking()) {
-        	TileEntity te = world.getTileEntity(x, y, z);
+        	TileEntity te = world.getTileEntity(pos);
         	if (te == null || !(te instanceof IOperatingArea)) return false;
         	if (world.isRemote) return true;
         	int m;
@@ -43,9 +44,9 @@ public class ItemMachineSynchronizer extends DefaultItem
         	else m = 1;
         	stack = new ItemStack(this, stack.stackSize, m);
         	stack.stackTagCompound = new NBTTagCompound();
-        	stack.stackTagCompound.setInteger("lx", x);
-        	stack.stackTagCompound.setInteger("ly", y);
-        	stack.stackTagCompound.setInteger("lz", z);
+        	stack.stackTagCompound.setInteger("lx", pos.getX());
+        	stack.stackTagCompound.setInteger("ly", pos.getY());
+        	stack.stackTagCompound.setInteger("lz", pos.getZ());
         	player.setCurrentItemOrArmor(0, stack);
         	player.addChatMessage(new ChatComponentText("Linked to machine"));
         	return true;
@@ -85,9 +86,9 @@ public class ItemMachineSynchronizer extends DefaultItem
         int lx = item.stackTagCompound.getInteger("lx");
         int ly = item.stackTagCompound.getInteger("ly");
         int lz = item.stackTagCompound.getInteger("lz");
-        TileEntity te = mach.getLoadedTile(lx, ly, lz);
+        TileEntity te = mach.getLoadedTile(new BlockPos(lx, ly, lz));
         if (te != null && te instanceof IOperatingArea) {
-        	((IOperatingArea)te).remoteOperation(0, -1, 0);
+        	((IOperatingArea)te).remoteOperation(new BlockPos(0, -1, 0));
         	return (IOperatingArea)te;
         }
 		return null;

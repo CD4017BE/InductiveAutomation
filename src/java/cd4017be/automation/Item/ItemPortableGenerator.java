@@ -7,15 +7,13 @@ import cd4017be.automation.Gui.ContainerPortableGenerator;
 import cd4017be.automation.Gui.GuiPortableGenerator;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.IGuiItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.world.World;
 
@@ -24,9 +22,9 @@ public class ItemPortableGenerator extends ItemFilteredSubInventory implements I
 	
 	private static final int maxPower = 80;
 	
-	public ItemPortableGenerator(String id, String tex) 
+	public ItemPortableGenerator(String id) 
 	{
-		super(id, tex);
+		super(id);
 	}
 
 	@Override

@@ -7,8 +7,10 @@ package cd4017be.automation.Item;
 import cd4017be.api.automation.EnergyItemHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
@@ -22,9 +24,9 @@ public class ItemEnergyTool extends ItemEnergyCell
     private final int damageVsEntity;
     private final float digSpeed;
     
-    public ItemEnergyTool(String id, String tex, int es, int eu, float speed, int ed)
+    public ItemEnergyTool(String id, int es, int eu, float speed, int ed)
     {
-        super(id, tex, es);
+        super(id, es);
         this.energyUsage = eu;
         this.digSpeed = speed;
         this.damageVsEntity = ed;
@@ -36,14 +38,14 @@ public class ItemEnergyTool extends ItemEnergyCell
         for (String clas : toolClass) this.setHarvestLevel(clas, harvestLevel);
         return this;
     }
-    
-    @Override
+
+	@Override
     public boolean canHarvestBlock(Block block, ItemStack item) 
     {
     	if (EnergyItemHandler.getEnergy(item) < this.energyUsage) return false;
     	if (block.getMaterial().isToolNotRequired()) return true;
-        String tool = block.getHarvestTool(0);
-        int hl = block.getHarvestLevel(0);
+        String tool = block.getHarvestTool(block.getDefaultState());
+        int hl = block.getHarvestLevel(block.getDefaultState());
         if (tool == null) return true;
     	if (hl > this.getHarvestLevel(item, tool)) return false;
     	else if (hl >= 0) return true;
@@ -54,16 +56,16 @@ public class ItemEnergyTool extends ItemEnergyCell
     }
     
     @Override
-    public boolean onBlockDestroyed(ItemStack item, World world, Block b, int x, int y, int z, EntityLivingBase entityLiving) 
+    public boolean onBlockDestroyed(ItemStack item, World world, Block b, BlockPos pos, EntityLivingBase entityLiving) 
     {
         EnergyItemHandler.addEnergy(item, -this.energyUsage, false);
         return true;
     }
 
     @Override
-    public float getDigSpeed(ItemStack item, Block block, int m) 
+    public float getDigSpeed(ItemStack item, IBlockState state) 
     {
-    	float str = this.canHarvestBlock(block, item) ? this.digSpeed : 1F;
+    	float str = this.canHarvestBlock(state.getBlock(), item) ? this.digSpeed : 1F;
         return str;
     }
     

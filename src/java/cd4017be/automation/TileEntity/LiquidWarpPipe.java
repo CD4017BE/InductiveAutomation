@@ -1,5 +1,6 @@
 package cd4017be.automation.TileEntity;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -11,7 +12,8 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -45,7 +47,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
 	}
 	
 	@Override
-	public void updateEntity() 
+	public void update() 
 	{
 		if (worldObj.isRemote) return;
 		if (network == null) {
@@ -116,14 +118,15 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
 				src.remove(rem[i]);
 			updateCon = false;
 		}
-		redstone = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+		redstone = worldObj.isBlockPowered(getPos());
 		for (FluidSource s : src) s.extract();
-		if (network.core == this || network.core.tileEntityInvalid) network.update();
+		if (network.core == this || network.core.tileEntityInvalid) network.update11();
 	}
 	
 	@Override
-    public boolean onActivated(EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumFacing dir, float X, float Y, float Z) 
     {
+		int s = dir.getIndex();
         ItemStack item = player.getCurrentEquippedItem();
         X -= 0.5F;
         Y -= 0.5F;
@@ -140,7 +143,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
             if (cover != null) {
                 player.setCurrentItemOrArmor(0, cover.item);
                 cover = null;
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                worldObj.markBlockForUpdate(getPos());
                 return true;
             }
             if (bo ^ bi) {
@@ -153,13 +156,13 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
             		this.setFlowBit(s | 8, false);
             		this.updateCon = true;
             	}
-            	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            	worldObj.markBlockForUpdate(getPos());
             } else {
             	boolean lock = !(bo && bi);
                 this.setFlowBit(s, lock);
                 this.setFlowBit(s | 8, lock);
                 this.updateCon = true;
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                worldObj.markBlockForUpdate(getPos());
                 TileEntity te = Utils.getTileOnSide(this, (byte)s);
                 if (te != null && te instanceof LiquidWarpPipe) {
                 	LiquidWarpPipe pipe = (LiquidWarpPipe)te;
@@ -167,7 +170,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
                     pipe.setFlowBit(s^1 | 8, lock);
                     pipe.updateCon = true;
                     if (lock && pipe.network == this.network) this.network.updateStructure = true; 
-                    worldObj.markBlockForUpdate(pipe.xCoord, pipe.yCoord, pipe.zCoord);
+                    worldObj.markBlockForUpdate(pipe.pos);
                 }
             }
             return true;
@@ -184,7 +187,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
             item.stackSize--;
             if (item.stackSize <= 0) item = null;
             player.setCurrentItemOrArmor(0, item);
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(getPos());
             return true;
         } else if (filter[s] == null && (bo ^ bi) && item != null && item.getItem() instanceof ItemFluidUpgrade && item.stackTagCompound != null) {
             if (worldObj.isRemote) return true;
@@ -207,7 +210,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
         	} else return true;
         	if (item.stackSize <= 0) item = null;
             player.setCurrentItemOrArmor(0, item);
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(getPos());
             updateCon = true;
             TileEntity te = Utils.getTileOnSide(this, (byte)s);
             if (te != null && te instanceof LiquidWarpPipe) {
@@ -216,7 +219,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
                 pipe.setFlowBit(s^1 | 8, true);
                 pipe.updateCon = true;
                 if (pipe.network == this.network) this.network.updateStructure = true; 
-                worldObj.markBlockForUpdate(pipe.xCoord, pipe.yCoord, pipe.zCoord);
+                worldObj.markBlockForUpdate(pipe.pos);
             }
             return true;
         } else return false;
@@ -241,7 +244,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
 	}
 
 	@Override
-	public void onNeighborTileChange(int tx, int ty, int tz) 
+	public void onNeighborTileChange(BlockPos pos) 
 	{
 		updateCon = true;
 	}
@@ -285,9 +288,9 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
     {
-        flow = pkt.func_148857_g().getShort("flow");
-        cover = Cover.read(pkt.func_148857_g(), "cover");
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        flow = pkt.getNbtCompound().getShort("flow");
+        cover = Cover.read(pkt.getNbtCompound(), "cover");
+        worldObj.markBlockForUpdate(getPos());
     }
 
     @Override
@@ -296,7 +299,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setShort("flow", flow);
         if (cover != null) cover.write(nbt, "cover");
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, nbt);
+        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
     }
 
     @Override
@@ -318,7 +321,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
 	
 	public long getPositionCode()
 	{
-		return (long)(xCoord & 0xffffff) | (long)(yCoord & 0xff) << 24 | (long)(zCoord & 0xffffff) << 32 | (long)(worldObj.provider.dimensionId & 0xff) << 56;
+		return (long)(pos.getX() & 0xffffff) | (long)(pos.getY() & 0xff) << 24 | (long)(pos.getZ() & 0xffffff) << 32 | (long)(worldObj.provider.getDimensionId() & 0xff) << 56;
 	}
 	
 	public static class PipeNetwork
@@ -404,7 +407,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
 			return result;
 		}
 		
-		public void update()
+		public void update11()
 		{
 			if (updateOutputs) {
 				int[] ids = new int[dest1.size()];
@@ -578,7 +581,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
 		public FluidStack insertFluid(FluidStack fluid)
 		{
 			if (fluid == null) return null;
-			ForgeDirection dir = ForgeDirection.getOrientation(side^1);
+			EnumFacing dir = EnumFacing.VALUES[side^1];
 			FluidTankInfo[] infos = inv.getTankInfo(dir);
             if (pipe.filter[side] != null && infos != null)
                 for (FluidTankInfo inf : infos) {
@@ -638,7 +641,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
 				return;
 			}
 			FluidStack fluid = null;
-			ForgeDirection dir = ForgeDirection.getOrientation(side^1);
+			EnumFacing dir = EnumFacing.VALUES[side^1];
 			FluidTankInfo[] infos = inv.getTankInfo(dir);
             if (infos != null && infos.length > 0) {
                 for (int i = 0; i < infos.length; i++) {
@@ -669,19 +672,19 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
                 ItemStack item = BlockItemRegistry.stack("item.fluidUpgrade", 1);
                 item.stackTagCompound = PipeUpgradeFluid.save(filter[i]);
                 filter[i] = null;
-                EntityItem entity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, item);
+                EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, item);
                 worldObj.spawnEntityInWorld(entity);
         	}
         	boolean bo = this.getFlowBit(i), bi = this.getFlowBit(i | 8);
         	if (bo^bi) {
-                EntityItem entity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, BlockItemRegistry.stack(bo ? "liquidPipeI" : "liquidPipeE", 1));
+                EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, BlockItemRegistry.stack(bo ? "liquidPipeI" : "liquidPipeE", 1));
                 this.setFlowBit(i, true);
                 this.setFlowBit(i | 8, true);
                 worldObj.spawnEntityInWorld(entity);
         	}
         }
         if (cover != null) {
-            EntityItem entity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, cover.item);
+            EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, cover.item);
             cover = null;
             worldObj.spawnEntityInWorld(entity);
         }

@@ -4,8 +4,8 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import net.minecraft.util.ITickable;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -17,24 +17,25 @@ import cd4017be.lib.util.Utils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 
 /**
  *
  * @author CD4017BE
  */
-public class VoltageTransformer extends ModTileEntity implements IEnergy
+public class VoltageTransformer extends ModTileEntity implements IEnergy, ITickable
 {
     public int faktor = 10;
     public byte ctrMode;
     public double Eflow;
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
         if(worldObj.isRemote) return;
         byte s = this.getOrientation();
-        if((ctrMode & 2) == 0 ^ ((ctrMode & 1) == 0 ? false : worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))) return;
+        if((ctrMode & 2) == 0 ^ ((ctrMode & 1) == 0 ? false : worldObj.isBlockPowered(getPos()))) return;
         TileEntity te = Utils.getTileOnSide(this, (byte)(s ^ 1));
         PipeEnergy wireLV = te != null && te instanceof IEnergy ? ((IEnergy)te).getEnergy((byte)(s)) : null;
         te = Utils.getTileOnSide(this, (byte)(s));
@@ -62,7 +63,7 @@ public class VoltageTransformer extends ModTileEntity implements IEnergy
     }
     
     @Override
-    public void onPlayerCommand(DataInputStream dis, EntityPlayerMP player) throws IOException 
+    public void onPlayerCommand(PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         faktor = dis.readInt();
         ctrMode = dis.readByte();
@@ -106,7 +107,7 @@ public class VoltageTransformer extends ModTileEntity implements IEnergy
     }
     
     @Override
-    public boolean detectAndSendChanges(TileContainer container, List<ICrafting> crafters, DataOutputStream dis) 
+    public boolean detectAndSendChanges(TileContainer container, List<ICrafting> crafters, PacketBuffer dis) 
     {
         for (int var1 = 0; var1 < crafters.size(); ++var1)
         {

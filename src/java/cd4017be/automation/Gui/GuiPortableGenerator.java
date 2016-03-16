@@ -1,7 +1,5 @@
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
@@ -9,6 +7,8 @@ import org.lwjgl.opengl.GL11;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -59,25 +59,21 @@ public class GuiPortableGenerator extends GuiMachine
         	this.drawTexturedModalRect(this.guiLeft + 99, this.guiTop + 18, 176, 0, 14, 14);
         	this.drawStringCentered(energy + " kJ", this.guiLeft + 142, this.guiTop + 20, 0x404040);
         }
-        this.drawStringCentered(this.container.inventory.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(this.container.inventory.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
     }
 
 	@Override
-	protected void mouseClicked(int x, int y, int b) 
+	protected void mouseClicked(int x, int y, int b) throws IOException 
 	{
 		super.mouseClicked(x, y, b);
 		byte cmd = -1;
-		if (this.func_146978_c(61, 19, 18, 10, x, y)) {
+		if (this.isPointInRegion(61, 19, 18, 10, x, y)) {
 			cmd = 0;
 		}
 		if (cmd >= 0) {
-			try {
-	            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-	            DataOutputStream dos = new DataOutputStream(bos);
-	            dos.writeByte(cmd);
-	            BlockGuiHandler.sendPacketToServer(bos);
-	        } catch (IOException e){}
+	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
+	            BlockGuiHandler.sendPacketToServer(dos);
 		}
 	}
 

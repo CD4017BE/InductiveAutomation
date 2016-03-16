@@ -4,13 +4,14 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Interface;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -32,10 +33,6 @@ import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.Inventory.Component;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -46,6 +43,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -54,7 +53,7 @@ import net.minecraftforge.common.DimensionManager;
  * @author CD4017BE
  */
 @Optional.InterfaceList(value = {@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft"), @Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")})
-public class Teleporter extends AutomatedTile implements IOperatingArea, IAutomatedInv, IEnergy, IPeripheral, Environment
+public class Teleporter extends AutomatedTile implements IOperatingArea, IAutomatedInv, IEnergy, Environment //,IPeripheral //TODO reimplement
 {
 	private static final float resistor = 50F;
 	private static final float eScale = (float)Math.sqrt(1D - 1D / resistor);
@@ -76,22 +75,22 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
-        lastUser = entity.getCommandSenderName();
+        lastUser = entity.getName();
     }
     
     @Override
-    public boolean onActivated(EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         return super.onActivated(player, s, X, Y, Z);
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         if ((netData.ints[3] & 1) == 1) {
-            boolean r = worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) > 0;
+            boolean r = worldObj.isBlockIndirectlyGettingPowered(pos) > 0;
             if (r && (netData.ints[3] & 4) == 0 && isInWorldBounds()) {
             	netData.ints[3] ^= 4;
                 initTeleportation();
@@ -120,7 +119,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     {
         int yn = area[1] + netData.ints[1];
         int yp = area[4] + netData.ints[1];
-        if ((netData.ints[3] & 2) == 0) {yn -= yCoord; yp -= yCoord;}
+        if ((netData.ints[3] & 2) == 0) {yn -= pos.getY(); yp -= pos.getY();}
         return area[1] >= 0 && area[4] < 256 && yn >= 0 && yp < 256;
     }
     
@@ -134,9 +133,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         int dz = netData.ints[2];
         if ((netData.ints[3] & 2) == 0)
         {
-            dx -= xCoord;
-            dy -= yCoord;
-            dz -= zCoord;
+            dx -= pos.getX();
+            dy -= pos.getY();
+            dz -= pos.getZ();
         }
         World world = worldObj;
         int[] maxS = Handler.maxSize(this);
@@ -144,13 +143,13 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         {
         	netData.ints[3] |= 8;
             netData.floats[1] = (float)sx * (float)sy * (float)sz * (float)Math.sqrt((double)dx * (double)dx + (double)dy * (double)dy + (double)dz * (double)dz) * Energy;
-            TileEntity te = worldObj.getTileEntity(xCoord + dx, yCoord + dy, zCoord + dz);
+            TileEntity te = worldObj.getTileEntity(pos.add(dx, dy, dz));
             if (te != null && te instanceof InterdimHole) {
                 InterdimHole idwh = (InterdimHole)te;
                 netData.floats[1] += (float)(sx * sy * sz) * 256D * Energy;
-                dx = idwh.linkX - idwh.xCoord;
-                dy = idwh.linkY - idwh.yCoord;
-                dz = idwh.linkZ - idwh.zCoord;
+                dx = idwh.linkX - idwh.getPos().getX();
+                dy = idwh.linkY - idwh.getPos().getY();
+                dz = idwh.linkZ - idwh.getPos().getZ();
                 world = DimensionManager.getWorld(idwh.linkD);
                 if (world == null){
                 	netData.ints[3] &= ~8;
@@ -164,7 +163,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         for (int cx = (area[0] + dx) >> 4; cx <= (area[3] + dx) >> 4; cx++)
         for (int cz = (area[2] + dz) >> 4; cz <= (area[5] + dz) >> 4; cz++)
         if (!AreaProtect.instance.isOperationAllowed(lastUser, world, cx, cz)) netData.ints[3] &= ~8;
-        target = new int[]{area[0] + dx, area[1] + dy, area[2] + dz, world.provider.dimensionId};
+        target = new int[]{area[0] + dx, area[1] + dy, area[2] + dz, world.provider.getDimensionId()};
     }
     
     private void teleport()
@@ -173,7 +172,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         int[] pos = {area[0], area[1], area[2], area[3] - area[0], area[4] - area[1], area[5] - area[2]};
         World world = DimensionManager.getWorld(target[3]);
         if (world == null) return;
-        if (xCoord < area[0] || xCoord >= area[3] || yCoord < area[1] || yCoord >= area[4] || zCoord < area[2] || zCoord >= area[5]) {
+        if (this.pos.getX() < area[0] || this.pos.getX() >= area[3] || this.pos.getY() < area[1] || this.pos.getY() >= area[4] || this.pos.getZ() < area[2] || this.pos.getZ() >= area[5]) {
             area[0] = target[0];
             area[1] = target[1];
             area[2] = target[2];
@@ -181,42 +180,42 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
             area[4] = area[1] + pos[4];
             area[5] = area[2] + pos[5];
         }
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(this.pos);
         for (int cx = target[0] >> 4; cx <= (target[0] + pos[3]) >> 4; cx++)
-        for (int cz = target[2] >> 4; cz <= (target[2] + pos[5]) >> 4; cz++)
-        if (!world.getChunkProvider().chunkExists(cx, cz))
-        {
-            world.getChunkProvider().loadChunk(cx, cz);
-        }
-        List<Entity> e0 = worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(pos[0], pos[1], pos[2], pos[0] + pos[3], pos[1] + pos[4], pos[2] + pos[5]));
-        List<Entity> e1 = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(target[0], target[1], target[2], target[0] + pos[3], target[1] + pos[4], target[2] + pos[5]));
+        	for (int cz = target[2] >> 4; cz <= (target[2] + pos[5]) >> 4; cz++)
+        		if (!world.getChunkProvider().chunkExists(cx, cz)) 
+        			world.getChunkProvider().provideChunk(cx, cz);
+        List<Entity> e0 = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos[0], pos[1], pos[2], pos[0] + pos[3], pos[1] + pos[4], pos[2] + pos[5]));
+        List<Entity> e1 = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(target[0], target[1], target[2], target[0] + pos[3], target[1] + pos[4], target[2] + pos[5]));
         int dx = target[0] - pos[0];
         int dy = target[1] - pos[1];
         int dz = target[2] - pos[2];
         for (Iterator<Entity> i = e0.iterator(); i.hasNext();)
         {
             Entity e = i.next();
-            MovedBlock.moveEntity(e, world.provider.dimensionId, e.posX + dx, e.posY + dy, e.posZ + dz);
+            MovedBlock.moveEntity(e, world.provider.getDimensionId(), e.posX + dx, e.posY + dy, e.posZ + dz);
         }
         for (Iterator<Entity> i = e1.iterator(); i.hasNext();)
         {
             Entity e = i.next();
-            MovedBlock.moveEntity(e, worldObj.provider.dimensionId, e.posX - dx, e.posY - dy, e.posZ - dz);
+            MovedBlock.moveEntity(e, worldObj.provider.getDimensionId(), e.posX - dx, e.posY - dy, e.posZ - dz);
         }
         boolean ox = dx < 0, oy = dy < 0, oz = dz < 0;
+        BlockPos pos0, pos1;
         for (int x = ox ? 0 : pos[3] - 1; ox ? x < pos[3] : x >= 0; x += ox ? 1 : -1)
-        for (int y = oy ? 0 : pos[4] - 1; oy ? y < pos[4] : y >= 0; y += oy ? 1 : -1)
-        for (int z = oz ? 0 : pos[5] - 1; oz ? z < pos[5] : z >= 0; z += oz ? 1 : -1)
-        {
-            MovedBlock b0 = MovedBlock.get(worldObj, pos[0] + x, pos[1] + y, pos[2] + z);
-            MovedBlock b1 = MovedBlock.get(world, target[0] + x, target[1] + y, target[2] + z);
-            if ((netData.ints[3] & 16) != 0) {
-                b0.set(world, target[0] + x, target[1] + y, target[2] + z);
-            } else {
-                b0.set(world, target[0] + x, target[1] + y, target[2] + z);
-                b1.set(worldObj, pos[0] + x, pos[1] + y, pos[2] + z);
-            }
-        }
+        	for (int y = oy ? 0 : pos[4] - 1; oy ? y < pos[4] : y >= 0; y += oy ? 1 : -1)
+        		for (int z = oz ? 0 : pos[5] - 1; oz ? z < pos[5] : z >= 0; z += oz ? 1 : -1) {
+        			pos0 = new BlockPos(pos[0] + x, pos[1] + y, pos[2] + z);
+        			pos1 = new BlockPos(target[0] + x, target[1] + y, target[2] + z);
+        			MovedBlock b0 = MovedBlock.get(worldObj, pos0);
+        			MovedBlock b1 = MovedBlock.get(world, pos1);
+        			if ((netData.ints[3] & 16) != 0) {
+        				b0.set(world, pos1);
+        			} else {
+        				b0.set(world, pos1);
+        				b1.set(worldObj, pos0);
+        			}
+        		}
     }
     
     public int getStorageScaled(int s)
@@ -225,9 +224,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
-        lastUser = player.getCommandSenderName();
+        lastUser = player.getName();
         if (cmd == 0)
         {
             byte b = dis.readByte();
@@ -251,13 +250,13 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
             {
             	netData.ints[3] ^= 2;
                 if ((netData.ints[3] & 2) == 0) {
-                	netData.ints[0] += xCoord;
-                	netData.ints[1] += yCoord;
-                	netData.ints[2] += zCoord;
+                	netData.ints[0] += pos.getX();
+                	netData.ints[1] += pos.getY();
+                	netData.ints[2] += pos.getZ();
                 } else {
-                	netData.ints[0] -= xCoord;
-                	netData.ints[1] -= yCoord;
-                	netData.ints[2] -= zCoord;
+                	netData.ints[0] -= pos.getX();
+                	netData.ints[1] -= pos.getY();
+                	netData.ints[2] -= pos.getZ();
                 }
             } else
             if (b == 3)
@@ -265,9 +264,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
                 if (inventory.items[0] == null && inventory.items[1] == null)
                 {
                     if ((netData.ints[3] & 2) == 0){
-                    	netData.ints[0] = xCoord;
-                    	netData.ints[1] = yCoord;
-                    	netData.ints[2] = zCoord;
+                    	netData.ints[0] = pos.getX();
+                    	netData.ints[1] = pos.getY();
+                    	netData.ints[2] = pos.getZ();
                     } else {
                     	netData.ints[0] = 0;
                     	netData.ints[1] = 0;
@@ -305,7 +304,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         } else
         if (cmd == 4 && inventory.items[0] != null && inventory.items[0].getItem() instanceof ItemTeleporterCoords && inventory.items[0].stackTagCompound != null)
         {
-            inventory.items[0].stackTagCompound.setString("name", dis.readUTF());
+            inventory.items[0].stackTagCompound.setString("name", dis.readStringFromBuffer(64));
         }
         netData.ints[3] &= ~8;
     }
@@ -354,7 +353,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
             this.area = area;
             netData.ints[3] &= ~8;
         }
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(pos);
     }
 
     @Override
@@ -423,7 +422,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 	public void onUpgradeChange(int s) 
 	{
 		if (s == 0) {
-			this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			this.worldObj.markBlockForUpdate(pos);
 			return;
 		}
 		if (s == 3) {
@@ -436,7 +435,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 	}
 
 	@Override
-	public boolean remoteOperation(int x, int y, int z) 
+	public boolean remoteOperation(BlockPos pos) 
 	{
 		return true;
 	}
@@ -448,7 +447,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 	}
 
 	//ComputerCraft:
-
+	/* TODO reimplement
 	@Optional.Method(modid = "ComputerCraft")
     @Override
     public String getType() 
@@ -468,7 +467,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     public Object[] callMethod(IComputerAccess computer, ILuaContext lua, int cmd, Object[] par) throws LuaException 
     {
         if (cmd == 0) {
-            return new Object[]{Double.valueOf(xCoord), Double.valueOf(yCoord), Double.valueOf(zCoord)};
+            return new Object[]{Double.valueOf(pos.getX()), Double.valueOf(pos.getY()), Double.valueOf(pos.getZ())};
         } else if (cmd == 1) {
             if (par == null || par.length != 4) throw new LuaException("4 parameters needed: (int x, int y, int z, bool relative_Coord)");
             netData.ints[3] &= ~8;
@@ -502,6 +501,8 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     {
         return this.hashCode() == peripheral.hashCode();
     }
+
+*/
 
 	//OpenComputers:
 	
@@ -548,10 +549,10 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 	}
 	
 	@Optional.Method(modid = "OpenComputers")
-	@Callback(doc = "function():int{xCoord, yCoord, zCoord} --returns the position of the teleporter block", direct = true)
+	@Callback(doc = "function():int{pos} --returns the position of the teleporter block", direct = true)
 	public Object[] getPosition(Context cont, Arguments args)
 	{
-		return new Object[]{xCoord, yCoord, zCoord};
+		return new Object[]{pos};
 	}
 	
 	@Optional.Method(modid = "OpenComputers")

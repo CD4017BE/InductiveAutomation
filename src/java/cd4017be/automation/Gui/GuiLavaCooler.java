@@ -4,11 +4,10 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -64,28 +63,25 @@ public class GuiLavaCooler extends GuiMachine
         this.drawLiquidTank(tileEntity.tanks, 2, 134, 16, true);
         this.drawLiquidConfig(tileEntity, -36, 7);
         this.drawItemConfig(tileEntity, -54, 7);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         this.clickLiquidConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
         this.clickItemConfig(tileEntity, x - this.guiLeft + 54, y - this.guiTop - 7);
         int cmd = -1;
-        if (this.func_146978_c(8, 16, 16, 16, x, y)) cmd = 0;
-        else if (this.func_146978_c(26, 16, 16, 16, x, y)) cmd = 1;
-        else if (this.func_146978_c(8, 34, 16, 16, x, y)) cmd = 2;
-        else if (this.func_146978_c(26, 34, 16, 16, x, y)) cmd = 3;
+        if (this.isPointInRegion(8, 16, 16, 16, x, y)) cmd = 0;
+        else if (this.isPointInRegion(26, 16, 16, 16, x, y)) cmd = 1;
+        else if (this.isPointInRegion(8, 34, 16, 16, x, y)) cmd = 2;
+        else if (this.isPointInRegion(26, 34, 16, 16, x, y)) cmd = 3;
         else super.mouseClicked(x, y, b);
         if (cmd >= 0) {
-        	try {
-                ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-                DataOutputStream dos = new DataOutputStream(bos);
+                PacketBuffer dos = tileEntity.getPacketTargetData();
                 dos.writeByte(AutomatedTile.CmdOffset + cmd);
-                BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+                BlockGuiHandler.sendPacketToServer(dos);
         }
     }
     

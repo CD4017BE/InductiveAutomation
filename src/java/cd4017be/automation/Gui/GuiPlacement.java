@@ -1,13 +1,13 @@
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import cd4017be.lib.BlockGuiHandler;
@@ -34,7 +34,7 @@ public class GuiPlacement extends GuiMachine
         this.xSize = 176;
         this.ySize = 150;
         super.initGui();
-        for (int i = 0; i < Vxy.length; i++) Vxy[i] = new GuiTextField(fontRendererObj, guiLeft + 42 + i * 54, guiTop + 36, 34, 12);
+        for (int i = 0; i < Vxy.length; i++) Vxy[i] = new GuiTextField(0, fontRendererObj, guiLeft + 42 + i * 54, guiTop + 36, 34, 12);
     }
 
     @Override
@@ -76,14 +76,13 @@ public class GuiPlacement extends GuiMachine
 	}
 
 	@Override
-	protected void keyTyped(char c, int k) 
+	protected void keyTyped(char c, int k) throws IOException 
 	{
 		for (int i = 0; i < Vxy.length; i++)
 			if (Vxy[i].isFocused()) {
 				if (k == Keyboard.KEY_RETURN) {
 					try {
-			            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-			            DataOutputStream dos = new DataOutputStream(bos);
+			            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
 			            dos.writeByte(2);
 			            dos.writeByte(i * 8 + sel);
 			            float f = Float.parseFloat(Vxy[i].getText());
@@ -91,9 +90,8 @@ public class GuiPlacement extends GuiMachine
 			            else if (f > 1) f = 1;
 			            container.inventory.Vxy[sel + i * 8] = f;
 			            dos.writeFloat(f);
-			            BlockGuiHandler.sendPacketToServer(bos);
+			            BlockGuiHandler.sendPacketToServer(dos);
 			            Vxy[i].setFocused(false);
-			        } catch (IOException e){
 			        } catch (NumberFormatException e) {}
 				} else Vxy[i].textboxKeyTyped(c, k);
 				return;
@@ -102,42 +100,39 @@ public class GuiPlacement extends GuiMachine
 	}
 
 	@Override
-    protected void mouseClicked(int x, int y, int b)
+    protected void mouseClicked(int x, int y, int b) throws IOException
     {
         for (GuiTextField tf : Vxy) tf.mouseClicked(x, y, b);
 		byte a = -1;
-        if (this.func_146978_c(7, 15, 144, 18, x, y) && b == 0) {
+        if (this.isPointInRegion(7, 15, 144, 18, x, y) && b == 0) {
             sel = (x - this.guiLeft - 7) / 18;
             if (sel < 0 || sel >= 8) sel = 0;
             return;
         } else
-        if (this.func_146978_c(152, 16, 16, 16, x, y)) {
+        if (this.isPointInRegion(152, 16, 16, 16, x, y)) {
             a = (container.inventory.useBlock = !container.inventory.useBlock) ? (byte)1 : 0;
         } else
-        if (this.func_146978_c(8, 34, 16, 16, x, y)) {
+        if (this.isPointInRegion(8, 34, 16, 16, x, y)) {
             a = 3;
             container.inventory.placement[sel] = (byte)((container.inventory.placement[sel] & 24) | ((container.inventory.placement[sel] & 7) + 1) % 6);
         } else
-        if (this.func_146978_c(134, 34, 16, 16, x, y)) {
+        if (this.isPointInRegion(134, 34, 16, 16, x, y)) {
             a = 3;
             container.inventory.placement[sel] ^= 8;
         } else
-        if (this.func_146978_c(152, 34, 16, 16, x, y)) {
+        if (this.isPointInRegion(152, 34, 16, 16, x, y)) {
             a = 3;
             container.inventory.placement[sel] ^= 16;
         }
         if (a >= 0)
         {
-            try {
-            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
             dos.writeByte(a);
             if (a == 3) {
             	dos.writeByte(sel);
             	dos.writeByte(container.inventory.placement[sel]);
             }
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
         super.mouseClicked(x, y, b);
     }

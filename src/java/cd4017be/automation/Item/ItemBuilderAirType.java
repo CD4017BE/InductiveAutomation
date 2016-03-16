@@ -5,10 +5,9 @@ import cd4017be.lib.DefaultItem;
 
 public class ItemBuilderAirType extends DefaultItem {
 
-	public ItemBuilderAirType(String id, String tex) 
+	public ItemBuilderAirType(String id) 
 	{
 		super(id);
-		this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
 	}
 

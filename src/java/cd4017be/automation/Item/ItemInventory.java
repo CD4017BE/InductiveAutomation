@@ -5,8 +5,8 @@ import cd4017be.automation.Gui.ContainerPortableInventory;
 import cd4017be.automation.Gui.GuiPortableInventory;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.IGuiItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -16,9 +16,9 @@ import net.minecraft.world.World;
 public class ItemInventory extends ItemFilteredSubInventory implements IItemStorage, IGuiItem
 {
 
-	public ItemInventory(String id, String tex) 
+	public ItemInventory(String id) 
 	{
-		super(id, tex);
+		super(id);
 	}
 
 	@Override

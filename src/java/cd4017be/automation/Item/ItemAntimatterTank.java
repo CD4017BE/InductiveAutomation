@@ -8,15 +8,14 @@ import java.util.List;
 
 import cd4017be.api.automation.AntimatterItemHandler;
 import cd4017be.api.automation.AntimatterItemHandler.IAntimatterItem;
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.automation.Entity.EntityAntimatterExplosion1;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.DefaultItemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -38,13 +37,13 @@ public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterI
     {
         super(id);
         this.setMaxStackSize(1);
-        cap = id == BlockItemRegistry.blockId("tile.antimatterBombF") ? BombMaxCap : Config.tankCap[4];
+        cap = id == Objects.antimatterBombF ? BombMaxCap : Config.tankCap[4];
     }
 
     @Override
 	public EnumRarity getRarity(ItemStack item) 
     {
-		return item.isItemEqual(BlockItemRegistry.stack("tile.antimatterBombF", 1)) ? EnumRarity.epic : EnumRarity.uncommon;
+		return item.isItemEqual(BlockItemRegistry.stack("tile.antimatterBombF", 1)) ? EnumRarity.EPIC : EnumRarity.UNCOMMON;
 	}
     
     @Override
@@ -61,10 +60,10 @@ public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterI
     }
 
     @Override
-    public void getSubItems(Item id, CreativeTabs tab, List list) 
+    public void getSubItems(Item id, CreativeTabs tab, List<ItemStack> list) 
     {
         super.getSubItems(id, tab, list);
-        if (id == Item.getItemFromBlock(BlockItemRegistry.blockId("tile.antimatterTank"))) {
+        if (id == Item.getItemFromBlock(Objects.antimatterTank)) {
             ItemStack item = new ItemStack(id, 1, 0);
             item.stackTagCompound = new NBTTagCompound();
             item.stackTagCompound.setInteger("antimatter", Config.tankCap[4]);
@@ -87,7 +86,7 @@ public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterI
 	@Override
 	public FluidStack getFluid(ItemStack item) 
 	{
-		return new FluidStack(Automation.L_antimatter, AntimatterItemHandler.getAntimatter(item));
+		return new FluidStack(Objects.L_antimatter, AntimatterItemHandler.getAntimatter(item));
 	}
 
 	@Override
@@ -99,15 +98,15 @@ public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterI
 	@Override
 	public int fill(ItemStack item, FluidStack resource, boolean doFill) 
 	{
-		if (resource == null || resource.getFluid() != Automation.L_antimatter) return 0;
+		if (resource == null || resource.getFluid() != Objects.L_antimatter) return 0;
 		if (doFill) return AntimatterItemHandler.addAntimatter(item, resource.amount);
 		else return Math.min(resource.amount, getAmCapacity(item) - AntimatterItemHandler.getAntimatter(item));
 	}
 
 	@Override
 	public FluidStack drain(ItemStack item, int maxDrain, boolean doDrain) {
-		if (doDrain) return new FluidStack(Automation.L_antimatter, -AntimatterItemHandler.addAntimatter(item, -maxDrain));
-		else return new FluidStack(Automation.L_antimatter, Math.min(maxDrain, AntimatterItemHandler.getAntimatter(item)));
+		if (doDrain) return new FluidStack(Objects.L_antimatter, -AntimatterItemHandler.addAntimatter(item, -maxDrain));
+		else return new FluidStack(Objects.L_antimatter, Math.min(maxDrain, AntimatterItemHandler.getAntimatter(item)));
 	}
     
 }

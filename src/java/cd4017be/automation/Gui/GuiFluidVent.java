@@ -6,11 +6,10 @@
 
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -62,38 +61,35 @@ public class GuiFluidVent extends GuiMachine
         this.drawLiquidTank(tileEntity.tanks, 0, 184, 16, true);
         this.drawLiquidConfig(tileEntity, -18, 7);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + 88, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + 201, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + 201, this.guiTop + 4, 0x404040);
         int n = tileEntity.netData.ints[0] & 0xff;
         this.drawStringCentered(n == 0 ? "off" : "" + n, this.guiLeft + 210, this.guiTop + 78, 0x404040);
         this.drawStringCentered(String.format("X= %d , Y= %d , Z= %d", (byte)tileEntity.netData.ints[1], (byte)(tileEntity.netData.ints[1] >> 8), (byte)(tileEntity.netData.ints[1] >> 16)), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize, 0xffffff);
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         int i = -1, n = 0;
         this.clickLiquidConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
-        if (this.func_146978_c(183, 73, 18, 18, x, y)) {
+        if (this.isPointInRegion(183, 73, 18, 18, x, y)) {
             i = 0;
-        } else if (this.func_146978_c(201, 73, 18, 8, x, y)) {
+        } else if (this.isPointInRegion(201, 73, 18, 8, x, y)) {
             i = 1;
             n = (tileEntity.netData.ints[0] & 0xff) + (b == 0 ? 1 : 8);
             if (n > 127) n = 127;
-        } else if (this.func_146978_c(201, 83, 18, 8, x, y)) {
+        } else if (this.isPointInRegion(201, 83, 18, 8, x, y)) {
             i = 1;
             n = (tileEntity.netData.ints[0] & 0xff) - (b == 0 ? 1 : 8);
             if (n < 0) n = 0;
         }
         if (i >= 0)
         {
-            try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(AutomatedTile.CmdOffset + i);
             if (i == 1) dos.writeByte((byte)n);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
     }
 }

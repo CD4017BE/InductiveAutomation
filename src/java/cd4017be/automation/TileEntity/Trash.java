@@ -4,7 +4,8 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.automation.Config;
@@ -39,16 +40,16 @@ public class Trash extends AutomatedTile implements ISidedInventory, IFluidHandl
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         if ((netData.ints[0] & 1) != 0)inventory.setInventorySlotContents(0, null);
         if ((netData.ints[0] & 2) != 0)tanks.setFluid(0, null);
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) netData.ints[0] ^= 1;
         else if (cmd == 1) netData.ints[0] ^= 2;

@@ -4,6 +4,7 @@
  */
 package cd4017be.automation.TileEntity;
 
+
 import java.util.ArrayList;
 
 import cd4017be.automation.Config;
@@ -14,6 +15,7 @@ import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.Inventory.Component;
 import cd4017be.lib.templates.SlotTank;
 import cd4017be.lib.templates.TankContainer;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
@@ -42,21 +44,21 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
     protected int capacity() {return Config.tankCap[2];}
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         int d = tanks.getAmount(0) - lastAmount;
         if ((d != 0 && (tanks.getAmount(0) == 0 || lastAmount == 0)) || d * d > 250000){
             lastAmount = tanks.getAmount(0);
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(getPos());
         } 
     }
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
     {
-        tanks.readFromNBT(pkt.func_148857_g(), "tank");
+        tanks.readFromNBT(pkt.getNbtCompound(), "tank");
     }
 
     @Override
@@ -64,7 +66,7 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
     {
         NBTTagCompound nbt = new NBTTagCompound();
         tanks.writeToNBT(nbt, "tank");
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, nbt);
+        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
     }
     
     @Override
@@ -83,14 +85,14 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
     }
 
     @Override
-    public ArrayList<ItemStack> dropItem(int m, int fortune) 
+    public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) 
     {
         ItemStack item = new ItemStack(this.getBlockType());
         if (tanks.getAmount(0) > 0) {
             item.stackTagCompound = new NBTTagCompound();
             tanks.getFluid(0).writeToNBT(item.stackTagCompound);
         }
-        ArrayList<ItemStack> list = new ArrayList();
+        ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         list.add(item);
         return list;
     }

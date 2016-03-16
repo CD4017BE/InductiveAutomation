@@ -4,18 +4,22 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidRegistry;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -66,7 +70,7 @@ public class GuiTextureMaker extends GuiMachine
         this.oX = 173;
         this.oY = 166;
         super.initGui();
-        this.textField = new GuiTextField(fontRendererObj, guiLeft + oX + 25, guiTop + oY + 136, 82, 16);
+        this.textField = new GuiTextField(0, fontRendererObj, guiLeft + oX + 25, guiTop + oY + 136, 82, 16);
     }
 
     @Override
@@ -130,17 +134,24 @@ public class GuiTextureMaker extends GuiMachine
     private void drawTexture()
     {
         if (dx <= 0 || dy <= 0) return;
-        IIcon[] icons = new IIcon[16];
+        BlockModelShapes bms = Minecraft.getMinecraft().getBlockRendererDispatcher().getBlockModelShapes();
+        TextureAtlasSprite[] icons = new TextureAtlasSprite[16];
+        IBakedModel model;
         boolean[] opaque = new boolean[16];
         for (int i = 0; i < icons.length; i++) {
         	if (i > 0 && tileEntity.inventory[i] != null) {
         		ItemStack item = tileEntity.inventory[i];
         		if (item.getItem() instanceof ItemBlock) {
         			ItemBlock ib = (ItemBlock)item.getItem();
-        			icons[i] = ib.field_150939_a.getIcon(1, ib.getMetadata(item.getItemDamage()));
-        			opaque[i] = icons[i] != null && ib.field_150939_a.isOpaqueCube();
+        			model = bms.getModelForState(ib.block.getStateFromMeta(ib.getMetadata(item.getItemDamage())));
+        			if (model != null) icons[i] = model.getParticleTexture();
+        			opaque[i] = icons[i] != null && ib.block.isOpaqueCube();
         		} else if (item.getItem() instanceof ItemFluidDummy) {
-        			icons[i] = item.getItem().getIconIndex(item);
+        			Fluid fluid = FluidRegistry.getFluid(item.getItemDamage());
+        			if (fluid != null) {
+        				ResourceLocation res = fluid.getStill();
+        				if (res != null) icons[i] = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(res.toString());
+        			}
         			opaque[i] = false;
         		}
         	}
@@ -163,9 +174,9 @@ public class GuiTextureMaker extends GuiMachine
         	this.mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
         	for (int y = 0; y < dy; y++)
         		for (int x = 0; x < dx; x++) {
-        			IIcon icon = icons[tileEntity.getPixel(x, y)];
+        			TextureAtlasSprite icon = icons[tileEntity.getPixel(x, y)];
         			if (icon != null)
-        				this.drawTexturedModelRectFromIcon(x * 16, y * 16, icon, 16, 16);
+        				this.drawTexturedModalRect(x * 16, y * 16, icon, 16, 16);
         		}
         	GL11.glDisable(GL11.GL_BLEND);
         	int x0 = sx0 * 16, y0 = sy0 * 16, x1 = sx1 * 16 - 1, y1 = sy1 * 16 - 1, c = 0x8000ff00;
@@ -180,21 +191,21 @@ public class GuiTextureMaker extends GuiMachine
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
-        if (this.func_146978_c(264, 8, 16, 240, x, y)) {
+        if (this.isPointInRegion(264, 8, 16, 240, x, y)) {
         	block = (y - this.guiTop - 8) / 16;
         	if (block < 0 || block >= 15) block = 0;
         	if (b != 0) super.mouseClicked(x, y, b);
-        } else if (this.func_146978_c(59 + oX, 97 + oY, 48, 36, x, y)) {
+        } else if (this.isPointInRegion(59 + oX, 97 + oY, 48, 36, x, y)) {
         	int t = (x - this.guiLeft - oX - 59) / 16;
         	if (y - this.guiTop - oY >= 115) t += 3;
         	if (t >= 0 && t < 6) tool = t;
         	if (tool > 3) {px = sx0; py = sy0;}
-        } else if (this.func_146978_c(4 + oX, 97 + oY, 54, 36, x, y)) {
+        } else if (this.isPointInRegion(4 + oX, 97 + oY, 54, 36, x, y)) {
         	int t = (x - this.guiLeft - oX - 4) / 18 * 2 + (y - this.guiTop - oY - 97) / 18;
         	if (t >= 0 && t < 6) this.sendButtonClick(t);
-        } else if (this.func_146978_c(0, 0, 256, 256, x, y)) {
+        } else if (this.isPointInRegion(0, 0, 256, 256, x, y)) {
             int dmax = Math.max(dx, dy);
         	int ox = (x - this.guiLeft) * dmax / 256;
         	int oy = (y - this.guiTop) * dmax / 256;
@@ -226,26 +237,26 @@ public class GuiTextureMaker extends GuiMachine
         		if (sx1 > this.dx) sx1 = this.dx;
         		if (sy1 > this.dy) sy1 = this.dy;
         	}
-        } else if (this.func_146978_c(4 + oX, 155 + oY, 18, 18, x, y)) {
+        } else if (this.isPointInRegion(4 + oX, 155 + oY, 18, 18, x, y)) {
         	this.sendButtonClick(6);
-        } else if (this.func_146978_c(33 + oX, 155 + oY, 7, 9, x, y)) {
+        } else if (this.isPointInRegion(33 + oX, 155 + oY, 7, 9, x, y)) {
         	this.sendValueChange(0, tileEntity.width - (b == 0 ? 1 : 8));
-        } else if (this.func_146978_c(58 + oX, 155 + oY, 7, 9, x, y)) {
+        } else if (this.isPointInRegion(58 + oX, 155 + oY, 7, 9, x, y)) {
         	this.sendValueChange(0, tileEntity.width + (b == 0 ? 1 : 8));
-        } else if (this.func_146978_c(33 + oX, 164 + oY, 7, 9, x, y)) {
+        } else if (this.isPointInRegion(33 + oX, 164 + oY, 7, 9, x, y)) {
         	this.sendValueChange(1, tileEntity.height - (b == 0 ? 1 : 8));
-        } else if (this.func_146978_c(58 + oX, 164 + oY, 7, 9, x, y)) {
+        } else if (this.isPointInRegion(58 + oX, 164 + oY, 7, 9, x, y)) {
         	this.sendValueChange(1, tileEntity.height + (b == 0 ? 1 : 8));
-        } else if (this.func_146978_c(76 + oX, 155 + oY, 7, 9, x, y)) {
+        } else if (this.isPointInRegion(76 + oX, 155 + oY, 7, 9, x, y)) {
         	tileEntity.netData.ints[1] -= b == 0 ? 1 : 10;
         	this.sendValueChange(2, tileEntity.netData.ints[1]);
-        } else if (this.func_146978_c(101 + oX, 155 + oY, 7, 9, x, y)) {
+        } else if (this.isPointInRegion(101 + oX, 155 + oY, 7, 9, x, y)) {
         	tileEntity.netData.ints[1] += b == 0 ? 1 : 10;
         	this.sendValueChange(2, tileEntity.netData.ints[1]);
-        } else if (this.func_146978_c(76 + oX, 164 + oY, 7, 9, x, y)) {
+        } else if (this.isPointInRegion(76 + oX, 164 + oY, 7, 9, x, y)) {
         	tileEntity.netData.ints[2] -= b == 0 ? 1 : 10;
         	this.sendValueChange(3, tileEntity.netData.ints[2]);
-        } else if (this.func_146978_c(101 + oX, 164 + oY, 7, 9, x, y)) {
+        } else if (this.isPointInRegion(101 + oX, 164 + oY, 7, 9, x, y)) {
         	tileEntity.netData.ints[2] += b == 0 ? 1 : 10;
         	this.sendValueChange(3, tileEntity.netData.ints[2]);
         } else {
@@ -257,7 +268,7 @@ public class GuiTextureMaker extends GuiMachine
     @Override
 	protected void mouseClickMove(int x, int y, int b, long t) 
     {
-    	if (this.func_146978_c(0, 0, 256, 256, x, y)) {
+    	if (this.isPointInRegion(0, 0, 256, 256, x, y)) {
     		if (tool != 0) return;
     		int dmax = Math.max(dx, dy);
             int ox = (x - this.guiLeft) * dmax / 256;
@@ -270,7 +281,7 @@ public class GuiTextureMaker extends GuiMachine
 	}
 
 	@Override
-    protected void keyTyped(char par1, int par2) 
+    protected void keyTyped(char par1, int par2) throws IOException 
     {
         if (!textField.isFocused()) super.keyTyped(par1, par2);
     	textField.textboxKeyTyped(par1, par2);
@@ -282,9 +293,7 @@ public class GuiTextureMaker extends GuiMachine
     
     private void sendToolUse(int x, int y, int b)
     {
-        try {
-	        ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-	        DataOutputStream dos = new DataOutputStream(bos);
+	        PacketBuffer dos = tileEntity.getPacketTargetData();
 	        dos.writeByte(CMD_Draw);
 	        dos.writeByte(x);
 	        dos.writeByte(y);
@@ -296,15 +305,12 @@ public class GuiTextureMaker extends GuiMachine
 	        	dos.writeByte(sx1);
 	        	dos.writeByte(sy1);
 	        }
-	        BlockGuiHandler.sendPacketToServer(bos);
-        } catch (IOException e){}
+	        BlockGuiHandler.sendPacketToServer(dos);
     }
     
     private void sendButtonClick(int i)
     {
-        try {
-	        ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-	        DataOutputStream dos = new DataOutputStream(bos);
+    	PacketBuffer dos = tileEntity.getPacketTargetData();
 	        dos.writeByte(CMD_Button);
 	        dos.writeByte(i);
 	        if (i >= 2 && i < 6) {
@@ -313,31 +319,24 @@ public class GuiTextureMaker extends GuiMachine
 	        	dos.writeByte(sx1);
 	        	dos.writeByte(sy1);
 	        }
-	        BlockGuiHandler.sendPacketToServer(bos);
-        } catch (IOException e){}
+	        BlockGuiHandler.sendPacketToServer(dos);
     }
     
     private void sendNameSet(String s)
     {
-        try {
-	        ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-	        DataOutputStream dos = new DataOutputStream(bos);
+    	PacketBuffer dos = tileEntity.getPacketTargetData();
 	        dos.writeByte(CMD_Name);
-	        dos.writeUTF(s);
-	        BlockGuiHandler.sendPacketToServer(bos);
-        } catch (IOException e){}
+	        dos.writeString(s);
+	        BlockGuiHandler.sendPacketToServer(dos);
     }
     
     private void sendValueChange(int i, int v)
     {
-    	try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+    	PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(CMD_Value);
             dos.writeByte(i);
             dos.writeInt(v);
-            BlockGuiHandler.sendPacketToServer(bos);
-    	} catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
     }
     
 }

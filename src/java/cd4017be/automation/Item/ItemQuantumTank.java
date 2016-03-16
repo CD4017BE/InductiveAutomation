@@ -22,7 +22,7 @@ public class ItemQuantumTank extends ItemTank
 	@Override
 	public EnumRarity getRarity(ItemStack item) 
     {
-		return EnumRarity.uncommon;
+		return EnumRarity.UNCOMMON;
 	}
 
 }

@@ -4,11 +4,10 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -62,7 +61,7 @@ public class GuiAutoCrafting extends GuiMachine
         for (int j = 0; j < 3; j++)
             for (int i = 0; i < 3; i++)
                 this.drawStringCentered(getSlotRef(i + j * 3), this.guiLeft + 88 + i * 18, this.guiTop + 20 + j * 18, 0x404040);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
@@ -73,33 +72,30 @@ public class GuiAutoCrafting extends GuiMachine
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         int cmd = -1;
         this.clickItemConfig(tileEntity, x - this.guiLeft + 54, y - this.guiTop - 7);
-        if (this.func_146978_c(151, 15, 18, 18, x, y))
+        if (this.isPointInRegion(151, 15, 18, 18, x, y))
         {
             tileEntity.setRef(9, (byte)((tileEntity.getRef(9) + 1) % 3));
             cmd = 0;
         } else
         for (int j = 0; j < 3; j++)
         for (int i = 0; i < 3; i++)
-        if (this.func_146978_c(79 + i * 18, 15 + j * 18, 18, 5, x, y)) {
+        if (this.isPointInRegion(79 + i * 18, 15 + j * 18, 18, 5, x, y)) {
             tileEntity.setRef(i + j * 3, (byte)((tileEntity.getRef(i + j * 3) + 1) % 10));
             cmd = 0;
-        } else if (this.func_146978_c(79 + i * 18, 28 + j * 18, 18, 5, x, y)) {
+        } else if (this.isPointInRegion(79 + i * 18, 28 + j * 18, 18, 5, x, y)) {
             tileEntity.setRef(i + j * 3, (byte)((tileEntity.getRef(i + j * 3) + 9) % 10));
             cmd = 0;
         }
         if (cmd != -1)
         {
-            try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(cmd + AutomatedTile.CmdOffset);
             if (cmd == 0) dos.writeLong(tileEntity.netData.longs[1]);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
         super.mouseClicked(x, y, b);
     }

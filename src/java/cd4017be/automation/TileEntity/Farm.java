@@ -4,7 +4,9 @@
  */
 package cd4017be.automation.TileEntity;
 
+
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
@@ -31,6 +33,7 @@ import cd4017be.lib.util.Utils;
 import cd4017be.lib.util.Utils.ItemType;
 import cd4017be.lib.templates.Inventory;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -39,11 +42,12 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  *
@@ -76,20 +80,20 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
-        lastUser = entity instanceof EntityPlayer ? ((EntityPlayer)entity).getGameProfile() : new GameProfile(new UUID(0, 0), entity.getCommandSenderName());
+        lastUser = entity instanceof EntityPlayer ? ((EntityPlayer)entity).getGameProfile() : new GameProfile(new UUID(0, 0), entity.getName());
     }
     
     @Override
-    public boolean onActivated(EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         lastUser = player.getGameProfile();
         return super.onActivated(player, s, X, Y, Z);
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         if (slave == null || ((TileEntity)slave).isInvalid()) slave = ItemMachineSynchronizer.getLink(inventory.items[37], this);
         if (storage < Energy)
@@ -118,27 +122,26 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     
     private boolean checkBlock()
     {
-        while (!worldObj.blockExists(px, py, pz) || worldObj.isAirBlock(px, py, pz)) {
+        BlockPos pos = new BlockPos(px, py, pz);
+    	while (!worldObj.isBlockLoaded(pos) || worldObj.isAirBlock(pos)) {
             if (py <= area[1]) return true;
             py--;
         }
-        Block b = worldObj.getBlock(px, py, pz);
-        int m = worldObj.getBlockMetadata(px, py, pz);
-        Block block = b;
-        if (block == null) return true;
-        if (worldObj.isAirBlock(px, py + 1, pz))
-        {
+        IBlockState state = worldObj.getBlockState(pos);
+        Block block = state.getBlock();
+        int m = block.getMetaFromState(state);
+        if (worldObj.isAirBlock(pos.up())) {
             ArrayList<Object[]> list = new ArrayList<Object[]>();
             int n = 0;
             for (int i = 0; i < 8; i++)
             {
                 if (inventory.items[i] == null) continue;
-                Object plant = inventory.items[i].getItem() instanceof ItemBlock ? ((ItemBlock)inventory.items[i].getItem()).field_150939_a : inventory.items[i].getItem();
-                if (plant instanceof IPlantable && block.canSustainPlant(worldObj, px, py, pz, ForgeDirection.UP, (IPlantable)plant)) {
+                Object plant = inventory.items[i].getItem() instanceof ItemBlock ? ((ItemBlock)inventory.items[i].getItem()).block : inventory.items[i].getItem();
+                if (plant instanceof IPlantable && block.canSustainPlant(worldObj, pos, EnumFacing.UP, (IPlantable)plant)) {
                     list.add(new Object[]{i, plant, n, n += inventory.items[i].stackSize});
                 } else if (plant instanceof ItemPlacement) {
                 	InventoryPlacement inv = new InventoryPlacement(inventory.items[i]);
-                	if (this.equalsBlock(inv.inventory[0], b, px, py, pz, m, !inv.useDamage(0))) {
+                	if (this.equalsBlock(inv.inventory[0], state, pos, m, !inv.useDamage(0))) {
                 		list.add(new Object[]{i, inv, n, n += inventory.items[i].stackSize});
                 	}
                 }
@@ -149,16 +152,16 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
             	int o = random.nextInt(n);
                 for (Object[] obj : list) {
                     if (o >= (Integer)obj[2] && o < (Integer)obj[3]) {
-                        return this.plantItem(inventory.items[(Integer)obj[0]], obj[1], px, py, pz);
+                        return this.plantItem(inventory.items[(Integer)obj[0]], obj[1], pos);
                     }
                 }
             }
         }
         boolean hasSlave = this.checkSlave();
         if (!(block.getMaterial().isToolNotRequired() || hasSlave) || harvestFilter == null) return true;
-        if ((harvestFilter.mode&64) != 0 && (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) > 0 ^ (harvestFilter.mode&128) == 0)) return true;
+        if ((harvestFilter.mode&64) != 0 && (worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0 ^ (harvestFilter.mode&128) == 0)) return true;
         ItemType filter = harvestFilter.getFilter();
-        ArrayList<ItemStack> list = block.getDrops(worldObj, px, py, pz, m, 0);
+        List<ItemStack> list = block.getDrops(worldObj, pos, state, 0);
         if ((harvestFilter.mode&2) != 0) list.add(new ItemStack(block));
         boolean harvest = false;
         int match;
@@ -171,14 +174,14 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
             }
         }
         if (harvest ^ (harvestFilter.mode&1) != 0) {
-            if (hasSlave) return slave.remoteOperation(px, py, pz);
+            if (hasSlave) return slave.remoteOperation(pos);
         	if (invFull && invFull()) return false;
             invFull = false;
             if (storage >= Energy) {
             	if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, px >> 4, pz >> 4)) return true;
                 storage -= Energy;
-                worldObj.setBlockToAir(px, py, pz);
-                list = block.getDrops(worldObj, px, py, pz, m, 0);
+                worldObj.setBlockToAir(pos);
+                list = block.getDrops(worldObj, pos, state, 0);
                 for (ItemStack list1 : list) add(list1);
                 return true;
             } else return false;
@@ -192,11 +195,11 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         		(slave.getSlave() == null || slave.getSlave().getSlave() == null);
     }
     
-    private boolean plantItem(ItemStack item, Object plant, int x, int y, int z)
+    private boolean plantItem(ItemStack item, Object plant, BlockPos pos)
     {
     	if (plant instanceof IPlantable) {
         	if (!remove(item, 1)) return true;
-            worldObj.setBlock(px, py + 1, pz, ((IPlantable)plant).getPlant(worldObj, x, y + 1, z), item.getItem().getMetadata(item.getItemDamage()), 0x3);
+            worldObj.setBlockState(pos.up(), ((IPlantable)plant).getPlant(worldObj, pos.up()), 0x3);
             storage -= Energy;
             return true;
         } else {
@@ -216,7 +219,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         		storage -= Energy;
         		EntityPlayer player = FakePlayerFactory.get((WorldServer)worldObj, lastUser);
             	for (int i = 0; i < n; i++)
-            		items[i] = ItemPlacement.doPlacement(worldObj, player, items[i], x, y, z, inv.getDir(i + 1), inv.Vxy[i + 1], inv.Vxy[i + 9], inv.sneak(i + 1), inv.useBlock);
+            		items[i] = ItemPlacement.doPlacement(worldObj, player, items[i], pos, inv.getDir(i + 1), inv.Vxy[i + 1], inv.Vxy[i + 9], inv.sneak(i + 1), inv.useBlock);
         	}
         	int[] slots = inventory.componets[1].slots();
         	for (int i = 0; i < n; i++) 
@@ -226,17 +229,17 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         }
     }
     
-    private boolean equalsBlock(ItemStack item, Block block, int x, int y, int z, int m, boolean drop)
+    private boolean equalsBlock(ItemStack item, IBlockState state, BlockPos pos, int m, boolean drop)
     {
     	if (item == null) return false;
     	else if (drop) {
-    		ArrayList<ItemStack> list = block.getDrops(worldObj, x, y, z, m, 0);
+    		List<ItemStack> list = state.getBlock().getDrops(worldObj, pos, state, 0);
     		for (ItemStack stack : list)
     			if (Utils.itemsEqual(item, stack)) return true;
     		return false;
     	} else if (item.getItem() instanceof ItemBlock) {
     		ItemBlock ib = (ItemBlock)item.getItem();
-    		return ib.field_150939_a == block && ib.getMetadata(item.getItemDamage()) == m;
+    		return ib.block == state.getBlock() && ib.getMetadata(item.getItemDamage()) == m;
     	} else return false;
     }
     
@@ -293,7 +296,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         item = this.putItemStack(item, this, -1, s);
         if (item != null)
         {
-            worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord + 0.5D, yCoord + 1.5D, zCoord + 0.5D, item));
+            worldObj.spawnEntityInWorld(new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 1.5D, pos.getZ() + 0.5D, item));
             invFull = true;
         }
     }
@@ -312,7 +315,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         if (b) {
             this.area = area;
         }
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(getPos());
     }
 
     @Override
@@ -382,10 +385,10 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) 
+    public ItemStack removeStackFromSlot(int i) 
     {
         if (i < 8) return null;
-        else return super.getStackInSlotOnClosing(i);
+        else return super.removeStackFromSlot(i);
     }
     
 	@Override
@@ -420,7 +423,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
 	public void onUpgradeChange(int s) 
 	{
 		if (s == 0) {
-			this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			this.worldObj.markBlockForUpdate(getPos());
 			return;
 		}
 		if (s == 3) {
@@ -435,7 +438,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
 	}
 
 	@Override
-	public boolean remoteOperation(int x, int y, int z) 
+	public boolean remoteOperation(BlockPos pos) 
 	{
 		return true;
 	}

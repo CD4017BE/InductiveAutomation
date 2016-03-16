@@ -4,6 +4,8 @@
  */
 package cd4017be.automation.TileEntity;
 
+import net.minecraft.util.ITickable;
+
 import java.util.Iterator;
 
 import cd4017be.api.automation.IEnergy;
@@ -19,14 +21,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.Vec3;
-import net.minecraftforge.common.util.ForgeDirection;
 
 /**
  *
  * @author CD4017BE
  */
-public class Magnet extends ModTileEntity implements IEnergy
+public class Magnet extends ModTileEntity implements IEnergy, ITickable
 {
     public static float Energy = 0.1F;
     public static final float rad = 8;
@@ -34,18 +36,18 @@ public class Magnet extends ModTileEntity implements IEnergy
     private PipeEnergy energy = new PipeEnergy(Config.Umax[2], Config.Rcond[1]);
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
         if (worldObj.isRemote) return;
         energy.update(this);
-        if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) return;
+        if (worldObj.isBlockPowered(getPos())) return;
         double e = energy.Ucap * energy.Ucap;
         float rad = (float)energy.Ucap / 64F;
-        Iterator list = worldObj.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(xCoord + 0.5D - rad, yCoord + 0.5D - rad, zCoord + 0.5D - rad, xCoord + 0.5D + rad, yCoord + 0.5D + rad, zCoord + 0.5D + rad)).iterator();
-        Vec3 vec0 = Vec3.createVectorHelper(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D);
+        Iterator<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() + 0.5D - rad, pos.getY() + 0.5D - rad, pos.getZ() + 0.5D - rad, pos.getX() + 0.5D + rad, pos.getY() + 0.5D + rad, pos.getZ() + 0.5D + rad)).iterator();
+        Vec3 vec0 = new Vec3(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
         while (list.hasNext())
         {
-            Entity entity = (Entity)list.next();
+            Entity entity = list.next();
             if (entity instanceof EntityPlayer) continue;
             Vec3 vec1 = vec0.addVector(-entity.posX, -entity.posY, -entity.posZ);
             double d = vec1.xCoord * vec1.xCoord + vec1.yCoord * vec1.yCoord + vec1.zCoord * vec1.zCoord;
@@ -70,14 +72,14 @@ public class Magnet extends ModTileEntity implements IEnergy
     {
         for (int i = 0; i < 6; i++)
         {
-            ForgeDirection dir = ForgeDirection.getOrientation(i);
-            TileEntity te = getLoadedTile(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+        	EnumFacing dir = EnumFacing.VALUES[i];
+            TileEntity te = getLoadedTile(pos.offset(dir));
             if (te != null && te instanceof IInventory)
             {
                 int[] s;
                 if (te instanceof ISidedInventory)
                 {
-                    s = ((ISidedInventory)te).getAccessibleSlotsFromSide(i);
+                    s = ((ISidedInventory)te).getSlotsForFace(dir);
                 } else {
                     s = new int[((IInventory)te).getSizeInventory()];
                     for (int j = 0; j < s.length; j++) s[j] = j;

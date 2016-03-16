@@ -4,11 +4,10 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -65,40 +64,40 @@ public class GuiVoltageTransformer extends GuiMachine
             this.drawTexturedModalRect(this.guiLeft + 133, this.guiTop + 15, 212, (tileEntity.ctrMode & 2) == 0 ? 0 : 18, 36, 18);
         }
         this.drawStringCentered(String.format("%.1f x", (float)tileEntity.faktor * 0.1F), this.guiLeft + 43, this.guiTop + 20, 0x404040);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         boolean d = false;
-        if (this.func_146978_c(8, 16, 10, 16, x, y))
+        if (this.isPointInRegion(8, 16, 10, 16, x, y))
         {
             tileEntity.faktor -= 10;
             d = true;
         } else
-        if (this.func_146978_c(18, 16, 10, 16, x, y))
+        if (this.isPointInRegion(18, 16, 10, 16, x, y))
         {
             tileEntity.faktor--;
             d = true;
         } else
-        if (this.func_146978_c(58, 16, 10, 16, x, y))
+        if (this.isPointInRegion(58, 16, 10, 16, x, y))
         {
             tileEntity.faktor++;
             d = true;
         } else
-        if (this.func_146978_c(68, 16, 10, 16, x, y))
+        if (this.isPointInRegion(68, 16, 10, 16, x, y))
         {
             tileEntity.faktor += 10;
             d = true;
         } else
-        if (this.func_146978_c(97, 15, 36, 18, x, y))
+        if (this.isPointInRegion(97, 15, 36, 18, x, y))
         {
             tileEntity.ctrMode ^= 1;
             d = true;
         } else
-        if (this.func_146978_c(133, 15, 36, 18, x, y))
+        if (this.isPointInRegion(133, 15, 36, 18, x, y))
         {
             tileEntity.ctrMode ^= 2;
             d = true;
@@ -107,13 +106,10 @@ public class GuiVoltageTransformer extends GuiMachine
         {
             if (tileEntity.faktor < 10) tileEntity.faktor = 10;
             if (tileEntity.faktor > 200) tileEntity.faktor = 200;
-            try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeInt(tileEntity.faktor);
             dos.writeByte(tileEntity.ctrMode);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
     }
     

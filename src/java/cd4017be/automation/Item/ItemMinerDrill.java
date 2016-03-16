@@ -8,11 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import cd4017be.automation.Automation;
 import cd4017be.lib.DefaultItem;
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.item.Item;
@@ -104,11 +104,10 @@ public class ItemMinerDrill extends DefaultItem
     	}
     }
     
-    public ItemMinerDrill(String id, String tex, int durability, int miningLvl, float efficiency, String... harvestClass)
+    public ItemMinerDrill(String id, int durability, int miningLvl, float efficiency, String... harvestClass)
     {
         super(id);
         this.setCreativeTab(Automation.tabAutomation);
-        this.setTextureName(tex);
         this.setMaxStackSize(1);
         this.setMaxDamage(durability);
         this.miningLevel = miningLvl;
@@ -116,15 +115,15 @@ public class ItemMinerDrill extends DefaultItem
         this.harvestClass = harvestClass;
     }
     
-    public boolean canHarvestBlock(Block block, int meta)
+    public boolean canHarvestBlock(IBlockState state, int meta)
     {
         boolean register = true;
         for (String hc : this.harvestClass) {
-            int l = block.getHarvestLevel(0);
+            int l = state.getBlock().getHarvestLevel(state);
             if (l != -1 && l <= this.miningLevel) return true;
             register &= l == -1;
         }
-        return register && (block.getMaterial() == Material.rock || block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil);
+        return register && (state.getBlock().getMaterial() == Material.rock || state.getBlock().getMaterial() == Material.iron || state.getBlock().getMaterial() == Material.anvil);
     }
     
 }

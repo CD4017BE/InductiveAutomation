@@ -4,28 +4,25 @@
  */
 package cd4017be.automation.Item;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import cd4017be.api.automation.AntimatterItemHandler;
 import cd4017be.api.automation.AntimatterItemHandler.IAntimatterItem;
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.api.automation.MatterOrbItemHandler;
 import cd4017be.api.automation.MatterOrbItemHandler.IMatterOrb;
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.automation.Gui.ContainerAMLEnchant;
 import cd4017be.automation.Gui.GuiAMLEnchant;
 import cd4017be.lib.ClientInputHandler.IScrollHandlerItem;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.IGuiItem;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
@@ -38,9 +35,12 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -61,16 +61,16 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     public static float AMDamage = 1.0F;
     public static float AMDmgExp = 1.0F;
     
-    public ItemAntimatterLaser(String id, String tex)
+    public ItemAntimatterLaser(String id)
     {
-        super(id, tex, Config.Ecap[1]);
+        super(id, Config.Ecap[1]);
         this.setMaxStackSize(1);
     }
 
     @Override
 	public EnumRarity getRarity(ItemStack item) 
     {
-		return EnumRarity.epic;
+		return EnumRarity.EPIC;
 	}
 
 	@Override
@@ -100,14 +100,14 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
     {
     	int mode = item.stackTagCompound.getByte("mode");
-        Vec3 pos = Vec3.createVectorHelper(player.posX, player.posY + 1.62D - player.yOffset, player.posZ);
+        Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
         Vec3 dir = player.getLookVec();
         Vec3 pos1 = pos.addVector(dir.xCoord * 128, dir.yCoord * 128, dir.zCoord * 128);
         double x0 = pos.xCoord, y0 = pos.yCoord, z0 = pos.zCoord, 
         		x1 = pos1.xCoord, y1 = pos1.yCoord, z1 = pos1.zCoord;
         MovingObjectPosition obj = mode == 6 || player.isSneaking() ? null : world.rayTraceBlocks(pos, pos1, false);
-        pos.xCoord = x0; pos.yCoord = y0; pos.zCoord = z0;
-        pos1.xCoord = x1; pos1.yCoord = y1; pos1.zCoord = z1;
+        pos = new Vec3(x0, y0, z0);
+        pos1 = new Vec3(x1, y1, z1);
         if (obj != null) {
         	x1 = obj.hitVec.xCoord;
         	y1 = obj.hitVec.yCoord;
@@ -116,15 +116,15 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         if (x1 < x0) {double a = x0; x0 = x1; x1 = a;}
         if (y1 < y0) {double a = y0; y0 = y1; y1 = a;}
         if (z1 < z0) {double a = z0; z0 = z1; z1 = a;}
-        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(player, AxisAlignedBB.getBoundingBox(x0, y0, z0, x1, y1, z1));
+        List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(player, new AxisAlignedBB(x0, y0, z0, x1, y1, z1));
         MovingObjectPosition obj1;
         for (Entity e : list) {
-        	obj1 = e.boundingBox.calculateIntercept(pos, pos1);
+        	obj1 = e.getEntityBoundingBox().calculateIntercept(pos, pos1);
         	if (obj1 != null && (obj == null || obj1.hitVec.squareDistanceTo(pos) < obj.hitVec.squareDistanceTo(pos))) 
         		obj = new MovingObjectPosition(e);
         }
         if (obj == null) return item;
-        else if (obj.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) this.onItemUse(item, player, world, obj.blockX, obj.blockY, obj.blockZ, obj.sideHit, (float)obj.hitVec.xCoord, (float)obj.hitVec.yCoord, (float)obj.hitVec.zCoord);
+        else if (obj.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) this.onItemUse(item, player, world, obj.getBlockPos(), obj.sideHit, (float)obj.hitVec.xCoord, (float)obj.hitVec.yCoord, (float)obj.hitVec.zCoord);
         else if (obj.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) this.useOnEntity(item, player, obj.entityHit);
         return item;
     }
@@ -156,19 +156,19 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     		entity.attackEntityFrom(DamageSource.causePlayerDamage(player), dmg);
     		player.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "random.explosion", 2.0F, 2.7F);
     	}
-    	for (EntityItem ei : (List<EntityItem>)player.worldObj.getEntitiesWithinAABB(EntityItem.class, AxisAlignedBB.getBoundingBox(entity.posX - 2.5D, entity.posY - 2.5D, entity.posZ - 2.5D, entity.posX + 2.5D, entity.posY + 2.5D, entity.posZ + 2.5D))) {
+    	for (EntityItem ei : (List<EntityItem>)player.worldObj.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(entity.posX - 2.5D, entity.posY - 2.5D, entity.posZ - 2.5D, entity.posX + 2.5D, entity.posY + 2.5D, entity.posZ + 2.5D))) {
 			if (!ei.isDead && MatterOrbItemHandler.canInsert(item, ei.getEntityItem())) {
 				MatterOrbItemHandler.addItemStacks(item, ei.getEntityItem());
 				ei.setDead();
 			}
 		}
-    	for (EntityXPOrb ei : (List<EntityXPOrb>)player.worldObj.getEntitiesWithinAABB(EntityXPOrb.class, AxisAlignedBB.getBoundingBox(entity.posX - 5D, entity.posY - 5D, entity.posZ - 5D, entity.posX + 5D, entity.posY + 5D, entity.posZ + 5D))) {
+    	for (EntityXPOrb ei : (List<EntityXPOrb>)player.worldObj.getEntitiesWithinAABB(EntityXPOrb.class, new AxisAlignedBB(entity.posX - 5D, entity.posY - 5D, entity.posZ - 5D, entity.posX + 5D, entity.posY + 5D, entity.posZ + 5D))) {
     		ei.setPosition(player.posX, player.posY - 0.5D, player.posZ);
     	}
     }
     
     @Override
-    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, int x, int y, int z, int s, float X, float Y, float Z) 
+    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
     {
     	int mode = item.stackTagCompound.getByte("mode");
     	if (player.isSneaking()) return false;
@@ -178,53 +178,51 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         }
         if (mode < 0) return true;
         else if (mode < 5) {
-        	if (!AreaProtect.instance.isOperationAllowed(player.getCommandSenderName(), world, x - mode, x + mode + 1, z - mode, z + mode + 1)) {
+        	if (!AreaProtect.instance.isOperationAllowed(player.getName(), world, pos.getX() - mode, pos.getX() + mode + 1, pos.getZ() - mode, pos.getZ() + mode + 1)) {
                 player.addChatMessage(new ChatComponentText("Block is Protected"));
                 return true;
             }
-        	byte ax = (byte)(s / 2);
+        	byte ax = (byte)(s.getIndex() / 2);
         	for (int i = -mode; i <= mode; i++)
         		for (int j = -mode; j <= mode; j++)
-        			if (!this.breakBlock(item, player, world, x + (ax==2?0:i), y + (ax==0?0:j), z + (ax==1?0: ax==2?i:j)))
+        			if (!this.breakBlock(item, player, world, pos.add(ax==2?0:i, ax==0?0:j, ax==1?0: ax==2?i:j)))
         				return true;
         } else if (mode == 5) {
-        	if (!AreaProtect.instance.isOperationAllowed(player.getCommandSenderName(), world, x - 7, x + 8, z - 7, z + 8)) {
+        	if (!AreaProtect.instance.isOperationAllowed(player.getName(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
                 player.addChatMessage(new ChatComponentText("Block is Protected"));
                 return true;
             }
-        	Block id = world.getBlock(x, y, z);
-        	int m = world.getBlockMetadata(x, y, z);
+        	IBlockState state = world.getBlockState(pos);
         	for (int i = -7; i <= 7; i++)
         		for (int j = -7; j <= 7; j++)
         			for (int k = -7; k <= 7; k++)
-        				if (world.getBlock(x + i, y + j, z + k) == id && world.getBlockMetadata(x + i, y + j, z + k) == m)
-        					if (!this.breakBlock(item, player, world, x + i, y + j, z + k))
+        				if (world.getBlockState(pos.add(i, j, k)) == state)
+        					if (!this.breakBlock(item, player, world, pos.add(i, j, k)))
         						return true;
         }
         return true;
     }
     
-    private boolean breakBlock(ItemStack item, EntityPlayer player, World world, int x, int y, int z)
+    private boolean breakBlock(ItemStack item, EntityPlayer player, World world, BlockPos pos)
     {
     	Enchantments ench = new Enchantments(item);
     	if (EnergyItemHandler.getEnergy(item) < ench.Euse) {
     		player.addChatMessage(new ChatComponentText("Out of Energy!"));
             return false;
     	}
-    	Block block = world.getBlock(x, y, z);
-        int m = world.getBlockMetadata(x, y, z);
-        if (block == null || block.isAir(world, x, y, z)) return true;
-        float r = block.getExplosionResistance(player, world, x, y, z, player.posX, player.posY, player.posZ) * ench.amMult;
+    	IBlockState state = world.getBlockState(pos);
+        if (state.getBlock().isAir(world, pos)) return true;
+        float r = state.getBlock().getExplosionResistance(world, pos, player, null) * ench.amMult;
         float am = AntimatterItemHandler.getAntimatter(item) + item.stackTagCompound.getFloat("buff");
         if (am < r) {
             player.addChatMessage(new ChatComponentText("Not enough Antimatter, Needed: " + r + " pg"));
             return false;
         }
         ItemStack[] drop;
-        if (ench.silktouch && block.canSilkHarvest(world, player, x, y, z, m)) {
-        	drop = new ItemStack[]{new ItemStack(block, 1, block.getDamageValue(world, x, y, z))};
+        if (ench.silktouch && state.getBlock().canSilkHarvest(world, pos, state, player)) {
+        	drop = new ItemStack[]{new ItemStack(state.getBlock(), 1, state.getBlock().getDamageValue(world, pos))};
         } else {
-            ArrayList<ItemStack> list = block.getDrops(world, x, y, z, m, ench.fortune);
+            List<ItemStack> list = state.getBlock().getDrops(world, pos, state, ench.fortune);
             drop = list == null ? null : list.toArray(new ItemStack[list.size()]);
         }
         if (!MatterOrbItemHandler.canInsert(item, drop)) {
@@ -236,7 +234,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         int n = (int)Math.ceil(r);
         if (n != 0) item.stackTagCompound.setInteger("antimatter", item.stackTagCompound.getInteger("antimatter") - n);
         item.stackTagCompound.setFloat("buff", n - r);
-        world.setBlockToAir(x, y, z);
+        world.setBlockToAir(pos);
         MatterOrbItemHandler.addItemStacks(item, drop);
         return true;
     }
@@ -293,7 +291,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     @Override
 	public FluidStack getFluid(ItemStack item) 
 	{
-		return new FluidStack(Automation.L_antimatter, AntimatterItemHandler.getAntimatter(item));
+		return new FluidStack(Objects.L_antimatter, AntimatterItemHandler.getAntimatter(item));
 	}
 
 	@Override
@@ -305,15 +303,15 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
 	@Override
 	public int fill(ItemStack item, FluidStack resource, boolean doFill) 
 	{
-		if (resource == null || resource.getFluid() != Automation.L_antimatter) return 0;
+		if (resource == null || resource.getFluid() != Objects.L_antimatter) return 0;
 		if (doFill) return AntimatterItemHandler.addAntimatter(item, resource.amount);
 		else return Math.min(resource.amount, getAmCapacity(item) - AntimatterItemHandler.getAntimatter(item));
 	}
 
 	@Override
 	public FluidStack drain(ItemStack item, int maxDrain, boolean doDrain) {
-		if (doDrain) return new FluidStack(Automation.L_antimatter, -AntimatterItemHandler.addAntimatter(item, -maxDrain));
-		else return new FluidStack(Automation.L_antimatter, Math.min(maxDrain, AntimatterItemHandler.getAntimatter(item)));
+		if (doDrain) return new FluidStack(Objects.L_antimatter, -AntimatterItemHandler.addAntimatter(item, -maxDrain));
+		else return new FluidStack(Objects.L_antimatter, Math.min(maxDrain, AntimatterItemHandler.getAntimatter(item)));
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -323,11 +321,9 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
 		byte cmd = 2;
 		if (scroll < 0) cmd = 0;
 		else if (scroll > 0) cmd = 1;
-		try {
-			ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-			bos.write(cmd);
+			PacketBuffer bos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
+			bos.writeByte(cmd);
 			BlockGuiHandler.sendPacketToServer(bos);
-		} catch (IOException e) {}
 	}
 
 	@Override
@@ -344,7 +340,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
 	}
 
 	@Override
-	public void onPlayerCommand(World world, EntityPlayer player, DataInputStream dis) throws IOException 
+	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
 		ItemStack item = player.getCurrentEquippedItem();
 		byte cmd = dis.readByte();

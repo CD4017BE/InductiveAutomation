@@ -4,6 +4,7 @@
  */
 package cd4017be.automation.TileEntity;
 
+
 import java.util.ArrayList;
 
 import cd4017be.api.automation.IItemPipeCon;
@@ -29,7 +30,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 
 /**
  *
@@ -53,17 +54,17 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
         if (worldObj.isRemote) return;
-        int type = this.worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+        int type = this.getBlockMetadata();
         if (updateCon) this.updateConnections(type);
         if (getFlowBit(6) && getFlowBit(14)) this.transferItem(type);
     }
     
     private void updateConnections(int type) 
     {
-        ForgeDirection dir;
+    	EnumFacing dir;
         TileEntity te;
         boolean lHasOut = getFlowBit(6);
         boolean lHasIn = getFlowBit(14);
@@ -77,8 +78,8 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
             lDirOut = this.getFlowBit(i);
             lDirIn = this.getFlowBit(i | 8);
             if (lDirOut && lDirIn) continue;
-            dir = ForgeDirection.getOrientation(i);
-            te = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+            dir = EnumFacing.VALUES[i];
+            te = worldObj.getTileEntity(pos.offset(dir));
             if (te == null) {
                 setFlowBit(i, false);
                 setFlowBit(i | 8, false);
@@ -138,7 +139,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
         setFlowBit(6, nHasOut);
         setFlowBit(14, nHasIn);
         if (flow != lFlow) {
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(getPos());
             for (ItemPipe pipe : updateList) {
                 pipe.onNeighborBlockChange(this.getBlockType());
             }
@@ -148,10 +149,10 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     
     private void transferItem(int type)
     {
-        boolean rs = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+        boolean rs = worldObj.isBlockPowered(getPos());
         Inventory[] flowList = new Inventory[5];
         int n = 0;
-        ForgeDirection dir;
+        EnumFacing dir;
         boolean dirOut;
         boolean dirIn;
         if (type == BlockItemPipe.ID_Extraction) {
@@ -159,8 +160,8 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
                 dirOut = this.getFlowBit(i);
                 dirIn = this.getFlowBit(i | 8);
                 if (!dirIn ^ dirOut) continue;
-                dir = ForgeDirection.getOrientation(i);
-                TileEntity te = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+                dir = EnumFacing.VALUES[i];
+                TileEntity te = worldObj.getTileEntity(pos.offset(dir));
                 if (te == null || !(te instanceof IInventory)) updateCon = true;
                 else if (te instanceof ItemPipe) {
                 	if (dirOut && n < 5) flowList[n++] = ((ItemPipe)te).inventory;
@@ -198,8 +199,8 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
                 dirOut = this.getFlowBit(i);
                 dirIn = this.getFlowBit(i | 8);
                 if (dirOut && !dirIn) {
-                    dir = ForgeDirection.getOrientation(i);
-                    TileEntity te = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+                    dir = EnumFacing.VALUES[i];
+                    TileEntity te = worldObj.getTileEntity(pos.offset(dir));
                     if (te == null || !(te instanceof IInventory)) updateCon = true;
                     else if (te instanceof ItemPipe) {
                         if (n < 5) flowList[n++] = ((ItemPipe)te).inventory;
@@ -231,8 +232,8 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
                 dirOut = this.getFlowBit(i);
                 dirIn = this.getFlowBit(i | 8);
                 if (dirOut && !dirIn) {
-                    dir = ForgeDirection.getOrientation(i);
-                    TileEntity te = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+                    dir = EnumFacing.VALUES[i];
+                    TileEntity te = worldObj.getTileEntity(pos.offset(dir));
                     if (te != null && te instanceof ItemPipe && n < 5) flowList[n++] = ((ItemPipe)te).inventory;
                     else updateCon = true;
                 }
@@ -260,17 +261,18 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     }
 
     @Override
-    public boolean onActivated(EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumFacing dir, float X, float Y, float Z) 
     {
-        ItemStack item = player.getCurrentEquippedItem();
-        int type = this.worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+        int s = dir.getIndex();
+    	ItemStack item = player.getCurrentEquippedItem();
+        int type = this.getBlockMetadata();
         boolean canF = type == BlockItemPipe.ID_Extraction || type == BlockItemPipe.ID_Injection;
         if (player.isSneaking() && item == null) {
             if (worldObj.isRemote) return true;
             if (cover != null) {
                 player.setCurrentItemOrArmor(0, cover.item);
                 cover = null;
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                worldObj.markBlockForUpdate(getPos());
                 return true;
             }
             X -= 0.5F;
@@ -286,14 +288,14 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
             this.setFlowBit(s, lock);
             this.setFlowBit(s | 8, lock);
             this.onNeighborBlockChange(this.getBlockType());
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(getPos());
             TileEntity te = Utils.getTileOnSide(this, (byte)s);
             if (te != null && te instanceof ItemPipe) {
                 ItemPipe pipe = (ItemPipe)te;
                 pipe.setFlowBit(s^1, lock);
                 pipe.setFlowBit(s^1 | 8, lock);
                 pipe.onNeighborBlockChange(this.getBlockType());
-                worldObj.markBlockForUpdate(pipe.xCoord, pipe.yCoord, pipe.zCoord);
+                worldObj.markBlockForUpdate(pipe.pos);
             }
             return true;
         } else if (!player.isSneaking() && item == null && filter != null) {
@@ -308,7 +310,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
             item.stackSize--;
             if (item.stackSize <= 0) item = null;
             player.setCurrentItemOrArmor(0, item);
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(getPos());
             return true;
         } else if (filter == null && canF && item != null && item.getItem() instanceof ItemItemUpgrade && item.stackTagCompound != null) {
             if (worldObj.isRemote) return true;
@@ -353,9 +355,9 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
     {
-        flow = pkt.func_148857_g().getShort("flow");
-        cover = Cover.read(pkt.func_148857_g(), "cover");
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        flow = pkt.getNbtCompound().getShort("flow");
+        cover = Cover.read(pkt.getNbtCompound(), "cover");
+        worldObj.markBlockForUpdate(getPos());
     }
 
     @Override
@@ -364,7 +366,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setShort("flow", flow);
         if (cover != null) cover.write(nbt, "cover");
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, nbt);
+        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
     }
     
     @Override
@@ -387,11 +389,11 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
             ItemStack item = BlockItemRegistry.stack("item.itemUpgrade", 1);
             item.stackTagCompound = PipeUpgradeItem.save(filter);
             filter = null;
-            EntityItem entity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, item);
+            EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, item);
             worldObj.spawnEntityInWorld(entity);
         }
         if (cover != null) {
-            EntityItem entity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, cover.item);
+            EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, cover.item);
             cover = null;
             worldObj.spawnEntityInWorld(entity);
         }

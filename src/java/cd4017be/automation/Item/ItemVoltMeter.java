@@ -15,7 +15,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 /**
@@ -24,10 +26,9 @@ import net.minecraft.world.World;
  */
 public class ItemVoltMeter extends DefaultItem
 {
-    public ItemVoltMeter(String id, String tex)
+    public ItemVoltMeter(String id)
     {
         super(id);
-        this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxStackSize(1);
     }
@@ -63,7 +64,7 @@ public class ItemVoltMeter extends DefaultItem
     {
         if (item.stackTagCompound == null) createNBT(item);
         if (world.isRemote || item.stackTagCompound.getInteger("ly") < 0) return;
-        TileEntity te = world.getTileEntity(item.stackTagCompound.getInteger("lx"), item.stackTagCompound.getInteger("ly"), item.stackTagCompound.getInteger("lz"));
+        TileEntity te = world.getTileEntity(new BlockPos(item.stackTagCompound.getInteger("lx"), item.stackTagCompound.getInteger("ly"), item.stackTagCompound.getInteger("lz")));
         PipeEnergy energy = te != null && te instanceof IEnergy ? ((IEnergy)te).getEnergy(item.stackTagCompound.getByte("ls")) : null;
         if (energy != null)
         {
@@ -85,20 +86,20 @@ public class ItemVoltMeter extends DefaultItem
     }
     
     @Override
-    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, int x, int y, int z, int s, float X, float Y, float Z) 
+    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
     {
         if (world.isRemote) return true;
         if (item.stackTagCompound == null) createNBT(item);
-        TileEntity te = world.getTileEntity(x, y, z);
-        PipeEnergy energy = te != null && te instanceof IEnergy ? ((IEnergy)te).getEnergy((byte)s) : null;
+        TileEntity te = world.getTileEntity(pos);
+        PipeEnergy energy = te != null && te instanceof IEnergy ? ((IEnergy)te).getEnergy((byte)s.getIndex()) : null;
         if (energy != null)
         {
-            item.stackTagCompound.setInteger("lx", x);
-            item.stackTagCompound.setInteger("ly", y);
-            item.stackTagCompound.setInteger("lz", z);
+            item.stackTagCompound.setInteger("lx", pos.getX());
+            item.stackTagCompound.setInteger("ly", pos.getY());
+            item.stackTagCompound.setInteger("lz", pos.getZ());
             item.stackTagCompound.setFloat("Ucap", (float)energy.Ucap);
             item.stackTagCompound.setInteger("Umax", energy.Umax);
-            item.stackTagCompound.setByte("ls", (byte)s);
+            item.stackTagCompound.setByte("ls", (byte)s.getIndex());
             player.addChatMessage(new ChatComponentText("Energy linked"));
         } else
         {

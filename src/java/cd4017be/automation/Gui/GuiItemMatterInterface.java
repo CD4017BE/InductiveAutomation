@@ -6,11 +6,11 @@
 
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -76,12 +76,12 @@ public class GuiItemMatterInterface extends GuiMachine
             fontRendererObj.drawString(String.format("%d %s", list[i].stackSize, list[i].getDisplayName()), this.guiLeft + 70, this.guiTop + 17 + (i - scroll) * 8, 0x7fffff);
         }
         this.drawStringCentered(amount > 0 ? "" + amount : "ALL", this.guiLeft + 16, this.guiTop + 52, 0x808040);
-        this.drawStringCentered(this.container.inventory.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(this.container.inventory.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override
-    public void handleMouseInput() 
+    public void handleMouseInput() throws IOException 
     {
         this.scroll -= Mouse.getDWheel() / 120;
         if (this.scroll > list.length - 6) this.scroll = list.length - 6;
@@ -90,28 +90,28 @@ public class GuiItemMatterInterface extends GuiMachine
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         byte a = -1;
-        if (this.func_146978_c(26, 34, 16, 16, x, y)) {
+        if (this.isPointInRegion(26, 34, 16, 16, x, y)) {
             a = 0;
         } else
-        if (this.func_146978_c(7, 51, 18, 9, x, y)) {
+        if (this.isPointInRegion(7, 51, 18, 9, x, y)) {
             a = 1;
         } else
-        if (this.func_146978_c(8, 61, 4, 8, x, y))
+        if (this.isPointInRegion(8, 61, 4, 8, x, y))
         {
             amount -= b == 0 ? 8 : 512;
         } else
-        if (this.func_146978_c(12, 61, 4, 8, x, y))
+        if (this.isPointInRegion(12, 61, 4, 8, x, y))
         {
             amount -= b == 0 ? 1 : 64;
         } else
-        if (this.func_146978_c(16, 61, 4, 8, x, y))
+        if (this.isPointInRegion(16, 61, 4, 8, x, y))
         {
             amount += b == 0 ? 1 : 64;
         } else
-        if (this.func_146978_c(20, 61, 4, 8, x, y))
+        if (this.isPointInRegion(20, 61, 4, 8, x, y))
         {
             amount += b == 0 ? 8 : 512;
         }
@@ -119,13 +119,10 @@ public class GuiItemMatterInterface extends GuiMachine
         if (amount > 4096) amount = 4096;
         if (a >= 0)
         {
-            try {
-            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
             dos.writeByte(a);
             if (a == 1) dos.writeShort(amount);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
         super.mouseClicked(x, y, b);
     }

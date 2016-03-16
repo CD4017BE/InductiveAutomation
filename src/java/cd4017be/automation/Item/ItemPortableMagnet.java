@@ -24,9 +24,9 @@ import net.minecraft.world.World;
 public class ItemPortableMagnet extends ItemEnergyCell
 {
     
-    public ItemPortableMagnet(String id, String tex, int es)
+    public ItemPortableMagnet(String id, int es)
     {
-        super(id, tex, es);
+        super(id, es);
         this.setMaxStackSize(1);
     }
 
@@ -35,8 +35,8 @@ public class ItemPortableMagnet extends ItemEnergyCell
     {
         if (world.isRemote || !(entity instanceof EntityPlayer) || item.stackTagCompound == null || EnergyItemHandler.getEnergy(item) < 1) return;
         if (!item.stackTagCompound.getBoolean("active") || i == 17) return;
-        ArrayList<Entity> list = new ArrayList();
-        AxisAlignedBB area = AxisAlignedBB.getBoundingBox(entity.posX - Magnet.rad, entity.posY - Magnet.rad, entity.posZ - Magnet.rad, entity.posX + Magnet.rad, entity.posY + Magnet.rad, entity.posZ + Magnet.rad);
+        ArrayList<Entity> list = new ArrayList<Entity>();
+        AxisAlignedBB area = new AxisAlignedBB(entity.posX - Magnet.rad, entity.posY - Magnet.rad, entity.posZ - Magnet.rad, entity.posX + Magnet.rad, entity.posY + Magnet.rad, entity.posZ + Magnet.rad);
         list.addAll(world.getEntitiesWithinAABB(EntityItem.class, area));
         list.addAll(world.getEntitiesWithinAABB(EntityXPOrb.class, area));
         Vec3 vec0 = Vec3.Def(entity.posX, entity.posY, entity.posZ), vec1;

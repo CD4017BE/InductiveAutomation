@@ -1,14 +1,14 @@
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.api.automation.IEnergy;
-import cd4017be.api.automation.IEnergyStorage;
 import cd4017be.api.automation.PipeEnergy;
-import cd4017be.api.energy.EnergyThermalExpansion;
-import cd4017be.automation.Automation;
+import cd4017be.api.energy.EnergyAPI.IEnergyAccess;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -21,7 +21,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class FuelCell extends AutomatedTile implements IFluidHandler, IEnergy, IEnergyStorage
+public class FuelCell extends AutomatedTile implements IFluidHandler, IEnergy, IEnergyAccess
 {
 
     public FuelCell()
@@ -29,7 +29,7 @@ public class FuelCell extends AutomatedTile implements IFluidHandler, IEnergy, I
         netData = new TileEntityData(1, 2, 1, 3);
         energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
 		inventory = new Inventory(this, 3);
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_hydrogenG).setIn(0), new Tank(Config.tankCap[1], -1, Automation.L_oxygenG).setIn(1), new Tank(Config.tankCap[1], 1, Automation.L_steam).setOut(2));
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_hydrogenG).setIn(0), new Tank(Config.tankCap[1], -1, Objects.L_oxygenG).setIn(1), new Tank(Config.tankCap[1], 1, Objects.L_steam).setOut(2));
 		/**
 		 * long: tanks
 		 * int: voltage, power, mlHydrogen, mlOxygen
@@ -39,12 +39,12 @@ public class FuelCell extends AutomatedTile implements IFluidHandler, IEnergy, I
     }
 	
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-    	super.updateEntity();
+    	super.update();
     	if (worldObj.isRemote) return;
     	double e = energy.getEnergy(netData.ints[0], 1);
-    	double e1 = this.addEnergy(e);
+    	double e1 = this.addEnergy(e, 0);
     	if (e1 != e) energy.addEnergy(-e1);
         else energy.Ucap = netData.ints[0];
     	int p = (int)Math.ceil((1F - netData.floats[0] / (Config.Ecap[0] * 1000F) * 2F) * Config.PfuelCell * 0.5F);
@@ -53,11 +53,10 @@ public class FuelCell extends AutomatedTile implements IFluidHandler, IEnergy, I
     	if (p > 0) {
             tanks.drain(0, p * 2, true);
             tanks.drain(1, p, true);
-            tanks.fill(2, new FluidStack(Automation.L_steam, p), true);
+            tanks.fill(2, new FluidStack(Objects.L_steam, p), true);
             netData.floats[0] += p * 1800F;
     	} else p = 0;
     	netData.ints[1] = p * 2;
-        netData.floats[0] = EnergyThermalExpansion.outputEnergy(this, netData.floats[0], 0x3f);
     }
 	
     public int getStorageScaled(int s)
@@ -87,7 +86,7 @@ public class FuelCell extends AutomatedTile implements IFluidHandler, IEnergy, I
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) {
             netData.ints[0] = dis.readShort();
@@ -105,18 +104,18 @@ public class FuelCell extends AutomatedTile implements IFluidHandler, IEnergy, I
     }
 
     @Override
-    public double getEnergy() 
+    public double getStorage(int s) 
     {
         return netData.floats[0];
     }
 
     @Override
-    public double getCapacity() {
+    public double getCapacity(int s) {
         return Config.Ecap[0] * 1000D;
     }
 
     @Override
-    public double addEnergy(double e) 
+    public double addEnergy(double e, int s) 
     {
         netData.floats[0] += e;
         if (netData.floats[0] < 0) {

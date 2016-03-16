@@ -9,6 +9,7 @@ import java.util.List;
 
 import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
@@ -18,14 +19,14 @@ import cd4017be.lib.templates.Inventory.Component;
 import cd4017be.lib.templates.SlotTank;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
-import net.minecraft.block.Block;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.ChunkPosition;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.EnumSkyBlock;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import net.minecraft.inventory.ISidedInventory;
 
@@ -44,22 +45,22 @@ public class AlgaePool extends AutomatedTile implements ISidedInventory, IFluidH
     {
         netData = new TileEntityData(2, 1, 2, 2);
         inventory = new Inventory(this, 5, new Component(4, 5, -1));
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_water).setIn(2), new Tank(Config.tankCap[1], 1, Automation.L_biomass).setOut(3)).setNetLong(1);
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_water).setIn(2), new Tank(Config.tankCap[1], 1, Objects.L_biomass).setOut(3)).setNetLong(1);
         
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+        super.update();
         if (worldObj.isRemote) return;
         updateCounter++;
         if (updateCounter >= UpdateTime)
         {
             updateCounter = 0;
             midBrightness = 0;
-            List<ChunkPosition> list = new ArrayList<ChunkPosition>();
-            updateMultiblock(xCoord, yCoord, zCoord, list);
+            List<BlockPos> list = new ArrayList<BlockPos>();
+            updateMultiblock(pos, list);
             if (list.size() > 0) midBrightness /= list.size();
             netData.ints[0] = list.size() * Config.tankCap[1];
         }
@@ -83,14 +84,13 @@ public class AlgaePool extends AutomatedTile implements ISidedInventory, IFluidH
         }
     }
     
-    private void updateMultiblock(int x, int y, int z, List<ChunkPosition> list)
+    private void updateMultiblock(BlockPos p, List<BlockPos> list)
     {
-        Block poolId = BlockItemRegistry.blockId("tile.pool");
         for (int i = 0; i < 6 && list.size() < 16; i++)
         {
-            ForgeDirection dir = ForgeDirection.getOrientation(i);
-            ChunkPosition pos = new ChunkPosition(x + dir.offsetX, y + dir.offsetY, z + dir.offsetZ);
-            if (worldObj.getBlock(pos.chunkPosX, pos.chunkPosY, pos.chunkPosZ) != poolId) continue;
+            EnumFacing dir = EnumFacing.VALUES[i];
+            BlockPos pos = p.offset(dir);
+            if (worldObj.getBlockState(pos).getBlock() != Objects.pool) continue;
             boolean b = true;
             for (int j = 0; j < list.size(); j++)
             {
@@ -103,8 +103,8 @@ public class AlgaePool extends AutomatedTile implements ISidedInventory, IFluidH
             if (b)
             {
                 list.add(pos);
-                midBrightness += worldObj.getSavedLightValue(EnumSkyBlock.Sky, pos.chunkPosX, pos.chunkPosY + 1, pos.chunkPosZ);
-                updateMultiblock(pos.chunkPosX, pos.chunkPosY, pos.chunkPosZ, list);
+                midBrightness += worldObj.getLightFor(EnumSkyBlock.SKY, pos.up());
+                updateMultiblock(pos, list);
             }
         }
     }
@@ -124,13 +124,13 @@ public class AlgaePool extends AutomatedTile implements ISidedInventory, IFluidH
         netData.floats[0] += Rf;
         netData.floats[1] -= Rf;
         int b = (int)Math.floor(amountBiomass);
-        tanks.fill(1, Automation.getLiquid(Automation.L_biomass, b), true);
+        tanks.fill(1, new FluidStack(Objects.L_biomass, b), true);
         amountBiomass -= b;
     }
     
     private float getBrightness()
     {
-        float l = midBrightness - worldObj.skylightSubtracted;
+        float l = midBrightness - worldObj.getSkylightSubtracted();
         if (l < 0) l = 0;
         return l * (1F - netData.floats[0] / (float)netData.ints[0] / 4F) / 15F;
     }

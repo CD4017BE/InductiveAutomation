@@ -1,7 +1,5 @@
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.lwjgl.input.Keyboard;
@@ -9,6 +7,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import cd4017be.automation.TileEntity.VertexShematicGen;
@@ -47,13 +46,13 @@ public class GuiVertexShematicGen extends GuiMachine
         this.xSize = 176;
         this.ySize = 179;
         super.initGui();
-        tfX = new GuiTextField(fontRendererObj, this.guiLeft + 20, this.guiTop + 16, 25, 8);
-        tfY = new GuiTextField(fontRendererObj, this.guiLeft + 20, this.guiTop + 27, 25, 8);
-        tfZ = new GuiTextField(fontRendererObj, this.guiLeft + 20, this.guiTop + 38, 25, 8);
-        tfU = new GuiTextField(fontRendererObj, this.guiLeft + 20, this.guiTop + 49, 25, 8);
-        tfV = new GuiTextField(fontRendererObj, this.guiLeft + 20, this.guiTop + 60, 25, 8);
-        tfT = new GuiTextField(fontRendererObj, this.guiLeft + 20, this.guiTop + 71, 25, 8);
-        name = new GuiTextField(fontRendererObj, this.guiLeft + 134, this.guiTop + 71, 34, 8);
+        tfX = new GuiTextField(0, fontRendererObj, this.guiLeft + 20, this.guiTop + 16, 25, 8);
+        tfY = new GuiTextField(1, fontRendererObj, this.guiLeft + 20, this.guiTop + 27, 25, 8);
+        tfZ = new GuiTextField(2, fontRendererObj, this.guiLeft + 20, this.guiTop + 38, 25, 8);
+        tfU = new GuiTextField(3, fontRendererObj, this.guiLeft + 20, this.guiTop + 49, 25, 8);
+        tfV = new GuiTextField(4, fontRendererObj, this.guiLeft + 20, this.guiTop + 60, 25, 8);
+        tfT = new GuiTextField(5, fontRendererObj, this.guiLeft + 20, this.guiTop + 71, 25, 8);
+        name = new GuiTextField(6, fontRendererObj, this.guiLeft + 134, this.guiTop + 71, 34, 8);
         tfX.setEnableBackgroundDrawing(false);
         tfY.setEnableBackgroundDrawing(false);
         tfZ.setEnableBackgroundDrawing(false);
@@ -145,12 +144,12 @@ public class GuiVertexShematicGen extends GuiMachine
         	int c = colors[p.texId & 0x7];
         	this.fontRendererObj.drawString(i + ": " + p.vert.length + "V", this.guiLeft + 97, this.guiTop + 16 + 8 * (i - scroll1), c);
         }
-        this.drawStringCentered(tile.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tile.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 83, 0x404040);
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         tfX.mouseClicked(x, y, b);
@@ -162,65 +161,62 @@ public class GuiVertexShematicGen extends GuiMachine
         name.mouseClicked(x, y, b);
         int kb = -1;
         int s = 0, s1 = 0;
-        if (this.func_146978_c(133, 59, 18, 9, x, y)) {
+        if (this.isPointInRegion(133, 59, 18, 9, x, y)) {
         	kb = 0;
-        } else if (this.func_146978_c(133, 48, 18, 9, x, y)) {
+        } else if (this.isPointInRegion(133, 48, 18, 9, x, y)) {
         	kb = 1;
-        } else if (this.func_146978_c(133, 37, 36, 9, x, y)) {
+        } else if (this.isPointInRegion(133, 37, 36, 9, x, y)) {
         	kb = 2;
         	s = sel1;
-        } else if (this.func_146978_c(133, 26, 36, 9, x, y)) {
+        } else if (this.isPointInRegion(133, 26, 36, 9, x, y)) {
         	kb = 3;
         	s = sel1;
-        } else if (this.func_146978_c(133, 15, 36, 9, x, y)) {
+        } else if (this.isPointInRegion(133, 15, 36, 9, x, y)) {
         	kb = 3;
         	s = -1;
-        } else if (this.func_146978_c(66, 71, 18, 9, x, y)) {
+        } else if (this.isPointInRegion(66, 71, 18, 9, x, y)) {
         	kb = 4;
-        } else if (this.func_146978_c(66, 51, 18, 9, x, y)) {
+        } else if (this.isPointInRegion(66, 51, 18, 9, x, y)) {
         	kb = 5;
         	s = sel1;
         	s1 = ++sel2;
-        } else if (this.func_146978_c(48, 51, 18, 9, x, y)) {
+        } else if (this.isPointInRegion(48, 51, 18, 9, x, y)) {
         	kb = 6;
         	s = sel1;
         	s1 = sel2;
-        } else if (this.func_146978_c(7, 70, 10, 10, x, y) && sel1 >= 0 && sel1 < tile.polygons.size()) {
+        } else if (this.isPointInRegion(7, 70, 10, 10, x, y) && sel1 >= 0 && sel1 < tile.polygons.size()) {
         	kb = 8;
         	s = sel1;
         	s1 = (tile.polygons.get(sel1).dir + 1) % 6;
-        } else if (this.func_146978_c(48, 71, 5, 9, x, y) && sel1 >= 0 && sel1 < tile.polygons.size()) {
+        } else if (this.isPointInRegion(48, 71, 5, 9, x, y) && sel1 >= 0 && sel1 < tile.polygons.size()) {
         	kb = 7;
         	s = sel1;
         	s1 = (tile.polygons.get(sel1).texId + 1) % 8;
-        } else if (this.func_146978_c(61, 71, 5, 9, x, y) && sel1 >= 0 && sel1 < tile.polygons.size()) {
+        } else if (this.isPointInRegion(61, 71, 5, 9, x, y) && sel1 >= 0 && sel1 < tile.polygons.size()) {
         	kb = 7;
         	s = sel1;
         	s1 = (tile.polygons.get(sel1).texId + 7) % 8;
-        } else if (this.func_146978_c(59, 16, 24, 32, x, y) && sel1 >= 0 && sel1 < tile.polygons.size()) {
+        } else if (this.isPointInRegion(59, 16, 24, 32, x, y) && sel1 >= 0 && sel1 < tile.polygons.size()) {
         	int sel = (y - this.guiTop - 16) / 8 + scroll2;
         	if (sel >= tile.polygons.get(sel1).vert.length) sel2 = -1;
         	else sel2 = sel;
-        } else if (this.func_146978_c(97, 16, 33, 63, x, y)) {
+        } else if (this.isPointInRegion(97, 16, 33, 63, x, y)) {
         	int sel = (y - this.guiTop - 16) / 8 + scroll1;
         	if (sel >= tile.polygons.size()) sel1 = -1;
         	else sel1 = sel;
         	s = sel1;
         	kb = 12;
-        } else if (this.func_146978_c(48, 61, 34, 9, x, y)) {
+        } else if (this.isPointInRegion(48, 61, 34, 9, x, y)) {
         	s = sel1;
         	kb = 13;
         }
         if (kb >= 0)
         {
-            try {
-            ByteArrayOutputStream bos = tile.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = tile.getPacketTargetData();
             dos.writeByte(AutomatedTile.CmdOffset + kb);
             if ((kb >= 2 && kb <= 8 && kb != 4) || kb == 12 || kb == 13) dos.writeShort(s);
             if (kb >= 5 && kb <= 8) dos.writeByte(s1);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
     }
 
@@ -230,13 +226,13 @@ public class GuiVertexShematicGen extends GuiMachine
     	boolean isSel1 = sel1 >= 0 && sel1 < tile.polygons.size();
         Polygon p = isSel1 ? tile.polygons.get(sel1) : null;
         int i = (isSel1 ? p.vert.length : 0) - 4;
-    	if (this.func_146978_c(49, 16, 8, 32, x, y) && i > 0) {
+    	if (this.isPointInRegion(49, 16, 8, 32, x, y) && i > 0) {
 			scroll2 = (y - this.guiTop - 22) * i / 20;
 		}
     	if (scroll2 > i) scroll2 = i;
     	if (scroll2 < 0) scroll2 = 0;
         i = tile.polygons.size() - 8;
-        if (this.func_146978_c(87, 16, 8, 63, x, y) && i > 0) {
+        if (this.isPointInRegion(87, 16, 8, 63, x, y) && i > 0) {
         	scroll1 = (y - this.guiTop - 22) * i / 51;
         }
         if (scroll1 > i) scroll1 = i;
@@ -245,7 +241,7 @@ public class GuiVertexShematicGen extends GuiMachine
 	}
 
 	@Override
-    protected void keyTyped(char c, int k) 
+    protected void keyTyped(char c, int k) throws IOException 
     {
         if (!tfX.isFocused() && !tfY.isFocused() && !tfZ.isFocused() && !tfU.isFocused() && !tfV.isFocused() && !tfT.isFocused() && !name.isFocused()) super.keyTyped(c, k);
         tfX.textboxKeyTyped(c, k);
@@ -287,8 +283,7 @@ public class GuiVertexShematicGen extends GuiMachine
             }
             if (tf != null)
             try {
-                ByteArrayOutputStream bos = tile.getPacketTargetData();
-                DataOutputStream dos = new DataOutputStream(bos);
+            	PacketBuffer dos = tile.getPacketTargetData();
                 dos.writeByte(AutomatedTile.CmdOffset + i);
                 if (i == 10) {
                 	dos.writeShort(sel1);
@@ -298,10 +293,9 @@ public class GuiVertexShematicGen extends GuiMachine
                 } else if (i == 9) {
                 	dos.writeShort(sel1);
                 	dos.writeShort(Short.parseShort(tf.getText()));
-                } else if (i == 11) dos.writeUTF(tf.getText());
-                BlockGuiHandler.sendPacketToServer(bos);
-            } catch (NumberFormatException e) {
-            } catch (IOException e) {}
+                } else if (i == 11) dos.writeString(tf.getText());
+                BlockGuiHandler.sendPacketToServer(dos);
+            } catch (NumberFormatException e) {}
         }
     }
 

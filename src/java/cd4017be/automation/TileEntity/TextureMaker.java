@@ -4,7 +4,9 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import java.io.IOException;
 
 import cd4017be.automation.Gui.GuiTextureMaker;
@@ -25,6 +27,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -43,12 +46,6 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     {
     	netData = new TileEntityData(0, 3, 0, 0);
     }
-    
-    @Override
-    public void updateEntity() 
-    {
-        super.updateEntity();
-    }
 
     @Override
     public Packet getDescriptionPacket() 
@@ -56,14 +53,14 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setByteArray("tex", drawing);
         nbt.setByte("width", width);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, nbt);
+        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
     {
-        drawing = pkt.func_148857_g().getByteArray("tex");
-        width = pkt.func_148857_g().getByte("width");
+        drawing = pkt.getNbtCompound().getByteArray("tex");
+        width = pkt.getNbtCompound().getByte("width");
         if (drawing == null)
         {
             drawing = new byte[0];
@@ -73,7 +70,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     }
 
     @Override
-    public void onPlayerCommand(DataInputStream dis, EntityPlayerMP player) throws IOException 
+    public void onPlayerCommand(PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         byte cmd = dis.readByte();
         if (cmd == GuiTextureMaker.CMD_Button) {
@@ -100,7 +97,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
             			for (int x = x0; x < x1; x++)
             				drawing[x + y * width] = 0;
             	}
-            	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            	worldObj.markBlockForUpdate(getPos());
             } 
         } else if (cmd == GuiTextureMaker.CMD_Draw) {
             byte x = dis.readByte();
@@ -127,7 +124,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
                 else if (t == 2) replace(x, y, b, x0, y0, x1, y1);
                 else if (t == 4) move(x, y, true, x0, y0, x1, y1);
                 else if (t == 5) move(x, y, false, x0, y0, x1, y1);
-                worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+                worldObj.markBlockForUpdate(getPos());
             }
         } else if (cmd == GuiTextureMaker.CMD_Value) {
         	byte i = dis.readByte();
@@ -139,7 +136,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         	else if (i == 2) netData.ints[1] = v;
         	else if (i == 3) netData.ints[2] = v;
         } else if (cmd == GuiTextureMaker.CMD_Name) {
-            String name = dis.readUTF();
+            String name = dis.readStringFromBuffer(64);
             if (inventory[0] != null && inventory[0].getItem() instanceof ItemBuilderTexture && inventory[0].stackTagCompound != null)
             {
                 inventory[0].stackTagCompound.setString("name", name);
@@ -159,7 +156,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         	netData.ints[1] = 0;
         	netData.ints[2] = 0;
         	for (int i = 1; i < inventory.length; i++) inventory[i] = null;
-        	worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        	worldObj.markBlockForUpdate(getPos());
         } else if (validItem && inventory[0].stackTagCompound != null) {
         	NBTTagCompound nbt = inventory[0].stackTagCompound;
         	drawing = nbt.getByteArray("data");
@@ -172,7 +169,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
             ItemStack item = inventory[0];
             inventory = this.readItemsFromNBT(nbt, "def", inventory.length);
             inventory[0] = item;
-            worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+            worldObj.markBlockForUpdate(getPos());
         }
     }
     
@@ -210,7 +207,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         drawing = newDraw;
         width = (byte)x;
         height = (byte)y;
-        worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        worldObj.markBlockForUpdate(getPos());
     }
     
     private static enum Transformation {
@@ -330,19 +327,19 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     }
     
     @Override
-    public int[] getAccessibleSlotsFromSide(int s) 
+    public int[] getSlotsForFace(EnumFacing s) 
     {
         return new int[0];
     }
 
     @Override
-    public boolean canInsertItem(int i, ItemStack item, int s) 
+    public boolean canInsertItem(int i, ItemStack item, EnumFacing s) 
     {
         return false;
     }
 
     @Override
-    public boolean canExtractItem(int i, ItemStack item, int s) 
+    public boolean canExtractItem(int i, ItemStack item, EnumFacing s) 
     {
         return false;
     }
@@ -379,7 +376,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int id) 
+    public ItemStack removeStackFromSlot(int id) 
     {
         ItemStack item = inventory[id];
         inventory[id] = null;
@@ -393,7 +390,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         inventory[id] = item;
         if (id > 0 && item != null) {
         	FluidStack fluid = Utils.getFluid(item);
-        	if (fluid != null) inventory[id] = ItemFluidDummy.getFluidContainer(fluid.fluidID, 1);
+        	if (fluid != null) inventory[id] = ItemFluidDummy.getFluidContainer(fluid.getFluid().getID(), 1);
         }
     }
 
@@ -419,19 +416,42 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     }
 
 	@Override
-	public String getInventoryName() {
+	public String getName() {
         return "TextureMaker";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() {
+	public boolean hasCustomName() {
 		return true;
 	}
 
 	@Override
-	public void openInventory() {}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
-	public void closeInventory() {}
+	public void closeInventory(EntityPlayer player) {}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public void clear() {
+	}
+
+	@Override
+	public IChatComponent getDisplayName() {
+		return new ChatComponentText(this.getName());
+	}
     
 }

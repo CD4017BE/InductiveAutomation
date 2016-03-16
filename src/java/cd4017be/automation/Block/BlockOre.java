@@ -10,10 +10,13 @@ import cd4017be.automation.Automation;
 import cd4017be.automation.Item.ItemOre;
 import cd4017be.lib.DefaultBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyEnum;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.IStringSerializable;
 
 /**
  *
@@ -21,32 +24,51 @@ import net.minecraft.util.IIcon;
  */
 public class BlockOre extends DefaultBlock
 {
-    public static final byte ID_Silver = 0;
-    public static final byte ID_Copper = 1;
+    public static enum Ore implements IStringSerializable{
+    	Silver("silver"), Copper("copper");
+		public final String name;
+		private Ore(String name) {
+			this.name = name;
+		}
+    	@Override
+		public String getName() {
+			return name;
+		}
+    }
+	public static PropertyEnum<Ore> prop = PropertyEnum.create("ore", Ore.class);
     
     public BlockOre(String id)
     {
-        super(id, Material.rock, ItemOre.class, "ore/silver", "ore/copper");
+        super(id, Material.rock, ItemOre.class);
         this.setCreativeTab(Automation.tabAutomation);
-    }
-
-    @Override
-    public IIcon getIcon(int s, int m) 
-    {
-        return this.getIconN(m);
     }
 
     @Override
     public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List list) 
     {
-        list.add(new ItemStack(this, 1, ID_Silver));
-        list.add(new ItemStack(this, 1, ID_Copper));
+        list.add(new ItemStack(this, 1, Ore.Silver.ordinal()));
+        list.add(new ItemStack(this, 1, Ore.Copper.ordinal()));
     }
+    
+    @Override
+	public IBlockState getStateFromMeta(int meta) {
+		return this.blockState.getBaseState().withProperty(prop, Ore.values()[meta]);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(prop).ordinal();
+	}
 
     @Override
-    public int damageDropped(int m) 
+	protected BlockState createBlockState() {
+		return new BlockState(this, prop);
+	}
+
+	@Override
+    public int damageDropped(IBlockState m) 
     {
-        return m;
+        return this.getMetaFromState(m);
     }
     
 }

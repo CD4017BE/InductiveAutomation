@@ -6,6 +6,8 @@
 
 package cd4017be.automation.TileEntity;
 
+import net.minecraft.util.ITickable;
+
 import java.util.ArrayList;
 
 import cd4017be.api.automation.IEnergy;
@@ -15,8 +17,7 @@ import cd4017be.lib.ModTileEntity;
 import cd4017be.lib.MovedBlock;
 import cd4017be.lib.util.Utils;
 import cd4017be.lib.util.Vec3;
-import cofh.api.energy.IEnergyHandler;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -28,11 +29,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -42,7 +45,7 @@ import net.minecraftforge.fluids.IFluidHandler;
  *
  * @author CD4017BE
  */
-public class InterdimHole extends ModTileEntity implements ISidedInventory, IFluidHandler, IEnergy, IEnergyHandler
+public class InterdimHole extends ModTileEntity implements ISidedInventory, IFluidHandler, IEnergy, ITickable //, IEnergyHandler //TODO reimplement
 {
     public int linkX = 0;
     public int linkY = -1;
@@ -62,10 +65,10 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         if (item.getItemDamage() == 0) {
             ItemStack drop = new ItemStack(item.getItem(), 1, 1);
             drop.stackTagCompound = new NBTTagCompound();
-            drop.stackTagCompound.setInteger("lx", xCoord);
-            drop.stackTagCompound.setInteger("ly", yCoord);
-            drop.stackTagCompound.setInteger("lz", zCoord);
-            drop.stackTagCompound.setInteger("ld", worldObj.provider.dimensionId);
+            drop.stackTagCompound.setInteger("lx", pos.getX());
+            drop.stackTagCompound.setInteger("ly", pos.getY());
+            drop.stackTagCompound.setInteger("lz", pos.getZ());
+            drop.stackTagCompound.setInteger("ld", worldObj.provider.getDimensionId());
             EntityItem eitem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, drop);
             worldObj.spawnEntityInWorld(eitem);
             if (entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new ChatComponentText("The droped Wormhole will link to this"));
@@ -82,9 +85,9 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public ArrayList<ItemStack> dropItem(int m, int fortune) 
+    public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) 
     {
-        ArrayList<ItemStack> list = new ArrayList();
+        ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         ItemStack drop = new ItemStack(this.getBlockType(), 1, 1);
         drop.stackTagCompound = new NBTTagCompound();
         drop.stackTagCompound.setInteger("lx", linkX);
@@ -96,13 +99,13 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public boolean onActivated(EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         if (worldObj.isRemote) return true;
         if (player.isSneaking() && player.getCurrentEquippedItem() == null && linkTile != null && !linkTile.isInvalid() && linkTile.linkTile == this) {
             ItemStack item = new ItemStack(this.getBlockType(), 1, 0);
-            linkTile.worldObj.setBlockToAir(linkTile.xCoord, linkTile.yCoord, linkTile.zCoord);
-            worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+            linkTile.worldObj.setBlockToAir(linkTile.pos);
+            worldObj.setBlockToAir(getPos());
             EntityItem eitem = new EntityItem(worldObj, player.posX, player.posY, player.posZ, item);
             worldObj.spawnEntityInWorld(eitem);
             player.addChatMessage(new ChatComponentText("Both linked Wormholes removed"));
@@ -110,9 +113,9 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         } else if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == Items.paper) {
             ItemStack item = BlockItemRegistry.stack("item.teleporterCoords", player.getCurrentEquippedItem().stackSize);
             item.stackTagCompound = new NBTTagCompound();
-            item.stackTagCompound.setInteger("x", xCoord);
-            item.stackTagCompound.setInteger("y", yCoord);
-            item.stackTagCompound.setInteger("z", zCoord);
+            item.stackTagCompound.setInteger("x", pos.getX());
+            item.stackTagCompound.setInteger("y", pos.getY());
+            item.stackTagCompound.setInteger("z", pos.getZ());
             player.setCurrentItemOrArmor(0, item);
         }
         return false;
@@ -122,13 +125,13 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     public int redstoneLevel(int s, boolean str) 
     {
         if (linkTile == null) return 0;
-        ForgeDirection dir = ForgeDirection.getOrientation(s);
+        EnumFacing dir = EnumFacing.VALUES[s];
         if (str) return 0;
-        return linkTile.worldObj.getIndirectPowerLevelTo(linkX - dir.offsetX, linkY - dir.offsetY, linkZ - dir.offsetZ, s);
+        return linkTile.worldObj.getRedstonePower(new BlockPos(linkX - dir.getFrontOffsetX(), linkY - dir.getFrontOffsetY(), linkZ - dir.getFrontOffsetZ()), EnumFacing.VALUES[s]);
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
         if (updateCon && !worldObj.isRemote) {
             init();
@@ -159,33 +162,33 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
     
     @Override
-    public int[] getAccessibleSlotsFromSide(int s) 
+    public int[] getSlotsForFace(EnumFacing s) 
     {
         if (linkTile == null) return new int[0];
-        TileEntity te = linkTile.neighbors[s];
+        TileEntity te = linkTile.neighbors[s.getIndex()];
         if (te != null && !te.isInvalid() && te instanceof IInventory) {
-            return linkTile.invIdx[s];
+            return linkTile.invIdx[s.getIndex()];
         } else return new int[0];
     }
 
     @Override
-    public boolean canInsertItem(int i, ItemStack itemstack, int s) 
+    public boolean canInsertItem(int i, ItemStack itemstack, EnumFacing s) 
     {
         if (linkTile == null) return false;
-        TileEntity te = linkTile.neighbors[s];
+        TileEntity te = linkTile.neighbors[s.getIndex()];
         if (te != null && !te.isInvalid() && te instanceof IInventory) {
-            if (te instanceof ISidedInventory) return linkTile.linkIdx[i] >> 28 == s && ((ISidedInventory)te).canInsertItem(linkTile.linkIdx[i]&0x0fffffff, itemstack, s);
+            if (te instanceof ISidedInventory) return linkTile.linkIdx[i] >> 28 == s.getIndex() && ((ISidedInventory)te).canInsertItem(linkTile.linkIdx[i]&0x0fffffff, itemstack, s);
             else return true;
         } else return false;
     }
 
     @Override
-    public boolean canExtractItem(int i, ItemStack itemstack, int s) 
+    public boolean canExtractItem(int i, ItemStack itemstack, EnumFacing s) 
     {
         if (linkTile == null) return false;
-        TileEntity te = linkTile.neighbors[s];
+        TileEntity te = linkTile.neighbors[s.getIndex()];
         if (te != null && !te.isInvalid() && te instanceof IInventory) {
-            if (te instanceof ISidedInventory) return linkTile.linkIdx[i] >> 28 == s && ((ISidedInventory)te).canExtractItem(linkTile.linkIdx[i]&0x0fffffff, itemstack, s);
+            if (te instanceof ISidedInventory) return linkTile.linkIdx[i] >> 28 == s.getIndex() && ((ISidedInventory)te).canExtractItem(linkTile.linkIdx[i]&0x0fffffff, itemstack, s);
             else return true;
         } else return false;
     }
@@ -219,7 +222,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) 
+    public ItemStack removeStackFromSlot(int i) 
     {
         return null;
     }
@@ -235,7 +238,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public String getInventoryName() 
+    public String getName() 
     {
         return "Interdimensional Wormhole";
     }
@@ -259,7 +262,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public int fill(ForgeDirection from, FluidStack resource, boolean doFill) 
+    public int fill(EnumFacing from, FluidStack resource, boolean doFill) 
     {
         if (linkTile == null) return 0;
         TileEntity te = linkTile.neighbors[from.ordinal()];
@@ -269,7 +272,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, FluidStack resource, boolean doDrain) 
+    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) 
     {
         if (linkTile == null) return null;
         TileEntity te = linkTile.neighbors[from.ordinal()];
@@ -279,7 +282,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public FluidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) 
+    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) 
     {
         if (linkTile == null) return null;
         TileEntity te = linkTile.neighbors[from.ordinal()];
@@ -289,7 +292,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public boolean canFill(ForgeDirection from, Fluid fluid) 
+    public boolean canFill(EnumFacing from, Fluid fluid) 
     {
         if (linkTile == null) return false;
         TileEntity te = linkTile.neighbors[from.ordinal()];
@@ -299,7 +302,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public boolean canDrain(ForgeDirection from, Fluid fluid) 
+    public boolean canDrain(EnumFacing from, Fluid fluid) 
     {
         if (linkTile == null) return false;
         TileEntity te = linkTile.neighbors[from.ordinal()];
@@ -309,7 +312,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public FluidTankInfo[] getTankInfo(ForgeDirection from) 
+    public FluidTankInfo[] getTankInfo(EnumFacing from) 
     {
         if (linkTile == null) return null;
         TileEntity te = linkTile.neighbors[from.ordinal()];
@@ -336,9 +339,9 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         link(true);
         if (linkTile == null) return;
         Vec3 pos = Vec3.Def(entity.posX, entity.posY, entity.posZ);
-        AxisAlignedBB block = this.getBlockType().getCollisionBoundingBoxFromPool(worldObj, xCoord, yCoord, zCoord);
-        AxisAlignedBB box = entity.boundingBox.copy();
-        pos = pos.add(-0.5D - xCoord, -0.5D - yCoord, -0.5D - zCoord);
+        AxisAlignedBB block = this.getBlockType().getCollisionBoundingBox(worldObj, getPos(), worldObj.getBlockState(this.pos));
+        AxisAlignedBB box = entity.getEntityBoundingBox();
+        pos = pos.add(-0.5D - (double)this.pos.getX(), -0.5D - (double)this.pos.getY(), -0.5D - (double)this.pos.getZ());
         if (box.minY >= block.maxY || box.maxY <= block.minY) return;
         if (box.minX < block.maxX && box.maxX > block.minX) {
             if (pos.z < 0) pos.z += block.maxZ - box.minZ + 0.125D;
@@ -347,10 +350,10 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
             if (pos.x < 0) pos.x += block.maxX - box.minX + 0.125D;
             else pos.x += block.minX - box.maxX - 0.125D;
         } else return;
-        pos = pos.add(linkTile.xCoord + 0.5D, linkTile.yCoord + 0.5D, linkTile.zCoord + 0.5D);
+        pos = pos.add((double)linkTile.pos.getX() + 0.5D, (double)linkTile.pos.getY() + 0.5D, (double)linkTile.pos.getZ() + 0.5D);
         box.offset(pos.x - entity.posX, pos.y - entity.posY, pos.z - entity.posZ);
         if (!linkTile.isAreaClear(box)) return;
-        MovedBlock.moveEntity(entity, linkTile.worldObj.provider.dimensionId, pos.x, pos.y, pos.z);
+        MovedBlock.moveEntity(entity, linkTile.worldObj.provider.getDimensionId(), pos.x, pos.y, pos.z);
     }
     
     protected boolean isAreaClear(AxisAlignedBB area)
@@ -361,30 +364,22 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         int y1 = MathHelper.floor_double(area.maxY + 1.0D);
         int z0 = MathHelper.floor_double(area.minZ);
         int z1 = MathHelper.floor_double(area.maxZ + 1.0D);
-        ArrayList list = new ArrayList();
+        BlockPos pos;
+        ArrayList<AxisAlignedBB> list = new ArrayList<AxisAlignedBB>();
         for (int x = x0; x < x1; ++x)
-        {
             for (int z = z0; z < z1; ++z)
-            {
-                if (worldObj.blockExists(x, 64, z))
-                {
-                    for (int y = y0 - 1; y < y1; ++y)
-                    {
-                        Block block = worldObj.getBlock(x, y, z);
-                        if (block != null)
-                        {
-                            block.addCollisionBoxesToList(worldObj, x, y, z, area, list, (Entity)null);
-                            if (!list.isEmpty()) return false;
-                        }
+                if (worldObj.isBlockLoaded(new BlockPos(x, 64, z)))
+                    for (int y = y0 - 1; y < y1; ++y) {
+                        pos = new BlockPos(x, y, z);
+                    	IBlockState block = worldObj.getBlockState(pos);
+                        block.getBlock().addCollisionBoxesToList(worldObj, pos, block, area, list, (Entity)null);
+                        if (!list.isEmpty()) return false;
                     }
-                }
-            }
-        }
         return true;
     }
 
     @Override
-    public void onNeighborTileChange(int tx, int ty, int tz) 
+    public void onNeighborTileChange(BlockPos pos) 
     {
         this.init();
     }
@@ -394,11 +389,11 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         neighbors = new TileEntity[6];
         invIdx = new int[6][];
         int n = 0;
-        ForgeDirection dir;
+        EnumFacing dir;
         for (int i = 0; i < 6; i++)
         {
-            dir = ForgeDirection.getOrientation(i).getOpposite();
-            neighbors[i] = worldObj.getTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
+            dir = EnumFacing.VALUES[i^1];
+            neighbors[i] = worldObj.getTileEntity(pos.offset(dir));
             if (neighbors[i] != null && neighbors[i] instanceof IInventory) {
                 invIdx[i] = Utils.accessibleSlots((IInventory)neighbors[i], i);
             }
@@ -447,20 +442,53 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         }
         linkTile = null;
         if (world != null) {
-            TileEntity te = world.getTileEntity(linkX, linkY, linkZ);
+            TileEntity te = world.getTileEntity(new BlockPos(linkX, linkY, linkZ));
             if (te != null && te instanceof InterdimHole) {
                 linkTile = (InterdimHole)te;
                 linkTile.linkTile = this;
-                linkTile.linkX = xCoord;
-                linkTile.linkY = yCoord;
-                linkTile.linkZ = zCoord;
-                linkTile.linkD = worldObj.provider.dimensionId;
+                linkTile.linkX = pos.getX();
+                linkTile.linkY = pos.getY();
+                linkTile.linkZ = pos.getZ();
+                linkTile.linkD = worldObj.provider.getDimensionId();
             }
         }
     }
 
+	@Override
+	public boolean hasCustomName() {
+		return true;
+	}
+
+	@Override
+	public void openInventory(EntityPlayer player) {}
+
+	@Override
+	public void closeInventory(EntityPlayer player) {}
+
+	@Override
+	public IChatComponent getDisplayName() {
+		return new ChatComponentText(this.getName());
+	}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public void clear() {}
+	
+	/* TODO reimplement
     @Override
-    public int receiveEnergy(ForgeDirection dir, int e, boolean d) 
+    public int receiveEnergy(EnumFacing dir, int e, boolean d) 
     {
         if (linkTile == null) return 0;
         TileEntity te = linkTile.neighbors[dir.ordinal()];
@@ -471,7 +499,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public int extractEnergy(ForgeDirection dir, int e, boolean d) 
+    public int extractEnergy(EnumFacing dir, int e, boolean d) 
     {
         if (linkTile == null) return 0;
         TileEntity te = linkTile.neighbors[dir.ordinal()];
@@ -482,7 +510,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public int getEnergyStored(ForgeDirection dir) 
+    public int getEnergyStored(EnumFacing dir) 
     {
         if (linkTile == null) return 0;
         TileEntity te = linkTile.neighbors[dir.ordinal()];
@@ -493,7 +521,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public int getMaxEnergyStored(ForgeDirection dir) 
+    public int getMaxEnergyStored(EnumFacing dir) 
     {
         if (linkTile == null) return 0;
         TileEntity te = linkTile.neighbors[dir.ordinal()];
@@ -502,20 +530,9 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
             return ((IEnergyHandler)te).getMaxEnergyStored(dir);
         } else return 0;
     }
-
+	
 	@Override
-	public boolean hasCustomInventoryName() {
-		return true;
-	}
-
-	@Override
-	public void openInventory() {}
-
-	@Override
-	public void closeInventory() {}
-
-	@Override
-	public boolean canConnectEnergy(ForgeDirection dir) {
+	public boolean canConnectEnergy(EnumFacing dir) {
 		if (linkTile == null) return false;
         TileEntity te = linkTile.neighbors[dir.ordinal()];
         if (te != null && !te.isInvalid() && te instanceof IEnergyHandler) 
@@ -523,5 +540,5 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
             return ((IEnergyHandler)te).canConnectEnergy(dir);
         } else return false;
 	}
-    
+    */
 }

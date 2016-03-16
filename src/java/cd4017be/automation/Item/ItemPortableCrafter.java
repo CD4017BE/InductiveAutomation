@@ -1,7 +1,7 @@
 package cd4017be.automation.Item;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+
 import cd4017be.automation.Automation;
 import cd4017be.automation.Gui.ContainerPortableCrafting;
 import cd4017be.automation.Gui.GuiPortableCrafting;
@@ -9,8 +9,8 @@ import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.DefaultItem;
 import cd4017be.lib.IGuiItem;
 import cd4017be.lib.util.Utils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -22,14 +22,14 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 
 public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 
-	public ItemPortableCrafter(String id, String tex) 
+	public ItemPortableCrafter(String id) 
 	{
 		super(id);
-		this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxStackSize(1);
 	}
@@ -48,7 +48,7 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 	}
 
 	@Override
-	public void onPlayerCommand(World world, EntityPlayer player, DataInputStream dis) throws IOException 
+	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
 		ItemStack item = player.getCurrentEquippedItem();
 		if (item == null || item.getItem() != this) return;

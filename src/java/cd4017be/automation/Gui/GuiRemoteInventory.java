@@ -1,13 +1,13 @@
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -61,22 +61,19 @@ public class GuiRemoteInventory extends GuiMachine
     }
 
 	@Override
-	protected void mouseClicked(int x, int y, int b) 
+	protected void mouseClicked(int x, int y, int b) throws IOException 
 	{
 		super.mouseClicked(x, y, b);
 		byte cmd = -1;
-		if (this.func_146978_c(11, 67 + container.ofsY, 10, 18, x, y)) {
+		if (this.isPointInRegion(11, 67 + container.ofsY, 10, 18, x, y)) {
 			cmd = 0;
-		} else if (this.func_146978_c(29, 67 + container.ofsY, 10, 18, x, y)) {
+		} else if (this.isPointInRegion(29, 67 + container.ofsY, 10, 18, x, y)) {
 			cmd = 1;
 		}
 		if (cmd >= 0) {
-			try {
-	            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-	            DataOutputStream dos = new DataOutputStream(bos);
+	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
 	            dos.writeByte(cmd);
-	            BlockGuiHandler.sendPacketToServer(bos);
-	        } catch (IOException e){}
+	            BlockGuiHandler.sendPacketToServer(dos);
 		}
 	}
 

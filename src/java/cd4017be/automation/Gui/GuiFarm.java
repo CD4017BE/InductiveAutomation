@@ -4,6 +4,8 @@
  */
 package cd4017be.automation.Gui;
 
+import java.io.IOException;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -53,12 +55,12 @@ public class GuiFarm extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         this.drawItemConfig(tileEntity, -27, 7);
         this.drawEnergyConfig(tileEntity, -45, 7);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 92, 0x404040);
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         this.clickItemConfig(tileEntity, x - this.guiLeft + 27, y - this.guiTop - 7);

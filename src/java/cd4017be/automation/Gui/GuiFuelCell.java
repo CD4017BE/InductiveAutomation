@@ -1,10 +1,9 @@
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -58,7 +57,7 @@ protected FuelCell tileEntity;
         this.drawLiquidTank(tileEntity.tanks, 2, 62, 16, false);
         this.drawLiquidConfig(tileEntity, -36, 7);
         this.drawEnergyConfig(tileEntity, -54, 7);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 133, this.guiTop + 20, 0x404040);
         this.drawStringCentered("P = " + tileEntity.netData.ints[1] + " kW", this.guiLeft + 133, this.guiTop + 38, 0x804040);
@@ -66,27 +65,27 @@ protected FuelCell tileEntity;
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         byte a = -1;
         this.clickLiquidConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
         this.clickEnergyConfig(tileEntity, x - this.guiLeft + 54, y - this.guiTop - 7);
-        if (this.func_146978_c(98, 16, 10, 16, x, y))
+        if (this.isPointInRegion(98, 16, 10, 16, x, y))
         {
             tileEntity.netData.ints[0] -= b == 0 ? 10 : 1000;
             a = 0;
         } else
-        if (this.func_146978_c(108, 16, 10, 16, x, y))
+        if (this.isPointInRegion(108, 16, 10, 16, x, y))
         {
             tileEntity.netData.ints[0] -= b == 0 ? 1 : 100;
             a = 0;
         } else
-        if (this.func_146978_c(148, 16, 10, 16, x, y))
+        if (this.isPointInRegion(148, 16, 10, 16, x, y))
         {
             tileEntity.netData.ints[0] += b == 0 ? 1 : 100;
             a = 0;
         } else
-        if (this.func_146978_c(158, 16, 10, 16, x, y))
+        if (this.isPointInRegion(158, 16, 10, 16, x, y))
         {
             tileEntity.netData.ints[0] += b == 0 ? 10 : 1000;
             a = 0;
@@ -95,13 +94,10 @@ protected FuelCell tileEntity;
         {
             if (tileEntity.netData.ints[0] < 0) tileEntity.netData.ints[0] = 0;
             if (tileEntity.netData.ints[0] > Config.Umax[2]) tileEntity.netData.ints[0] = Config.Umax[2];
-            try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(AutomatedTile.CmdOffset);
             dos.writeShort(tileEntity.netData.ints[0]);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
         super.mouseClicked(x, y, b);
     }

@@ -9,11 +9,9 @@ import java.util.List;
 import cd4017be.automation.Automation;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.DefaultItem;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
 
 /**
  *
@@ -21,7 +19,7 @@ import net.minecraft.util.IIcon;
  */
 public class ItemMaterial extends DefaultItem 
 {
-    private static final String[] types = {
+    public static final String[] types = {
         "CopperI", "SilverI", "ElectrumI", "SteelI", "RstMetall", "CondIA", "Graphite", "SiliconI", "HydrogenI", 
         "ElectrumR", "CondRA",
         "WoodC", "GlassC", "IronC", "StoneC", "SteelH", "GDPlate", "unbrC",
@@ -36,14 +34,11 @@ public class ItemMaterial extends DefaultItem
         "DenseM", "Neutron", "BlackHole"
     };
     
-    private IIcon[] textures = new IIcon[types.length];
-    
-    public ItemMaterial(String id, String tex) 
+    public ItemMaterial(String id) 
     {
         super(id);
         this.setCreativeTab(Automation.tabAutomation);
         this.setHasSubtypes(true);
-        this.setTextureName(tex);
         for (int i = 0; i < types.length; i++) {
             BlockItemRegistry.registerItemStack(new ItemStack(this, 1, i), types[i]);
         }
@@ -51,22 +46,6 @@ public class ItemMaterial extends DefaultItem
 
     @Override
     protected void init() {}
-
-    @Override
-    public void registerIcons(IIconRegister register) 
-    {
-        for (int i = 0; i < types.length; i++)
-        {
-            textures[i] = register.registerIcon(this.iconString + types[i]);
-        }
-        this.itemIcon = register.registerIcon(iconString + "invalid");
-    }
-    
-    @Override
-    public IIcon getIconFromDamage(int m) 
-    {
-        return m >= 0 && m < textures.length ? textures[m] : this.itemIcon;
-    }
 
     @Override
 	public String getUnlocalizedName(ItemStack item) 
@@ -77,7 +56,7 @@ public class ItemMaterial extends DefaultItem
 	}
 
     @Override
-    public void getSubItems(Item id, CreativeTabs par2CreativeTabs, List list) 
+    public void getSubItems(Item id, CreativeTabs par2CreativeTabs, List<ItemStack> list) 
     {
         for (int i = 0; i < types.length; i++) list.add(new ItemStack(id, 1, i));
     }

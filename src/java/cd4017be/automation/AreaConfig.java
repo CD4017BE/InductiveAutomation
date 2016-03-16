@@ -88,31 +88,31 @@ public class AreaConfig implements IAreaConfig
         }
     	if (timer++ < 5) return;
         timer = 0;
-        if (tile.getWorldObj() instanceof WorldServer) {
+        if (tile.getWorld() instanceof WorldServer) {
             ServerConfigurationManager manager = MinecraftServer.getServer().getConfigurationManager();
             String[] rem = new String[tile.itemStorage.size()];
             int n = 0;
             for (Object obj : manager.playerEntityList) {
                 EntityPlayerMP player = (EntityPlayerMP)obj;
-                ItemStack[] stor = tile.itemStorage.get(player.getCommandSenderName());
-                if (player.worldObj.provider.dimensionId == this.tile.getWorldObj().provider.dimensionId && this.getProtectLvlFor(player.getCommandSenderName(), player.chunkCoordX, player.chunkCoordZ) == 3) continue;
+                ItemStack[] stor = tile.itemStorage.get(player.getName());
+                if (player.worldObj.provider.getDimensionId() == this.tile.getWorld().provider.getDimensionId() && this.getProtectLvlFor(player.getName(), player.chunkCoordX, player.chunkCoordZ) == 3) continue;
                 if (stor != null) {
                     for (ItemStack item : stor) {
                         if (item != null && !player.inventory.addItemStackToInventory(item)) {
                             EntityItem ei = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, item);
-                            tile.getWorldObj().spawnEntityInWorld(ei);
+                            tile.getWorld().spawnEntityInWorld(ei);
                         }
                     }
-                    rem[n++] = player.getCommandSenderName();
+                    rem[n++] = player.getName();
                 }
             }
             for (int i = 0; i < n; i++) tile.itemStorage.remove(rem[i]);
         }
         if (!tile.enabled) return;
-        List<EntityPlayer> list = tile.getWorldObj().getEntitiesWithinAABB(EntityPlayer.class, AxisAlignedBB.getBoundingBox(px << 4, 0, pz << 4, (px + 8) << 4, 256, (pz + 8) << 4));
+        List<EntityPlayer> list = tile.getWorld().getEntitiesWithinAABB(EntityPlayer.class, new AxisAlignedBB(px << 4, 0, pz << 4, (px + 8) << 4, 256, (pz + 8) << 4));
         for (EntityPlayer e : list) {
-            if (this.getProtectLvlFor(e.getCommandSenderName(), (int)Math.floor(e.posX) >> 4, (int)Math.floor(e.posZ) >> 4) == ProtectLvl.NoInventory.ordinal()) {
-                ItemStack[] inv = tile.itemStorage.get(e.getCommandSenderName());
+            if (this.getProtectLvlFor(e.getName(), (int)Math.floor(e.posX) >> 4, (int)Math.floor(e.posZ) >> 4) == ProtectLvl.NoInventory.ordinal()) {
+                ItemStack[] inv = tile.itemStorage.get(e.getName());
                 if (inv == null) inv = new ItemStack[40];
                 for (int i = 0; i < inv.length; i++) {
                     ItemStack item = e.inventory.getStackInSlot(i);
@@ -136,14 +136,14 @@ public class AreaConfig implements IAreaConfig
                     e.inventory.setInventorySlotContents(i, item);
                 }
                 e.inventory.dropAllItems();
-                tile.itemStorage.put(e.getCommandSenderName(), inv);
+                tile.itemStorage.put(e.getName(), inv);
             } else {
-                ItemStack[] inv = tile.itemStorage.remove(e.getCommandSenderName());
+                ItemStack[] inv = tile.itemStorage.remove(e.getName());
                 if (inv != null) {
                     for (ItemStack item : inv) {
                         if (item != null && !e.inventory.addItemStackToInventory(item)) {
-                            EntityItem ei = new EntityItem(tile.getWorldObj(), e.posX, e.posY, e.posZ, item);
-                            tile.getWorldObj().spawnEntityInWorld(ei);
+                            EntityItem ei = new EntityItem(tile.getWorld(), e.posX, e.posY, e.posZ, item);
+                            tile.getWorld().spawnEntityInWorld(ei);
                         }
                     }
                 }
@@ -247,7 +247,7 @@ public class AreaConfig implements IAreaConfig
     
     public boolean checkOccupied(int x, int z)
     {
-        ArrayList<IAreaConfig> list = AreaProtect.instance.loadedSS.get(tile.getWorldObj().provider.dimensionId);
+        ArrayList<IAreaConfig> list = AreaProtect.instance.loadedSS.get(tile.getWorld().provider.getDimensionId());
     	if (list == null) return true;
         for (IAreaConfig cfg : list)
         	if (cfg != this && cfg.isChunkProtected(x, z)) return false;
@@ -299,7 +299,7 @@ public class AreaConfig implements IAreaConfig
 					else loadedChunks &= (~1L) << i;
 			}
 			if (chunkTicket == null) {
-				if (!toAdd.isEmpty()) AreaProtect.instance.supplyTicket(this, tile.getWorldObj());
+				if (!toAdd.isEmpty()) AreaProtect.instance.supplyTicket(this, tile.getWorld());
 				if (chunkTicket == null) {
 					update = false;
 					chunksLoaded = false;
@@ -325,7 +325,7 @@ public class AreaConfig implements IAreaConfig
 	
 	@Override
 	public int[] getPosition() {
-		return new int[]{tile.xCoord, tile.yCoord, tile.zCoord, tile.getWorldObj().provider.dimensionId};
+		return new int[]{tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.getWorld().provider.getDimensionId()};
 	}
 
 	public long loadedChunks;

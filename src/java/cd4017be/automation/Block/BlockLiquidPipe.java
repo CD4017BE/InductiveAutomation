@@ -4,11 +4,15 @@
  */
 package cd4017be.automation.Block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cd4017be.automation.Item.ItemLiquidPipe;
 import cd4017be.lib.templates.BlockPipe;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.IProperty;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +30,7 @@ public class BlockLiquidPipe extends BlockPipe
     
     public BlockLiquidPipe(String id, Material m, int type)
     {
-        super(id, m, ItemLiquidPipe.class, type, "pipes/liquidTr", "pipes/liquidIn", "pipes/liquidEx");
+        super(id, m, ItemLiquidPipe.class, type);
     }
     
     @Override
@@ -37,10 +41,27 @@ public class BlockLiquidPipe extends BlockPipe
         list.add(new ItemStack(this, 1, ID_Injection));
     }
 
+    private static final PropertyInteger prop = PropertyInteger.create("type", 0, 2);
+    
     @Override
-    public int damageDropped(int m) 
+	public IBlockState getStateFromMeta(int meta) {
+		return this.blockState.getBaseState().withProperty(prop, meta);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(prop);
+	}
+
+	@Override
+	protected void addProperties(ArrayList<IProperty> main) {
+		main.add(prop);
+	}
+    
+    @Override
+    public int damageDropped(IBlockState m) 
     {
-        return m;
+        return this.getMetaFromState(m);
     }
     
 }

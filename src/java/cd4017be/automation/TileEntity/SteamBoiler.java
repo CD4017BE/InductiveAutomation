@@ -4,11 +4,12 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -23,6 +24,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
 /**
@@ -37,15 +39,15 @@ public class SteamBoiler extends AutomatedTile implements ISidedInventory, IFlui
     {
         netData = new TileEntityData(2, 5, 0, 2);
         inventory = new Inventory(this, 5, new Component(0, 3, -1));
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_water, Automation.L_biomass).setIn(3), new Tank(Config.tankCap[1], 1, Automation.L_steam).setOut(4)).setNetLong(1);
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_water, Objects.L_biomass).setIn(3), new Tank(Config.tankCap[1], 1, Objects.L_steam).setOut(4)).setNetLong(1);
         
         netData.ints[4] = 1;
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (this.worldObj.isRemote) return;
         int steamOut = 0;
         if (netData.ints[1] > 0)
@@ -60,13 +62,13 @@ public class SteamBoiler extends AutomatedTile implements ISidedInventory, IFlui
         {
             burnItem();
         }
-        int nw = tanks.getFluid(0) == null || tanks.getFluid(0).getFluid().equals(Automation.L_water) ? Config.get_LWater_Cooking() : Config.get_LBiomass_Cooking();
+        int nw = tanks.getFluid(0) == null || tanks.getFluid(0).getFluid().equals(Objects.L_water) ? Config.get_LWater_Cooking() : Config.get_LBiomass_Cooking();
         if (netData.ints[2] >= Config.K_Cooking_steamBoiler && tanks.getAmount(0) >= nw)
         {
             netData.ints[3]++;
             if (netData.ints[3] >= getCookTime())
             {
-                if (tanks.getFluid(0).getFluid().equals(Automation.L_water))
+                if (tanks.getFluid(0).getFluid().equals(Objects.L_water))
                 {
                     netData.ints[2] -= Config.K_Cooking_steamBoiler;
                 } else
@@ -78,12 +80,12 @@ public class SteamBoiler extends AutomatedTile implements ISidedInventory, IFlui
                 netData.ints[3] = 0;
             }
         }
-        tanks.fill(1, Automation.getLiquid(Automation.L_steam, steamOut), true);
+        tanks.fill(1, new FluidStack(Objects.L_steam, steamOut), true);
     }
     
     private void burnItem()
     {
-        if (worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) return;
+        if (worldObj.isBlockPowered(getPos())) return;
         for (int i = 0; i < inventory.items.length; i++)
         {
             if (inventory.items[i] == null) continue;
@@ -144,7 +146,7 @@ public class SteamBoiler extends AutomatedTile implements ISidedInventory, IFlui
     }
     
     @Override
-	protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
     	if (cmd == 0) {
     		netData.ints[4]--;

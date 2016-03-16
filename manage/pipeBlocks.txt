@@ -1,0 +1,8 @@
+#name	;#states	;#textures
+wireC	;normal:wireC	;wireC:blocks/pipes/copper
+wireA	;normal:wireA	;wireA:blocks/pipes/condAlloy
+wireH	;normal:wireH	;wireH:blocks/pipes/hydrogen
+liquidPipe	;type=0:liquidPipeT, type=1:liquidPipeI, type=2:liquidPipeE	;liquidPipeT:blocks/pipes/liquidTr, liquidPipeI:blocks/pipes/liquidIn, liquidPipeE:blocks/pipes/liquidEx
+itemPipe	;type=0:itemPipeT, type=1:itemPipeI, type=2:itemPipeE	;itemPipeT:blocks/pipes/itemTr, itemPipeI:blocks/pipes/itemIn, itemPipeE:blocks/pipes/itemEx
+itemWarpPipe	;normal:itemPipeW	;itemPipeW:blocks/pipes/itemWp
+liquidWarpPipe	;normal:liquidPipeW	;liquidPipeW:blocks/pipes/liquidWp

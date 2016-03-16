@@ -1,6 +1,7 @@
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.api.automation.AutomationRecipes;
@@ -22,7 +23,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.IFluidHandler;
 
-public class Electrolyser extends AutomatedTile implements ISidedInventory, IEnergy, IFluidHandler 
+public class Electrolyser extends AutomatedTile implements ISidedInventory, IEnergy, IFluidHandler
 {
     private float powerScale;
     private ElRecipe recipe;
@@ -45,9 +46,9 @@ public class Electrolyser extends AutomatedTile implements ISidedInventory, IEne
 	}
 
 	@Override
-	public void updateEntity() 
+	public void update() 
 	{
-		super.updateEntity();
+		super.update();
 		if (worldObj.isRemote) return;
 		if (recipe == null) {
             recipe = AutomationRecipes.getRecipeFor(inventory.items, 0, tanks.getFluid(0));
@@ -105,7 +106,7 @@ public class Electrolyser extends AutomatedTile implements ISidedInventory, IEne
 	}
 
 	@Override
-	protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
 	{
 		if (cmd == 0)
         {
@@ -132,7 +133,5 @@ public class Electrolyser extends AutomatedTile implements ISidedInventory, IEne
         if (s < pi[0]) return pi;
         else return new int[]{0, 1};
 	}
-	
-	
 	
 }

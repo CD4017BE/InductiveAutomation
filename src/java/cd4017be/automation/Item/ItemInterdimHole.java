@@ -29,7 +29,7 @@ public class ItemInterdimHole extends DefaultItemBlock
     @Override
 	public EnumRarity getRarity(ItemStack item) 
     {
-		return EnumRarity.rare;
+		return EnumRarity.RARE;
 	}
 
     @Override

@@ -1,137 +1,28 @@
 package cd4017be.automation;
 
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.IWorldGenerator;
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.GameRegistry;
-
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.IWorldGenerator;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import java.util.ArrayList;
 import java.util.Random;
-
 import org.apache.logging.log4j.Level;
-
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.AutomationRecipes;
 import cd4017be.api.computers.ComputerAPI;
-import cd4017be.automation.Block.BlockItemPipe;
-import cd4017be.automation.Block.BlockLiquidPipe;
-import cd4017be.automation.Block.BlockOre;
-import cd4017be.automation.Block.BlockSkyLight;
-import cd4017be.automation.Block.BlockUnbreakable;
-import cd4017be.automation.Block.GhostBlock;
-import cd4017be.automation.Block.GlassUnbreakable;
+import cd4017be.automation.Block.BlockOre.Ore;
 import cd4017be.automation.Entity.EntityAntimatterExplosion1;
-import cd4017be.automation.Item.ItemAlgaeFood;
-import cd4017be.automation.Item.ItemAntimatterLaser;
-import cd4017be.automation.Item.ItemAntimatterTank;
-import cd4017be.automation.Item.ItemBuilderAirType;
-import cd4017be.automation.Item.ItemBuilderTexture;
-import cd4017be.automation.Item.ItemCutter;
-import cd4017be.automation.Item.ItemESU;
-import cd4017be.automation.Item.ItemEnergyCell;
-import cd4017be.automation.Item.ItemEnergyTool;
-import cd4017be.automation.Item.ItemFluidDummy;
-import cd4017be.automation.Item.ItemFluidUpgrade;
-import cd4017be.automation.Item.ItemFurnace;
-import cd4017be.automation.Item.ItemHugeTank;
-import cd4017be.automation.Item.ItemInterdimHole;
-import cd4017be.automation.Item.ItemInvEnergy;
-import cd4017be.automation.Item.ItemInventory;
-import cd4017be.automation.Item.ItemItemUpgrade;
-import cd4017be.automation.Item.ItemJetpack;
-import cd4017be.automation.Item.ItemJetpackFuel;
-import cd4017be.automation.Item.ItemLiquidAir;
-import cd4017be.automation.Item.ItemMachineSynchronizer;
-import cd4017be.automation.Item.ItemMaterial;
-import cd4017be.automation.Item.ItemMatterCannon;
-import cd4017be.automation.Item.ItemMatterInterface;
-import cd4017be.automation.Item.ItemMatterOrb;
-import cd4017be.automation.Item.ItemMinerDrill;
-import cd4017be.automation.Item.ItemPlacement;
-import cd4017be.automation.Item.ItemPortableCrafter;
-import cd4017be.automation.Item.ItemPortableGenerator;
-import cd4017be.automation.Item.ItemPortableMagnet;
-import cd4017be.automation.Item.ItemPortablePump;
-import cd4017be.automation.Item.ItemPortableTeleporter;
-import cd4017be.automation.Item.ItemPortableTesla;
-import cd4017be.automation.Item.ItemQuantumTank;
-import cd4017be.automation.Item.ItemRemoteInv;
-import cd4017be.automation.Item.ItemSelectionTool;
-import cd4017be.automation.Item.ItemTank;
-import cd4017be.automation.Item.ItemTeleporterCoords;
-import cd4017be.automation.Item.ItemTranslocator;
-import cd4017be.automation.Item.ItemVertexSel;
-import cd4017be.automation.Item.ItemVoltMeter;
-import cd4017be.automation.TileEntity.AdvancedFurnace;
-import cd4017be.automation.TileEntity.AlgaePool;
-import cd4017be.automation.TileEntity.AntimatterAnihilator;
-import cd4017be.automation.TileEntity.AntimatterBomb;
-import cd4017be.automation.TileEntity.AntimatterFabricator;
-import cd4017be.automation.TileEntity.AntimatterTank;
-import cd4017be.automation.TileEntity.AutoCrafting;
-import cd4017be.automation.TileEntity.Builder;
-import cd4017be.automation.TileEntity.Collector;
-import cd4017be.automation.TileEntity.DecompCooler;
-import cd4017be.automation.TileEntity.Detector;
-import cd4017be.automation.TileEntity.ELink;
-import cd4017be.automation.TileEntity.ESU;
-import cd4017be.automation.TileEntity.ElectricCompressor;
-import cd4017be.automation.TileEntity.Electrolyser;
-import cd4017be.automation.TileEntity.EnergyFurnace;
-import cd4017be.automation.TileEntity.Farm;
-import cd4017be.automation.TileEntity.FluidPacker;
-import cd4017be.automation.TileEntity.FluidVent;
-import cd4017be.automation.TileEntity.FuelCell;
-import cd4017be.automation.TileEntity.GeothermalFurnace;
-import cd4017be.automation.TileEntity.GraviCond;
-import cd4017be.automation.TileEntity.HPSolarpanel;
-import cd4017be.automation.TileEntity.HugeTank;
-import cd4017be.automation.TileEntity.InterdimHole;
-import cd4017be.automation.TileEntity.ItemBuffer;
-import cd4017be.automation.TileEntity.ItemPipe;
-import cd4017be.automation.TileEntity.ItemSorter;
-import cd4017be.automation.TileEntity.ItemWarpPipe;
-import cd4017be.automation.TileEntity.LavaCooler;
-import cd4017be.automation.TileEntity.LightShaft;
-import cd4017be.automation.TileEntity.LiquidPipe;
-import cd4017be.automation.TileEntity.LiquidWarpPipe;
-import cd4017be.automation.TileEntity.Magnet;
-import cd4017be.automation.TileEntity.MassstorageChest;
-import cd4017be.automation.TileEntity.MatterInterface;
-import cd4017be.automation.TileEntity.MatterOrb;
-import cd4017be.automation.TileEntity.Miner;
-import cd4017be.automation.TileEntity.Pump;
-import cd4017be.automation.TileEntity.QuantumTank;
-import cd4017be.automation.TileEntity.SecuritySys;
-import cd4017be.automation.TileEntity.Solarpanel;
-import cd4017be.automation.TileEntity.SteamBoiler;
-import cd4017be.automation.TileEntity.SteamCompressor;
-import cd4017be.automation.TileEntity.SteamEngine;
-import cd4017be.automation.TileEntity.SteamGenerator;
-import cd4017be.automation.TileEntity.SteamTurbine;
-import cd4017be.automation.TileEntity.Tank;
-import cd4017be.automation.TileEntity.Teleporter;
-import cd4017be.automation.TileEntity.TeslaTransmitter;
-import cd4017be.automation.TileEntity.TeslaTransmitterLV;
-import cd4017be.automation.TileEntity.TextureMaker;
-import cd4017be.automation.TileEntity.Trash;
-import cd4017be.automation.TileEntity.VertexShematicGen;
-import cd4017be.automation.TileEntity.VoltageTransformer;
-import cd4017be.automation.TileEntity.Wire;
 import cd4017be.automation.jetpack.JetPackConfig;
 import cd4017be.automation.jetpack.PacketHandler;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.DefaultItemBlock;
-import cd4017be.lib.TileBlockRegistry;
-import cd4017be.lib.TileContainer;
-import static cd4017be.lib.BlockItemRegistry.stack;
 import cd4017be.lib.ModFluid;
 import cd4017be.lib.TileBlock;
 import cd4017be.lib.templates.BlockPipe;
@@ -141,8 +32,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
@@ -153,12 +43,16 @@ import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import cd4017be.automation.Item.*;
+import cd4017be.automation.Block.*;
+import static cd4017be.automation.Objects.*;
+import static cd4017be.lib.BlockItemRegistry.stack;
 
 /**
  *
  * @author CD4017BE
  */
-@Mod(modid="Automation", name="Inductive Automation", version="3.7.2")
+@Mod(modid="Automation", name="Inductive Automation", version="4.0.0")
 public class Automation implements IWorldGenerator
 {
     
@@ -173,20 +67,6 @@ public class Automation implements IWorldGenerator
     public static CreativeTabs tabAutomation;
     public static CreativeTabs tabFluids;
     
-    public static Fluid L_water; //1000g/l
-    public static Fluid L_lava; //??
-    public static Fluid L_steam; //5g/l (8.3xComp) :x200
-    public static Fluid L_biomass;
-    public static Fluid L_antimatter;
-    public static Fluid L_nitrogenG; //1.25g/l, 273K :x640
-    public static Fluid L_nitrogenL; //800g/l, 77K
-    public static Fluid L_hydrogenG; //.09g/l, 273K :x800 
-    public static Fluid L_hydrogenL; //72g/l, 21K
-    public static Fluid L_heliumG; //.18g/l, 273K :x800
-    public static Fluid L_heliumL; //144g/l, 4K
-    public static Fluid L_oxygenG; //1.62g/l, 273K :x800
-    public static Fluid L_oxygenL; //1296g/l, 90K bläulich
-    
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) 
     {
@@ -194,27 +74,10 @@ public class Automation implements IWorldGenerator
     	BlockItemRegistry.setMod("automation");
         tabAutomation = new CreativeTabAutomation("automation");
         tabFluids = new CreativeTabFluids("fluids");
-        initBlocks();
-        initLiquids();
         initItems();
-        Block ore = BlockItemRegistry.getBlock("tile.ore");
-        ore.setHarvestLevel("pickaxe", 1, BlockOre.ID_Copper);
-        ore.setHarvestLevel("pickaxe", 2, BlockOre.ID_Silver);
-        copperGen = new WorldGenMinable(ore, BlockOre.ID_Copper, 9, Blocks.stone);
-        silverGen = new WorldGenMinable(ore, BlockOre.ID_Silver, 6, Blocks.stone);
-        OreDictionary.registerOre("oreCopper", new ItemStack(ore, 1, BlockOre.ID_Copper));
-        OreDictionary.registerOre("oreSilver", new ItemStack(ore, 1, BlockOre.ID_Silver));
-        OreDictionary.registerOre("ingotCopper", stack("CopperI", 1));
-        OreDictionary.registerOre("ingotSilver", stack("SilverI", 1));
-        OreDictionary.registerOre("ingotElectrum", stack("ElectrumI", 1));
-        OreDictionary.registerOre("ingotConductiveAlloy", stack("CondIA", 1));
-        OreDictionary.registerOre("ingotSteel", stack("SteelI", 1));
-        OreDictionary.registerOre("dustIron", stack("IronD", 1));
-        OreDictionary.registerOre("dustGold", stack("GoldD", 1));
-        OreDictionary.registerOre("dustCopper", stack("CopperD", 1));
-        OreDictionary.registerOre("dustSilver", stack("SilverD", 1));
-        OreDictionary.registerOre("dustElectrum", stack("ElectrumR", 1));
-        OreDictionary.registerOre("dustConductiveAlloy", stack("CondRA", 1));
+        initBlocks();
+        initFluids();
+        initOres();
         if (event.getSide().isClient()) {
             JetPackConfig.loadData(event.getModConfigurationDirectory());
         }
@@ -224,39 +87,31 @@ public class Automation implements IWorldGenerator
     public void load(FMLInitializationEvent event) 
     {
         GameRegistry.registerWorldGenerator(this, 0);
+        GameRegistry.registerFuelHandler(proxy);
         BlockGuiHandler.registerMod(this);
         PacketHandler.register();
-        GameRegistry.registerFuelHandler(proxy);
         AreaProtect.register(this);
+        ComputerAPI.register();
         
-        proxy.registerRenderers();
+        FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_biomass, FluidContainerRegistry.BUCKET_VOLUME), stack("LCBiomass", 1), FluidContainerRegistry.EMPTY_BOTTLE));
+        FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_nitrogenL, 100), stack("LCNitrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
+        FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_hydrogenL, 100), stack("LCHydrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
+        FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_heliumL, 100), stack("LCHelium", 1), FluidContainerRegistry.EMPTY_BOTTLE));
+        FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_oxygenL, 100), stack("LCOxygen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
         
         EntityRegistry.registerModEntity(EntityAntimatterExplosion1.class, "AntimatterExplosion", 0, this, 32, 1, false);
         System.out.println("Automation: Set Explosion-Resistance of Bedrock to: " + Block.getBlockFromName("bedrock").setResistance(2000000.0F).getExplosionResistance(null));
         
+        proxy.registerRenderers();
+        
         proxy.registerBioFuels();
         
-        FluidContainerRegistry.registerFluidContainer(new FluidContainerData(getLiquid(L_biomass, FluidContainerRegistry.BUCKET_VOLUME), stack("LCBiomass", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-        FluidContainerRegistry.registerFluidContainer(new FluidContainerData(getLiquid(L_nitrogenL, 100), stack("LCNitrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-        FluidContainerRegistry.registerFluidContainer(new FluidContainerData(getLiquid(L_hydrogenL, 100), stack("LCHydrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-        FluidContainerRegistry.registerFluidContainer(new FluidContainerData(getLiquid(L_heliumL, 100), stack("LCHelium", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-        FluidContainerRegistry.registerFluidContainer(new FluidContainerData(getLiquid(L_oxygenL, 100), stack("LCOxygen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
         proxy.registerRecipes();
         proxy.registerLiquidRecipes();
         proxy.registerCompressorRecipes();
         proxy.registerCoolerRecipes();
         proxy.registerElectrolyserRecipes();
         proxy.registerTrashRecipes();
-        ComputerAPI.register();
-    }
-    
-    /**
-     * clears configuration data that is not used anymore after initialization to improve performance
-     */
-    private void cleanConfig()
-    {
-    	ArrayList<String> rem = Config.data.getVariables("B.recipe", "AT.rcp", "AF.rcp", "I.rcp");
-    	Config.data.removeEntry(rem.toArray(new String[rem.size()]));
     }
     
     @Mod.EventHandler
@@ -268,163 +123,153 @@ public class Automation implements IWorldGenerator
     	byte gen = Config.data.getByte("oreGen.Copper", (byte)0);
         if (gen == -1 || (gen == 0 && OreDictionary.getOres("oreCopper").size() > 1)) {
             FMLLog.log("Automation", Level.INFO, "Copper ore world generation disabled. " + (gen == 0 ? "(provided by other mods)" : "(turned off in config)"));
-            this.copperGen = null;
+            copperGen = null;
         }
         gen = Config.data.getByte("oreGen.Silver", (byte)0);
         if (gen == -1 || (gen == 0 && OreDictionary.getOres("oreSilver").size() > 1)) {
             FMLLog.log("Automation", Level.INFO, "Silver ore world generation disabled. " + (gen == 0 ? "(provided by other mods)" : "(turned off in config)"));
-            this.silverGen = null;
+            silverGen = null;
         }
     }
     
     private void initItems()
     {
-        String path = BlockItemRegistry.texPath().concat("tools/");
-        
-        new ItemMaterial("material", BlockItemRegistry.texPath());
-        
-        new ItemSelectionTool("selectionTool", path+"selection");
-        new ItemVoltMeter("voltMeter", path+"voltMeter");
-        new ItemEnergyCell("energyCell", path+"energyCell", Config.Ecap[0]);
-        new ItemEnergyTool("chisle", path+"chisle", Config.Ecap[0], Config.data.getInt("Tool.Chisle.Euse", 25), Config.data.getFloat("Tool.Chisle.digSpeed", 16F), 4).setToolClass(new String[]{"pickaxe", "shovel"}, Config.data.getShort("item.chisle.harvestLvl", (short)3));
-        new ItemCutter("cutter", path+"cutter", Config.Ecap[0], Config.data.getInt("Tool.Cutter.Euse", 25), 7);
-        new ItemPortableMagnet("portableMagnet", path+"magnet", Config.Ecap[0]);
-        new ItemBuilderTexture("builderTexture", path+"builder");
-        new ItemTeleporterCoords("teleporterCoords", path+"teleporter");
+        material = new ItemMaterial("material");
+        selectionTool = new ItemSelectionTool("selectionTool");
+        voltMeter = new ItemVoltMeter("voltMeter");
+        energyCell = new ItemEnergyCell("energyCell", Config.Ecap[0]);
+        chisle = new ItemEnergyTool("chisle", Config.Ecap[0], Config.data.getInt("Tool.Chisle.Euse", 25), Config.data.getFloat("Tool.Chisle.digSpeed", 16F), 4).setToolClass(new String[]{"pickaxe", "shovel"}, Config.data.getShort("item.chisle.harvestLvl", (short)3));
+        cutter = new ItemCutter("cutter", Config.Ecap[0], Config.data.getInt("Tool.Cutter.Euse", 25), 7);
+        portableMagnet = new ItemPortableMagnet("portableMagnet", Config.Ecap[0]);
+        builderTexture = new ItemBuilderTexture("builderTexture");
+        teleporterCoords = new ItemTeleporterCoords("teleporterCoords");
         short[] dur = Config.data.getShortArray("minerDrill.durability");
         byte[] harvst = Config.data.getByteArray("minerDrill.harvestLvl");
         float[] eff = Config.data.getFloatArray("minerDrill.efficiency");
-        new ItemMinerDrill("stoneDrill", path+"stoneDrill", dur.length > 0 ? dur[0] : 4096, harvst.length > 0 ? harvst[0] : 1, eff.length > 0 ? eff[0] : 1.5F, ItemMinerDrill.defaultClass);
-        new ItemMinerDrill("ironDrill", path+"ironDrill",  dur.length > 1 ? dur[1] : 8192, harvst.length > 1 ? harvst[1] : 2, eff.length > 1 ? eff[1] : 2.0F, ItemMinerDrill.defaultClass);
-        new ItemMinerDrill("diamondDrill", path+"diamondDrill",  dur.length > 2 ? dur[2] : 16384, harvst.length > 2 ? harvst[2] : 3, eff.length > 2 ? eff[2] : 4.0F, ItemMinerDrill.defaultClass);
-        new ItemAntimatterLaser("amLaser", path+"amLaser");
-        new ItemMatterCannon("mCannon", path+"mCannon");
-        new ItemLiquidAir("contLiquidAir", path+"liquidAir");
-        new ItemAlgaeFood("contAlgaeFood", path+"algaeFood");
-        new ItemInvEnergy("contInvEnergy", path+"invEnergy", Config.Ecap[2]);
-        new ItemJetpackFuel("contJetFuel", path+"jetFuel");
-        new ItemJetpack("jetpack", path+"jetpack", 0);
-        new ItemJetpack("jetpackIron", path+"jetpackIron", 1);
-        new ItemJetpack("jetpackSteel", path+"jetpackSteel", 2);
-        new ItemJetpack("jetpackGraphite", path+"jetpackGraphite", 3);
-        new ItemJetpack("jetpackUnbr", path+"jetpackUnbr", 4);
-        new ItemMatterInterface("matterInterface", path+"matterInterface");
-        new ItemFluidDummy("fluidDummy");
-        new ItemFluidUpgrade("fluidUpgrade", path+"fluidUpgrade");
-        new ItemItemUpgrade("itemUpgrade", path+"itemUpgrade");
-        new ItemFurnace("portableFurnace", path+"portableFurnace");
-        new ItemInventory("portableInventory", path+"portableInventory");
-        new ItemPortableCrafter("portableCrafter", path+"portableCrafter");
-        new ItemPortableGenerator("portableGenerator", path+"portableGenerator");
-        new ItemRemoteInv("portableRemoteInv", path+"portableRemoteInv");
-        new ItemPortableTeleporter("portableTeleporter", path+"portableTeleporter");
-        new ItemPortablePump("portablePump", path+"portablePump");
-        new ItemTranslocator("translocator", path+"translocator");
-        new ItemPortableTesla("portableTesla", path+"portableTesla");
-        new ItemPlacement("placement", path+"placement");
-        new ItemMachineSynchronizer("synchronizer", path+"synchronizer");
-        new ItemBuilderAirType("remBlockType", path+"remBlockType");
-        new ItemVertexSel("vertexSel", path+"vertexSel");
+        stoneDrill = new ItemMinerDrill("stoneDrill", dur.length > 0 ? dur[0] : 4096, harvst.length > 0 ? harvst[0] : 1, eff.length > 0 ? eff[0] : 1.5F, ItemMinerDrill.defaultClass);
+        ironDrill = new ItemMinerDrill("ironDrill", dur.length > 1 ? dur[1] : 8192, harvst.length > 1 ? harvst[1] : 2, eff.length > 1 ? eff[1] : 2.0F, ItemMinerDrill.defaultClass);
+        diamondDrill = new ItemMinerDrill("diamondDrill", dur.length > 2 ? dur[2] : 16384, harvst.length > 2 ? harvst[2] : 3, eff.length > 2 ? eff[2] : 4.0F, ItemMinerDrill.defaultClass);
+        amLaser = new ItemAntimatterLaser("amLaser");
+        mCannon = new ItemMatterCannon("mCannon");
+        contLiquidAir = new ItemLiquidAir("contLiquidAir");
+        contAlgaeFood = new ItemAlgaeFood("contAlgaeFood");
+        contInvEnergy = new ItemInvEnergy("contInvEnergy", Config.Ecap[2]);
+        contJetFuel = new ItemJetpackFuel("contJetFuel");
+        jetpack = new ItemJetpack("jetpack", 0);
+        jetpackIron = new ItemJetpack("jetpackIron", 1);
+        jetpackSteel = new ItemJetpack("jetpackSteel", 2);
+        jetpackGraphite = new ItemJetpack("jetpackGraphite", 3);
+        jetpackUnbr = new ItemJetpack("jetpackUnbr", 4);
+        matterInterface = new ItemMatterInterface("matterInterface");
+        fluidDummy = new ItemFluidDummy("fluidDummy");
+        fluidUpgrade = new ItemFluidUpgrade("fluidUpgrade");
+        itemUpgrade = new ItemItemUpgrade("itemUpgrade");
+        portableFurnace = new ItemFurnace("portableFurnace");
+        portableInventory = new ItemInventory("portableInventory");
+        portableCrafter = new ItemPortableCrafter("portableCrafter");
+        portableGenerator = new ItemPortableGenerator("portableGenerator");
+        portableRemoteInv = new ItemRemoteInv("portableRemoteInv");
+        portableTeleporter = new ItemPortableTeleporter("portableTeleporter");
+        portablePump = new ItemPortablePump("portablePump");
+        translocator = new ItemTranslocator("translocator");
+        portableTesla = new ItemPortableTesla("portableTesla");
+        placement = new ItemPlacement("placement");
+        synchronizer = new ItemMachineSynchronizer("synchronizer");
+        remBlockType = new ItemBuilderAirType("remBlockType");
+        vertexSel = new ItemVertexSel("vertexSel");
     }
     
     private void initBlocks()
     {
-        Block block;
-        new BlockOre("ore").setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeStone);
-        new TileBlock("pool", Material.glass, DefaultItemBlock.class, 0x20).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone).setLightOpacity(5);
-        new BlockUnbreakable("unbrStone", 0x7e).setStepSound(Block.soundTypeStone);
-        new GlassUnbreakable("unbrGlass", 0x7f).setStepSound(Block.soundTypeGlass);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("lightShaft", Material.glass, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeGlass), LightShaft.class, null);
-        new BlockSkyLight("light");
-        new GhostBlock("placementHelper");
-        TileBlockRegistry.register((TileBlock)(new BlockPipe("wireC", Material.iron, DefaultItemBlock.class, 0x20, "pipes/copper")).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), Wire.class, null);
-        TileBlockRegistry.register((TileBlock)(new BlockPipe("wireA", Material.iron, DefaultItemBlock.class, 0x20, "pipes/condAlloy")).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), Wire.class, null);
-        TileBlockRegistry.register((TileBlock)(new BlockPipe("wireH", Material.iron, DefaultItemBlock.class, 0x20, "pipes/hydrogen")).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), Wire.class, null);
-        TileBlockRegistry.register((TileBlock)(new BlockLiquidPipe("liquidPipe", Material.glass, 0x20)).setHardness(0.5F).setCreativeTab(tabAutomation).setResistance(10F).setStepSound(Block.soundTypeGlass), LiquidPipe.class, null);
-        TileBlockRegistry.register((TileBlock)(new BlockItemPipe("itemPipe", Material.wood, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeWood), ItemPipe.class, null);
-        TileBlockRegistry.register((TileBlock)(new BlockPipe("itemWarpPipe", Material.iron, DefaultItemBlock.class, 0x20, "pipes/itemWp", "pipes/itemIn", "pipes/itemEx").setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F).setStepSound(Block.soundTypeMetal)), ItemWarpPipe.class, null);
-        TileBlockRegistry.register((TileBlock)(new BlockPipe("liquidWarpPipe", Material.iron, DefaultItemBlock.class, 0x20, "pipes/liquidWp", "pipes/liquidIn", "pipes/liquidEx").setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F).setStepSound(Block.soundTypeMetal)), LiquidWarpPipe.class, null);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("voltageTransformer", Material.iron, DefaultItemBlock.class, 6)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), VoltageTransformer.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("SCSU", Material.iron, ItemESU.class, 0x41)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), ESU.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("OCSU", Material.iron, ItemESU.class, 0x41)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), ESU.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("CCSU", Material.iron, ItemESU.class, 0x41)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), ESU.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("steamEngine", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone), SteamEngine.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("steamTurbine", Material.iron, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), SteamTurbine.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("steamGenerator", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal), SteamGenerator.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("steamBoiler", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone), SteamBoiler.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("lavaCooler", Material.rock, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone), LavaCooler.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("energyFurnace", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone), EnergyFurnace.class, TileContainer.class);
-        block = (new TileBlock("solarpanel", Material.glass, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeGlass);
-        block.setBlockBounds(0F, 0F, 0F, 1F, 0.125F, 1F);
-        TileBlockRegistry.register((TileBlock)block, Solarpanel.class, null);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("farm", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone), Farm.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("miner", Material.iron, DefaultItemBlock.class, 0x12)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone), Miner.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("magnet", Material.iron, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), Magnet.class, null);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("link", Material.iron, DefaultItemBlock.class, 5)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), ELink.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("linkHV", Material.iron, DefaultItemBlock.class, 5)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal), ELink.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("texMaker", Material.wood, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeWood), TextureMaker.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("builder", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), Builder.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("algaePool", Material.glass, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeGlass), AlgaePool.class, TileContainer.class);
-        block = (new TileBlock("teslaTransmitterLV", Material.iron, DefaultItemBlock.class, 0x62)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F).setStepSound(Block.soundTypeMetal);
-        block.setBlockBounds(0.1875F, 0F, 0.1875F, 0.8125F, 1F, 0.8125F);
-        TileBlockRegistry.register((TileBlock)block, TeslaTransmitterLV.class, TileContainer.class);
-        block = (new TileBlock("teslaTransmitter", Material.iron, DefaultItemBlock.class, 0x62)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeMetal);
-        block.setBlockBounds(0.25F, 0F, 0.25F, 0.75F, 1F, 0.75F);
-        TileBlockRegistry.register((TileBlock)block, TeslaTransmitter.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("teleporter", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), Teleporter.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("advancedFurnace", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), AdvancedFurnace.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("pump", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), Pump.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("massstorageChest", Material.wood, DefaultItemBlock.class, 0x43)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(50F).setStepSound(Block.soundTypeWood), MassstorageChest.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("matterOrb", Material.iron, ItemMatterOrb.class, 0x40)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeStone), MatterOrb.class, null);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("antimatterBombE", Material.tnt, ItemMatterOrb.class, 0x42)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeStone), MatterOrb.class, null);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("antimatterBombF", Material.tnt, ItemAntimatterTank.class, 0x43)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeStone), AntimatterBomb.class, null);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("antimatterTank", Material.iron, ItemAntimatterTank.class, 0x41)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(40F).setStepSound(Block.soundTypeMetal), AntimatterTank.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("antimatterFabricator", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(40F).setStepSound(Block.soundTypeMetal), AntimatterFabricator.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("antimatterAnihilator", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(40F).setStepSound(Block.soundTypeMetal), AntimatterAnihilator.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("hpSolarpanel", Material.glass, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeGlass), HPSolarpanel.class, null);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("autoCrafting", Material.wood, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeWood), AutoCrafting.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("geothermalFurnace", Material.rock, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone), GeothermalFurnace.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("steamCompressor", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), SteamCompressor.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("electricCompressor", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), ElectricCompressor.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("tank", Material.glass, ItemTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone), Tank.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("security", Material.iron, DefaultItemBlock.class, 0x3)).setCreativeTab(tabAutomation).setBlockUnbreakable().setResistance(1000000F).setStepSound(Block.soundTypeStone), SecuritySys.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("decompCooler", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal), DecompCooler.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("collector", Material.iron, DefaultItemBlock.class, 5)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), Collector.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("trash", Material.rock, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone), Trash.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("electrolyser", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), Electrolyser.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("fuelCell", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), FuelCell.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("detector", Material.rock, DefaultItemBlock.class, 0x15)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeStone), Detector.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("itemSorter", Material.wood, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeWood), ItemSorter.class, TileContainer.class);
-        block = new TileBlock("wormhole", Material.portal, ItemInterdimHole.class, 0x60).setCreativeTab(tabAutomation).setHardness(3.0F).setResistance(100F).setStepSound(Block.soundTypeGlass).setBlockTextureName("portal");
-        block.setBlockBounds(0.0625F, 0.0625F, 0.0625F, 0.9375F, 0.9375F, 0.9375F);
-        TileBlockRegistry.register((TileBlock)block, InterdimHole.class, null);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("matterInterfaceB", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal), MatterInterface.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("fluidPacker", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal), FluidPacker.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("hugeTank", Material.glass, ItemHugeTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F).setStepSound(Block.soundTypeGlass), HugeTank.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("fluidVent", Material.iron, DefaultItemBlock.class, 5)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal), FluidVent.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("gravCond", Material.iron, DefaultItemBlock.class, 0x10)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeMetal), GraviCond.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("itemBuffer", Material.wood, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeWood), ItemBuffer.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("quantumTank", Material.glass, ItemQuantumTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeGlass), QuantumTank.class, TileContainer.class);
-        TileBlockRegistry.register((TileBlock)(new TileBlock("vertShemGen", Material.water, DefaultItemBlock.class, 7)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeWood), VertexShematicGen.class, TileContainer.class);
+    	(lightShaft = TileBlock.create("lightShaft", Material.glass, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeGlass);
+    	(wireC = new BlockPipe("wireC", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(wireA = new BlockPipe("wireA", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(wireH = new BlockPipe("wireH", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(liquidPipe = new BlockLiquidPipe("liquidPipe", Material.glass, 0x20)).setHardness(0.5F).setCreativeTab(tabAutomation).setResistance(10F).setStepSound(Block.soundTypeGlass);
+    	(itemPipe = new BlockItemPipe("itemPipe", Material.wood, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
+    	(itemWarpPipe = new BlockPipe("itemWarpPipe", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F).setStepSound(Block.soundTypeMetal);
+    	(liquidWarpPipe = new BlockPipe("liquidWarpPipe", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F).setStepSound(Block.soundTypeMetal);
+    	(voltageTransformer = TileBlock.create("voltageTransformer", Material.iron, DefaultItemBlock.class, 6)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(SCSU = TileBlock.create("SCSU", Material.iron, ItemESU.class, 0x41)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(OCSU = TileBlock.create("OCSU", Material.iron, ItemESU.class, 0x41)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(CCSU = TileBlock.create("CCSU", Material.iron, ItemESU.class, 0x41)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(steamEngine = TileBlock.create("steamEngine", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(steamTurbine = TileBlock.create("steamTurbine", Material.iron, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(steamGenerator = TileBlock.create("steamGenerator", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(steamBoiler = TileBlock.create("steamBoiler", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(lavaCooler = TileBlock.create("lavaCooler", Material.rock, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(energyFurnace = TileBlock.create("energyFurnace", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(farm = TileBlock.create("farm", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(miner = TileBlock.create("miner", Material.iron, DefaultItemBlock.class, 0x12)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(magnet = TileBlock.create("magnet", Material.iron, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(link = TileBlock.create("link", Material.iron, DefaultItemBlock.class, 5)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(linkHV = TileBlock.create("linkHV", Material.iron, DefaultItemBlock.class, 5)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(texMaker = TileBlock.create("texMaker", Material.wood, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
+    	(builder = TileBlock.create("builder", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(algaePool = TileBlock.create("algaePool", Material.glass, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeGlass);
+    	(teleporter = TileBlock.create("teleporter", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(advancedFurnace = TileBlock.create("advancedFurnace", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(pump = TileBlock.create("pump", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(massstorageChest = TileBlock.create("massstorageChest", Material.wood, DefaultItemBlock.class, 0x43)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(50F).setStepSound(Block.soundTypeWood);
+    	(matterOrb = TileBlock.create("matterOrb", Material.iron, ItemMatterOrb.class, 0x40)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(antimatterBombE = TileBlock.create("antimatterBombE", Material.tnt, ItemMatterOrb.class, 0x42)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(antimatterBombF = TileBlock.create("antimatterBombF", Material.tnt, ItemAntimatterTank.class, 0x43)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(antimatterTank = TileBlock.create("antimatterTank", Material.iron, ItemAntimatterTank.class, 0x41)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(40F).setStepSound(Block.soundTypeMetal);
+    	(antimatterFabricator = TileBlock.create("antimatterFabricator", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(40F).setStepSound(Block.soundTypeMetal);
+    	(antimatterAnihilator = TileBlock.create("antimatterAnihilator", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(40F).setStepSound(Block.soundTypeMetal);
+    	(hpSolarpanel = TileBlock.create("hpSolarpanel", Material.glass, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeGlass);
+    	(autoCrafting = TileBlock.create("autoCrafting", Material.wood, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
+    	(geothermalFurnace = TileBlock.create("geothermalFurnace", Material.rock, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(steamCompressor = TileBlock.create("steamCompressor", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(electricCompressor = TileBlock.create("electricCompressor", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(tank = TileBlock.create("tank", Material.glass, ItemTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(security = TileBlock.create("security", Material.iron, DefaultItemBlock.class, 0x3)).setCreativeTab(tabAutomation).setBlockUnbreakable().setResistance(1000000F).setStepSound(Block.soundTypeStone);
+    	(decompCooler = TileBlock.create("decompCooler", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(collector = TileBlock.create("collector", Material.iron, DefaultItemBlock.class, 5)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(trash = TileBlock.create("trash", Material.rock, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(electrolyser = TileBlock.create("electrolyser", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(fuelCell = TileBlock.create("fuelCell", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(detector = TileBlock.create("detector", Material.rock, DefaultItemBlock.class, 0x15)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(itemSorter = TileBlock.create("itemSorter", Material.wood, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
+    	(matterInterfaceB = TileBlock.create("matterInterfaceB", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(fluidPacker = TileBlock.create("fluidPacker", Material.iron, DefaultItemBlock.class, 3)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(hugeTank = TileBlock.create("hugeTank", Material.glass, ItemHugeTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F).setStepSound(Block.soundTypeGlass);
+    	(fluidVent = TileBlock.create("fluidVent", Material.iron, DefaultItemBlock.class, 5)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(gravCond = TileBlock.create("gravCond", Material.iron, DefaultItemBlock.class, 0x10)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeMetal);
+    	(itemBuffer = TileBlock.create("itemBuffer", Material.wood, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
+    	(quantumTank = TileBlock.create("quantumTank", Material.glass, ItemQuantumTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeGlass);
+    	(vertShemGen = TileBlock.create("vertShemGen", Material.water, DefaultItemBlock.class, 7)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
+    	(ore = new BlockOre("ore")).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeStone);
+        (pool = TileBlock.create("pool", Material.glass, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone).setLightOpacity(5);
+        (unbrStone = new BlockUnbreakable("unbrStone", 0x7e)).setStepSound(Block.soundTypeStone);
+        (unbrGlass = new GlassUnbreakable("unbrGlass", 0x7f)).setStepSound(Block.soundTypeGlass);
+        light = new BlockSkyLight("light");
+        placementHelper = new GhostBlock("placementHelper");
+        (solarpanel = TileBlock.create("solarpanel", Material.glass, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeGlass).setBlockBounds(0F, 0F, 0F, 1F, 0.125F, 1F);
+        (teslaTransmitterLV = TileBlock.create("teslaTransmitterLV", Material.iron, DefaultItemBlock.class, 0x62)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F).setStepSound(Block.soundTypeMetal).setBlockBounds(0.1875F, 0F, 0.1875F, 0.8125F, 1F, 0.8125F);
+        (teslaTransmitter = TileBlock.create("teslaTransmitter", Material.iron, DefaultItemBlock.class, 0x62)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeMetal).setBlockBounds(0.25F, 0F, 0.25F, 0.75F, 1F, 0.75F);
+        (wormhole = TileBlock.create("wormhole", Material.portal, ItemInterdimHole.class, 0x60)).setCreativeTab(tabAutomation).setHardness(3.0F).setResistance(100F).setStepSound(Block.soundTypeGlass).setBlockBounds(0.0625F, 0.0625F, 0.0625F, 0.9375F, 0.9375F, 0.9375F);
         proxy.registerBlocks();
     }
     
-    private void initLiquids()
+    private void initFluids()
     {
-        L_steam = registerFluid(new ModFluid("steam").setDensity(0).setGaseous(true).setTemperature(523).setViscosity(10), "lSteam");
-        L_biomass = registerFluid(new ModFluid("biomass").setTemperature(310).setViscosity(1500), "lBiomass");
-        L_antimatter = registerFluid(new ModFluid("antimatter").setDensity(-1000).setGaseous(true).setTemperature(10000000).setViscosity(1), "lAntimatter");
-        L_nitrogenG = registerFluid(new ModFluid("nitrogenG").setDensity(0).setGaseous(true).setTemperature(273).setViscosity(10), "lNitrogenG");
-        L_nitrogenL = registerFluid(new ModFluid("nitrogenL").setDensity(800).setTemperature(77), "lNitrogenL");
-        L_heliumG = registerFluid(new ModFluid("heliumG").setDensity(-1).setGaseous(true).setTemperature(273).setViscosity(5), "lHeliumG");
-        L_heliumL = registerFluid(new ModFluid("heliumL").setDensity(144).setTemperature(4).setViscosity(1), "lHeliumL");
-        L_hydrogenG = registerFluid(new ModFluid("hydrogenG").setDensity(-1).setGaseous(true).setTemperature(273).setViscosity(5), "lHydrogenG");
-        L_hydrogenL = registerFluid(new ModFluid("hydrogenL").setDensity(72).setTemperature(21).setViscosity(500), "lHydrogenL");
-        L_oxygenG = registerFluid(new ModFluid("oxygenG").setDensity(0).setGaseous(true).setTemperature(273).setViscosity(10), "lOxygenG");
-        L_oxygenL = registerFluid(new ModFluid("oxygenL").setDensity(1160).setTemperature(90).setViscosity(800), "lOxygenL");
+    	String p = "blocks/fluids/";
+        L_steam = registerFluid(new ModFluid("steam", p+"steam").setDensity(0).setGaseous(true).setTemperature(523).setViscosity(10), "lSteam");
+        L_biomass = registerFluid(new ModFluid("biomass", p+"biomass").setTemperature(310).setViscosity(1500), "lBiomass");
+        L_antimatter = registerFluid(new ModFluid("antimatter", p+"antimatter").setDensity(-1000).setGaseous(true).setTemperature(10000000).setViscosity(1), "lAntimatter");
+        L_nitrogenG = registerFluid(new ModFluid("nitrogenG", p+"nitrogenG").setDensity(0).setGaseous(true).setTemperature(273).setViscosity(10), "lNitrogenG");
+        L_nitrogenL = registerFluid(new ModFluid("nitrogenL", p+"nitrogenL").setDensity(800).setTemperature(77), "lNitrogenL");
+        L_heliumG = registerFluid(new ModFluid("heliumG", p+"heliumG").setDensity(-1).setGaseous(true).setTemperature(273).setViscosity(5), "lHeliumG");
+        L_heliumL = registerFluid(new ModFluid("heliumL", p+"heliumL").setDensity(144).setTemperature(4).setViscosity(1), "lHeliumL");
+        L_hydrogenG = registerFluid(new ModFluid("hydrogenG", p+"hydrogenG").setDensity(-1).setGaseous(true).setTemperature(273).setViscosity(5), "lHydrogenG");
+        L_hydrogenL = registerFluid(new ModFluid("hydrogenL", p+"hydrogenL").setDensity(72).setTemperature(21).setViscosity(500), "lHydrogenL");
+        L_oxygenG = registerFluid(new ModFluid("oxygenG", p+"oxygenG").setDensity(0).setGaseous(true).setTemperature(273).setViscosity(10), "lOxygenG");
+        L_oxygenL = registerFluid(new ModFluid("oxygenL", p+"oxygenL").setDensity(1160).setTemperature(90).setViscosity(800), "lOxygenL");
         L_water = FluidRegistry.WATER;
         L_lava = FluidRegistry.LAVA;
         
+        /* TODO reimplement
         BlockSuperfluid.reactConversions.put(L_biomass, L_steam);
         BlockSuperfluid.reactConversions.put(L_nitrogenL, L_nitrogenG);
         BlockSuperfluid.reactConversions.put(L_heliumL, L_heliumG);
@@ -435,7 +280,39 @@ public class Automation implements IWorldGenerator
         BlockSuperfluid.effects.put(L_heliumG, new PotionEffect[]{new PotionEffect(Potion.fireResistance.id, 5), new PotionEffect(Potion.moveSlowdown.id, 5), new PotionEffect(Potion.digSlowdown.id, 5)});
         BlockSuperfluid.effects.put(L_hydrogenG, new PotionEffect[]{new PotionEffect(Potion.confusion.id, 5), new PotionEffect(Potion.moveSlowdown.id, 5), new PotionEffect(Potion.digSlowdown.id, 5)});
         BlockSuperfluid.effects.put(L_antimatter, new PotionEffect[]{new PotionEffect(Potion.wither.id, 50), new PotionEffect(Potion.blindness.id, 50), new PotionEffect(Potion.hunger.id, 50)});
+        */
         if (L_hydrogenG.canBePlacedInWorld()) Blocks.fire.setFireInfo(L_hydrogenG.getBlock(), 500, 20);
+    }
+    
+    private void initOres()
+    {
+        ore.setHarvestLevel("pickaxe", 1, ore.getStateFromMeta(Ore.Copper.ordinal()));
+        ore.setHarvestLevel("pickaxe", 2, ore.getStateFromMeta(Ore.Silver.ordinal()));
+        copperGen = new WorldGenMinable(ore.getStateFromMeta(Ore.Copper.ordinal()), 9);
+        silverGen = new WorldGenMinable(ore.getStateFromMeta(Ore.Silver.ordinal()), 6);
+        
+        OreDictionary.registerOre("oreCopper", new ItemStack(ore, 1, Ore.Copper.ordinal()));
+        OreDictionary.registerOre("oreSilver", new ItemStack(ore, 1, Ore.Silver.ordinal()));
+        OreDictionary.registerOre("ingotCopper", stack("CopperI", 1));
+        OreDictionary.registerOre("ingotSilver", stack("SilverI", 1));
+        OreDictionary.registerOre("ingotElectrum", stack("ElectrumI", 1));
+        OreDictionary.registerOre("ingotConductiveAlloy", stack("CondIA", 1));
+        OreDictionary.registerOre("ingotSteel", stack("SteelI", 1));
+        OreDictionary.registerOre("dustIron", stack("IronD", 1));
+        OreDictionary.registerOre("dustGold", stack("GoldD", 1));
+        OreDictionary.registerOre("dustCopper", stack("CopperD", 1));
+        OreDictionary.registerOre("dustSilver", stack("SilverD", 1));
+        OreDictionary.registerOre("dustElectrum", stack("ElectrumR", 1));
+        OreDictionary.registerOre("dustConductiveAlloy", stack("CondRA", 1));
+    }
+    
+    /**
+     * clears configuration data that is not used anymore after initialization to improve performance and save RAM
+     */
+    private void cleanConfig()
+    {
+    	ArrayList<String> rem = Config.data.getVariables("B.recipe", "AT.rcp", "AF.rcp", "I.rcp");
+    	Config.data.removeEntry(rem.toArray(new String[rem.size()]));
     }
     
     private Fluid registerFluid(Fluid fluid, String blockId)
@@ -447,9 +324,6 @@ public class Automation implements IWorldGenerator
             return fluid;
         } else return ret;
     }
-    
-    private WorldGenerator copperGen;
-    private WorldGenerator silverGen;
     
     @Override
     public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) 
@@ -470,7 +344,7 @@ public class Automation implements IWorldGenerator
             int x = cx + rand.nextInt(16);
             int y = rand.nextInt(max - min) + min;
             int z = cz + rand.nextInt(16);
-            gen.generate(world, rand, x, y, z);
+            gen.generate(world, rand, new BlockPos(x, y, z));
         }
     }
     
@@ -482,16 +356,8 @@ public class Automation implements IWorldGenerator
             int x = cx + rand.nextInt(16);
             int y = y0 + (int)((float)(y1 - y0) * offset * offset);
             int z = cz + rand.nextInt(16);
-            gen.generate(world, rand, x, y, z);
+            gen.generate(world, rand, new BlockPos(x, y, z));
         }
-    }
-    
-    public static FluidStack getLiquid(Fluid type, int amount)
-    {
-        if (type == null) return null;
-        FluidStack liquid = new FluidStack(type, amount);
-        liquid.amount = amount;
-        return liquid;
     }
    
 }

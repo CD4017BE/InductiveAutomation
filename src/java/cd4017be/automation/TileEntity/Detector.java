@@ -6,12 +6,13 @@
 
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 import java.util.HashMap;
 
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Interface;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -24,17 +25,13 @@ import cd4017be.api.circuits.IRedstone8bit;
 import cd4017be.api.circuits.RedstoneHandler;
 import cd4017be.api.computers.ComputerAPI;
 import cd4017be.api.energy.EnergyAPI;
-import cd4017be.api.energy.IEnergyAccess;
+import cd4017be.api.energy.EnergyAPI.IEnergyAccess;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.SlotHolo;
 import cd4017be.lib.util.Utils;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -42,7 +39,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -52,7 +49,7 @@ import net.minecraftforge.fluids.IFluidHandler;
  * @author CD4017BE
  */
 @Optional.InterfaceList(value = {@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft"), @Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")})
-public class Detector extends AutomatedTile implements IRedstone8bit, IPeripheral, Environment
+public class Detector extends AutomatedTile implements IRedstone8bit, Environment //,IPeripheral //TODO reimplement
 {
     
     public Detector()
@@ -66,13 +63,13 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         ComputerAPI.update(this, node, 0);
         if (netData.ints[0] == 0) return;
-        int s = worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+        int s = this.getOrientation();
         TileEntity te = Utils.getTileOnSide(this, (byte)s);
         IInventory inv = te != null && te instanceof IInventory ? (IInventory)te : null;
         IFluidHandler tank = te != null && te instanceof IFluidHandler ? (IFluidHandler)te : null;
@@ -94,9 +91,8 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
             } else ns = false;
             this.setState(i, ns);
             if (os ^ ns) {
-                ForgeDirection dir = ForgeDirection.getOrientation(i);
                 change = true;
-                worldObj.notifyBlockOfNeighborChange(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ, worldObj.getBlock(xCoord, yCoord, zCoord));
+                worldObj.notifyBlockOfStateChange(pos.offset(EnumFacing.VALUES[i]), this.getBlockType());
             }
         }
         if (change) RedstoneHandler.notify8bitNeighbors(this, this.getValue(0), 1);
@@ -105,8 +101,8 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
     private boolean checkVoltage(TileEntity te, int s, int ref)
     {
         if (te == null) return ref < 0;
-        IEnergyAccess energy = EnergyAPI.getAccess(te);
-        return ref < energy.getStorage(s) / 1000F;
+        IEnergyAccess energy = EnergyAPI.get(te);
+        return ref < energy.getStorage(s) / 1000D;
     }
     
     private boolean checkInventory(IInventory inv, int s, int ref, ItemStack type)
@@ -125,7 +121,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
     private boolean checkTank(IFluidHandler tank, int s, int ref, ItemStack type)
     {
         if (tank == null) return ref < 0;
-        FluidTankInfo[] data = tank.getTankInfo(ForgeDirection.getOrientation(s));
+        FluidTankInfo[] data = tank.getTankInfo(EnumFacing.VALUES[s]);
         if (data == null) return ref < 0;
         int n = 0;
         for (FluidTankInfo info : data) {
@@ -175,7 +171,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
     }
     
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) {
             byte s = dis.readByte();
@@ -218,7 +214,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
     }
     
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) 
+    public ItemStack removeStackFromSlot(int i) 
     {
         return null;
     }
@@ -241,7 +237,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
     }
 
     //ComputerCraft:
-    
+    /* TODO reimplement
     @Optional.Method(modid = "ComputerCraft")
     @Override
     public String getType() 
@@ -260,7 +256,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
     @Override
     public Object[] callMethod(IComputerAccess computer, ILuaContext lua, int cmd, Object[] par) throws LuaException 
     {
-        byte s = (byte)worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+        byte s = (byte)worldObj.getBlockMetadata(getPos());
         if (cmd == 0) {
             if (par.length != 1 || !(par[0] instanceof Double)) throw new LuaException("missing parameters [Number Ucur, Number Umax = getVoltage(Number side)]");
             byte d = ((Double)par[0]).byteValue();
@@ -280,7 +276,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
                 IInventory inv = (IInventory)te;
                 int[] slots;
                 if (inv instanceof ISidedInventory) {
-                    slots = ((ISidedInventory)inv).getAccessibleSlotsFromSide(d);
+                    slots = ((ISidedInventory)inv).getSlotsForFace(d);
                 } else {
                     slots = new int[inv.getSizeInventory()];
                     for (int i = 0; i < slots.length; i++) slots[i] = i;
@@ -305,7 +301,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
             TileEntity te = Utils.getTileOnSide(this, s);
             if (te instanceof IFluidHandler) {
                 IFluidHandler flh = (IFluidHandler)te;
-                FluidTankInfo[] info = flh.getTankInfo(ForgeDirection.getOrientation(d));
+                FluidTankInfo[] info = flh.getTankInfo(EnumFacing.VALUES[d]);
                 HashMap<Integer, HashMap<String, Integer>> list = new HashMap<Integer, HashMap<String, Integer>>();
                 if (info != null)
                     for (int i = 0; i < info.length; i++) {
@@ -348,6 +344,8 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
         return this.hashCode() == peripheral.hashCode();
     }
 
+*/
+
     //OpenComputers:
     
     private Object node = ComputerAPI.newOCnode(this, "Automation-Detector", false);
@@ -389,7 +387,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
 	@Callback(doc = "" ,direct = true)
 	public Object[] getVoltage(Context cont, Arguments args) throws Exception
 	{
-		byte s = (byte)worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		byte s = (byte)this.getOrientation();
 		byte d = (byte)args.checkInteger(0);
         if (d < 0 || d >= 6) throw new Exception("parameter <side> out of range [0-6]");
         TileEntity te = Utils.getTileOnSide(this, s);
@@ -404,7 +402,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
 	@Callback(doc = "" ,direct = true)
 	public Object[] getInventory(Context cont, Arguments args) throws Exception
 	{
-		byte s = (byte)worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		byte s = (byte)this.getOrientation();
 		byte d = (byte)args.checkInteger(0);
         if (d < 0 || d >= 6) throw new Exception("parameter <side> out of range [0-6]");
         TileEntity te = Utils.getTileOnSide(this, s);
@@ -412,7 +410,7 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
             IInventory inv = (IInventory)te;
             int[] slots;
             if (inv instanceof ISidedInventory) {
-                slots = ((ISidedInventory)inv).getAccessibleSlotsFromSide(d);
+                slots = ((ISidedInventory)inv).getSlotsForFace(EnumFacing.VALUES[d]);
             } else {
                 slots = new int[inv.getSizeInventory()];
                 for (int i = 0; i < slots.length; i++) slots[i] = i;
@@ -436,22 +434,22 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
 	@Callback(doc = "" ,direct = true)
 	public Object[] getFluidTank(Context cont, Arguments args) throws Exception
 	{
-		byte s = (byte)worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		byte s = (byte)this.getOrientation();
 		byte d = (byte)args.checkInteger(0);
         if (d < 0 || d >= 6) throw new Exception("parameter <side> out of range [0-6]");
         TileEntity te = Utils.getTileOnSide(this, s);
         if (te instanceof IFluidHandler) {
             IFluidHandler flh = (IFluidHandler)te;
-            FluidTankInfo[] info = flh.getTankInfo(ForgeDirection.getOrientation(d));
-            HashMap<Integer, HashMap<String, Integer>> list = new HashMap<Integer, HashMap<String, Integer>>();
+            FluidTankInfo[] info = flh.getTankInfo(EnumFacing.VALUES[d]);
+            HashMap<Integer, HashMap<String, Object>> list = new HashMap<Integer, HashMap<String, Object>>();
             if (info != null)
                 for (int i = 0; i < info.length; i++) {
-                    HashMap<String, Integer> obj = new HashMap<String, Integer>();
+                    HashMap<String, Object> obj = new HashMap<String, Object>();
                     obj.put("cap", info[i].capacity);
                     FluidStack fluid = info[i].fluid;
                     if (fluid != null) {
                         obj.put("am", fluid.amount);
-                        obj.put("id", fluid.fluidID);
+                        obj.put("id", fluid.getFluid().getName());
                     } else {
                         obj.put("am", 0);
                         obj.put("id", 0);
@@ -466,11 +464,11 @@ public class Detector extends AutomatedTile implements IRedstone8bit, IPeriphera
 	@Callback(doc = "" ,direct = true)
 	public Object[] getEnergy(Context cont, Arguments args) throws Exception
 	{
-		byte s = (byte)worldObj.getBlockMetadata(xCoord, yCoord, zCoord);
+		byte s = (byte)this.getOrientation();
 		byte d = (byte)args.checkInteger(0);
         if (d < 0 || d >= 6) throw new Exception("parameter <side> out of range [0-6]");
         TileEntity te = Utils.getTileOnSide(this, s);
-        IEnergyAccess energy = EnergyAPI.getAccess(te);
+        IEnergyAccess energy = EnergyAPI.get(te);
         return new Object[]{Double.valueOf(energy.getStorage(d) / 1000F), Double.valueOf(energy.getCapacity(d) / 1000F)};
 	}
 	

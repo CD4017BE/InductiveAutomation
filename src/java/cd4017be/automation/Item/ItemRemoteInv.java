@@ -1,19 +1,17 @@
 package cd4017be.automation.Item;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.List;
 
 import cd4017be.automation.Automation;
-import cd4017be.automation.Gui.ContainerFilteredSubInventory;
 import cd4017be.automation.Gui.ContainerRemoteInventory;
 import cd4017be.automation.Gui.GuiRemoteInventory;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.DefaultItem;
 import cd4017be.lib.IGuiItem;
 import cd4017be.lib.util.Utils;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,18 +21,20 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
 public class ItemRemoteInv extends DefaultItem implements IGuiItem 
 {
 
-	public ItemRemoteInv(String id, String tex) 
+	public ItemRemoteInv(String id) 
 	{
 		super(id);
-		this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxStackSize(1);
 	}
@@ -53,7 +53,7 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 	}
 
 	@Override
-	public void onPlayerCommand(World world, EntityPlayer player, DataInputStream dis) throws IOException 
+	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
 		if (player.openContainer != null && player.openContainer instanceof ContainerRemoteInventory) ((ContainerRemoteInventory)player.openContainer).onPlayerCommand(world, player, dis);
 	}
@@ -65,21 +65,21 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack item, EntityPlayer player, World world, int x, int y, int z, int s, float X, float Y, float Z) 
+	public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
 	{
 		if (!world.isRemote && player.isSneaking()) {
-			TileEntity te = world.getTileEntity(x, y, z);
+			TileEntity te = world.getTileEntity(pos);
 			if (te == null || !(te instanceof IInventory)) {
 				player.addChatMessage(new ChatComponentText("Block has no inventory!"));
 				return true;
 			}
 			if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-			item.stackTagCompound.setInteger("x", x);
-			item.stackTagCompound.setInteger("y", y);
-			item.stackTagCompound.setInteger("z", z);
-			item.stackTagCompound.setByte("s", (byte)s);
+			item.stackTagCompound.setInteger("x", pos.getX());
+			item.stackTagCompound.setInteger("y", pos.getY());
+			item.stackTagCompound.setInteger("z", pos.getZ());
+			item.stackTagCompound.setByte("s", (byte)s.getIndex());
 			item.stackTagCompound.setInteger("d", player.dimension);
-			item.stackTagCompound.setInteger("size", Utils.accessibleSlots((IInventory)te, s).length);
+			item.stackTagCompound.setInteger("size", Utils.accessibleSlots((IInventory)te, s.getIndex()).length);
 			player.addChatMessage(new ChatComponentText("Block inventory linked"));
 			return true;
 		}
@@ -131,7 +131,7 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 		if (y < 0) return null;
 		World world = DimensionManager.getWorld(d);
 		if (world == null) return null;
-		TileEntity tile = world.getTileEntity(x, y, z);
+		TileEntity tile = world.getTileEntity(new BlockPos(x, y, z));
 		if (tile == null || !(tile instanceof IInventory) || tile.isInvalid()) return null;
 		return (IInventory)tile;
 	}
@@ -163,7 +163,7 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 		int n;
 		for (int s : srcS) {
 			stack0 = srcI.getStackInSlot(s);
-			if (stack0 == null || (siS && !srcSI.canExtractItem(s, stack0, sS))) continue;
+			if (stack0 == null || (siS && !srcSI.canExtractItem(s, stack0, EnumFacing.VALUES[sS]))) continue;
 			n = filter.getInsertAmount(stack0, dstI, dstS, false);
 			if (n <= 0) continue;
 			stack0 = srcI.decrStackSize(s, n);

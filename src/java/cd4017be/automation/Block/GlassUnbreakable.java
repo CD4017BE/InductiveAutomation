@@ -10,8 +10,11 @@ import cd4017be.automation.Automation;
 import cd4017be.lib.DefaultBlock;
 import cd4017be.lib.DefaultItemBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -24,7 +27,7 @@ public class GlassUnbreakable extends DefaultBlock
     
     public GlassUnbreakable(String id, int tex)
     {
-        super(id, Material.glass, DefaultItemBlock.class, "unbr/glass");
+        super(id, Material.glass, DefaultItemBlock.class);
         this.setCreativeTab(Automation.tabAutomation);
         this.setBlockUnbreakable();
         this.setResistance(Float.POSITIVE_INFINITY);
@@ -37,37 +40,29 @@ public class GlassUnbreakable extends DefaultBlock
     }
 
     @Override
-    public boolean isBlockSolid(IBlockAccess world, int x, int y, int z, int side) 
-    {
+    public boolean isBlockSolid(IBlockAccess world, BlockPos pos, EnumFacing side) {
         return true;
-    }
-    
-    @Override
-    public boolean renderAsNormalBlock()
-    {
-        return false;
     }
 
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess world, int x, int y, int z, int s) 
-    {
-        if (world.getBlock(x, y, z) == this) return false;
-        else return super.shouldSideBeRendered(world, x, y, z, s);
-    }
-    
+	public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, EnumFacing side) {
+    	if (world.getBlockState(pos) == this) return false;
+        else return super.shouldSideBeRendered(world, pos, side);
+	}
+
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
-        ProtectLvl pr = AreaProtect.instance.getPlayerAccess(player.getCommandSenderName(), world, x >> 4, z >> 4);
+        ProtectLvl pr = AreaProtect.instance.getPlayerAccess(player.getName(), world, pos.getX() >> 4, pos.getZ() >> 4);
         if (pr == ProtectLvl.Free && !world.isRemote && player.isSneaking()) {
-            dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
-            world.setBlockToAir(x, y, z);
+            dropBlockAsItem(world, pos, state, 0);
+            world.setBlockToAir(pos);
         }
         return player.isSneaking();
     }
     
     @Override
-	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) 
+	public boolean canEntityDestroy(IBlockAccess world, BlockPos pos, Entity entity) 
 	{
 		return false;
 	}

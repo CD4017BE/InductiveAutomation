@@ -4,11 +4,12 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -20,7 +21,8 @@ import cd4017be.lib.util.Utils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -30,7 +32,7 @@ import net.minecraftforge.fluids.IFluidHandler;
  */
 public class Collector extends AutomatedTile implements IFluidHandler, ISidedInventory
 {
-    private static final FluidStack[] Output = {null, new FluidStack(Automation.L_nitrogenG, 100), new FluidStack(Automation.L_oxygenG, 160)};
+    private static final FluidStack[] Output = {null, new FluidStack(Objects.L_nitrogenG, 100), new FluidStack(Objects.L_oxygenG, 160)};
     
     public Collector()
     {
@@ -40,19 +42,19 @@ public class Collector extends AutomatedTile implements IFluidHandler, ISidedInv
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
-        ForgeDirection dir = ForgeDirection.getOrientation(worldObj.getBlockMetadata(xCoord, yCoord, zCoord));
-        int x1 = xCoord + dir.offsetX, y1 = yCoord + dir.offsetY, z1 = zCoord + dir.offsetZ;
+        EnumFacing dir = EnumFacing.VALUES[this.getOrientation()];
+        BlockPos pos = this.pos.offset(dir);
         if (netData.ints[0] == 0) {
-            FluidStack fluid = Utils.getFluid(worldObj, x1, y1, z1, true);
+            FluidStack fluid = Utils.getFluid(worldObj, pos, true);
             if (fluid != null && tanks.fill(0, fluid, false) == fluid.amount) {
                 tanks.fill(0, fluid, true);
-                worldObj.setBlockToAir(x1, y1, z1);
+                worldObj.setBlockToAir(pos);
             }
-        } else if (worldObj.isAirBlock(x1, y1, z1)) {
+        } else if (worldObj.isAirBlock(pos)) {
             FluidStack fluid = Output[netData.ints[0]];
             tanks.fill(0, fluid, true);
         }
@@ -73,7 +75,7 @@ public class Collector extends AutomatedTile implements IFluidHandler, ISidedInv
     }
     
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) netData.ints[0] = (netData.ints[0] + 1) % Output.length;
     }

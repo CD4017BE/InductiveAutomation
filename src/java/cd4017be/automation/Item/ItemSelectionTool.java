@@ -4,12 +4,11 @@
  */
 package cd4017be.automation.Item;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.automation.Automation;
 import cd4017be.automation.Gui.ContainerAreaUpgrade;
@@ -24,8 +23,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 /**
@@ -36,17 +38,16 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
 {
     private static final String[] modes = {"Set Point", "Add Point", "Expand", "Contract", "Move", "Configure"};
     
-    public ItemSelectionTool(String id, String tex)
+    public ItemSelectionTool(String id)
     {
         super(id);
-        this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxStackSize(1);
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int s, float X, float Y, float Z) {
-        if (!world.isRemote) onClick(stack, player, true, x, y, z);
+    public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) {
+        if (!world.isRemote) onClick(stack, player, true, pos);
         return true;
     }
 
@@ -54,11 +55,11 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
     @Override
     public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
     {
-        if (!world.isRemote) onClick(item, player, false, (int)player.posX, (int)player.posY, (int)player.posZ);
+        if (!world.isRemote) onClick(item, player, false, new BlockPos(player.posX, player.posY, player.posZ));
         return item;
     }
     
-    private void onClick(ItemStack item, EntityPlayer player, boolean b, int x, int y, int z)
+    private void onClick(ItemStack item, EntityPlayer player, boolean b, BlockPos pos)
     {
         if (item.stackTagCompound == null) return;
         byte mode = item.stackTagCompound.getByte("mode");
@@ -66,14 +67,14 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
         {
             if (b)
             {
-                TileEntity te = player.worldObj.getTileEntity(x, y, z);
+                TileEntity te = player.worldObj.getTileEntity(pos);
                 if (mode == 5 && te != null && te instanceof IOperatingArea)
                 {
-                    BlockGuiHandler.openItemGui(player, player.worldObj, x, y, z);
+                    BlockGuiHandler.openItemGui(player, player.worldObj, pos.getX(), pos.getY(), pos.getZ());
                     return;
                 } else
-                if (item.stackTagCompound.getInteger("mx") == x && item.stackTagCompound.getInteger("my") == y
-                    && item.stackTagCompound.getInteger("mz") == z && te != null && te instanceof IOperatingArea)
+                if (item.stackTagCompound.getInteger("mx") == pos.getX() && item.stackTagCompound.getInteger("my") == pos.getY()
+                    && item.stackTagCompound.getInteger("mz") == pos.getZ() && te != null && te instanceof IOperatingArea)
                 {
                     item.stackTagCompound.setInteger("mx", 0);
                     item.stackTagCompound.setInteger("my", -1);
@@ -85,9 +86,9 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
                 {
                     player.addChatMessage(new ChatComponentText("Linked Machine"));
                     int[] oa = ((IOperatingArea)te).getOperatingArea();
-                    item.stackTagCompound.setInteger("mx", x);
-                    item.stackTagCompound.setInteger("my", y);
-                    item.stackTagCompound.setInteger("mz", z);
+                    item.stackTagCompound.setInteger("mx", pos.getX());
+                    item.stackTagCompound.setInteger("my", pos.getY());
+                    item.stackTagCompound.setInteger("mz", pos.getZ());
                     this.storeArea(oa, item);
                     return;
                 }
@@ -102,20 +103,20 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
         IOperatingArea mach = this.loadArea(area, item, player.worldObj);
         if (mode == 0)
         {
-            area[0] = x; area[3] = x + 1;
-            area[1] = y; area[4] = y + 1;
-            area[2] = z; area[5] = z + 1;
-            msg = "Area set to: X=" + x + " Y=" + y + " Z=" + z;
+            area[0] = pos.getX(); area[3] = pos.getX() + 1;
+            area[1] = pos.getY(); area[4] = pos.getY() + 1;
+            area[2] = pos.getZ(); area[5] = pos.getZ() + 1;
+            msg = "Area set to: X=" + pos.getX() + " Y=" + pos.getY() + " Z=" + pos.getZ();
         } else
         if (mode == 1)
         {
-            if (x < area[0]) area[0] = x;
-            if (y < area[1]) area[1] = y;
-            if (z < area[2]) area[2] = z;
-            if (x >= area[3]) area[3] = x + 1;
-            if (y >= area[4]) area[4] = y + 1;
-            if (z >= area[5]) area[5] = z + 1;
-            msg = "Point added: X=" + x + " Y=" + y + " Z=" + z;
+            if (pos.getX() < area[0]) area[0] = pos.getX();
+            if (pos.getY() < area[1]) area[1] = pos.getY();
+            if (pos.getZ() < area[2]) area[2] = pos.getZ();
+            if (pos.getX() >= area[3]) area[3] = pos.getX() + 1;
+            if (pos.getY() >= area[4]) area[4] = pos.getY() + 1;
+            if (pos.getZ() >= area[5]) area[5] = pos.getZ() + 1;
+            msg = "Point added: X=" + pos.getX() + " Y=" + pos.getY() + " Z=" + pos.getZ();
         } else
         if (mode < 5)
         {
@@ -191,12 +192,12 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
 	{
 		ItemStack item = player.getCurrentEquippedItem();
 		if (item == null || item.stackTagCompound == null) return null;
-		TileEntity te = world.getTileEntity(x, y, z);
+		TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 		if (te == null || !(te instanceof IOperatingArea)) {
-			te = world.getTileEntity(item.stackTagCompound.getInteger("mx"), item.stackTagCompound.getInteger("my"), item.stackTagCompound.getInteger("mz"));
+			te = world.getTileEntity(new BlockPos(item.stackTagCompound.getInteger("mx"), item.stackTagCompound.getInteger("my"), item.stackTagCompound.getInteger("mz")));
 			if (te == null || !(te instanceof IOperatingArea)) return null;
 		}
-		return new ContainerAreaUpgrade((IOperatingArea)te, new int[]{te.xCoord, te.yCoord, te.zCoord}, player);
+		return new ContainerAreaUpgrade((IOperatingArea)te, new int[]{te.getPos().getX(), te.getPos().getY(), te.getPos().getZ()}, player);
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -209,7 +210,7 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
 	}
 
 	@Override
-	public void onPlayerCommand(World world, EntityPlayer player, DataInputStream dis) throws IOException 
+	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
 		if (player.openContainer != null && player.openContainer instanceof ContainerAreaUpgrade) {
 			ContainerAreaUpgrade cont = (ContainerAreaUpgrade)player.openContainer;
@@ -244,7 +245,7 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
 	
 	private IOperatingArea loadArea(int[] area, ItemStack item, World world)
 	{
-		TileEntity te = world.getTileEntity(item.stackTagCompound.getInteger("mx"), item.stackTagCompound.getInteger("my"), item.stackTagCompound.getInteger("mz"));
+		TileEntity te = world.getTileEntity(new BlockPos(item.stackTagCompound.getInteger("mx"), item.stackTagCompound.getInteger("my"), item.stackTagCompound.getInteger("mz")));
         if (te != null && te instanceof IOperatingArea) {
         	IOperatingArea mach = (IOperatingArea)te;
         	System.arraycopy(mach.getOperatingArea(), 0, area, 0, 6);

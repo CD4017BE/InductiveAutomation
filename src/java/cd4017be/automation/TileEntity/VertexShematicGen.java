@@ -1,6 +1,7 @@
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -22,7 +23,7 @@ import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.SlotItemType;
 import cd4017be.lib.util.VecN;
 
-public class VertexShematicGen extends AutomatedTile 
+public class VertexShematicGen extends AutomatedTile
 {
 
 	public VertexShematicGen() 
@@ -135,7 +136,7 @@ public class VertexShematicGen extends AutomatedTile
 	}
 
 	@Override
-	protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
 	{
 		if (cmd == 0) {//load add
 			if (inventory.items[0] == null || inventory.items[0].stackTagCompound == null) return;
@@ -202,7 +203,7 @@ public class VertexShematicGen extends AutomatedTile
 			if (sel2 < 0 || sel2 >= p.vert.length || var < 0 || var >= 5) return;
 			p.vert[sel2].x[var] = dis.readFloat();
 		} else if (cmd == 11) {//name
-			this.name = dis.readUTF();
+			this.name = dis.readStringFromBuffer(64);
 		} else if (cmd == 12) {//sel
 			this.sel = dis.readShort();
 		} else if (cmd == 13) {//auto tex
@@ -226,7 +227,7 @@ public class VertexShematicGen extends AutomatedTile
 				}
 			}
 		}
-		worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+		worldObj.markBlockForUpdate(pos);
 	}
 		
 	public void triangulate(NBTTagCompound nbt)
@@ -259,9 +260,9 @@ public class VertexShematicGen extends AutomatedTile
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
 	{
-		this.load(pkt.func_148857_g());
-		this.name = pkt.func_148857_g().getString("name");
-		this.sel = pkt.func_148857_g().getShort("sel");
+		this.load(pkt.getNbtCompound());
+		this.name = pkt.getNbtCompound().getString("name");
+		this.sel = pkt.getNbtCompound().getShort("sel");
 	}
 
 	@Override
@@ -271,7 +272,7 @@ public class VertexShematicGen extends AutomatedTile
 		this.save(nbt);
 		nbt.setString("name", name);
 		nbt.setShort("sel", sel);
-		return new S35PacketUpdateTileEntity(this.xCoord, this.yCoord, this.zCoord, -1, nbt);
+		return new S35PacketUpdateTileEntity(pos, -1, nbt);
 	}
 
 	@Override

@@ -4,9 +4,7 @@
  */
 package cd4017be.automation.Item;
 
-import cofh.api.energy.IEnergyContainerItem;
 import cd4017be.api.automation.EnergyItemHandler;
-import cd4017be.api.energy.EnergyThermalExpansion;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -21,9 +19,9 @@ import net.minecraft.world.World;
 public class ItemInvEnergy extends ItemEnergyCell
 {
     
-    public ItemInvEnergy(String id, String tex, int store)
+    public ItemInvEnergy(String id, int store)
     {
-        super(id, tex, store);
+        super(id, store);
         this.setMaxStackSize(1);
     }
 
@@ -45,21 +43,21 @@ public class ItemInvEnergy extends ItemEnergyCell
                 ItemStack it = inv.mainInventory[j];
                 if (EnergyItemHandler.isEnergyItem(it) && !(it.getItem() instanceof ItemInvEnergy)) {
                 	EnergyItemHandler.addEnergy(item, -EnergyItemHandler.addEnergy(it, EnergyItemHandler.getEnergy(item), true), false);
-                } else if (it != null && it.getItem() instanceof IEnergyContainerItem) {
+                } /*else if (it != null && it.getItem() instanceof IEnergyContainerItem) {
                 	IEnergyContainerItem cont = (IEnergyContainerItem)it.getItem();
                 	remain -= (float)cont.receiveEnergy(it, (int)Math.floor(((float)EnergyItemHandler.getEnergy(item) * 1000F + remain) / EnergyThermalExpansion.E_Factor), false) * EnergyThermalExpansion.E_Factor;
                 	remain -= (float)EnergyItemHandler.addEnergy(item, (int)Math.floor(remain / 1000F), false) * 1000F;
-                }
+                }*/ //TODO reimplement
             }
             for (int j = 0; j < inv.armorInventory.length; j++) {
             	ItemStack it = inv.armorInventory[j];
                 if (EnergyItemHandler.isEnergyItem(it)) {
                 	EnergyItemHandler.addEnergy(item, -EnergyItemHandler.addEnergy(it, EnergyItemHandler.getEnergy(item), true), false);
-                } else if (it != null && it.getItem() instanceof IEnergyContainerItem) {
+                } /*else if (it != null && it.getItem() instanceof IEnergyContainerItem) {
                 	IEnergyContainerItem cont = (IEnergyContainerItem)it.getItem();
                 	remain -= (float)cont.receiveEnergy(it, (int)Math.floor(((float)EnergyItemHandler.getEnergy(item) * 1000F + remain) / EnergyThermalExpansion.E_Factor), false) * EnergyThermalExpansion.E_Factor;
                 	remain -= (float)EnergyItemHandler.addEnergy(item, (int)Math.floor(remain / 1000F), false) * 1000F;
-                }
+                }*/ //TODO reimplement
             }
             item.stackTagCompound.setFloat("buff", remain);
         }

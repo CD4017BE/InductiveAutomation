@@ -9,13 +9,11 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.Level;
 
-import cpw.mods.fml.common.FMLLog;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraft.init.Blocks;
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.AutomationRecipes;
 import cd4017be.api.automation.ProtectLvl;
-import cd4017be.api.energy.EnergyIndustrialCraft;
-import cd4017be.api.energy.EnergyThermalExpansion;
 import cd4017be.automation.Entity.EntityAntimatterExplosion1;
 import cd4017be.automation.Item.ItemAntimatterLaser;
 import cd4017be.automation.Item.ItemAntimatterTank;
@@ -140,8 +138,8 @@ public class Config
     	algaeDecaying *= data.getFloat("Mach.bioReact.decay", 1F);
     	//Energy conversions
     	E_Steam = data.getFloat("EnergyConv.Steam", E_Steam);
-    	EnergyThermalExpansion.E_Factor = data.getFloat("EnergyConv.RF", EnergyThermalExpansion.E_Factor) * 1000F;
-    	EnergyIndustrialCraft.E_Factor = data.getFloat("EnergyConv.EU", EnergyIndustrialCraft.E_Factor) * 1000F;
+    	//EnergyThermalExpansion.E_Factor = data.getFloat("EnergyConv.RF", EnergyThermalExpansion.E_Factor) * 1000F; //TODO reimplement
+    	//EnergyIndustrialCraft.E_Factor = data.getFloat("EnergyConv.EU", EnergyIndustrialCraft.E_Factor) * 1000F; //TODO reimplement
     	//Energy usage
     	float f = 1000F;
     	Builder.Energy = f * data.getFloat("Mach.Builder.Euse", Builder.Energy / f);

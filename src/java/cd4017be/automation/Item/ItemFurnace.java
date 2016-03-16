@@ -11,8 +11,8 @@ import cd4017be.automation.Gui.ContainerPortableFurnace;
 import cd4017be.automation.Gui.GuiPortableFurnace;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.IGuiItem;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -24,9 +24,9 @@ import net.minecraft.world.World;
 public class ItemFurnace extends ItemFilteredSubInventory implements IEnergyItem, IItemStorage, IGuiItem
 {
 	public static int energyUse = 200;
-	public ItemFurnace(String id, String tex)
+	public ItemFurnace(String id)
 	{
-		super(id, tex);
+		super(id);
 		this.setMaxDamage(16);
 	}
 	
@@ -85,7 +85,7 @@ public class ItemFurnace extends ItemFilteredSubInventory implements IEnergyItem
 		if (EnergyItemHandler.getEnergy(item) >= energyUse) {
 			ItemStack[] cont = InventoryItemHandler.getItemList(item);
 			if (cont.length > 0) {
-				ItemStack stack = FurnaceRecipes.smelting().getSmeltingResult(cont[0]);
+				ItemStack stack = FurnaceRecipes.instance().getSmeltingResult(cont[0]);
 				if (stack != null) {
 					stack = stack.copy();
 					EnergyItemHandler.addEnergy(item, -energyUse, false);

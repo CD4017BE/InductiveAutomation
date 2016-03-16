@@ -4,10 +4,11 @@
  */
 package cd4017be.automation.TileEntity;
 
+
 import cd4017be.api.automation.AutomationRecipes;
 import cd4017be.api.automation.AutomationRecipes.CmpRecipe;
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -36,14 +37,14 @@ public class SteamCompressor extends AutomatedTile implements ISidedInventory, I
     {
         netData = new TileEntityData(2, 2, 0, 1);
         inventory = new Inventory(this, 7, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, -1), new Component(3, 4, -1), new Component(4, 5, 1));
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_steam).setIn(6)).setNetLong(1);
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_steam).setIn(6)).setNetLong(1);
         
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if(worldObj.isRemote) return;
         //steam netData.ints[0]
         int dp = 16 - netData.ints[0] / 40;

@@ -4,7 +4,8 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.api.automation.AreaProtect;
@@ -29,7 +30,9 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -55,13 +58,13 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
-        lastUser = entity.getCommandSenderName();
+        lastUser = entity.getName();
     }
     
     @Override
-    public boolean onActivated(EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
-        lastUser = player.getCommandSenderName();
+        lastUser = player.getName();
         return super.onActivated(player, s, X, Y, Z);
     }
     
@@ -74,9 +77,9 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         if (slave == null || ((TileEntity)slave).isInvalid()) slave = ItemMachineSynchronizer.getLink(inventory.items[5], this);
         if (storage < Energy)
@@ -84,7 +87,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
             storage += energy.getEnergy(0, resistor);
             energy.Ucap *= eScale;
         }
-        if (!disabled && alternateCheckBlock(px, py, pz))
+        if (!disabled && alternateCheckBlock(new BlockPos(px, py, pz)))
         {
             px++;
             if (px >= area[3])
@@ -105,139 +108,140 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
         
     }
     
-    private boolean slaveOP(int x, int y, int z)
+    private boolean slaveOP(BlockPos pos)
     {
     	if (slave != null && slave instanceof Builder && 
     			!((TileEntity)slave).isInvalid() && (slave.getSlave() == null || !(slave.getSlave() instanceof Pump || slave.getSlave().getSlave() != null))) {
-        	return slave.remoteOperation(x, y, z);
+        	return slave.remoteOperation(pos);
         } else return true;
     }
     
-    private boolean checkBlock(int x, int y, int z)
+    private boolean checkBlock(BlockPos pos)
     {
     	
-    	FluidStack fluid = Utils.getFluid(worldObj, x, y, z, this.blockNotify);
-        if (fluid == null || (tanks.isLocked(0) && !fluid.isFluidEqual(tanks.getFluid(0)))) return slaveOP(x, y, z);
-        else if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, x >> 4, z >> 4)) return true;
+    	FluidStack fluid = Utils.getFluid(worldObj, pos, this.blockNotify);
+        if (fluid == null || (tanks.isLocked(0) && !fluid.isFluidEqual(tanks.getFluid(0)))) return slaveOP(pos);
+        else if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, pos.getX() >> 4, pos.getZ() >> 4)) return true;
         else if (storage < Energy) return false;
-        else return this.drain(x, y, z, fluid);
+        else return this.drain(pos, fluid);
     }
     
     private int[] blocks = new int[0];
     private int dist = -1;
-    private int fluidId;
+    private Fluid fluidId;
     private boolean flowDir;
-    private static final ForgeDirection[] SearchArray = {ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.EAST, ForgeDirection.WEST};
-    private final ForgeDirection[] lastDir = new ForgeDirection[2];
+    private static final EnumFacing[] SearchArray = {EnumFacing.NORTH, EnumFacing.SOUTH, EnumFacing.EAST, EnumFacing.WEST};
+    private final EnumFacing[] lastDir = new EnumFacing[2];
     
-    private boolean alternateCheckBlock(int x, int y, int z)
+    private boolean alternateCheckBlock(BlockPos pos)
     {
-        if (!worldObj.blockExists(x, y, z)) return false;
-        if (blocks.length == 0) return checkBlock(x, y, z);
+        if (!worldObj.isBlockLoaded(pos)) return false;
+        if (blocks.length == 0) return checkBlock(pos);
         if (dist < 0) {
-            FluidStack fluid = Utils.getFluid(worldObj, x, y, z, this.blockNotify);
+            FluidStack fluid = Utils.getFluid(worldObj, pos, this.blockNotify);
             if (fluid != null && (!tanks.isLocked(0) || fluid.isFluidEqual(tanks.getFluid(0)))) {
-                fluidId = fluid.fluidID;
+                fluidId = fluid.getFluid();
                 flowDir = fluid.getFluid().getDensity() <= 0;
                 dist = 0;
                 blocks[dist] = 0;
-                lastDir[0] = lastDir[1] = ForgeDirection.UNKNOWN;
+                lastDir[0] = lastDir[1] = null;
             } else return true;
         }
         if (storage < Energy) return false;
         int target = blocks[dist];
         byte dx = (byte)target, dy = (byte)(target >> 8), dz = (byte)(target >> 16);
-        if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, (x + dx) >> 4, (z + dz) >> 4)) return true;
+        if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, (pos.getX() + dx) >> 4, (pos.getZ() + dz) >> 4)) return true;
         if (dist >= blocks.length - 1) {
-            this.moveBack(x + dx, y + dy, z + dz);
+            this.moveBack(pos.add(dx, dy, dz));
             return false;
         }
-        ForgeDirection dir = this.findNextDir(x + dx, y + dy, z + dz);
-        if (dir == null) this.moveBack(x + dx, y + dy, z + dz);
+        EnumFacing dir = this.findNextDir(pos.add(dx, dy, dz));
+        if (dir == null) this.moveBack(pos.add(dx, dy, dz));
         else {
-            if (dir == ForgeDirection.UP || dir == ForgeDirection.DOWN) lastDir[0] = lastDir[1] = ForgeDirection.UNKNOWN;
+            if (dir == EnumFacing.UP || dir == EnumFacing.DOWN) lastDir[0] = lastDir[1] = null;
             else if (dir != lastDir[0]) {
                 lastDir[1] = lastDir[0];
                 lastDir[0] = dir;
             }
             blocks[dist] = (blocks[dist] & 0x00ffffff) | (dir.ordinal() << 24);
-            blocks[++dist] = (dx + dir.offsetX & 0xff) | (dy + dir.offsetY & 0xff) << 8 | (dz + dir.offsetZ & 0xff) << 16;
+            blocks[++dist] = (dx + dir.getFrontOffsetX() & 0xff) | (dy + dir.getFrontOffsetY() & 0xff) << 8 | (dz + dir.getFrontOffsetZ() & 0xff) << 16;
         }
         return dist < 0;
     }
     
-    private ForgeDirection findNextDir(int x, int y, int z)
+    private EnumFacing findNextDir(BlockPos pos)
     {
-        if (this.isValidPos(x, y + (flowDir ? -1 : 1), z)) return flowDir ? ForgeDirection.DOWN : ForgeDirection.UP;
-        else if (lastDir[0] != ForgeDirection.UNKNOWN && this.isValidPos(x + lastDir[0].offsetX, y, z + lastDir[0].offsetZ)) return lastDir[0];
-        else if (lastDir[0] == ForgeDirection.UNKNOWN || lastDir[1] == ForgeDirection.UNKNOWN) {
-            for (ForgeDirection dir : SearchArray) {
-                if (this.isValidPos(x + dir.offsetX, y, z + dir.offsetZ)) return dir;
+        if (this.isValidPos(pos.up(flowDir ? -1 : 1))) return flowDir ? EnumFacing.DOWN : EnumFacing.UP;
+        else if (lastDir[0] != null && this.isValidPos(pos.add(lastDir[0].getFrontOffsetX(), 0, lastDir[0].getFrontOffsetZ()))) return lastDir[0];
+        else if (lastDir[0] == null || lastDir[1] == null) {
+            for (EnumFacing dir : SearchArray) {
+                if (this.isValidPos(pos.add(dir.getFrontOffsetX(), 0, dir.getFrontOffsetZ()))) return dir;
             }
             return null;
-        } else if (this.isValidPos(x + lastDir[1].offsetX, y, z + lastDir[1].offsetZ)) return lastDir[1];
-        else if (this.isValidPos(x - lastDir[1].offsetX, y, z - lastDir[1].offsetZ)) {
-            int x1 = x - lastDir[1].offsetX, z1 = z - lastDir[1].offsetZ, d1 = dist - 1;
+        } else if (this.isValidPos(pos.add(lastDir[1].getFrontOffsetX(), 0, lastDir[1].getFrontOffsetZ()))) return lastDir[1];
+        else if (this.isValidPos(pos.add(-lastDir[1].getFrontOffsetX(), 0, -lastDir[1].getFrontOffsetZ()))) {
+            BlockPos pos1 = pos.add(lastDir[1].getFrontOffsetX(), 0, lastDir[1].getFrontOffsetZ()); int d1 = dist - 1;
             while (--d1 > 0) {
-                x1 -= lastDir[0].offsetX; z1 -= lastDir[0].offsetZ;
-                if ((byte)blocks[d1] + px == x1 && (byte)(blocks[d1] >> 16) + pz == z1) return null;
-                else if (!this.isValidPos(x1, y, z1)) return lastDir[1].getOpposite();
+                pos1 = pos1.add(-lastDir[0].getFrontOffsetX(), 0, -lastDir[0].getFrontOffsetZ());
+                if ((byte)blocks[d1] + px == pos1.getX() && (byte)(blocks[d1] >> 16) + pz == pos1.getZ()) return null;
+                else if (!this.isValidPos(pos1)) return lastDir[1].getOpposite();
             }
             return null;
         } else return null;
     }
     
-    private boolean isValidPos(int x, int y, int z)
+    private boolean isValidPos(BlockPos pos)
     {
-        if (x >= area[0] && x < area[3] && y >= area[1] && y < area[4] && z >= area[2] && z < area[5]) return false;
-        if (Math.max(Math.max(Math.abs(x - xCoord), Math.abs(z - zCoord)), Math.abs(y - yCoord)) > blocks.length / 3) return false;
-        FluidStack fluid = Utils.getFluid(worldObj, x, y, z, this.blockNotify);
-        if (fluid == null || fluid.fluidID != fluidId) return false;
-        int p = (x - px & 0xff) | (y - py & 0xff) << 8 | (z - pz & 0xff) << 16;
+        if (pos.getX() >= area[0] && pos.getX() < area[3] && pos.getY() >= area[1] && pos.getY() < area[4] && pos.getZ() >= area[2] && pos.getZ() < area[5]) return false;
+        pos = pos.subtract(this.pos);
+        if (Math.max(Math.max(Math.abs(pos.getX()), Math.abs(pos.getZ())), Math.abs(pos.getY())) > blocks.length / 3) return false;
+        FluidStack fluid = Utils.getFluid(worldObj, pos.add(this.pos), this.blockNotify);
+        if (fluid == null || fluid.getFluid() != fluidId) return false;
+        int p = (pos.getX() & 0xff) | (pos.getY() & 0xff) << 8 | (pos.getZ() & 0xff) << 16;
         for (int i = dist - 1; i >= 0; i -= 2) {
             if ((blocks[i] & 0xffffff) == p) return false;
         }
         return true;
     }
     
-    private void moveBack(int x, int y, int z)
+    private void moveBack(BlockPos pos)
     {
-        FluidStack fluid = Utils.getFluid(worldObj, x, y, z, this.blockNotify);
-        if (fluid != null && fluid.fluidID == fluidId) this.drain(x, y, z, fluid);
+        FluidStack fluid = Utils.getFluid(worldObj, pos, this.blockNotify);
+        if (fluid != null && fluid.getFluid() == fluidId) this.drain(pos, fluid);
         dist--;
         if (dist <= 0) {
-            lastDir[0] = ForgeDirection.UNKNOWN;
+            lastDir[0] = null;
             return;
         }
         byte d0 = (byte)(blocks[dist - 1] >> 24), d1;
-        if (d0 <= 1) lastDir[0] = ForgeDirection.UNKNOWN;
+        if (d0 <= 1) lastDir[0] = null;
         else if (d0 != lastDir[0].ordinal()) {
-            lastDir[0] = ForgeDirection.getOrientation(d0);
+            lastDir[0] = EnumFacing.VALUES[d0];
             for (int i = dist - 2; i >= 0; i--) {
                 d1 = (byte)(blocks[i] >> 24);
                 if (d1 <= 1) break;
                 else if (d1 != d0) {
-                    lastDir[1] = ForgeDirection.getOrientation(d1);
+                    lastDir[1] = EnumFacing.VALUES[d1];
                     return;
                 }
             }
-            lastDir[1] = ForgeDirection.UNKNOWN;
+            lastDir[1] = null;
         }
     }
     
-    private boolean drain(int x, int y, int z, FluidStack fluid)
+    private boolean drain(BlockPos pos, FluidStack fluid)
     {
         if (this.tanks.fill(0, fluid, false) == fluid.amount) {
             this.tanks.fill(0, fluid, true);
-            if (this.blockNotify) worldObj.setBlockToAir(x, y, z);
-            else worldObj.setBlock(x, y, z, Blocks.air, 0, 2);
+            if (this.blockNotify) worldObj.setBlockToAir(pos);
+            else worldObj.setBlockState(pos, Blocks.air.getDefaultState(), 2);
             storage -= fluid.amount > 0 ? Energy : Energy * 0.25F;
-            return this.slaveOP(x, y, z);
+            return this.slaveOP(pos);
         } else return false;
     }
     
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) {
             blockNotify = !blockNotify;
@@ -300,7 +304,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
             px = area[0];
             pz = area[2];
         }
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(getPos());
     }
     
     @Override
@@ -327,7 +331,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
 	public void onUpgradeChange(int s) 
 	{
 		if (s == 0) {
-			this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			this.worldObj.markBlockForUpdate(getPos());
 			return;
 		}
 		if (s == 3) {
@@ -342,11 +346,11 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
 	}
 
 	@Override
-	public boolean remoteOperation(int x, int y, int z) 
+	public boolean remoteOperation(BlockPos pos) 
 	{
 		disabled = true;
-		if (x < area[0] || y < area[1] || z < area[2] || x >= area[3] || y >= area[4] || z >= area[5]) return true;
-    	return this.checkBlock(x, y, z);
+		if (pos.getX() < area[0] || pos.getY() < area[1] || pos.getZ() < area[2] || pos.getX() >= area[3] || pos.getY() >= area[4] || pos.getZ() >= area[5]) return true;
+    	return this.checkBlock(pos);
 	}
 
 	@Override

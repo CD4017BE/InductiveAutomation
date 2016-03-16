@@ -4,10 +4,11 @@
  */
 package cd4017be.automation.TileEntity;
 
+
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -18,6 +19,7 @@ import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
 /**
@@ -37,14 +39,14 @@ public class SteamEngine extends AutomatedTile implements ISidedInventory, IEner
         netData = new TileEntityData(2, 0, 1, 2);
         energy = new PipeEnergy(Config.Umax[this.getTier()], Config.Rcond[this.getTier()]);
         inventory = new Inventory(this, 2);
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_steam).setIn(1), new Tank(Config.tankCap[1], 1, Automation.L_water).setOut(0)).setNetLong(1);
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_steam).setIn(1), new Tank(Config.tankCap[1], 1, Objects.L_water).setOut(0)).setNetLong(1);
         
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (this.worldObj.isRemote) return;
         float e = this.getEnergyOut();
         if (e > 0) {
@@ -60,7 +62,7 @@ public class SteamEngine extends AutomatedTile implements ISidedInventory, IEner
             netData.floats[0] += (float)p * (float)Config.E_Steam;
             if (aWater >= 1000)
             {
-                tanks.fill(1, Automation.getLiquid(Automation.L_water, aWater / 1000), true);
+                tanks.fill(1, new FluidStack(Objects.L_water, aWater / 1000), true);
                 aWater %= 1000;
             }
         }

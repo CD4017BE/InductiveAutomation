@@ -6,12 +6,11 @@
 
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -46,7 +45,7 @@ public class GuiDetector extends GuiMachine
         this.xSize = 176;
         this.ySize = 222;
         super.initGui();
-        for (int i = 0; i < 6; i++) values[i] = new GuiTextField(fontRendererObj, this.guiLeft + 80, this.guiTop + 16 + i * 18, 70, 16);
+        for (int i = 0; i < 6; i++) values[i] = new GuiTextField(0, fontRendererObj, this.guiLeft + 80, this.guiTop + 16 + i * 18, 70, 16);
     }
 
     @Override
@@ -76,7 +75,7 @@ public class GuiDetector extends GuiMachine
                 this.drawTexturedModalRect(this.guiLeft + 151, this.guiTop + 15 + i * 18, 212, 18, 10, 18);
         }
         for (int i = 0; i < 6; i++) values[i].drawTextBox();
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 126, 0x404040);
     }
     
@@ -90,7 +89,7 @@ public class GuiDetector extends GuiMachine
 	}
 
 	@Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         for (int i = 0; i < 6; i++) values[i].mouseClicked(x, y, b);
@@ -99,50 +98,45 @@ public class GuiDetector extends GuiMachine
         byte cmd = -1;
         byte mode = 0;
         if (s >= 0 && s < 6) {
-            if (this.func_146978_c(7, 15, 18, 18, x, y)) {
+            if (this.isPointInRegion(7, 15, 18, 18, x, y)) {
                 cmd = 0;
                 mode = tileEntity.getMode(s);
                 mode = (byte)((mode & 4) | (mode + 1 & 3));
-            } else if (this.func_146978_c(25, 15, 18, 18, x, y)) {
+            } else if (this.isPointInRegion(25, 15, 18, 18, x, y)) {
                 cmd = 2;
                 mode = tileEntity.getSide(s);
                 mode = (byte)((mode + 1) % 6);
-            } else if (this.func_146978_c(65, 15, 10, 18, x, y)) {
+            } else if (this.isPointInRegion(65, 15, 10, 18, x, y)) {
                 cmd = 0;
                 mode = (byte)(tileEntity.getMode(s) ^ 4);
             }
         }
         if (cmd >= 0) {
             if (tileEntity.netData.ints[s + 1] < 0) tileEntity.netData.ints[s + 1] = 0;
-            try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(cmd + AutomatedTile.CmdOffset);
             dos.writeByte(s);
             if (cmd == 0) dos.writeByte(mode);
             else if (cmd == 2) dos.writeByte(mode);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
     }
 
 	@Override
-	protected void keyTyped(char c, int k) 
+	protected void keyTyped(char c, int k) throws IOException 
 	{
 		for (int i = 0; i < 6; i++)
 			if (values[i].isFocused()) {
 				if (k == Keyboard.KEY_RETURN) {
 					try {
 						int v = Integer.parseInt(values[i].getText());
-						ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-			            DataOutputStream dos = new DataOutputStream(bos);
+						PacketBuffer dos = tileEntity.getPacketTargetData();
 			            dos.writeByte(1 + AutomatedTile.CmdOffset);
 			            dos.writeByte(i);
 			            dos.writeInt(v);
-			            BlockGuiHandler.sendPacketToServer(bos);
+			            BlockGuiHandler.sendPacketToServer(dos);
 						values[i].setFocused(false);
-					} catch (NumberFormatException e) {
-					} catch (IOException e) {}
+					} catch (NumberFormatException e) {}
 				} else values[i].textboxKeyTyped(c, k);
 				break;
 			}

@@ -4,7 +4,7 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -23,10 +23,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.WorldServer;
 
 /**
@@ -55,9 +57,9 @@ public class SecuritySys extends AutomatedTile implements IEnergy
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         double e = (energy.Ucap * energy.Ucap - (float)(netData.ints[0] * netData.ints[0])) * 0.001F;
         if (e > 0) {
@@ -75,7 +77,7 @@ public class SecuritySys extends AutomatedTile implements IEnergy
         if (perm == 1) netData.ints[2] &= 12;
         else if (perm == 2) netData.ints[2] &= 3;
         else if (perm == 3) netData.ints[2] = 0;
-        boolean rst = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+        boolean rst = worldObj.isBlockPowered(getPos());
         if ((netData.ints[2] & 2) == 0) enabled = (netData.ints[2] & 1) != 0;
         else enabled = (netData.ints[2] & 1) != 0 ^ rst;
         if (netData.floats[0] < netData.ints[1]) enabled = false;
@@ -106,12 +108,11 @@ public class SecuritySys extends AutomatedTile implements IEnergy
         mainOwner = nbt.getString("owner");
         netData.ints[1] = (int)prot.getEnergyCost();
         netData.ints[3] = (int)prot.getLoadEnergyCost();
-        prot.px = ((this.xCoord + 8) >> 4) - 4;
-        prot.pz = ((this.zCoord + 8) >> 4) - 4;
+        prot.px = ((this.pos.getX() + 8) >> 4) - 4;
+        prot.pz = ((this.pos.getZ() + 8) >> 4) - 4;
         itemStorage.clear();
         NBTTagCompound stor = nbt.getCompoundTag("itemBuff");
-        for (Object tag : stor.func_150296_c()) {
-            String name = (String)tag;
+        for (String name : stor.getKeySet()) {
             itemStorage.put(name, this.readItemsFromNBT(stor, name, 40));
         }
     }
@@ -135,17 +136,17 @@ public class SecuritySys extends AutomatedTile implements IEnergy
     }
 
     @Override
-    public boolean onActivated(EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
-        if (!prot.isPlayerOwner(player.getCommandSenderName())){
+        if (!prot.isPlayerOwner(player.getName())){
             if (!worldObj.isRemote) player.addChatMessage(new ChatComponentText("You are not given the necessary rights to use this!"));
             return true;
         } else if (player.isSneaking() && player.getCurrentEquippedItem() == null) {
             if (!itemStorage.isEmpty()) {
             	//TODO drop confiscated items;
             }
-        	this.getBlockType().dropBlockAsItem(worldObj, xCoord, yCoord, zCoord, 0, 0);
-            worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+        	this.getBlockType().dropBlockAsItem(worldObj, getPos(), worldObj.getBlockState(pos), 0);
+            worldObj.setBlockToAir(getPos());
             return true;
         } else return super.onActivated(player, s, X, Y, Z);
     }
@@ -155,23 +156,23 @@ public class SecuritySys extends AutomatedTile implements IEnergy
     {
         NBTTagCompound nbt = new NBTTagCompound();
         prot.writeToNbt(nbt);
-        return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, -1, nbt);
+        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
     {
-        NBTTagCompound nbt = pkt.func_148857_g();
+        NBTTagCompound nbt = pkt.getNbtCompound();
         prot.readFromNbt(nbt);
         netData.ints[1] = (int)prot.getEnergyCost();
         netData.ints[3] = (int)prot.getLoadEnergyCost();
     }
 
     @Override
-    public void onPlayerCommand(DataInputStream dis, EntityPlayerMP player) throws IOException 
+    public void onPlayerCommand(PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         boolean update = false;
-        if (!prot.isPlayerOwner(player.getCommandSenderName())) return;
+        if (!prot.isPlayerOwner(player.getName())) return;
         byte cmd = dis.readByte();
         if (cmd == 0) {
             byte btn = dis.readByte();
@@ -193,7 +194,7 @@ public class SecuritySys extends AutomatedTile implements IEnergy
             update = true;
         } else if (cmd == 2) {
             byte g = dis.readByte();
-            String name = dis.readUTF();
+            String name = dis.readStringFromBuffer(64);
             prot.addPlayer(name, g);
             update = true;
         } else if (cmd == 3) {
@@ -209,21 +210,21 @@ public class SecuritySys extends AutomatedTile implements IEnergy
             }
             update = true;
         }
-        if (update) worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        if (update) worldObj.markBlockForUpdate(getPos());
     }
     
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
-        this.mainOwner = entity.getCommandSenderName();
+        this.mainOwner = entity.getName();
         prot.addPlayer(mainOwner, 0);
         if ((AreaProtect.permissions > 0 && AreaProtect.chunkloadPerm > 0) || !(worldObj instanceof WorldServer)) return;
         ServerConfigurationManager manager = MinecraftServer.getServer().getConfigurationManager();
-        boolean admin = entity instanceof EntityPlayer && manager.func_152596_g(((EntityPlayer)entity).getGameProfile());
+        boolean admin = entity instanceof EntityPlayer && manager.canSendCommands(((EntityPlayer)entity).getGameProfile());
         if (AreaProtect.permissions < 0 || (!admin && AreaProtect.permissions == 0)) perm |= 1;
         if (AreaProtect.chunkloadPerm < 0 || (!admin && AreaProtect.chunkloadPerm == 0)) perm |= 2;
         if (perm == 0) return;
-        if (perm == 3) worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+        if (perm == 3) worldObj.setBlockToAir(getPos());
         if (entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new ChatComponentText(perm == 3 ? "You are not allowed to use this device on this server !" : perm == 2 ? "Chunk loading functionality of this device disabled for you !" : "Chunk protection functionality of this device disabled for you !"));
     }
     
@@ -232,7 +233,7 @@ public class SecuritySys extends AutomatedTile implements IEnergy
     {
         onUnload();
         super.onChunkUnload();
-        if (!this.prot.isChunkLoaded(xCoord >> 4, zCoord >> 4)) AreaProtect.instance.removeChunkLoader(prot);
+        if (!this.prot.isChunkLoaded(pos.getX() >> 4, pos.getZ() >> 4)) AreaProtect.instance.removeChunkLoader(prot);
     }
 
     @Override
@@ -251,8 +252,8 @@ public class SecuritySys extends AutomatedTile implements IEnergy
     @Override
     public void validate() 
     {
-        prot.px = ((this.xCoord + 8) >> 4) - 4;
-        prot.pz = ((this.zCoord + 8) >> 4) - 4;
+        prot.px = ((this.pos.getX() + 8) >> 4) - 4;
+        prot.pz = ((this.pos.getZ() + 8) >> 4) - 4;
         AreaProtect.instance.loadSecuritySys(prot);
         super.validate();
     }

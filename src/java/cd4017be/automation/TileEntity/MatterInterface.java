@@ -6,7 +6,8 @@
 
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.api.automation.MatterOrbItemHandler;
@@ -36,15 +37,15 @@ public class MatterInterface extends AutomatedTile implements IAutomatedInv
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (MatterOrbItemHandler.isMatterOrb(inventory.items[0])) {
             if (inventory.items[1] != null) {
                 ItemStack[] remain = MatterOrbItemHandler.addItemStacks(inventory.items[0], inventory.items[1]);
                 inventory.items[1] = remain.length == 0 ? null : remain[0];
             }
-            boolean rs = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+            boolean rs = worldObj.isBlockPowered(getPos());
             if (rs ^ (netData.ints[0] & 1) != 0) {
                 netData.ints[0] ^= 1;
                 if (rs && (netData.ints[0] & 2) != 0) {
@@ -66,7 +67,7 @@ public class MatterInterface extends AutomatedTile implements IAutomatedInv
     }
     
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) { //flip Stack
             ItemStack item = MatterOrbItemHandler.decrStackSize(inventory.items[0], 0, Integer.MAX_VALUE);
@@ -133,10 +134,10 @@ public class MatterInterface extends AutomatedTile implements IAutomatedInv
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) 
+    public ItemStack removeStackFromSlot(int i) 
     {
         if (i == 2 || i == 4) return null;
-        else return super.getStackInSlotOnClosing(i);
+        else return super.removeStackFromSlot(i);
     }
     
     @Override

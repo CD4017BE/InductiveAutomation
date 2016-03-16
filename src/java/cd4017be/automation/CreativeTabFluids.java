@@ -1,9 +1,9 @@
 package cd4017be.automation;
 
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidRegistry;
 
 public class CreativeTabFluids extends CreativeTabs
 {
@@ -16,7 +16,7 @@ public class CreativeTabFluids extends CreativeTabs
     @Override
     public ItemStack getIconItemStack() 
     {
-        return new ItemStack(Blocks.water);
+        return new ItemStack(Objects.fluidDummy, 1, FluidRegistry.WATER.getID());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class CreativeTabFluids extends CreativeTabs
 	@Override
 	public Item getTabIconItem() 
 	{
-		return Item.getItemFromBlock(Blocks.water);
+		return Objects.fluidDummy;
 	}
 	
 }

@@ -4,11 +4,10 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -63,50 +62,45 @@ public class GuiBuilder extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         this.drawItemConfig(tileEntity, -18, 7);
         this.drawEnergyConfig(tileEntity, -36, 7);
-        for (int i = 0; i < tileEntity.stackIter.length; i++)
-        {
-            this.drawStringCentered("" + tileEntity.stackIter[i], this.guiLeft + 16 + 18 * i, this.guiTop + 74, 0x404040);
-        }
-        this.drawStringCentered(dirs[tileEntity.stackDir], this.guiLeft + 160, this.guiTop + 74, 0x404040);
-        this.drawStringCentered(steps[tileEntity.step], this.guiLeft + 34, this.guiTop + 20, 0x404040);
+        for (int i = 0; i < 8; i++)
+	        this.drawStringCentered("" + tileEntity.netData.ints[i], this.guiLeft + 16 + 18 * i, this.guiTop + 74, 0x404040);
+        this.drawStringCentered(dirs[tileEntity.netData.ints[9]], this.guiLeft + 160, this.guiTop + 74, 0x404040);
+        this.drawStringCentered(steps[tileEntity.netData.ints[8]], this.guiLeft + 34, this.guiTop + 20, 0x404040);
         this.drawStringCentered("< Frame", this.guiLeft + 142, this.guiTop + 20, 0x404040);
         this.drawStringCentered("< Walls", this.guiLeft + 142, this.guiTop + 38, 0x404040);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 6, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 6, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 145, 0x404040);
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         this.clickItemConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
         this.clickEnergyConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
-        if (this.func_146978_c(7, 69, 144, 5, x, y))
+        if (this.isPointInRegion(7, 69, 144, 5, x, y))
         {
             sendClick((((x - this.guiLeft - 7) / 18) << 1) | 1);
         } else
-        if (this.func_146978_c(7, 82, 144, 5, x, y))
+        if (this.isPointInRegion(7, 82, 144, 5, x, y))
         {
             sendClick(((x - this.guiLeft - 7) / 18) << 1);
         } else
-        if (this.func_146978_c(151, 69, 18, 18, x, y))
+        if (this.isPointInRegion(151, 69, 18, 18, x, y))
         {
             sendClick(16);
         } else
-        if (this.func_146978_c(7, 15, 54, 18, x, y))
+        if (this.isPointInRegion(7, 15, 54, 18, x, y))
         {
             sendClick(17);
         }
         super.mouseClicked(x, y, b);
     }
     
-    private void sendClick(int n)
+    private void sendClick(int n) throws IOException
     {
-        try {
-        ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-        DataOutputStream dos = new DataOutputStream(bos);
+        PacketBuffer dos = tileEntity.getPacketTargetData();
         dos.writeByte(n + AutomatedTile.CmdOffset);
-        BlockGuiHandler.sendPacketToServer(bos);
-        } catch (IOException e){}
+        BlockGuiHandler.sendPacketToServer(dos);
     }
     
 }

@@ -4,8 +4,9 @@
  */
 package cd4017be.automation.TileEntity;
 
-import cd4017be.automation.Automation;
+
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -24,6 +25,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
 /**
@@ -39,14 +41,14 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
     {
         netData = new TileEntityData(2, 5, 0, 1);
         inventory = new Inventory(this, 7, new Component(4, 5, -1), new Component(5, 6, 1), new Component(0, 1, -1), new Component(1, 2, 0));
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], 0, Automation.L_lava).setIn(2).setOut(3)).setNetLong(1);
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], 0, Objects.L_lava).setIn(2).setOut(3)).setNetLong(1);
         
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         //Fuel Burn
         int dm = 2;
@@ -78,8 +80,8 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
         	netData.ints[2] += dm;
             netData.ints[3] -= dm;
         }
-        if (melting && netData.ints[3] >= 2000 && tanks.fill(0, Automation.getLiquid(Automation.L_lava, 100), false) == 100) {
-	        tanks.fill(0, Automation.getLiquid(Automation.L_lava, 100), true);
+        if (melting && netData.ints[3] >= 2000 && tanks.fill(0, new FluidStack(Objects.L_lava, 100), false) == 100) {
+	        tanks.fill(0, new FluidStack(Objects.L_lava, 100), true);
 	        melting = false;
         } else if (melting && netData.ints[3] <= 0 && this.putItemStack(new ItemStack(Blocks.stone), this, -1, 1) == null) {
         	melting = false;
@@ -88,7 +90,7 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
         //process Item
         if (inventory.items[6] == null && netData.ints[2] + netData.ints[4] >= Euse && inventory.items[4] != null)
         {
-            ItemStack item = FurnaceRecipes.smelting().getSmeltingResult(inventory.items[4]);
+            ItemStack item = FurnaceRecipes.instance().getSmeltingResult(inventory.items[4]);
             if (item != null)
             {
                 decrStackSize(4, 1);

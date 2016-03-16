@@ -6,20 +6,17 @@
 
 package cd4017be.automation.jetpack;
 
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.network.FMLEventChannel;
-import cpw.mods.fml.common.network.FMLNetworkEvent;
-import cpw.mods.fml.common.network.NetworkRegistry;
-
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.network.FMLEventChannel;
+import net.minecraftforge.fml.common.network.FMLNetworkEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import cd4017be.automation.Item.ItemJetpack;
 import cd4017be.lib.util.Vec3;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
+import net.minecraft.network.PacketBuffer;
 
 /**
  *
@@ -42,9 +39,8 @@ public class PacketHandler
     public void onPacketData(FMLNetworkEvent.ServerCustomPacketEvent event) 
     {
         if (event.packet.channel().equals(channel) && event.handler instanceof NetHandlerPlayServer) {
-            try {
                 EntityPlayer player = ((NetHandlerPlayServer)event.handler).playerEntity;
-                DataInputStream dis = new DataInputStream(new ByteArrayInputStream(event.packet.payload().array()));
+                PacketBuffer dis = (PacketBuffer)event.packet.payload();
                 ItemStack item = player.getCurrentArmor(ItemJetpack.slotPos);
                 if (item == null || !(item.getItem() instanceof ItemJetpack) || item.stackTagCompound == null) return;
                 byte cmd = dis.readByte();
@@ -65,7 +61,6 @@ public class PacketHandler
                     boolean state = !item.stackTagCompound.getBoolean("On");
                     item.stackTagCompound.setBoolean("On", state);
                 }
-            } catch (IOException e) {}
         }
     }
     

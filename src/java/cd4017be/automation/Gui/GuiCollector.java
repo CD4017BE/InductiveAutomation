@@ -4,11 +4,10 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -52,23 +51,20 @@ public class GuiCollector extends GuiMachine
         if (n > 0) this.drawTexturedModalRect(this.guiLeft + 183, this.guiTop + 73, 238, n * 18 - 18, 18, 18);
         this.drawLiquidTank(tileEntity.tanks, 0, 184, 16, true);
         this.drawLiquidConfig(tileEntity, -18, 7);
-        fontRendererObj.drawString(tileEntity.getInventoryName(), this.guiLeft + this.xSize - 8 - fontRendererObj.getStringWidth(tileEntity.getInventoryName()), this.guiTop + 4, 0x404040);
+        fontRendererObj.drawString(tileEntity.getName(), this.guiLeft + this.xSize - 8 - fontRendererObj.getStringWidth(tileEntity.getName()), this.guiTop + 4, 0x404040);
         fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), this.guiLeft + 8, this.guiTop + 4, 0x404040);
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         this.clickLiquidConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
-        if (this.func_146978_c(183, 73, 18, 18, x, y))
+        if (this.isPointInRegion(183, 73, 18, 18, x, y))
         {
-            try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(AutomatedTile.CmdOffset);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
     }
     

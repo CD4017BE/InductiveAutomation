@@ -12,10 +12,9 @@ import net.minecraft.world.World;
 public class ItemAlgaeFood extends DefaultItem 
 {
 	
-	public ItemAlgaeFood(String id, String tex)
+	public ItemAlgaeFood(String id)
 	{
 		super(id);
-		this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxDamage(Config.data.getInt("Tool.AlgaeFood.dur", 250));
         this.setMaxStackSize(1);

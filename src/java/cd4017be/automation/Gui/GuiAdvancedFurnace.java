@@ -4,11 +4,10 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -68,40 +67,40 @@ public class GuiAdvancedFurnace extends GuiMachine
         this.drawLiquidConfig(tileEntity, -27, 7);
         this.drawItemConfig(tileEntity, -54, 7);
         this.drawEnergyConfig(tileEntity, -72, 7);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered("" + tileEntity.netData.ints[0], this.guiLeft + 16, this.guiTop + 38, 0x404040);
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException
     {
         boolean a = false;
         int cmd = 0;
         this.clickLiquidConfig(tileEntity, x - this.guiLeft + 27, y - this.guiTop - 7);
         this.clickItemConfig(tileEntity, x - this.guiLeft + 54, y - this.guiTop - 7);
         this.clickEnergyConfig(tileEntity, x - this.guiLeft + 72, y - this.guiTop - 7);
-        if (this.func_146978_c(100, 18, 12, 12, x, y))
+        if (this.isPointInRegion(100, 18, 12, 12, x, y))
         {
             cmd = 1;
             a = true;
         } else
-        if (this.func_146978_c(8, 16, 16, 10, x, y))
+        if (this.isPointInRegion(8, 16, 16, 10, x, y))
         {
             tileEntity.netData.ints[0] += 10;
             a = true;
         } else
-        if (this.func_146978_c(8, 26, 16, 10, x, y))
+        if (this.isPointInRegion(8, 26, 16, 10, x, y))
         {
             tileEntity.netData.ints[0] ++;
             a = true;
         } else
-        if (this.func_146978_c(8, 48, 16, 10, x, y))
+        if (this.isPointInRegion(8, 48, 16, 10, x, y))
         {
             tileEntity.netData.ints[0] --;
             a = true;
         } else
-        if (this.func_146978_c(8, 58, 16, 10, x, y))
+        if (this.isPointInRegion(8, 58, 16, 10, x, y))
         {
             tileEntity.netData.ints[0] -= 10;
             a = true;
@@ -109,13 +108,10 @@ public class GuiAdvancedFurnace extends GuiMachine
         if (a)
         {
         	if (tileEntity.netData.ints[0] < Config.Rmin) tileEntity.netData.ints[0] = Config.Rmin;
-            try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(cmd + AutomatedTile.CmdOffset);
             if (cmd == 0) dos.writeInt(tileEntity.netData.ints[0]);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
         super.mouseClicked(x, y, b);
     }

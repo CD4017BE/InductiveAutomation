@@ -19,6 +19,7 @@ import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
@@ -46,15 +47,14 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
     private final int armor;
     
     
-    public ItemJetpack(String id, String tex, int armor)
+    public ItemJetpack(String id, int armor)
     {
         super(defaultType, 0, 1);
         this.armor = armor;
         this.setUnlocalizedName(id);
         this.setMaxDamage(durability[armor]);
-        this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
-        BlockItemRegistry.registerItem(this);
+        BlockItemRegistry.registerItem(this, id);
     }
 
     @Override
@@ -202,7 +202,7 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
         if (random.nextInt(maxPower) < power) {
             Vec3 mov = Vec3.Def(data.getFloat("vecX"), data.getFloat("vecY"), data.getFloat("vecZ")).scale((double)power / (double)maxPower * -1F);
             mov = mov.add(player.motionX, player.motionY, player.motionZ);
-            world.spawnParticle("flame", player.posX, player.posY - 0.8D, player.posZ, mov.x, mov.y, mov.z);
+            world.spawnParticle(EnumParticleTypes.SMOKE_NORMAL, player.posX, player.posY - 0.8D, player.posZ, mov.x, mov.y, mov.z);
         }
     }
 

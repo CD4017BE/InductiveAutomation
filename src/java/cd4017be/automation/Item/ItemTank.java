@@ -34,7 +34,7 @@ public class ItemTank extends DefaultItemBlock implements IFluidContainerItem
     {
         FluidStack fluid = this.getFluid(item);
         if (fluid != null) {
-            list.add(fluid.amount + "L " + fluid.getFluid().getLocalizedName());
+            list.add(fluid.amount + "L " + fluid.getLocalizedName());
         }
         super.addInformation(item, player, list, par4);
     }

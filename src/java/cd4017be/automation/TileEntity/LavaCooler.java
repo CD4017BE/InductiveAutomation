@@ -4,11 +4,12 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -24,6 +25,7 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -68,13 +70,13 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
     {
         netData = new TileEntityData(2, 2, 0, 3);
         inventory = new Inventory(this, 5, new Component(0, 2, 1));
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_water).setIn(3), new Tank(Config.tankCap[1], -1, Automation.L_lava).setIn(2), new Tank(Config.tankCap[1], 1, Automation.L_steam).setOut(4)).setNetLong(1);
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_water).setIn(3), new Tank(Config.tankCap[1], -1, Objects.L_lava).setIn(2), new Tank(Config.tankCap[1], 1, Objects.L_steam).setOut(4)).setNetLong(1);
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (this.worldObj.isRemote) return;
         Mode mode = Mode.get(netData.ints[0] & 0xf);
         if (mode == null) {
@@ -87,9 +89,9 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
         		netData.ints[1] = m.time;
         	}
         }
-        if (mode == null || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) return;
+        if (mode == null || worldObj.isBlockPowered(getPos())) return;
         if (netData.ints[1] > 0) {
-        	tanks.fill(2, new FluidStack(Automation.L_steam, SteamOut), true);
+        	tanks.fill(2, new FluidStack(Objects.L_steam, SteamOut), true);
         	netData.ints[1]--;
         }
         if (netData.ints[1] <= 0) {
@@ -100,9 +102,9 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) 
+    public ItemStack removeStackFromSlot(int i) 
     {
-        if (i < 5)return super.getStackInSlotOnClosing(i);
+        if (i < 5)return super.removeStackFromSlot(i);
         else return null;
     }
     
@@ -127,13 +129,13 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
 	}
 
 	@Override
-	public boolean canInsertItem(int i, ItemStack itemstack, int j) {
+	public boolean canInsertItem(int i, ItemStack itemstack, EnumFacing j) {
 		if (i < 5) return super.canInsertItem(i, itemstack, j);
 		else return false;
 	}
 
 	@Override
-	public boolean canExtractItem(int i, ItemStack itemstack, int j) {
+	public boolean canExtractItem(int i, ItemStack itemstack, EnumFacing j) {
 		if (i < 5) return super.canExtractItem(i, itemstack, j);
 		else return false;
 	}
@@ -174,7 +176,7 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
     }
     
     @Override
-	protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
 		if (cmd >= 0 && cmd < 4) {
 			netData.ints[0] = (netData.ints[0] & 0xf) | cmd << 4;

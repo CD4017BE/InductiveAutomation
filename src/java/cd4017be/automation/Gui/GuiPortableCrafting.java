@@ -1,7 +1,5 @@
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.lwjgl.input.Keyboard;
@@ -9,6 +7,8 @@ import org.lwjgl.opengl.GL11;
 
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -54,33 +54,30 @@ public class GuiPortableCrafting extends GuiMachine
     }
     
     @Override
-	protected void mouseClicked(int x, int y, int b) 
+	protected void mouseClicked(int x, int y, int b) throws IOException 
 	{
 		super.mouseClicked(x, y, b);
 		int n = 0;
 		byte cmd = -1;
-		if (this.func_146978_c(124, 33, 18, 18, x, y)) {
+		if (this.isPointInRegion(124, 33, 18, 18, x, y)) {
 			cmd = 0;
-		} else if (this.func_146978_c(142, 33, 18, 18, x, y)) {
+		} else if (this.isPointInRegion(142, 33, 18, 18, x, y)) {
 			cmd = 1;
-		} else if (this.func_146978_c(106, 33, 18, 6, x, y)) {
+		} else if (this.isPointInRegion(106, 33, 18, 6, x, y)) {
 			n = b == 0 ? 1 : 8;
 			cmd = 2;
-		} else if (this.func_146978_c(106, 45, 18, 6, x, y)) {
+		} else if (this.isPointInRegion(106, 45, 18, 6, x, y)) {
 			n = b == 0 ? -1 : -8;
 			cmd = 2;
-		} else if (this.func_146978_c(89, 34, 16, 16, x, y)) {
+		} else if (this.isPointInRegion(89, 34, 16, 16, x, y)) {
 			n = (b == 0 ? 1 : 8) * (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 64 : 1);
 			cmd = 3;
 		}
 		if (cmd >= 0) {
-			try {
-	            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-	            DataOutputStream dos = new DataOutputStream(bos);
+	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
 	            dos.writeByte(cmd);
 	            if (cmd == 2 || cmd == 3) dos.writeByte(n);
-	            BlockGuiHandler.sendPacketToServer(bos);
-	        } catch (IOException e){}
+	            BlockGuiHandler.sendPacketToServer(dos);
 		}
 	}
 }

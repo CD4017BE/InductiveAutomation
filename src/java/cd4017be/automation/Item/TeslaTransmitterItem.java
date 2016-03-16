@@ -41,7 +41,7 @@ public class TeslaTransmitterItem implements ITeslaTransmitter
 		int[] p = t.getLocation();
     	int[] p1 = this.getLocation();
 		double d;
-        if (p[3] == player.worldObj.provider.dimensionId) {
+        if (p[3] == player.worldObj.provider.getDimensionId()) {
             int dx = p1[0] - p[0];
             int dy = p1[1] - p[1];
             int dz = p1[2] - p[2];
@@ -97,7 +97,7 @@ public class TeslaTransmitterItem implements ITeslaTransmitter
 	{
 		if (obj == null || !(obj instanceof TeslaTransmitterItem)) return false;
 		TeslaTransmitterItem i = (TeslaTransmitterItem)obj;
-		return i.frequency == this.frequency && i.slot == this.slot && i.type == this.type && i.player.getCommandSenderName() == this.player.getCommandSenderName();
+		return i.frequency == this.frequency && i.slot == this.slot && i.type == this.type && i.player.getName() == this.player.getName();
 	}
 
 }

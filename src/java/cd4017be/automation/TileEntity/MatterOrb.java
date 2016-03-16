@@ -6,15 +6,21 @@
 
 package cd4017be.automation.TileEntity;
 
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import cd4017be.api.automation.IMatterStorage;
 import cd4017be.api.automation.MatterOrbItemHandler;
 import cd4017be.automation.Item.ItemMatterOrb;
 import cd4017be.lib.ModTileEntity;
 import cd4017be.lib.util.Utils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,13 +33,13 @@ import net.minecraft.nbt.NBTTagList;
  */
 public class MatterOrb extends ModTileEntity implements IMatterStorage, IInventory
 {
-    private ArrayList<ItemStack> storage = new ArrayList();
+    private ArrayList<ItemStack> storage = new ArrayList<ItemStack>();
     private ItemStack in;
     
     @Override
-    public ArrayList<ItemStack> dropItem(int m, int fortune) 
+    public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) 
     {
-        ArrayList<ItemStack> list = new ArrayList();
+        ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         ItemStack item = new ItemStack(this.getBlockType(), 1, 0);
         if (MatterOrbItemHandler.isMatterOrb(item)) MatterOrbItemHandler.addItemStacks(item, storage.toArray(new ItemStack[storage.size()]));
         list.add(item);
@@ -72,9 +78,9 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
     }
 
     @Override
-    public ArrayList<ItemStack> addItems(ArrayList<ItemStack> items) 
+    public ArrayList<ItemStack> addItems(List<ItemStack> items) 
     {
-        ArrayList<ItemStack> remain = new ArrayList();
+        ArrayList<ItemStack> remain = new ArrayList<ItemStack>();
         for (ItemStack item : items) {
             if (item == null || item.getItem() == null) continue;
         	for (ItemStack stack : storage) {
@@ -146,12 +152,12 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
     public ItemStack decrStackSize(int i, int n) 
     {
         if (in == null) return null;
-        if (n >= in.stackSize) return this.getStackInSlotOnClosing(i);
+        if (n >= in.stackSize) return this.removeStackFromSlot(i);
         else return in.splitStack(n);
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) 
+    public ItemStack removeStackFromSlot(int i) 
     {
         ItemStack item = in;
         in = null;
@@ -162,12 +168,12 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
     public void setInventorySlotContents(int i, ItemStack item) 
     {
         in = item;
-        ArrayList<ItemStack> remain = this.addItems(new ArrayList(Arrays.asList(in)));
+        ArrayList<ItemStack> remain = this.addItems(new ArrayList<ItemStack>(Arrays.asList(in)));
         in = remain.size() > 0 ? remain.get(0) : null;
     }
 
     @Override
-    public String getInventoryName() 
+    public String getName() 
     {
         return "Matter Orb";
     }
@@ -185,14 +191,37 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
     }
 
 	@Override
-	public boolean hasCustomInventoryName() {
+	public boolean hasCustomName() {
 		return true;
 	}
 
 	@Override
-	public void openInventory() {}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
-	public void closeInventory() {}
+	public void closeInventory(EntityPlayer player) {}
+
+	@Override
+	public IChatComponent getDisplayName() {
+		return new ChatComponentText(this.getName());
+	}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public void clear() {
+	}
     
 }

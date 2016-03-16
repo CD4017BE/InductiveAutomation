@@ -1,7 +1,6 @@
 package cd4017be.automation.TileEntity;
 
 import cd4017be.automation.Config;
-import cd4017be.lib.BlockItemRegistry;
 
 public class TeslaTransmitterLV extends TeslaTransmitter
 {
@@ -14,7 +13,7 @@ public class TeslaTransmitterLV extends TeslaTransmitter
 	
 	public boolean checkAlive()
     {
-		return !this.isInvalid() && worldObj.blockExists(xCoord, yCoord, zCoord) && worldObj.getTileEntity(xCoord, yCoord, zCoord) == this;
+		return !this.isInvalid() && worldObj.isBlockLoaded(getPos()) && worldObj.getTileEntity(getPos()) == this;
     }
 	
 }

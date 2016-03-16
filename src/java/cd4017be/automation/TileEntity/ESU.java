@@ -4,18 +4,19 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
 import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.api.automation.EnergyItemHandler.IEnergyItem;
 import cd4017be.api.automation.IEnergy;
-import cd4017be.api.automation.IEnergyStorage;
 import cd4017be.api.automation.PipeEnergy;
-import cd4017be.api.energy.EnergyThermalExpansion;
+import cd4017be.api.energy.EnergyAPI;
+import cd4017be.api.energy.EnergyAPI.IEnergyAccess;
 import cd4017be.automation.Config;
-import cd4017be.lib.BlockItemRegistry;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -23,6 +24,7 @@ import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.Inventory.Component;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
@@ -33,7 +35,7 @@ import net.minecraft.nbt.NBTTagCompound;
  *
  * @author CD4017BE
  */
-public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnergyStorage
+public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnergyAccess
 {
     public int type = 0;
     
@@ -46,12 +48,12 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     
     protected void setWireType()
     {
-        Block id = worldObj.getBlock(xCoord, yCoord, zCoord);
-        type = id == BlockItemRegistry.blockId("tile.SCSU") ? 0 : id == BlockItemRegistry.blockId("tile.OCSU") ? 1 : 2;
+        Block id = this.getBlockType();
+        type = id == Objects.SCSU ? 0 : id == Objects.OCSU ? 1 : 2;
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
         if (energy.Umax == 0) {
             this.setWireType();
@@ -59,24 +61,15 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
             energy = new PipeEnergy(Config.Umax[type], Config.Rcond[type]);
             energy.con = con;
         }
-        super.updateEntity();
+        super.update();
         if (worldObj.isRemote) return;
-        netData.floats[0] -= (float)EnergyItemHandler.addEnergy(inventory.items[0], (int)Math.ceil((netData.floats[0] - getCapacity()) / 1000F), true) * 1000F;
-        netData.floats[0] -= EnergyThermalExpansion.addEnergy(inventory.items[0], (float)(getEnergy() - getCapacity()));
-        netData.floats[0] -= (float)EnergyItemHandler.addEnergy(inventory.items[1], (int)Math.floor(netData.floats[0] / 1000F), true) * 1000F;
-        netData.floats[0] -= EnergyThermalExpansion.addEnergy(inventory.items[1], (float)getEnergy());
+        netData.floats[0] -= EnergyAPI.get(inventory.items[0]).addEnergy(getStorage(0) - getCapacity(0), 0);
+        netData.floats[0] -= EnergyAPI.get(inventory.items[1]).addEnergy(getStorage(0), 0);
         double d = energy.getEnergy(netData.ints[0], 1);
-        if ((netData.floats[0] > 0 || d > 0) && (d < 0 || netData.floats[0] < getCapacity())) {
-            netData.floats[1] = (float)d;
-            d -= addEnergy(d);
-            energy.Ucap = netData.ints[0];
-            if (d != 0F) {
-                energy.addEnergy(d);
-                netData.floats[1] -= (float)d;
-            }
-        } else {
-            netData.floats[1] = 0;
-        }
+        double d1 = addEnergy(d, 0);
+        if (d1 == d) energy.Ucap = netData.ints[0];
+        else if (d1 != 0) energy.addEnergy(d1);
+        netData.floats[1] = (float)d1;
     }
     
     public int getMaxStorage()
@@ -85,15 +78,15 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     }
     
     @Override
-    public double addEnergy(double e)
+    public double addEnergy(double e, int s)
     {
         if (energy.Umax == 0) return 0;
     	if (netData.floats[0] + e < 0) {
     		e = -netData.floats[0];
     		netData.floats[0] = 0;
-    	} else if (netData.floats[0] + e > getCapacity()) {
-    		e = getCapacity() - netData.floats[0];
-    		netData.floats[0] = (float)getCapacity();
+    	} else if (netData.floats[0] + e > getCapacity(s)) {
+    		e = getCapacity(s) - netData.floats[0];
+    		netData.floats[0] = (float)getCapacity(s);
     	} else {
     		netData.floats[0] += e;
     	}
@@ -107,7 +100,7 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     }
 
     @Override
-    public ArrayList<ItemStack> dropItem(int m, int fortune) 
+    public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) 
     {
         ItemStack item = new ItemStack(this.getBlockType());
         netData.floats[0] -= EnergyItemHandler.addEnergy(item, (int)Math.floor(netData.floats[0]), false);
@@ -117,7 +110,7 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) {
             netData.ints[0] = dis.readInt();
@@ -128,7 +121,7 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     
     public int getStorageScaled(int s)
     {
-        return (int)(netData.floats[0] / (float)getCapacity() * (float)s);
+        return (int)(netData.floats[0] / (float)getCapacity(0) * (float)s);
     }
     
     @Override
@@ -146,14 +139,13 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
         type = nbt.getByte("type");
         energy = new PipeEnergy(Config.Umax[type], Config.Rcond[type]);
         super.readFromNBT(nbt);
-        if (nbt.hasKey("storage", 3)) netData.floats[0] = (float)nbt.getInteger("storage") * 1000F; //compatibility to previous version TODO remove
-        else netData.floats[0] = nbt.getFloat("storage");
+        netData.floats[0] = nbt.getFloat("storage");
         netData.ints[0] = nbt.getInteger("voltage");
     }
     
     public int getDiff(int max)
     {
-        int d = (int)(netData.floats[1] / (float)this.getCapacity() * (float)max * 400F);
+        int d = (int)(netData.floats[1] / (float)this.getCapacity(0) * (float)max * 400F);
         if (d < -max) d = -max;
         if (d > max) d = max;
         return d;
@@ -193,20 +185,17 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     }
 
     @Override
-    public void slotChange(ItemStack oldItem, ItemStack newItem, int i) 
-    {
-    }
+    public void slotChange(ItemStack oldItem, ItemStack newItem, int i) {}
 
     @Override
-    public double getEnergy() 
+    public double getStorage(int s) 
     {
         return netData.floats[0];
     }
 
     @Override
-    public double getCapacity() 
+    public double getCapacity(int s) 
     {
         return this.getMaxStorage() * 1000D;
     }
-    
 }

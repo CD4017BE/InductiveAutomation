@@ -1,5 +1,6 @@
 package cd4017be.automation.TileEntity;
 
+
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemBlock;
@@ -21,7 +22,7 @@ import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import cd4017be.lib.util.Utils;
 
-public class GraviCond extends AutomatedTile implements IEnergy, ISidedInventory, IFluidHandler 
+public class GraviCond extends AutomatedTile implements IEnergy, ISidedInventory, IFluidHandler
 {
 	public static int itemWeight = 125;
 	public static int blockWeight = 1000;
@@ -41,9 +42,9 @@ public class GraviCond extends AutomatedTile implements IEnergy, ISidedInventory
 	}
 
 	@Override
-	public void updateEntity() 
+	public void update() 
 	{
-		super.updateEntity();
+		super.update();
 		if (worldObj.isRemote) return;
 		int add = 0;
 		netData.floats[0] = (float)energy.getEnergy(0, 1);

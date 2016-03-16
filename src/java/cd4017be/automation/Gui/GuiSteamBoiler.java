@@ -4,11 +4,10 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -71,30 +70,27 @@ public class GuiSteamBoiler extends GuiMachine
         this.drawLiquidTank(tileEntity.tanks, 1, 134, 16, true);
         this.drawLiquidConfig(tileEntity, -27, 7);
         this.drawItemConfig(tileEntity, -45, 7);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         this.clickLiquidConfig(tileEntity, x - this.guiLeft + 27, y - this.guiTop - 7);
         this.clickItemConfig(tileEntity, x - this.guiLeft + 45, y - this.guiTop - 7);
         byte cmd = -1;
-        if (this.func_146978_c(34, 60, 8, 8, x, y)) {
+        if (this.isPointInRegion(34, 60, 8, 8, x, y)) {
         	cmd = 0;
         } else
-        if (this.func_146978_c(34, 52, 8, 8, x, y)) {
+        if (this.isPointInRegion(34, 52, 8, 8, x, y)) {
         	cmd = 1;
         }
         if (cmd >= 0) {
-        	try {
-                ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-                DataOutputStream dos = new DataOutputStream(bos);
+                PacketBuffer dos = tileEntity.getPacketTargetData();
                 dos.writeByte(AutomatedTile.CmdOffset + cmd);
-                BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+                BlockGuiHandler.sendPacketToServer(dos);
         }
     }
     

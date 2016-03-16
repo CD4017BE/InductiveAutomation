@@ -21,12 +21,12 @@ public class HPSolarpanel extends Solarpanel
 	protected int getUmax() {return Config.Umax[0];}
 
 	@Override
-    public void updateEntity() 
+    public void update() 
     {
         if (this.worldObj.isRemote) return;
-        int sl = this.worldObj.getSavedLightValue(EnumSkyBlock.Sky, xCoord, yCoord + 1, zCoord);
+        int sl = this.worldObj.getLightFor(EnumSkyBlock.SKY, pos.up());
         int bl = 45;
-        sl -= this.worldObj.skylightSubtracted;
+        sl -= this.worldObj.getSkylightSubtracted();
         if (sl < 0) sl = 0;
         if (worldObj.provider.getDimensionName().equals("The End")) sl = 5;
         float power = (float)(sl * sl * sl + bl) / 3.375F; //Skylight = 15 -> power = 1

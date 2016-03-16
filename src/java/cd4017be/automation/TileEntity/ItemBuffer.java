@@ -1,6 +1,7 @@
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -16,7 +17,7 @@ import cd4017be.lib.templates.Inventory.Component;
 import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.Utils;
 
-public class ItemBuffer extends AutomatedTile implements ISidedInventory 
+public class ItemBuffer extends AutomatedTile implements ISidedInventory
 {
 	
 	public ItemBuffer()
@@ -26,9 +27,9 @@ public class ItemBuffer extends AutomatedTile implements ISidedInventory
 	}
 
 	@Override
-	public void updateEntity() 
+	public void update() 
 	{
-		super.updateEntity();
+		super.update();
 		if (worldObj.isRemote) return;
 		boolean bigStack = (netData.ints[0] & 0x100) != 0;
 		int ovflSlots = netData.ints[0] & 0xff;
@@ -96,7 +97,7 @@ public class ItemBuffer extends AutomatedTile implements ISidedInventory
 	}
 
 	@Override
-	protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
 	{
 		if (cmd >= 0 && cmd < 3) {
 			netData.ints[cmd] = dis.readInt();

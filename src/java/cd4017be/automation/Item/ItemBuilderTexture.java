@@ -18,10 +18,9 @@ import net.minecraft.item.ItemStack;
 public class ItemBuilderTexture extends DefaultItem
 {
     
-    public ItemBuilderTexture(String id, String tex)
+    public ItemBuilderTexture(String id)
     {
         super(id);
-        this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
     }
 

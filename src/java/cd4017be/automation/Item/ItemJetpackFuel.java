@@ -24,10 +24,9 @@ public class ItemJetpackFuel extends DefaultItem
     public static float maxFuel = 2400;
     public static float electricEmult = 0.005F;
     
-    public ItemJetpackFuel(String id, String tex)
+    public ItemJetpackFuel(String id)
     {
         super(id);
-        this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxDamage(16);
         this.setMaxStackSize(1);

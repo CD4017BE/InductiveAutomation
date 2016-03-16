@@ -7,14 +7,15 @@ import cd4017be.automation.TileEntity.VertexShematicGen;
 import cd4017be.automation.TileEntity.VertexShematicGen.Polygon;
 import cd4017be.lib.util.Vec3;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
-public class Render3DVertexShem extends TileEntitySpecialRenderer 
+public class Render3DVertexShem extends TileEntitySpecialRenderer<VertexShematicGen>
 {
-    
-	private void render(VertexShematicGen te, double d0, double d1, double d2) 
-	{	
+
+	@Override
+	public void renderTileEntityAt(VertexShematicGen te, double x, double y, double z, float dt, int des) {
 		GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
         GL11.glDisable(GL11.GL_CULL_FACE);
         GL11.glDisable(GL11.GL_LIGHTING);
@@ -23,36 +24,34 @@ public class Render3DVertexShem extends TileEntitySpecialRenderer
         GL11.glDepthMask(false);
         GL11.glColor4f(1, 1, 1, 1);
         int density = 0x30;
-        Tessellator t = Tessellator.instance;
-        t.setTranslation(d0, d1, d2);
-        t.startDrawing(GL11.GL_TRIANGLES);
+        WorldRenderer t = Tessellator.getInstance().getWorldRenderer();
+        t.setTranslation(x, y, z);
+        t.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
         Polygon p;
+        int c, cr, cg, cb, ca;
         for (int k = 0; k < te.polygons.size(); k++) {
         	p = te.polygons.get(k);
-        	int c = GuiVertexShematicGen.colors[p.texId & 0x7];
+        	c = GuiVertexShematicGen.colors[p.texId & 0x7];
+        	cr = c >> 16 & 0xff;
+        	cg = c >> 8 & 0xff;
+        	cb = c & 0xff;
+        	ca = (k == te.sel ? density * 2 : density);
         	Vec3 v = Vec3.Def(p.dir==4?-1:p.dir==5?1:0, p.dir==0?-1:p.dir==1?1:0, p.dir==2?-1:p.dir==3?1:0).scale(p.thick);
-        	t.setColorRGBA(c >> 16 & 0xff, c >> 8 & 0xff, c & 0xff, k == te.sel ? density * 2 : density);
         	for (int i = 0; i <= p.vert.length - 3; i++) {
-        		t.addVertex(p.vert[0].x[0], p.vert[0].x[1], p.vert[0].x[2]);
-        		t.addVertex(p.vert[i + 1].x[0], p.vert[i + 1].x[1], p.vert[i + 1].x[2]);
-        		t.addVertex(p.vert[i + 2].x[0], p.vert[i + 2].x[1], p.vert[i + 2].x[2]);
+        		t.pos(p.vert[0].x[0], p.vert[0].x[1], p.vert[0].x[2]).color(cr, cg, cb, ca).endVertex();
+        		t.pos(p.vert[i + 1].x[0], p.vert[i + 1].x[1], p.vert[i + 1].x[2]).color(cr, cg, cb, ca).endVertex();
+        		t.pos(p.vert[i + 2].x[0], p.vert[i + 2].x[1], p.vert[i + 2].x[2]).color(cr, cg, cb, ca).endVertex();
         		
-        		t.addVertex(p.vert[0].x[0] + v.x, p.vert[0].x[1] + v.y, p.vert[0].x[2] + v.z);
-        		t.addVertex(p.vert[i + 1].x[0] + v.x, p.vert[i + 1].x[1] + v.y, p.vert[i + 1].x[2] + v.z);
-        		t.addVertex(p.vert[i + 2].x[0] + v.x, p.vert[i + 2].x[1] + v.y, p.vert[i + 2].x[2] + v.z);
+        		t.pos(p.vert[0].x[0] + v.x, p.vert[0].x[1] + v.y, p.vert[0].x[2] + v.z).color(cr, cg, cb, ca).endVertex();
+        		t.pos(p.vert[i + 1].x[0] + v.x, p.vert[i + 1].x[1] + v.y, p.vert[i + 1].x[2] + v.z).color(cr, cg, cb, ca).endVertex();
+        		t.pos(p.vert[i + 2].x[0] + v.x, p.vert[i + 2].x[1] + v.y, p.vert[i + 2].x[2] + v.z).color(cr, cg, cb, ca).endVertex();
         	}
         }
-        t.draw();
         t.setTranslation(0, 0, 0);
+        Tessellator.getInstance().draw();
         GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
 	}
-	
-    @Override
-    public void renderTileEntityAt(TileEntity te, double d0, double d1, double d2, float f) 
-    {
-        this.render((VertexShematicGen)te, d0, d1, d2);
-    }
 
 }

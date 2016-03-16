@@ -4,14 +4,16 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Interface;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -31,13 +33,10 @@ import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.Inventory.Component;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
@@ -52,6 +51,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraftforge.fluids.IFluidBlock;
 
 /**
@@ -59,7 +60,7 @@ import net.minecraftforge.fluids.IFluidBlock;
  * @author CD4017BE
  */
 @Optional.InterfaceList(value = {@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft"), @Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")})
-public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IOperatingArea, IPeripheral, Environment
+public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IOperatingArea, Environment //,IPeripheral //TODO reimplement
 {
     public static float Energy = 40000F;
     private static final float resistor = 25F;
@@ -84,20 +85,20 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
-        lastUser = entity.getCommandSenderName();
+        lastUser = entity.getName();
     }
     
     @Override
-    public boolean onActivated(EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
-        lastUser = player.getCommandSenderName();
+        lastUser = player.getName();
         return super.onActivated(player, s, X, Y, Z);
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         if (slave == null || ((TileEntity)slave).isInvalid()) slave = ItemMachineSynchronizer.getLink(inventory.items[28], this);
         double e = energy.getEnergy(0, resistor);
@@ -105,7 +106,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         storage -= ComputerAPI.update(this, node, storage * 0.5D);
         if (active())
         	for (int i = 0; i < Config.taskQueueSize; i++) {
-        		if (breakBlock(px, py, pz))
+        		if (breakBlock(new BlockPos(px, py, pz)))
         		{
         			py--;
         			if (py < area[1] || py >= area[4]) {
@@ -124,7 +125,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         			}
         		} else break;
         	}
-        else if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) >= 8) netData.ints[0] = -1;
+        else if (worldObj.isBlockIndirectlyGettingPowered(getPos()) >= 8) netData.ints[0] = -1;
         else {
         	MineTask task;
         	synchronized(this.sheduledTasks) {
@@ -147,23 +148,23 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
 		return netData.ints[0] != 0 ? 0 : 7;
 	}
 
-	private boolean slaveOp(int x, int y, int z)
+	private boolean slaveOp(BlockPos pos)
     {
     	if (slave != null && !((TileEntity)slave).isInvalid() && (slave instanceof Pump || slave instanceof Builder) && (slave.getSlave() == null || !(slave.getSlave() instanceof Miner || slave.getSlave().getSlave() != null))) {
-        	return slave.remoteOperation(x, y, z);
+        	return slave.remoteOperation(pos);
         } else return true;
     }
     
-    private boolean breakBlock(int x, int y, int z)
+    private boolean breakBlock(BlockPos pos)
     {
-        if (!worldObj.blockExists(x, y, z)) {
+        if (!worldObj.isBlockLoaded(pos)) {
             return false;
         }
-        Block b = worldObj.getBlock(x, y, z);
-        int m = worldObj.getBlockMetadata(x, y, z);
-        Block block = b;
-        if (!this.isHarvestable(block, x, y, z)) return this.slaveOp(x, y, z);
-        float hardness = block.getBlockHardness(worldObj, x, y, z);
+        IBlockState state = worldObj.getBlockState(pos);
+        Block block = state.getBlock();
+        int m = block.getMetaFromState(state);
+        if (!this.isHarvestable(block, pos)) return this.slaveOp(pos);
+        float hardness = block.getBlockHardness(worldObj, pos);
         float eff = 0;
         int tool = -1;
         if (block.getMaterial().isToolNotRequired()) eff = 1F;
@@ -171,7 +172,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         {
             if (inventory.items[i] == null) continue;
             Item item = inventory.items[i].getItem();
-            if (item instanceof ItemMinerDrill && ((ItemMinerDrill)item).canHarvestBlock(block, m)) {
+            if (item instanceof ItemMinerDrill && ((ItemMinerDrill)item).canHarvestBlock(state, m)) {
                 if (eff == 0 || ((ItemMinerDrill)item).efficiency < eff)  {
                     eff = ((ItemMinerDrill)item).efficiency;
                     tool = i;
@@ -180,12 +181,12 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         }
         if (eff == 0) return true;
         if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, px >> 4, pz >> 4)) return true;
-        Map<Integer, Integer> enchant = tool < 0 ? new LinkedHashMap() : EnchantmentHelper.getEnchantments(inventory.items[tool]);
+        Map<Integer, Integer> enchant = tool < 0 ? new LinkedHashMap<Integer, Integer>() : EnchantmentHelper.getEnchantments(inventory.items[tool]);
         Integer n = enchant.get(Enchantment.efficiency.effectId);
         if (n != null) eff *= 1F + 0.3F * (float)n;
         float e = hardness * Energy / eff;
         boolean silk;
-        try {silk = enchant.containsKey(Enchantment.silkTouch.effectId) && block.canSilkHarvest(worldObj, null, x, y, z, m);} catch (NullPointerException ex) {silk = false;}
+        try {silk = enchant.containsKey(Enchantment.silkTouch.effectId) && block.canSilkHarvest(worldObj, pos, state, null);} catch (NullPointerException ex) {silk = false;}
         if (silk) e *= 2.5F;
         else {
         	n = enchant.get(Enchantment.fortune.effectId);
@@ -195,43 +196,43 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         	neededE = e;
         	return false;
         }
-        ArrayList<ItemStack> list;
+        List<ItemStack> list;
         if (silk) {
         	list = new ArrayList<ItemStack>();
-        	list.add(new ItemStack(block, 1, block.getDamageValue(worldObj, x, y, z)));
+        	list.add(new ItemStack(block, 1, block.getDamageValue(worldObj, pos)));
         } else {
-        	list = block.getDrops(worldObj, x, y, z, m, n == null ? 0 : n);
+        	list = block.getDrops(worldObj, pos, state, n == null ? 0 : n);
         }
         if (invFull(list.size())) return false;
         storage -= e;
         if (tool >= 0) {
         	n = enchant.get(Enchantment.unbreaking.effectId);
-        	if (n == null || randomDamage(n, x, y, z)) {
+        	if (n == null || randomDamage(n, pos)) {
         		int d = inventory.items[tool].getItemDamage() + 1;
                 if (d >= inventory.items[tool].getMaxDamage()) inventory.items[tool] = null;
                 else inventory.items[tool].setItemDamage(d);
         	}
         }
         for (ItemStack item : list) add(item);
-        worldObj.setBlock(x, y, z, Blocks.air, 0, 2);
-        return this.slaveOp(x, y, z);
+        worldObj.setBlockState(pos, Blocks.air.getDefaultState(), 2);
+        return this.slaveOp(pos);
     }
     
-    private boolean randomDamage(int unbr, int x, int y, int z)
+    private boolean randomDamage(int unbr, BlockPos pos)
     {
     	if (area[3] == area[0] || area[4] == area[1] || area[5] == area[2]) return true;
-    	int i = z % (area[5] - area[2]);
+    	int i = pos.getZ() % (area[5] - area[2]);
     	i *= 31; 
-    	i += x % (area[3] - area[0]);
+    	i += pos.getX() % (area[3] - area[0]);
     	i *= 31; 
-    	i += y % (area[4] - area[1]);
+    	i += pos.getY() % (area[4] - area[1]);
     	i *= 31;
     	return i % (unbr + 3) < 3;
     }
     
-    private boolean isHarvestable(Block block, int x, int y, int z)
+    private boolean isHarvestable(Block block, BlockPos pos)
     {
-        if (block == null || block.getBlockHardness(worldObj, x, y, z) < 0 || block instanceof BlockLiquid || block instanceof IFluidBlock) return false;
+        if (block == null || block.getBlockHardness(worldObj, pos) < 0 || block instanceof BlockLiquid || block instanceof IFluidBlock) return false;
         else return block.getMaterial().isToolNotRequired() || block.getMaterial() == Material.rock || block.getMaterial() == Material.iron || block.getMaterial() == Material.anvil;
     }
     
@@ -255,7 +256,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         item = this.putItemStack(item, this, -1, s);
         if (item != null)
         {
-            worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord + 0.5D, yCoord + 1.5D, zCoord + 0.5D, item));
+            worldObj.spawnEntityInWorld(new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 1.5D, pos.getZ() + 0.5D, item));
         }
     }
     
@@ -281,7 +282,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
             this.area = area;
             reset();
         }
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(getPos());
     }
     
     @Override
@@ -345,7 +346,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) netData.ints[0] = ~netData.ints[0];
         else if (cmd == 1) reset();
@@ -365,10 +366,11 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     	
     	public boolean execute(Miner miner)
     	{
-    		if (!miner.worldObj.blockExists(x, y, z)) return false;
-            Block block = miner.worldObj.getBlock(x, y, z);
-            boolean imp = block == null || block.isReplaceable(miner.worldObj, x, y, z);
-            if (imp || miner.breakBlock(x, y, z)) {
+    		BlockPos pos = new BlockPos(x, y, z);
+    		if (!miner.worldObj.isBlockLoaded(pos)) return false;
+            Block block = miner.worldObj.getBlockState(pos).getBlock();
+            boolean imp = block == null || block.isReplaceable(miner.worldObj, pos);
+            if (imp || miner.breakBlock(pos)) {
             	if (evType) ComputerAPI.sendEvent(src, "mine_block", x - miner.px, y - miner.py, z - miner.pz, !imp);
         		else if (miner.sheduledTasks.size() == 1) ComputerAPI.sendEvent(src, "mine_done");
             	return true;
@@ -392,7 +394,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
 	public void onUpgradeChange(int s) 
 	{
 		if (s == 0) {
-			this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			this.worldObj.markBlockForUpdate(getPos());
 			return;
 		}
 		if (s == 3) {
@@ -407,10 +409,10 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
 	}
 
 	@Override
-	public boolean remoteOperation(int x, int y, int z) 
+	public boolean remoteOperation(BlockPos pos) 
 	{
-		if (x < area[0] || y < area[1] || z < area[2] || x >= area[3] || y >= area[4] || z >= area[5]) return true;
-		return this.breakBlock(x, y, z);
+		if (pos.getX() < area[0] || pos.getY() < area[1] || pos.getZ() < area[2] || pos.getX() >= area[3] || pos.getY() >= area[4] || pos.getZ() >= area[5]) return true;
+		return this.breakBlock(pos);
 	}
 
 	@Override
@@ -422,7 +424,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     private ArrayList<MineTask> sheduledTasks = new ArrayList<MineTask>();
     
 	//ComputerCraft:
-
+    /* TODO reimplement
     @Optional.Method(modid = "ComputerCraft")
     @Override
     public String getType() 
@@ -492,6 +494,8 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         return peripheral.hashCode() == this.hashCode();
     }
 
+*/
+
 	//OpenComputers:
 	
     private Object node = ComputerAPI.newOCnode(this, "Automation-Miner", true);
@@ -559,11 +563,9 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
 	@Callback(doc = "function(x:int, y:int, z:int):bool --returns true if there is a not replaceable block at given operating-area-relative position", direct = true)
 	public Object[] isBlockAt(Context cont, Arguments args)
 	{
-		int x = args.checkInteger(0) + area[0];
-        int y = args.checkInteger(1) + area[1];
-        int z = args.checkInteger(2) + area[2];
-        Block block = worldObj.getBlock(x, y, z);
-        if (block != null && !block.isReplaceable(worldObj, x, y, z)) return new Object[]{Boolean.TRUE};
+		BlockPos pos = new BlockPos(args.checkInteger(0) + area[0], args.checkInteger(1) + area[1], args.checkInteger(2) + area[2]);
+        Block block = worldObj.getBlockState(pos).getBlock();
+        if (block != null && !block.isReplaceable(worldObj, pos)) return new Object[]{Boolean.TRUE};
         else return new Object[]{Boolean.FALSE};
 	}
 	

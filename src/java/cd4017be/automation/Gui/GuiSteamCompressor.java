@@ -4,6 +4,8 @@
  */
 package cd4017be.automation.Gui;
 
+import java.io.IOException;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -56,12 +58,12 @@ public class GuiSteamCompressor extends GuiMachine
         this.drawLiquidTank(tileEntity.tanks, 0, 8, 16, true);
         this.drawLiquidConfig(tileEntity, -18, 7);
         this.drawItemConfig(tileEntity, -72, 7);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         this.clickLiquidConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);

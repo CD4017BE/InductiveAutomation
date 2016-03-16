@@ -21,10 +21,9 @@ public class ItemEnergyCell extends DefaultItem implements IEnergyItem
 {
     private final int storage;
     
-    public ItemEnergyCell(String id, String tex, int es)
+    public ItemEnergyCell(String id, int es)
     {
         super(id);
-        this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.storage = es;
         this.setMaxDamage(16);

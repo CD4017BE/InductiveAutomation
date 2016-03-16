@@ -4,10 +4,11 @@
  */
 package cd4017be.automation.TileEntity;
 
+
 import java.util.ArrayList;
 
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -17,6 +18,7 @@ import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.Utils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
@@ -39,14 +41,14 @@ public class AntimatterTank extends AutomatedTile implements ISidedInventory, IF
     public AntimatterTank()
     {
         netData = new TileEntityData(2, 0, 0, 1);
-    	tanks = new TankContainer(this, new Tank(Config.tankCap[4], 0, Automation.L_antimatter));
+    	tanks = new TankContainer(this, new Tank(Config.tankCap[4], 0, Objects.L_antimatter));
     	inventory = new Inventory(this, 2, new Component(0, 1, 0), new Component(1, 2, 0)).setNetLong(1);
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-    	super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         boolean f = false;
         if (inventory.items[0] != null && inventory.items[0].getItem() instanceof IFluidContainerItem)
@@ -54,7 +56,7 @@ public class AntimatterTank extends AutomatedTile implements ISidedInventory, IF
             if (fillRate < 5) fillRate = 5;
             int am = tanks.getAmount(0);
             if (am - fillRate < 0) fillRate = am;
-            Obj2<ItemStack, Integer> obj = Utils.fillFluid(inventory.items[0], new FluidStack(Automation.L_antimatter, fillRate));
+            Obj2<ItemStack, Integer> obj = Utils.fillFluid(inventory.items[0], new FluidStack(Objects.L_antimatter, fillRate));
             tanks.drain(0, obj.objB, true);
             inventory.items[0] = obj.objA;
             f = true;
@@ -66,7 +68,7 @@ public class AntimatterTank extends AutomatedTile implements ISidedInventory, IF
             int am = tanks.getSpace(0);
             if (am - fillRate < 0) fillRate = am;
             FluidStack cont = fc.getFluid(inventory.items[1]);
-            if (cont != null && cont.getFluid() == Automation.L_antimatter) {
+            if (cont != null && cont.getFluid() == Objects.L_antimatter) {
             	Obj2<ItemStack, FluidStack> obj = Utils.drainFluid(inventory.items[1], fillRate);
             	tanks.fill(0, obj.objB, true);
             	inventory.items[1] = obj.objA;
@@ -82,13 +84,13 @@ public class AntimatterTank extends AutomatedTile implements ISidedInventory, IF
     {
         if (item != null && item.getItem() == Item.getItemFromBlock(this.getBlockType()));
         {
-            if (item.stackTagCompound != null) tanks.setFluid(0, new FluidStack(Automation.L_antimatter, item.stackTagCompound.getInteger("antimatter")));
-            else this.tanks.setFluid(0, new FluidStack(Automation.L_antimatter, 0));
+            if (item.stackTagCompound != null) tanks.setFluid(0, new FluidStack(Objects.L_antimatter, item.stackTagCompound.getInteger("antimatter")));
+            else this.tanks.setFluid(0, new FluidStack(Objects.L_antimatter, 0));
         }
     }
 
     @Override
-    public ArrayList<ItemStack> dropItem(int m, int fortune) 
+    public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) 
     {
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         ItemStack item = new ItemStack(this.getBlockType(), 1, 0);

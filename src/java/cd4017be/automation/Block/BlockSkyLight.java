@@ -6,14 +6,15 @@ package cd4017be.automation.Block;
 
 import java.util.Random;
 
-import cd4017be.lib.BlockItemRegistry;
+import cd4017be.automation.Objects;
 import cd4017be.lib.DefaultBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 /**
@@ -24,13 +25,11 @@ public class BlockSkyLight extends DefaultBlock
 {
     
     public static Block ID;
-    public static Block sID;
     
     public BlockSkyLight(String id)
     {
         super(id, Material.air, ItemBlock.class);
         ID = this;
-        sID = BlockItemRegistry.blockId("tile.lightShaft");
         this.setLightOpacity(0);
     }
 
@@ -41,49 +40,44 @@ public class BlockSkyLight extends DefaultBlock
     }
 
     @Override
-    public void onBlockAdded(World world, int x, int y, int z) 
+    public void onBlockAdded(World world, BlockPos pos, IBlockState state) 
     {
-        this.onNeighborBlockChange(world, x, y, z, this);
+        this.onNeighborBlockChange(world, pos, state, this);
     }
 
     @Override
-    public void onNeighborBlockChange(World world, int x, int y, int z, Block b) 
+	public int getRenderType() {
+		return -1;
+	}
+
+	@Override
+    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block b) 
     {
-        Block id = world.getBlock(x, y+1, z);
-        if (id == this || id == sID) {
-            if (world.getBlock(x, y-1, z) == Blocks.air) {
-                world.setBlock(x, y-1, z, this);
+        Block id = world.getBlockState(pos.up()).getBlock();
+        if (id == this || id == Objects.lightShaft) {
+            if (world.getBlockState(pos.down()) == Blocks.air.getDefaultState()) {
+                world.setBlockState(pos.down(), this.getDefaultState());
             }
-        } else world.setBlockToAir(x, y, z);
+        } else world.setBlockToAir(pos);
     }
 
     @Override
-    public boolean shouldSideBeRendered(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5) 
-    {
-        return false;
-    }
-
-    @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World par1World, int par2, int par3, int par4) 
-    {
+    public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state) {
         return null;
     }
 
     @Override
-    public AxisAlignedBB getSelectedBoundingBoxFromPool(World par1World, int par2, int par3, int par4) 
-    {
+    public AxisAlignedBB getSelectedBoundingBox(World world, BlockPos pos) {
         return null;
     }
 
     @Override
-    public boolean isCollidable() 
-    {
+    public boolean isCollidable() {
         return false;
     }
 
     @Override
-    public int quantityDropped(int meta, int fortune, Random random) 
-    {
+    public int quantityDropped(IBlockState meta, int fortune, Random random) {
         return 0;
     }
     

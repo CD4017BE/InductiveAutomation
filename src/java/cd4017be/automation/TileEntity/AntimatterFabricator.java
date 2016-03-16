@@ -4,13 +4,14 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -39,7 +40,7 @@ public class AntimatterFabricator extends AutomatedTile implements IFluidHandler
         netData = new TileEntityData(1, 3, 2, 3);
         energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
         inventory = new Inventory(this, 3);
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_heliumL).setIn(0), new Tank(Config.tankCap[1], 1, Automation.L_heliumG).setOut(1), new Tank(Config.tankCap[1], 1, Automation.L_antimatter).setOut(2));
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_heliumL).setIn(0), new Tank(Config.tankCap[1], 1, Objects.L_heliumG).setOut(1), new Tank(Config.tankCap[1], 1, Objects.L_antimatter).setOut(2));
         /**
          * long: tcfg
          * int: voltage, HeBuff, rs
@@ -49,9 +50,9 @@ public class AntimatterFabricator extends AutomatedTile implements IFluidHandler
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-    	super.updateEntity();
+    	super.update();
         if (this.worldObj.isRemote) return;
         //cooling
         if (netData.ints[1] < AMHeat && tanks.getAmount(0) > 0) {
@@ -59,7 +60,7 @@ public class AntimatterFabricator extends AutomatedTile implements IFluidHandler
             tanks.drain(0, 1, true);
         }
         //energy
-        if (netData.floats[0] < AMEnergy && ((netData.ints[2] & 1) != 0 ^ ((netData.ints[2] & 2) != 0 && worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)))) {
+        if (netData.floats[0] < AMEnergy && ((netData.ints[2] & 1) != 0 ^ ((netData.ints[2] & 2) != 0 && worldObj.isBlockPowered(pos)))) {
             double e = energy.getEnergy(netData.ints[0], 1);
             if (e < 0) e = 0;
             netData.floats[1] = (float)e / 1000F;
@@ -70,8 +71,8 @@ public class AntimatterFabricator extends AutomatedTile implements IFluidHandler
         if (netData.floats[0] >= AMEnergy && netData.ints[1] >= AMHeat && tanks.getSpace(2) >= AMamount) {
             netData.floats[0] -= AMEnergy;
             netData.ints[1] -= AMHeat;
-            tanks.fill(1, new FluidStack(Automation.L_heliumG, AMHeat), true);
-            tanks.fill(2, new FluidStack(Automation.L_antimatter, AMamount), true);
+            tanks.fill(1, new FluidStack(Objects.L_heliumG, AMHeat), true);
+            tanks.fill(2, new FluidStack(Objects.L_antimatter, AMamount), true);
         }
     }
     
@@ -81,7 +82,7 @@ public class AntimatterFabricator extends AutomatedTile implements IFluidHandler
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) {
             netData.ints[0] = dis.readInt();

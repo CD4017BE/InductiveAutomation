@@ -1,6 +1,7 @@
 package cd4017be.automation.Gui;
 
 import cd4017be.lib.templates.BasicInventory;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -22,7 +23,7 @@ public class InventoryAMLEnchant extends BasicInventory
             NBTTagCompound nbt = list.getCompoundTagAt(i);
             int id = nbt.getShort("id");
             int lvl = nbt.getShort("lvl");
-            items[i] = Items.enchanted_book.getEnchantedItemStack(new EnchantmentData(id, lvl));
+            items[i] = Items.enchanted_book.getEnchantedItemStack(new EnchantmentData(Enchantment.getEnchantmentById(id), lvl));
         }
 	}
 	
@@ -35,7 +36,7 @@ public class InventoryAMLEnchant extends BasicInventory
 		boolean ench = false;
 		for (int i = 0; i < items.length; i++) {
 			if (items[i] != null && items[i].getItem() == Items.enchanted_book) {
-				NBTTagList l = Items.enchanted_book.func_92110_g(items[i]);
+				NBTTagList l = Items.enchanted_book.getEnchantments(items[i]);
 				if (l.tagCount() > 0) {
 					list.appendTag(l.getCompoundTagAt(0));
 					ench = true;

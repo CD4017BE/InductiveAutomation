@@ -4,8 +4,7 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,15 +16,16 @@ import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.Inventory.Component;
 import cd4017be.lib.util.Utils;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
 
 /**
  *
@@ -42,9 +42,9 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
     }
     
     @Override
-    public void updateEntity()
+    public void update()
     {
-        super.updateEntity();
+    	super.update();
         if (!worldObj.isRemote && invChange)
         {
             this.addStack();
@@ -246,14 +246,14 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
     }
 
     @Override
-    public ArrayList<ItemStack> dropItem(int m, int fortune) 
+    public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) 
     {
-        ArrayList<ItemStack> list = new ArrayList();
+        ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         ItemStack item = new ItemStack(this.getBlockType());
         NBTTagList nbt = new NBTTagList();
         for (int s = 0; s < 64; s++)
         {
-            ItemStack stack = this.getStackInSlotOnClosing(s + 1);
+            ItemStack stack = this.removeStackFromSlot(s + 1);
             if (stack != null) {
                 NBTTagCompound tag = new NBTTagCompound();
                 tag.setByte("Slot", (byte)s);
@@ -291,7 +291,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
     }
 
     @Override
-    public boolean detectAndSendChanges(TileContainer container, List<ICrafting> crafters, DataOutputStream dos) throws IOException 
+    public boolean detectAndSendChanges(TileContainer container, List<ICrafting> crafters, PacketBuffer dos) throws IOException 
     {
         long sc = 0;
         for (int i = 0; i < 64; i++) {
@@ -315,7 +315,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
                         dos.writeShort((short)item.getItemDamage());
                         if (item.stackTagCompound != null) {
                             dos.writeByte(1);
-                            CompressedStreamTools.write(item.stackTagCompound, dos);
+                            dos.writeNBTTagCompoundToBuffer(item.stackTagCompound);
                         } else dos.writeByte(0);
                     } else dos.writeShort(0);
                 }
@@ -325,7 +325,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
     }
 
     @Override
-    public void updateNetData(DataInputStream dis, TileContainer container) throws IOException 
+    public void updateNetData(PacketBuffer dis, TileContainer container) throws IOException 
     {
         super.updateNetData(dis, container);
         long sc = dis.readLong();
@@ -338,7 +338,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
                     else {
                         item = new ItemStack(Item.getItemById(id), dis.readShort(), dis.readShort());
                         id = dis.readByte();
-                        if (id != 0) item.stackTagCompound = CompressedStreamTools.read(dis);
+                        if (id != 0) item.stackTagCompound = dis.readNBTTagCompoundFromBuffer();
                     }
                     ((Slot)container.inventorySlots.get(i)).putStack(item);
                 }

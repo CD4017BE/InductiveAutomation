@@ -5,13 +5,15 @@
 package cd4017be.automation;
 
 
-import cpw.mods.fml.common.FMLLog;
-import cpw.mods.fml.common.IFuelHandler;
-import cpw.mods.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.IFuelHandler;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
 import org.apache.logging.log4j.Level;
 
 import cd4017be.api.automation.AreaProtect;
@@ -20,14 +22,12 @@ import cd4017be.api.automation.AutomationRecipes.LFRecipe;
 import cd4017be.api.automation.AutomationRecipes.CoolRecipe;
 import cd4017be.api.automation.AutomationRecipes.ElRecipe;
 import cd4017be.api.automation.AutomationRecipes.GCRecipe;
-import cd4017be.api.automation.SelectionRenderer;
 import cd4017be.automation.Item.ItemMinerDrill;
-import cd4017be.automation.render.RenderAntimatterBomb;
+import cd4017be.automation.TileEntity.*;
 import static cd4017be.lib.BlockItemRegistry.stack;
-import static cd4017be.lib.BlockItemRegistry.blockId;
-import static cd4017be.lib.BlockItemRegistry.itemId;
 import cd4017be.lib.NBTRecipe;
-import cd4017be.lib.templates.PipeRenderer;
+import cd4017be.lib.TileBlockRegistry;
+import cd4017be.lib.TileContainer;
 import cd4017be.lib.util.Obj2;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockMushroom;
@@ -45,6 +45,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import static cd4017be.automation.Objects.*;
 
 /**
  *
@@ -52,12 +53,75 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
  */
 public class CommonProxy implements IFuelHandler
 {
-    public static PipeRenderer wireRenderer;
-    public static SelectionRenderer selectionRenderer;
-    public static RenderAntimatterBomb amBombRender;
     
     private List<BioEntry> bioList = new ArrayList<BioEntry>();
     public static final String[] dyes = {"dyeBlack", "dyeRed", "dyeGreen", "dyeBrown", "dyeBlue", "dyePurple", "dyeCyan", "dyeLightGray", "dyeGray", "dyePink", "dyeLime", "dyeYellow", "dyeLightBlue", "dyeMagenta", "dyeOrange", "dyeWhite"};
+    
+    public void registerBlocks() 
+    {
+		TileBlockRegistry.register(lightShaft, LightShaft.class, null);
+		TileBlockRegistry.register(wireC, Wire.class, null);
+		TileBlockRegistry.register(wireA, Wire.class, null);
+		TileBlockRegistry.register(wireH, Wire.class, null);
+		TileBlockRegistry.register(liquidPipe, LiquidPipe.class, null);
+		TileBlockRegistry.register(itemPipe, ItemPipe.class, null);
+		TileBlockRegistry.register(itemWarpPipe, ItemWarpPipe.class, null);
+		TileBlockRegistry.register(liquidWarpPipe, LiquidWarpPipe.class, null);
+		TileBlockRegistry.register(voltageTransformer, VoltageTransformer.class, TileContainer.class);
+		TileBlockRegistry.register(SCSU, ESU.class, TileContainer.class);
+		TileBlockRegistry.register(OCSU, ESU.class, TileContainer.class);
+		TileBlockRegistry.register(CCSU, ESU.class, TileContainer.class);
+		TileBlockRegistry.register(steamEngine, SteamEngine.class, TileContainer.class);
+		TileBlockRegistry.register(steamTurbine, SteamTurbine.class, TileContainer.class);
+		TileBlockRegistry.register(steamGenerator, SteamGenerator.class, TileContainer.class);
+		TileBlockRegistry.register(steamBoiler, SteamBoiler.class, TileContainer.class);
+		TileBlockRegistry.register(lavaCooler, LavaCooler.class, TileContainer.class);
+		TileBlockRegistry.register(energyFurnace, EnergyFurnace.class, TileContainer.class);
+		TileBlockRegistry.register(farm, Farm.class, TileContainer.class);
+		TileBlockRegistry.register(miner, Miner.class, TileContainer.class);
+		TileBlockRegistry.register(magnet, Magnet.class, null);
+		TileBlockRegistry.register(link, ELink.class, TileContainer.class);
+		TileBlockRegistry.register(linkHV, ELink.class, TileContainer.class);
+		TileBlockRegistry.register(texMaker, TextureMaker.class, TileContainer.class);
+		TileBlockRegistry.register(builder, Builder.class, TileContainer.class);
+		TileBlockRegistry.register(algaePool, AlgaePool.class, TileContainer.class);
+		TileBlockRegistry.register(teleporter, Teleporter.class, TileContainer.class);
+		TileBlockRegistry.register(advancedFurnace, AdvancedFurnace.class, TileContainer.class);
+		TileBlockRegistry.register(pump, Pump.class, TileContainer.class);
+		TileBlockRegistry.register(massstorageChest, MassstorageChest.class, TileContainer.class);
+		TileBlockRegistry.register(matterOrb, MatterOrb.class, null);
+		TileBlockRegistry.register(antimatterBombE, MatterOrb.class, null);
+		TileBlockRegistry.register(antimatterBombF, AntimatterBomb.class, null);
+		TileBlockRegistry.register(antimatterTank, AntimatterTank.class, TileContainer.class);
+		TileBlockRegistry.register(antimatterFabricator, AntimatterFabricator.class, TileContainer.class);
+		TileBlockRegistry.register(antimatterAnihilator, AntimatterAnihilator.class, TileContainer.class);
+		TileBlockRegistry.register(hpSolarpanel, HPSolarpanel.class, null);
+		TileBlockRegistry.register(autoCrafting, AutoCrafting.class, TileContainer.class);
+		TileBlockRegistry.register(geothermalFurnace, GeothermalFurnace.class, TileContainer.class);
+		TileBlockRegistry.register(steamCompressor, SteamCompressor.class, TileContainer.class);
+		TileBlockRegistry.register(electricCompressor, ElectricCompressor.class, TileContainer.class);
+		TileBlockRegistry.register(tank, Tank.class, TileContainer.class);
+		TileBlockRegistry.register(security, SecuritySys.class, TileContainer.class);
+		TileBlockRegistry.register(decompCooler, DecompCooler.class, TileContainer.class);
+		TileBlockRegistry.register(collector, Collector.class, TileContainer.class);
+		TileBlockRegistry.register(trash, Trash.class, TileContainer.class);
+		TileBlockRegistry.register(electrolyser, Electrolyser.class, TileContainer.class);
+		TileBlockRegistry.register(fuelCell, FuelCell.class, TileContainer.class);
+		TileBlockRegistry.register(detector, Detector.class, TileContainer.class);
+		TileBlockRegistry.register(itemSorter, ItemSorter.class, TileContainer.class);
+		TileBlockRegistry.register(matterInterfaceB, MatterInterface.class, TileContainer.class);
+		TileBlockRegistry.register(fluidPacker, FluidPacker.class, TileContainer.class);
+		TileBlockRegistry.register(hugeTank, HugeTank.class, TileContainer.class);
+		TileBlockRegistry.register(fluidVent, FluidVent.class, TileContainer.class);
+		TileBlockRegistry.register(gravCond, GraviCond.class, TileContainer.class);
+		TileBlockRegistry.register(itemBuffer, ItemBuffer.class, TileContainer.class);
+		TileBlockRegistry.register(quantumTank, QuantumTank.class, TileContainer.class);
+		TileBlockRegistry.register(vertShemGen, VertexShematicGen.class, TileContainer.class);
+    	TileBlockRegistry.register(solarpanel, Solarpanel.class, null);
+    	TileBlockRegistry.register(teslaTransmitterLV, TeslaTransmitterLV.class, TileContainer.class);
+    	TileBlockRegistry.register(teslaTransmitter, TeslaTransmitter.class, TileContainer.class);
+    	TileBlockRegistry.register(wormhole, InterdimHole.class, null);
+    }
     
     public void registerRenderers()
     {
@@ -110,7 +174,7 @@ public class CommonProxy implements IFuelHandler
         if (item == null) return null;
         if (item.getItem() instanceof ItemFood) {
         	ItemFood food = (ItemFood)item.getItem();
-        	return new int[]{(int)Math.ceil((food.func_150905_g(item) + food.func_150906_h(item)) * (float)Config.Lnutrients_healAmount), 0};
+        	return new int[]{(int)Math.ceil((food.getSaturationModifier(item) + food.getHealAmount(item)) * (float)Config.Lnutrients_healAmount), 0};
         } else {
             Iterator<BioEntry> iterator = bioList.iterator();
             while (iterator.hasNext())
@@ -119,19 +183,6 @@ public class CommonProxy implements IFuelHandler
                 if (entry.matches(item)) return new int[]{entry.nutrients, entry.algae};
             }
             return null;
-        }
-    }
-    
-    public static boolean oresEqual(ItemStack item0, ItemStack item1)
-    {
-        if (item0 == null && item1 == null) return true;
-        else if (item0 == null ^ item1 == null) return false;
-        else if (item0.isItemEqual(item1)) return true;
-        else
-        {
-            int id = OreDictionary.getOreID(item0);
-            if (id < 0) return false;
-            else return id == OreDictionary.getOreID(item1);
         }
     }
     
@@ -145,7 +196,8 @@ public class CommonProxy implements IFuelHandler
         {
             this(item, n, 0);
         }
-        public BioEntry(Object item, int n, int a)
+        @SuppressWarnings("unchecked")
+		public BioEntry(Object item, int n, int a)
         {
         	if (item instanceof String) {
         		try{item = CommonProxy.this.readItemConfig((String)item, false);} catch (MissingNameEntry e){item = null;}
@@ -156,13 +208,17 @@ public class CommonProxy implements IFuelHandler
         	this.algae = a;
         }
         
-        public boolean matches(ItemStack item)
+        @SuppressWarnings("rawtypes")
+		public boolean matches(ItemStack item)
         {
             if (this.item instanceof ItemStack) return ((ItemStack)this.item).isItemEqual(item);
             else if (this.item instanceof Integer){
-                return (Integer)this.item >= 0 && OreDictionary.getOreID(item) == (Integer)this.item;
+                int i = (Integer)this.item;
+                for (int j : OreDictionary.getOreIDs(item))
+                	if (i == j) return true;
+            	return false;
             } else if (this.item instanceof Class) {
-                if (item.getItem() instanceof ItemBlock) return ((Class)this.item).isInstance(((ItemBlock)item.getItem()).field_150939_a);
+                if (item.getItem() instanceof ItemBlock) return ((Class)this.item).isInstance(((ItemBlock)item.getItem()).block);
                 else return ((Class)this.item).isInstance(item.getItem());
             } else return false;
         }
@@ -178,8 +234,6 @@ public class CommonProxy implements IFuelHandler
             return ret;
         }
     }
-    
-    public void registerBlocks() {}
     
     public void configurableRecipe(String name, IRecipe recipe)
     {
@@ -206,35 +260,35 @@ public class CommonProxy implements IFuelHandler
         OreDictionary.registerOre("AIcasingGraphite", stack("GDPlate", 1));
         OreDictionary.registerOre("AIcasingUnbr", stack("unbrC", 1));
         
-        FurnaceRecipes.smelting().func_151394_a(stack("oreSilver", 1), stack("SilverI", 1), 0F);
-        FurnaceRecipes.smelting().func_151394_a(stack("oreCopper", 1), stack("CopperI", 1), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(stack("oreSilver", 1), stack("SilverI", 1), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(stack("oreCopper", 1), stack("CopperI", 1), 0F);
         ItemStack item;
         item = stack("ElectrumR", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, stack("ElectrumI", 1), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, stack("ElectrumI", 1), 0F);
         item = stack("CondRA", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, stack("CondIA", 1), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, stack("CondIA", 1), 0F);
         item = stack("WoodC", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, new ItemStack(Items.coal, 1, 1), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, new ItemStack(Items.coal, 1, 1), 0F);
         item = stack("GlassC", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, new ItemStack(Blocks.glass, 4), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, new ItemStack(Blocks.glass, 4), 0F);
         item = stack("IronC", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, new ItemStack(Items.iron_ingot, 4), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, new ItemStack(Items.iron_ingot, 4), 0F);
         item = stack("IronOD", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, new ItemStack(Items.iron_ingot), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, new ItemStack(Items.iron_ingot), 0F);
         item = stack("IronD", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, new ItemStack(Items.iron_ingot), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, new ItemStack(Items.iron_ingot), 0F);
         item = stack("GoldOD", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, new ItemStack(Items.gold_ingot), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, new ItemStack(Items.gold_ingot), 0F);
         item = stack("GoldD", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, new ItemStack(Items.gold_ingot), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, new ItemStack(Items.gold_ingot), 0F);
         item = stack("CopperOD", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, stack("CopperI", 1), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, stack("CopperI", 1), 0F);
         item = stack("CopperD", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, stack("CopperI", 1), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, stack("CopperI", 1), 0F);
         item = stack("SilverOD", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, stack("SilverI", 1), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, stack("SilverI", 1), 0F);
         item = stack("SilverD", 1);
-        FurnaceRecipes.smelting().func_151394_a(item, stack("SilverI", 1), 0F);
+        FurnaceRecipes.instance().addSmeltingRecipe(item, stack("SilverI", 1), 0F);
         
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("CoilH", 1), "000", "010", "000", '0', new ItemStack(Blocks.iron_bars), '1', "sandstone"));
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("CoilCp", 1), "000", "010", "000", '0', stack("tile.wireC", 1), '1', "ingotIron"));
@@ -273,11 +327,11 @@ public class CommonProxy implements IFuelHandler
         GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.paper), stack("item.builderTexture", 1)));
         GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Items.paper), stack("item.teleporterCoords", 1)));
         configurableRecipe("item.stoneDrill", new ShapedOreRecipe(stack("item.stoneDrill", 1), " 0 ", "010", " 0 ", '0', new ItemStack(Items.stone_pickaxe), '1', "AIcasingStone"));
-        ItemMinerDrill.anvilHandler.repairMaterials.put(itemId("item.stoneDrill"), new ItemStack(Blocks.stone, 20));
+        ItemMinerDrill.anvilHandler.repairMaterials.put(stoneDrill, new ItemStack(Blocks.stone, 20));
         configurableRecipe("item.ironDrill", new ShapedOreRecipe(stack("item.ironDrill", 1), " 0 ", "010", " 0 ", '0', new ItemStack(Items.iron_pickaxe), '1', "AIcasingSteel"));
-        ItemMinerDrill.anvilHandler.repairMaterials.put(itemId("item.ironDrill"), new ItemStack(Items.iron_ingot, 16));
+        ItemMinerDrill.anvilHandler.repairMaterials.put(ironDrill, new ItemStack(Items.iron_ingot, 16));
         configurableRecipe("item.diamondDrill", new ShapedOreRecipe(stack("item.diamondDrill", 1), " 0 ", "010", " 0 ", '0', new ItemStack(Items.diamond_pickaxe), '1', "AIcasingGraphite"));
-        ItemMinerDrill.anvilHandler.repairMaterials.put(itemId("item.diamondDrill"), new ItemStack(Items.diamond, 12));
+        ItemMinerDrill.anvilHandler.repairMaterials.put(diamondDrill, new ItemStack(Items.diamond, 12));
         configurableRecipe("item.amLaser", new NBTRecipe(stack("item.amLaser", 1), "#energy, #antimatter, #matter", "012", "334", "056", '0', stack("Fokus", 1), '1', stack("tile.magnet", 1), '2', stack("tile.matterOrb", 1), '3', stack("amAcelerator", 1), '4', stack("tile.antimatterTank", 1), '5', stack("tile.voltageTransformer", 1), '6', stack("tile.OCSU", 1)));
         configurableRecipe("item.mCannon", new NBTRecipe(stack("item.mCannon", 1), "#energy, #matter", "001", "234", '0', stack("mAccelerator", 1), '1', stack("tile.matterOrb", 1), '2', stack("Fokus", 1), '3', stack("tile.voltageTransformer", 1), '4', stack("tile.OCSU", 1)));
         configurableRecipe("item.matterInterface", new ShapedOreRecipe(stack("item.matterInterface", 1), "000", "121", "333", '0', stack("itemPipeI", 1), '1', stack("QAlloyI", 1), '2', stack("Circut", 1), '3', stack("itemPipeE", 1)));
@@ -361,7 +415,7 @@ public class CommonProxy implements IFuelHandler
         configurableRecipe("tile.detector", new ShapedOreRecipe(stack("tile.detector", 4), "010", "234", "050", '0', "stone", '1', "AIcasingWood", '2', new ItemStack(Items.comparator), '3', stack("Circut", 1), '4', stack("CoilCp", 1), '5', "AIcasingGlass"));
         configurableRecipe("tile.itemSorter", new ShapedOreRecipe(stack("tile.itemSorter", 1), " 0 ", "010", " 0 ", '0', stack("itemPipeI", 1), '1', "AIcasingWood"));
         configurableRecipe("tile.wormhole", new ShapedOreRecipe(stack("tile.wormhole", 1), "010", "323", "010", '0', new ItemStack(Blocks.obsidian), '1', new ItemStack(Items.ender_eye), '2', stack("QSGen", 1), '3', stack("BlackHole", 1)));
-        configurableRecipe("tile.wormhole", new ShapedOreRecipe(stack("tile.wormhole", 1), "00", '0', new ItemStack(blockId("tile.wormhole"), 1, 1)));
+        configurableRecipe("tile.wormhole", new ShapedOreRecipe(stack("tile.wormhole", 1), "00", '0', new ItemStack(Objects.wormhole, 1, 1)));
         configurableRecipe("tile.hugeTank", new ShapedOreRecipe(stack("tile.hugeTank", 1), "000", "010", "000", '0', stack("tile.tank", 1), '1', stack("EMatrix", 1)));
         configurableRecipe("tile.lightShaft", new ShapedOreRecipe(stack("tile.lightShaft", 4), "010", "232", "232", '0', stack("SiliconI", 1), '1', new ItemStack(Blocks.daylight_detector), '2', "dustGlowstone", '3', "blockGlass"));
         configurableRecipe("tile.fluidPacker", new ShapedOreRecipe(stack("tile.fluidPacker", 1), "000", "121", "343", '0', stack("tile.tank", 1), '1', stack("QAlloyI", 1), '2', "AIcasingGlass", '3', new ItemStack(Blocks.piston), '4', "AIcasingWood"));
@@ -385,7 +439,8 @@ public class CommonProxy implements IFuelHandler
         }
     }
     
-    private static class MissingNameEntry extends Exception {
+    @SuppressWarnings("serial")
+	private static class MissingNameEntry extends Exception {
     	final String entry;
     	public MissingNameEntry(String name) {
     		entry = name;
@@ -420,12 +475,12 @@ public class CommonProxy implements IFuelHandler
     			try {dmg = Short.parseShort(cfg.substring(p + 1));} catch (NumberFormatException e){}
         		cfg = cfg.substring(0, p);
     		}
-    		ItemStack item = GameRegistry.findItemStack(mod, cfg, n);
+    		ItemStack item = GameRegistry.makeItemStack(mod + ":" + cfg, dmg, n, null);
     		if (item == null) throw new MissingNameEntry(cfg);
     		if (dmg >= 0) item.setItemDamage(dmg);
     		return item;
     	} else if (asItem) {
-    		ArrayList<ItemStack> list = OreDictionary.getOres(cfg);
+    		List<ItemStack> list = OreDictionary.getOres(cfg);
     		if (list.isEmpty()) throw new MissingNameEntry(cfg);
         	ItemStack item = list.get(0).copy();
         	item.stackSize = n;
@@ -439,39 +494,39 @@ public class CommonProxy implements IFuelHandler
     {
     	OreDictionary.registerOre("gravel", Blocks.gravel);
         //blastFurnace
-        if (enabled("recipe.steel")) AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_lava, 40), new Object[]{"2*ingotIron", new ItemStack(Items.coal)}, null, new ItemStack[]{stack("SteelI", 2), new ItemStack(Blocks.stone)}, 800));
+        if (enabled("recipe.steel")) AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_lava, 40), new Object[]{"2*ingotIron", new ItemStack(Items.coal)}, null, new ItemStack[]{stack("SteelI", 2), new ItemStack(Blocks.stone)}, 800));
         if (enabled("recipe.lavaOreProcess")) {
-        	AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_lava, 20), new Object[]{"oreIron"}, null, new ItemStack[]{new ItemStack(Items.iron_ingot, 2), new ItemStack(Blocks.stone)}, 400));
-        	AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_lava, 20), new Object[]{"oreCopper"}, null, new ItemStack[]{stack("CopperI", 2), new ItemStack(Blocks.stone)}, 400));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_lava, 20), new Object[]{"oreGold"}, null, new ItemStack[]{new ItemStack(Items.gold_ingot, 2), new ItemStack(Blocks.stone)}, 400));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_lava, 20), new Object[]{"oreSilver"}, null, new ItemStack[]{stack("SilverI", 2), new ItemStack(Blocks.stone)}, 400));
+        	AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_lava, 20), new Object[]{"oreIron"}, null, new ItemStack[]{new ItemStack(Items.iron_ingot, 2), new ItemStack(Blocks.stone)}, 400));
+        	AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_lava, 20), new Object[]{"oreCopper"}, null, new ItemStack[]{stack("CopperI", 2), new ItemStack(Blocks.stone)}, 400));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_lava, 20), new Object[]{"oreGold"}, null, new ItemStack[]{new ItemStack(Items.gold_ingot, 2), new ItemStack(Blocks.stone)}, 400));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_lava, 20), new Object[]{"oreSilver"}, null, new ItemStack[]{stack("SilverI", 2), new ItemStack(Blocks.stone)}, 400));
         }
-        AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_lava, 40), new Object[]{"gemQuartz", new ItemStack(Items.coal)}, null, new ItemStack[]{stack("SiliconI", 1), new ItemStack(Blocks.stone)}, 800));
-        AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_lava, 40), new Object[]{"gemQuartz", new ItemStack(Items.coal, 1, 1)}, null, new ItemStack[]{stack("SiliconI", 1), new ItemStack(Blocks.stone)}, 800));
-        AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_lava, 125), new Object[]{new ItemStack(Items.coal, 4)}, null, new ItemStack[]{stack("Graphite", 1), new ItemStack(Blocks.stone, 2)}, 800));
+        AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_lava, 40), new Object[]{"gemQuartz", new ItemStack(Items.coal)}, null, new ItemStack[]{stack("SiliconI", 1), new ItemStack(Blocks.stone)}, 800));
+        AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_lava, 40), new Object[]{"gemQuartz", new ItemStack(Items.coal, 1, 1)}, null, new ItemStack[]{stack("SiliconI", 1), new ItemStack(Blocks.stone)}, 800));
+        AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_lava, 125), new Object[]{new ItemStack(Items.coal, 4)}, null, new ItemStack[]{stack("Graphite", 1), new ItemStack(Blocks.stone, 2)}, 800));
         if (enabled("recipe.diamondBlock")) {
-        	AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_lava, 6000), new Object[]{stack("Graphite", 16), "8*gemDiamond"}, null, new ItemStack[]{new ItemStack(Blocks.diamond_block), new ItemStack(Blocks.stone, 96)}, 3200));
-        	AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_lava, 8000), new Object[]{stack("GDPlate", 6)}, null, new ItemStack[]{new ItemStack(Blocks.diamond_block), new ItemStack(Blocks.stone, 128)}, 20000));
+        	AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_lava, 6000), new Object[]{stack("Graphite", 16), "8*gemDiamond"}, null, new ItemStack[]{new ItemStack(Blocks.diamond_block), new ItemStack(Blocks.stone, 96)}, 3200));
+        	AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_lava, 8000), new Object[]{stack("GDPlate", 6)}, null, new ItemStack[]{new ItemStack(Blocks.diamond_block), new ItemStack(Blocks.stone, 128)}, 20000));
         }
         //reaction
-        AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_antimatter, 2000), new Object[]{new ItemStack(Items.ender_pearl, 2), new ItemStack(Blocks.end_stone, 4), stack("HydrogenI", 1)}, null, new ItemStack[]{stack("QAlloyI", 1)}, 20000));
-        if (enabled("recipe.charcoalToBonemeal")) AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_oxygenG, 1000), new Object[]{new ItemStack(Items.coal, 1, 1)}, null, new ItemStack[]{new ItemStack(Items.dye, 1, 15)}, 50));
+        AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_antimatter, 2000), new Object[]{new ItemStack(Items.ender_pearl, 2), new ItemStack(Blocks.end_stone, 4), stack("HydrogenI", 1)}, null, new ItemStack[]{stack("QAlloyI", 1)}, 20000));
+        if (enabled("recipe.charcoalToBonemeal")) AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_oxygenG, 1000), new Object[]{new ItemStack(Items.coal, 1, 1)}, null, new ItemStack[]{new ItemStack(Items.dye, 1, 15)}, 50));
         //crushing
-        if (enabled("recipe.cobblestone")) AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 10), new Object[]{"stone"}, Automation.getLiquid(Automation.L_steam, 250), new ItemStack[]{new ItemStack(Blocks.cobblestone)}, 250));
-        if (enabled("recipe.gravel")) AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 10), new Object[]{"cobblestone"}, Automation.getLiquid(Automation.L_steam, 250), new ItemStack[]{new ItemStack(Blocks.gravel)}, 250));
-        if (enabled("recipe.sand")) AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 10), new Object[]{"gravel"}, Automation.getLiquid(Automation.L_steam, 250), new ItemStack[]{new ItemStack(Blocks.sand)}, 250));
-        if (enabled("recipe.sandstone")) AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 20), new Object[]{"sandstone"}, Automation.getLiquid(Automation.L_steam, 500), new ItemStack[]{new ItemStack(Blocks.sand, 4)}, 500));
+        if (enabled("recipe.cobblestone")) AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 10), new Object[]{"stone"}, new FluidStack(Objects.L_steam, 250), new ItemStack[]{new ItemStack(Blocks.cobblestone)}, 250));
+        if (enabled("recipe.gravel")) AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 10), new Object[]{"cobblestone"}, new FluidStack(Objects.L_steam, 250), new ItemStack[]{new ItemStack(Blocks.gravel)}, 250));
+        if (enabled("recipe.sand")) AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 10), new Object[]{"gravel"}, new FluidStack(Objects.L_steam, 250), new ItemStack[]{new ItemStack(Blocks.sand)}, 250));
+        if (enabled("recipe.sandstone")) AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 20), new Object[]{"sandstone"}, new FluidStack(Objects.L_steam, 500), new ItemStack[]{new ItemStack(Blocks.sand, 4)}, 500));
         if (enabled("recipe.waterOreProcess")) {
-        	AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 20), new Object[]{"oreCoal"}, Automation.getLiquid(Automation.L_steam, 500), new ItemStack[]{new ItemStack(Items.coal, 2), new ItemStack(Blocks.gravel)}, 500));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 40), new Object[]{"oreDiamond"}, Automation.getLiquid(Automation.L_steam, 1000), new ItemStack[]{new ItemStack(Items.diamond, 2), new ItemStack(Blocks.gravel)}, 1000));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 40), new Object[]{"oreEmerald"}, Automation.getLiquid(Automation.L_steam, 1000), new ItemStack[]{new ItemStack(Items.emerald, 2), new ItemStack(Blocks.gravel)}, 1000));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 40), new Object[]{"oreRedstone"}, Automation.getLiquid(Automation.L_steam, 1000), new ItemStack[]{new ItemStack(Items.redstone, 8), new ItemStack(Blocks.gravel)}, 1000));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 40), new Object[]{"oreLapis"}, Automation.getLiquid(Automation.L_steam, 1000), new ItemStack[]{new ItemStack(Items.dye, 8, 4), new ItemStack(Blocks.gravel)}, 1000));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 40), new Object[]{"oreQuartz"}, Automation.getLiquid(Automation.L_steam, 1000), new ItemStack[]{new ItemStack(Items.quartz, 2), new ItemStack(Blocks.netherrack)}, 1000));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 40), new Object[]{"oreIron"}, Automation.getLiquid(Automation.L_steam, 1000), new ItemStack[]{stack("IronOD", 2), new ItemStack(Blocks.gravel)}, 1000));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 40), new Object[]{"oreGold"}, Automation.getLiquid(Automation.L_steam, 1000), new ItemStack[]{stack("GoldOD", 2), new ItemStack(Blocks.gravel)}, 1000));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 40), new Object[]{"oreCopper"}, Automation.getLiquid(Automation.L_steam, 1000), new ItemStack[]{stack("CopperOD", 2), new ItemStack(Blocks.gravel)}, 1000));
-            AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 40), new Object[]{"oreSilver"}, Automation.getLiquid(Automation.L_steam, 1000), new ItemStack[]{stack("SilverOD", 2), new ItemStack(Blocks.gravel)}, 1000));
+        	AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 20), new Object[]{"oreCoal"}, new FluidStack(Objects.L_steam, 500), new ItemStack[]{new ItemStack(Items.coal, 2), new ItemStack(Blocks.gravel)}, 500));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 40), new Object[]{"oreDiamond"}, new FluidStack(Objects.L_steam, 1000), new ItemStack[]{new ItemStack(Items.diamond, 2), new ItemStack(Blocks.gravel)}, 1000));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 40), new Object[]{"oreEmerald"}, new FluidStack(Objects.L_steam, 1000), new ItemStack[]{new ItemStack(Items.emerald, 2), new ItemStack(Blocks.gravel)}, 1000));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 40), new Object[]{"oreRedstone"}, new FluidStack(Objects.L_steam, 1000), new ItemStack[]{new ItemStack(Items.redstone, 8), new ItemStack(Blocks.gravel)}, 1000));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 40), new Object[]{"oreLapis"}, new FluidStack(Objects.L_steam, 1000), new ItemStack[]{new ItemStack(Items.dye, 8, 4), new ItemStack(Blocks.gravel)}, 1000));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 40), new Object[]{"oreQuartz"}, new FluidStack(Objects.L_steam, 1000), new ItemStack[]{new ItemStack(Items.quartz, 2), new ItemStack(Blocks.netherrack)}, 1000));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 40), new Object[]{"oreIron"}, new FluidStack(Objects.L_steam, 1000), new ItemStack[]{stack("IronOD", 2), new ItemStack(Blocks.gravel)}, 1000));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 40), new Object[]{"oreGold"}, new FluidStack(Objects.L_steam, 1000), new ItemStack[]{stack("GoldOD", 2), new ItemStack(Blocks.gravel)}, 1000));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 40), new Object[]{"oreCopper"}, new FluidStack(Objects.L_steam, 1000), new ItemStack[]{stack("CopperOD", 2), new ItemStack(Blocks.gravel)}, 1000));
+            AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 40), new Object[]{"oreSilver"}, new FluidStack(Objects.L_steam, 1000), new ItemStack[]{stack("SilverOD", 2), new ItemStack(Blocks.gravel)}, 1000));
             
         }
         //alloySmelter
@@ -479,15 +534,15 @@ public class CommonProxy implements IFuelHandler
         AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{"ingotCopper", "dustRedstone"}, null, new ItemStack[]{stack("RstMetall", 2)}, 250));
         if (enabled("recipe.condAlloyIngot")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{"ingotSilver", "2*ingotIron", stack("RstMetall", 3)}, null, new ItemStack[]{stack("CondIA", 6)}, 1000));
         //cooking
-        if (enabled("recipe.slimeball")) AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_water, 10), new Object[]{new ItemStack(Items.sugar, 2), new ItemStack(Items.rotten_flesh), "dyeGreen"}, null, new ItemStack[]{new ItemStack(Items.slime_ball, 2)}, 320));
+        if (enabled("recipe.slimeball")) AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_water, 10), new Object[]{new ItemStack(Items.sugar, 2), new ItemStack(Items.rotten_flesh), "dyeGreen"}, null, new ItemStack[]{new ItemStack(Items.slime_ball, 2)}, 320));
         //distillator
-        AutomationRecipes.addRecipe(new LFRecipe(Automation.getLiquid(Automation.L_biomass, 100), null, Automation.getLiquid(Automation.L_steam, 2000), new ItemStack[]{stack("Biomass", 1)}, 500));
-        if (enabled("recipe.stoneToLava")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{"stone"}, Automation.getLiquid(Automation.L_lava, 100), null, 2000));
-        if (enabled("recipe.blazedustToLava")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Items.blaze_powder)}, Automation.getLiquid(Automation.L_lava, 100), null, 50));
-        if (enabled("recipe.netherrackToLava")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Blocks.netherrack, 2)}, Automation.getLiquid(Automation.L_lava, 100), null, 1500));
+        AutomationRecipes.addRecipe(new LFRecipe(new FluidStack(Objects.L_biomass, 100), null, new FluidStack(Objects.L_steam, 2000), new ItemStack[]{stack("Biomass", 1)}, 500));
+        if (enabled("recipe.stoneToLava")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{"stone"}, new FluidStack(Objects.L_lava, 100), null, 2000));
+        if (enabled("recipe.blazedustToLava")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Items.blaze_powder)}, new FluidStack(Objects.L_lava, 100), null, 50));
+        if (enabled("recipe.netherrackToLava")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Blocks.netherrack, 2)}, new FluidStack(Objects.L_lava, 100), null, 1500));
         if (enabled("recipe.cheatedFire")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Items.fire_charge)}, null, new ItemStack[]{new ItemStack(Blocks.fire, 16)}, 1000));
-        if (enabled("recipe.glowstoneToHelium")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{"glowstone"}, new FluidStack(Automation.L_heliumG, 4000), new ItemStack[]{new ItemStack(Items.redstone, 2), new ItemStack(Items.quartz, 2), new ItemStack(Items.gold_nugget, 3)}, 250));
-        if (enabled("recipe.endstoneToHelium")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Blocks.end_stone, 4)}, new FluidStack(Automation.L_heliumG, 4000), new ItemStack[]{new ItemStack(Blocks.sand, 3), new ItemStack(Blocks.gravel, 1)}, 250));
+        if (enabled("recipe.glowstoneToHelium")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{"glowstone"}, new FluidStack(Objects.L_heliumG, 4000), new ItemStack[]{new ItemStack(Items.redstone, 2), new ItemStack(Items.quartz, 2), new ItemStack(Items.gold_nugget, 3)}, 250));
+        if (enabled("recipe.endstoneToHelium")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Blocks.end_stone, 4)}, new FluidStack(Objects.L_heliumG, 4000), new ItemStack[]{new ItemStack(Blocks.sand, 3), new ItemStack(Blocks.gravel, 1)}, 250));
         
         String[] inF = Config.data.getStringArray("rcp.AdvFurn.InF");
         String[] in1 = Config.data.getStringArray("rcp.AdvFurn.In1");
@@ -586,14 +641,14 @@ public class CommonProxy implements IFuelHandler
     
     public void registerCoolerRecipes()
     {
-        if (enabled("recipe.snowball")) AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Automation.L_water, 40), new FluidStack(Automation.L_steam, 8000), new FluidStack(Automation.L_steam, 8000), new ItemStack(Items.snowball, 1), 20));
-        if (enabled("recipe.iceblock")) AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Automation.L_water, 40), new FluidStack(Automation.L_steam, 8000), new FluidStack(Automation.L_water, 1000), new ItemStack(Blocks.ice, 1), 1600));
-        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Automation.L_water, 40), new FluidStack(Automation.L_steam, 8000), new FluidStack(Automation.L_nitrogenG, 6400), new FluidStack(Automation.L_nitrogenL, 10), 1800));
-        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Automation.L_water, 40), new FluidStack(Automation.L_steam, 8000), new FluidStack(Automation.L_oxygenG, 8000), new FluidStack(Automation.L_oxygenL, 10), 1800));
-        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Automation.L_nitrogenL, 10), new FluidStack(Automation.L_nitrogenG, 6400), new FluidStack(Automation.L_heliumG, 4000), new FluidStack(Automation.L_heliumL, 5), 200));
-        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Automation.L_nitrogenL, 5), new FluidStack(Automation.L_nitrogenG, 3200), new FluidStack(Automation.L_hydrogenG, 4000), new FluidStack(Automation.L_hydrogenL, 5), 100));
-        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Automation.L_heliumL, 10), new FluidStack(Automation.L_heliumG, 8000), new FluidStack(Automation.L_hydrogenL, 100), stack("HydrogenI", 1), 200));
-        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Automation.L_hydrogenL, 5), new FluidStack(Automation.L_hydrogenG, 4000), new FluidStack(Automation.L_nitrogenG, 6400), new FluidStack(Automation.L_nitrogenL, 10), 100));
+        if (enabled("recipe.snowball")) AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Objects.L_water, 40), new FluidStack(Objects.L_steam, 8000), new FluidStack(Objects.L_steam, 8000), new ItemStack(Items.snowball, 1), 20));
+        if (enabled("recipe.iceblock")) AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Objects.L_water, 40), new FluidStack(Objects.L_steam, 8000), new FluidStack(Objects.L_water, 1000), new ItemStack(Blocks.ice, 1), 1600));
+        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Objects.L_water, 40), new FluidStack(Objects.L_steam, 8000), new FluidStack(Objects.L_nitrogenG, 6400), new FluidStack(Objects.L_nitrogenL, 10), 1800));
+        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Objects.L_water, 40), new FluidStack(Objects.L_steam, 8000), new FluidStack(Objects.L_oxygenG, 8000), new FluidStack(Objects.L_oxygenL, 10), 1800));
+        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Objects.L_nitrogenL, 10), new FluidStack(Objects.L_nitrogenG, 6400), new FluidStack(Objects.L_heliumG, 4000), new FluidStack(Objects.L_heliumL, 5), 200));
+        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Objects.L_nitrogenL, 5), new FluidStack(Objects.L_nitrogenG, 3200), new FluidStack(Objects.L_hydrogenG, 4000), new FluidStack(Objects.L_hydrogenL, 5), 100));
+        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Objects.L_heliumL, 10), new FluidStack(Objects.L_heliumG, 8000), new FluidStack(Objects.L_hydrogenL, 100), stack("HydrogenI", 1), 200));
+        AutomationRecipes.addRecipe(new CoolRecipe(new FluidStack(Objects.L_hydrogenL, 5), new FluidStack(Objects.L_hydrogenG, 4000), new FluidStack(Objects.L_nitrogenG, 6400), new FluidStack(Objects.L_nitrogenL, 10), 100));
         
         String[] inC = Config.data.getStringArray("rcp.Cool.InC");
         String[] inM = Config.data.getStringArray("rcp.Cool.InM");
@@ -625,14 +680,14 @@ public class CommonProxy implements IFuelHandler
     
     public void registerElectrolyserRecipes()
     {
-    	if (enabled("recipe.waterToHydrogen")) AutomationRecipes.addRecipe(new ElRecipe(new FluidStack(Automation.L_water, 5), new FluidStack(Automation.L_hydrogenG, 2000), new FluidStack(Automation.L_oxygenG, 1000), 2400));
-    	if (enabled("recipe.steamToHydrogen")) AutomationRecipes.addRecipe(new ElRecipe(new FluidStack(Automation.L_steam, 2000), new FluidStack(Automation.L_hydrogenG, 2000), new FluidStack(Automation.L_oxygenG, 1000), 1800));
-    	if (enabled("recipe.biomassToHydrogen"))AutomationRecipes.addRecipe(new ElRecipe(stack("Biomass", 1), new FluidStack(Automation.L_hydrogenG, 8000), new ItemStack(Items.coal, 1, 1), 1200));
+    	if (enabled("recipe.waterToHydrogen")) AutomationRecipes.addRecipe(new ElRecipe(new FluidStack(Objects.L_water, 5), new FluidStack(Objects.L_hydrogenG, 2000), new FluidStack(Objects.L_oxygenG, 1000), 2400));
+    	if (enabled("recipe.steamToHydrogen")) AutomationRecipes.addRecipe(new ElRecipe(new FluidStack(Objects.L_steam, 2000), new FluidStack(Objects.L_hydrogenG, 2000), new FluidStack(Objects.L_oxygenG, 1000), 1800));
+    	if (enabled("recipe.biomassToHydrogen"))AutomationRecipes.addRecipe(new ElRecipe(stack("Biomass", 1), new FluidStack(Objects.L_hydrogenG, 8000), new ItemStack(Items.coal, 1, 1), 1200));
     	if (enabled("recipe.electrolyserOreProcess")) {
-    		AutomationRecipes.addRecipe(new ElRecipe(stack("IronOD", 2), stack("IronD", 3), new FluidStack(Automation.L_oxygenG, 2000), 1000));
-    		AutomationRecipes.addRecipe(new ElRecipe(stack("GoldOD", 2), stack("GoldD", 3), new FluidStack(Automation.L_oxygenG, 2000), 1000));
-            AutomationRecipes.addRecipe(new ElRecipe(stack("CopperOD", 2), stack("CopperD", 3), new FluidStack(Automation.L_oxygenG, 2000), 1000));
-        	AutomationRecipes.addRecipe(new ElRecipe(stack("SilverOD", 2), stack("SilverD", 3), new FluidStack(Automation.L_oxygenG, 2000), 1000));
+    		AutomationRecipes.addRecipe(new ElRecipe(stack("IronOD", 2), stack("IronD", 3), new FluidStack(Objects.L_oxygenG, 2000), 1000));
+    		AutomationRecipes.addRecipe(new ElRecipe(stack("GoldOD", 2), stack("GoldD", 3), new FluidStack(Objects.L_oxygenG, 2000), 1000));
+            AutomationRecipes.addRecipe(new ElRecipe(stack("CopperOD", 2), stack("CopperD", 3), new FluidStack(Objects.L_oxygenG, 2000), 1000));
+        	AutomationRecipes.addRecipe(new ElRecipe(stack("SilverOD", 2), stack("SilverD", 3), new FluidStack(Objects.L_oxygenG, 2000), 1000));
     	}
     	
     	String[] in = Config.data.getStringArray("rcp.Electr.In");

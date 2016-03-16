@@ -3,6 +3,7 @@ package cd4017be.automation.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.ItemContainer;
@@ -31,7 +32,7 @@ public class ContainerAreaUpgrade extends ItemContainer
 	@Override
 	public boolean canInteractWith(EntityPlayer player) 
 	{
-		return super.canInteractWith(player) && player.worldObj.getTileEntity(link[0], link[1], link[2]) == machine;
+		return super.canInteractWith(player) && player.worldObj.getTileEntity(new BlockPos(link[0], link[1], link[2])) == machine;
 	}
 
 	@Override

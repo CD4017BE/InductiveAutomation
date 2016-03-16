@@ -6,13 +6,15 @@
 
 package cd4017be.automation.Gui;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 
 import cd4017be.api.automation.MatterOrbItemHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 
 /**
  *
@@ -35,7 +37,7 @@ public class InventoryItemMatterInterface implements IInventory
         }
     }
     
-    public void onCommand(DataInputStream dis) throws IOException
+    public void onCommand(PacketBuffer dis) throws IOException
     {
         byte cmd = dis.readByte();
         if (cmd == 0) { //flip Stack
@@ -80,13 +82,13 @@ public class InventoryItemMatterInterface implements IInventory
             return item;
         }
         if (inventory[i] == null) return null;
-        ItemStack item = inventory[i].stackSize <= n ? this.getStackInSlotOnClosing(i) : inventory[i].splitStack(n);
+        ItemStack item = inventory[i].stackSize <= n ? this.removeStackFromSlot(i) : inventory[i].splitStack(n);
         if (i == 0) this.updateOutput();
         return item;
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) 
+    public ItemStack removeStackFromSlot(int i) 
     {
         if (i == 2 || i == 4) return null;
         else if (i == 0) this.updateOutput();
@@ -135,12 +137,12 @@ public class InventoryItemMatterInterface implements IInventory
     }
 
 	@Override
-	public String getInventoryName() {
+	public String getName() {
 		return "Portable Matter Interface";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() {
+	public boolean hasCustomName() {
 		return true;
 	}
 
@@ -148,8 +150,30 @@ public class InventoryItemMatterInterface implements IInventory
 	public void markDirty() {}
 
 	@Override
-	public void openInventory() {}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
-	public void closeInventory() {}
+	public void closeInventory(EntityPlayer player) {}
+	
+	@Override
+	public IChatComponent getDisplayName() {
+		return new ChatComponentText(this.getName());
+	}
+
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public void clear() {}
+	
 }

@@ -1,0 +1,6 @@
+{
+	"parent": "automation:block/pipeCore4",
+    "textures": {
+        "tex": "automation:blocks/pipes/itemIn"
+    }
+}

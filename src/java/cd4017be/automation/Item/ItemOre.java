@@ -4,32 +4,24 @@
  */
 package cd4017be.automation.Item;
 
-import cd4017be.automation.Block.BlockOre;
+import cd4017be.automation.Block.BlockOre.Ore;
 import cd4017be.lib.BlockItemRegistry;
+import cd4017be.lib.DefaultItemBlock;
 import net.minecraft.block.Block;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
 /**
  *
  * @author CD4017BE
  */
-public class ItemOre extends ItemBlock
+public class ItemOre extends DefaultItemBlock
 {
     public ItemOre(Block id)
     {
         super(id);
         this.setHasSubtypes(true);
-        BlockItemRegistry.registerItemStack(new ItemStack(this, 1, BlockOre.ID_Silver), "oreSilver");
-        BlockItemRegistry.registerItemStack(new ItemStack(this, 1, BlockOre.ID_Copper), "oreCopper");
-    }
-
-    @Override
-    public String getItemStackDisplayName(ItemStack item) 
-    {
-        if (item.getItemDamage() == BlockOre.ID_Copper) return "Copper Ore";
-        else if (item.getItemDamage() == BlockOre.ID_Silver) return "Silver Ore";
-        else return "Invalid Item";
+        BlockItemRegistry.registerItemStack(new ItemStack(this, 1, Ore.Silver.ordinal()), "oreSilver");
+        BlockItemRegistry.registerItemStack(new ItemStack(this, 1, Ore.Copper.ordinal()), "oreCopper");
     }
 
     @Override

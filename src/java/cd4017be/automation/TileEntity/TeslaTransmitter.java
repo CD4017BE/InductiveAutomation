@@ -4,9 +4,12 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+
 import java.io.IOException;
 import java.util.ArrayList;
+
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.ITeslaTransmitter;
 import cd4017be.api.automation.PipeEnergy;
@@ -15,17 +18,19 @@ import cd4017be.automation.Config;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.ModTileEntity;
 import cd4017be.lib.TileEntityData;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 
 /**
  *
  * @author CD4017BE
  */
-public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTransmitter
+public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTransmitter, ITickable
 {
     public boolean interdim = false;
     public PipeEnergy energy = new PipeEnergy(this.getMaxVoltage(), 0);
@@ -41,7 +46,7 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
         if (worldObj.isRemote) return;
         if (addEnergy != 0) energy.addEnergy(addEnergy);
@@ -79,18 +84,18 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
     
     public boolean checkAlive()
     {
-        return !this.isInvalid() && worldObj.blockExists(xCoord, yCoord, zCoord) && worldObj.getTileEntity(xCoord, yCoord, zCoord) == this;
+        return !this.isInvalid() && worldObj.isBlockLoaded(pos) && worldObj.getTileEntity(pos) == this;
     }
     
     public double getSqDistance(ITeslaTransmitter te)
     {
     	int[] p = te.getLocation();
     	double d;
-        if (p[3] == worldObj.provider.dimensionId)
+        if (p[3] == worldObj.provider.getDimensionId())
         {
-            int dx = xCoord - p[0];
-            int dy = yCoord - p[1];
-            int dz = zCoord - p[2];
+            int dx = pos.getX() - p[0];
+            int dy = pos.getY() - p[1];
+            int dz = pos.getZ() - p[2];
             d = (double)(dx*dx + dy*dy + dz*dz);
         }
         else d = Double.POSITIVE_INFINITY;
@@ -99,7 +104,7 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
     }
 
     @Override
-    public boolean onActivated(EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         ItemStack item = player.getCurrentEquippedItem();
         if (!interdim && item != null)
@@ -129,9 +134,9 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
 	}
 
 	@Override
-	public ArrayList<ItemStack> dropItem(int m, int fortune) 
+	public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) 
 	{
-		ArrayList<ItemStack> list = new ArrayList();
+		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		ItemStack item = new ItemStack(this.getBlockType(), 1);
 		if (energy.Ucap >= 1.0D) {
 			item.stackTagCompound = new NBTTagCompound();
@@ -142,7 +147,7 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
 	}
 
 	@Override
-    public void onPlayerCommand(DataInputStream dis, EntityPlayerMP player) throws IOException 
+    public void onPlayerCommand(PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         changeFrequency(dis.readShort());
     }
@@ -193,7 +198,7 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
 	@Override
 	public int[] getLocation() 
 	{
-		return new int[]{xCoord, yCoord, zCoord, worldObj.provider.dimensionId};
+		return new int[]{pos.getX(), pos.getY(), pos.getZ(), worldObj.provider.getDimensionId()};
 	}
     
 }

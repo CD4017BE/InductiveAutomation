@@ -6,6 +6,8 @@
 
 package cd4017be.automation.jetpack;
 
+import java.io.IOException;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -48,7 +50,7 @@ public class GuiJetpackConfig extends GuiScreen
         this.buttonList.add(new GuiButton(0, width / 2 - 40, ofsY + sizeY + 10, 80, 20, "Done"));
         this.buttonList.add(new GuiButton(2, width - ofsX - 80, ofsY + sizeY + 10, 80, 20, "Delete"));
         //options
-        this.nameTF = new GuiTextField(fontRendererObj, ofsX + 100, ofsY, 80, 20);
+        this.nameTF = new GuiTextField(-1, fontRendererObj, ofsX + 100, ofsY, 80, 20);
         this.buttonList.add(new GuiButton(3, ofsX + 190, ofsY, 60, 20, "Active"));
         //key-Control
         this.buttonList.add(new GuiSlider(4, ofsX + 100, ofsY + 60, 150, 20, "Vertical= %.1f : 1", 0.2F, 5F));
@@ -67,7 +69,7 @@ public class GuiJetpackConfig extends GuiScreen
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException
     {
         nameTF.mouseClicked(x, y, b);
         Mode mode = this.getMode();
@@ -84,7 +86,7 @@ public class GuiJetpackConfig extends GuiScreen
     }
 
     @Override
-    protected void keyTyped(char c, int k) 
+    protected void keyTyped(char c, int k) throws IOException
     {
         super.keyTyped(c, k);
         nameTF.textboxKeyTyped(c, k);

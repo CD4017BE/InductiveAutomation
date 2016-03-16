@@ -6,7 +6,9 @@
 
 package cd4017be.automation.TileEntity;
 
+
 import cd4017be.api.automation.IItemPipeCon;
+import cd4017be.automation.Objects;
 import cd4017be.automation.Item.PipeUpgradeItem;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.TileContainer;
@@ -83,7 +85,7 @@ public class ItemSorter extends AutomatedTile implements IAutomatedInv, IItemPip
     {
         if (i % 2 == 1){
             int j = (i - 1) / 2;
-            if (newItem == null || newItem.getItem() != BlockItemRegistry.itemId("item.itemUpgrade") || newItem.stackTagCompound == null) filter[j] = null;
+            if (newItem == null || newItem.getItem() != Objects.itemUpgrade || newItem.stackTagCompound == null) filter[j] = null;
             else filter[j] = PipeUpgradeItem.load(newItem.stackTagCompound);
         }
     }

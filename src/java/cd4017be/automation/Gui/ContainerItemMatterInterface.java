@@ -44,7 +44,7 @@ public class ContainerItemMatterInterface extends ItemContainer
     {
         super.onContainerClosed(player);
         for (int i = 0; i < inventory.getSizeInventory(); i++) {
-            ItemStack item = inventory.getStackInSlotOnClosing(i);
+            ItemStack item = inventory.removeStackFromSlot(i);
             if (item != null && !player.inventory.addItemStackToInventory(item)) {
                 EntityItem entity = new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, item);
                 player.worldObj.spawnEntityInWorld(entity);

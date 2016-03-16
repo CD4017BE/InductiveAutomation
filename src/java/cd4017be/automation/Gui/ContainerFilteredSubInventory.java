@@ -1,10 +1,10 @@
 package cd4017be.automation.Gui;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 
 import cd4017be.api.automation.InventoryItemHandler;
 import cd4017be.api.automation.InventoryItemHandler.ItemInventory;
+import cd4017be.automation.Objects;
 import cd4017be.lib.BlockItemRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -13,6 +13,9 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
 public class ContainerFilteredSubInventory extends Container 
@@ -38,11 +41,11 @@ public class ContainerFilteredSubInventory extends Container
 		public void save(ItemStack item)
 		{
 			if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-			if (items[0] != null && items[0].getItem() == BlockItemRegistry.itemId("item.itemUpgrade")) {
+			if (items[0] != null && items[0].getItem() == Objects.itemUpgrade) {
 				if (items[0].stackTagCompound == null) items[0].stackTagCompound = new NBTTagCompound();
 				item.stackTagCompound.setTag("fin", items[0].stackTagCompound);
 			} else item.stackTagCompound.removeTag("fin");
-			if (items[1] != null && items[1].getItem() == BlockItemRegistry.itemId("item.itemUpgrade")) {
+			if (items[1] != null && items[1].getItem() == Objects.itemUpgrade) {
 				if (items[1].stackTagCompound == null) items[1].stackTagCompound = new NBTTagCompound();
 				item.stackTagCompound.setTag("fout", items[1].stackTagCompound);
 			} else item.stackTagCompound.removeTag("fout");
@@ -68,7 +71,7 @@ public class ContainerFilteredSubInventory extends Container
 		}
 
 		@Override
-		public ItemStack getStackInSlotOnClosing(int p_70304_1_) 
+		public ItemStack removeStackFromSlot(int p_70304_1_) 
 		{
 			return null;
 		}
@@ -79,12 +82,12 @@ public class ContainerFilteredSubInventory extends Container
 		}
 
 		@Override
-		public String getInventoryName() {
+		public String getName() {
 			return "Filter Slots";
 		}
 
 		@Override
-		public boolean hasCustomInventoryName() {
+		public boolean hasCustomName() {
 			return true;
 		}
 
@@ -102,15 +105,36 @@ public class ContainerFilteredSubInventory extends Container
 		}
 
 		@Override
-		public void openInventory() {}
+		public void openInventory(EntityPlayer player) {}
 
 		@Override
-		public void closeInventory() {}
+		public void closeInventory(EntityPlayer player) {}
 
 		@Override
 		public boolean isItemValidForSlot(int s, ItemStack stack) {
 			return stack == null || stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade");
 		}
+
+		@Override
+		public IChatComponent getDisplayName() {
+			return new ChatComponentText(this.getName());
+		}
+
+		@Override
+		public int getField(int id) {
+			return 0;
+		}
+
+		@Override
+		public void setField(int id, int value) {}
+
+		@Override
+		public int getFieldCount() {
+			return 0;
+		}
+
+		@Override
+		public void clear() {}
 		
 	}
 	
@@ -226,7 +250,7 @@ public class ContainerFilteredSubInventory extends Container
 		} else return false;
 	}
 	
-	public void onPlayerCommand(World world, EntityPlayer player, DataInputStream dis) throws IOException
+	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException
 	{
 		byte cmd = dis.readByte();
 		if (cmd >= 0 && cmd < 2) {

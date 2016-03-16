@@ -1,13 +1,13 @@
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -46,27 +46,24 @@ public class GuiPortableInventory extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         if (this.container.isFilterOn(0)) this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 34, 176, 0, 18, 8);
         if (this.container.isFilterOn(1)) this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 42, 176, 8, 18, 8);
-        this.drawStringCentered(this.container.inventory.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(this.container.inventory.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override
-	protected void mouseClicked(int x, int y, int b) 
+	protected void mouseClicked(int x, int y, int b) throws IOException 
 	{
 		super.mouseClicked(x, y, b);
 		byte cmd = -1;
-		if (this.func_146978_c(7, 34, 18, 8, x, y)) {
+		if (this.isPointInRegion(7, 34, 18, 8, x, y)) {
 			cmd = 0;
-		} else if (this.func_146978_c(7, 42, 18, 8, x, y)) {
+		} else if (this.isPointInRegion(7, 42, 18, 8, x, y)) {
 			cmd = 1;
 		}
 		if (cmd >= 0) {
-			try {
-	            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-	            DataOutputStream dos = new DataOutputStream(bos);
+	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
 	            dos.writeByte(cmd);
-	            BlockGuiHandler.sendPacketToServer(bos);
-	        } catch (IOException e){}
+	            BlockGuiHandler.sendPacketToServer(dos);
 		}
 	}
 

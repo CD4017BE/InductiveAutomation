@@ -6,8 +6,6 @@ package cd4017be.automation.Item;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-
 import cd4017be.automation.Block.BlockLiquidPipe;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.DefaultItemBlock;
@@ -33,12 +31,6 @@ public class ItemLiquidPipe extends DefaultItemBlock
     public int getMetadata(int dmg) 
     {
         return dmg;
-    }
-    
-    @Override
-    public IIcon getIconFromDamage(int m) 
-    {
-        return this.field_150939_a.getIcon(0, m);
     }
 
 }

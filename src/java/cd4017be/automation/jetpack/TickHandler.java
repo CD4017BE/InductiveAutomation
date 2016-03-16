@@ -6,17 +6,13 @@
 
 package cd4017be.automation.jetpack;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.client.registry.ClientRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
-import cpw.mods.fml.common.network.internal.FMLProxyPacket;
+import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import io.netty.buffer.Unpooled;
-
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -24,11 +20,11 @@ import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.MathHelper;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import cd4017be.automation.Item.ItemJetpack;
@@ -103,25 +99,22 @@ public class TickHandler
         dir = dir.norm();
         if (nbt.getInteger("power") < 0) return;
         ItemJetpack.updateMovement(mc.thePlayer, dir, power);
-        try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            DataOutputStream dos = new DataOutputStream(bos);
-            //command-ID
-            dos.writeByte(0);
-            dos.writeInt(power);
-            dos.writeFloat((float)dir.x);
-            dos.writeFloat((float)dir.y);
-            dos.writeFloat((float)dir.z);
-            /*
-            dos.writeFloat((float)mc.thePlayer.posX);
-            dos.writeFloat((float)mc.thePlayer.posY);
-            dos.writeFloat((float)mc.thePlayer.posZ);
-            dos.writeFloat((float)mc.thePlayer.motionX);
-            dos.writeFloat((float)mc.thePlayer.motionY);
-            dos.writeFloat((float)mc.thePlayer.motionZ);
-            */
-            PacketHandler.eventChannel.sendToServer(new FMLProxyPacket(Unpooled.wrappedBuffer(bos.toByteArray()), PacketHandler.channel));
-        } catch (IOException e) {}
+        PacketBuffer dos = new PacketBuffer(Unpooled.buffer());
+		//command-ID
+		dos.writeByte(0);
+		dos.writeInt(power);
+		dos.writeFloat((float)dir.x);
+		dos.writeFloat((float)dir.y);
+		dos.writeFloat((float)dir.z);
+		/*
+		dos.writeFloat((float)mc.thePlayer.posX);
+		dos.writeFloat((float)mc.thePlayer.posY);
+		dos.writeFloat((float)mc.thePlayer.posZ);
+		dos.writeFloat((float)mc.thePlayer.motionX);
+		dos.writeFloat((float)mc.thePlayer.motionY);
+		dos.writeFloat((float)mc.thePlayer.motionZ);
+		*/
+		PacketHandler.eventChannel.sendToServer(new FMLProxyPacket(dos, PacketHandler.channel));
     }
 
     private void updateKeyStates(ItemStack item)
@@ -133,13 +126,10 @@ public class TickHandler
     	lastKeyModeState = keyMode.isPressed();
     	if (mc.currentScreen == null) {
     		if (pressOn) {
-    			try {
-                	ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                	DataOutputStream dos = new DataOutputStream(bos);
-                	dos.writeByte(2);
-                    PacketHandler.eventChannel.sendToServer(new FMLProxyPacket(Unpooled.wrappedBuffer(bos.toByteArray()), PacketHandler.channel));
-                } catch (IOException e) {e.printStackTrace();}
-            }
+    			PacketBuffer dos = new PacketBuffer(Unpooled.buffer());
+				dos.writeByte(2);
+				PacketHandler.eventChannel.sendToServer(new FMLProxyPacket(dos, PacketHandler.channel));
+    		}
     		if (pressMode && item.stackTagCompound != null && item.stackTagCompound.getBoolean("On")) {
     			JetPackConfig.mode++;
                 return;
@@ -158,7 +148,7 @@ public class TickHandler
             if (item == null || !(item.getItem() instanceof ItemJetpack) || item.stackTagCompound == null) return;
             NBTTagCompound nbt = item.stackTagCompound;
             if (!nbt.getBoolean("On")) return;
-            mc.fontRenderer.drawString("Jetpack Control Mode: " + JetPackConfig.getMode().name, 8, 8, 0x40ff40);
+            mc.fontRendererObj.drawString("Jetpack Control Mode: " + JetPackConfig.getMode().name, 8, 8, 0x40ff40);
             GL11.glColor4f(1, 1, 1, 1);
             mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/jetpack.png"));
             int hgt = this.getScreenHeight();
@@ -166,17 +156,17 @@ public class TickHandler
             int n = power * 160 / ItemJetpack.maxPower;
             mc.ingameGUI.drawTexturedModalRect(9, (hgt - 176) / 2 + 161 - n, 16, 160 - n, 6, n);
             if (nbt.getInteger("power") < 0)
-                mc.fontRenderer.drawString("Out of Fuel!", 8, (hgt + 176) / 2 - 8, 0xff7f3f);
+                mc.fontRendererObj.drawString("Out of Fuel!", 8, (hgt + 176) / 2 - 8, 0xff7f3f);
             Vec3 mov = Vec3.Def(mc.thePlayer.posX - mc.thePlayer.lastTickPosX, mc.thePlayer.posY - mc.thePlayer.lastTickPosY, mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ).scale(20D);
-            mc.fontRenderer.drawString(String.format("Speed  = %5.1f m/s", mov.l()), 8, hgt - 48, 0xff3f00);
-            mc.fontRenderer.drawString(String.format("Ascent = %+5.1f m/s", mov.y), 8, hgt - 32, 0xff3f00);
-            mc.fontRenderer.drawString(String.format("Height = %5.1f m", mc.thePlayer.posY), 8, hgt - 16, 0xff3f00);
+            mc.fontRendererObj.drawString(String.format("Speed  = %5.1f m/s", mov.l()), 8, hgt - 48, 0xff3f00);
+            mc.fontRendererObj.drawString(String.format("Ascent = %+5.1f m/s", mov.y), 8, hgt - 32, 0xff3f00);
+            mc.fontRendererObj.drawString(String.format("Height = %5.1f m", mc.thePlayer.posY), 8, hgt - 16, 0xff3f00);
         }
     }
     
     private int getScreenHeight()
     {
-        ScaledResolution scaledresolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
+        ScaledResolution scaledresolution = new ScaledResolution(mc);
         return scaledresolution.getScaledHeight();
     }
     

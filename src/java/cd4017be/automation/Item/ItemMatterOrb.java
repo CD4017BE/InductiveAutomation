@@ -10,7 +10,6 @@ import java.util.List;
 
 import cd4017be.api.automation.MatterOrbItemHandler;
 import cd4017be.api.automation.MatterOrbItemHandler.IMatterOrb;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.DefaultItemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -34,7 +33,7 @@ public class ItemMatterOrb extends DefaultItemBlock implements IMatterOrb
     @Override
 	public EnumRarity getRarity(ItemStack item) 
     {
-		return EnumRarity.uncommon;
+		return EnumRarity.UNCOMMON;
 	}
     
     @Override

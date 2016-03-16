@@ -12,10 +12,9 @@ import net.minecraft.world.World;
 public class ItemLiquidAir extends DefaultItem 
 {
 	
-	public ItemLiquidAir(String id, String tex)
+	public ItemLiquidAir(String id)
 	{
 		super(id);
-        this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxDamage(Config.data.getInt("Tool.AirTank.dur", 600));
         this.setMaxStackSize(1);

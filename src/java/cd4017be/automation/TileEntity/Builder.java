@@ -4,15 +4,14 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-import cpw.mods.fml.common.Optional;
-import cpw.mods.fml.common.Optional.Interface;
+import net.minecraftforge.fml.common.Optional;
+import net.minecraftforge.fml.common.Optional.Interface;
 import li.cil.oc.api.machine.Arguments;
 import li.cil.oc.api.machine.Callback;
 import li.cil.oc.api.machine.Context;
@@ -44,16 +43,11 @@ import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.Utils;
 import cd4017be.lib.util.Vec2;
 import cd4017be.lib.util.Vec3;
-import dan200.computercraft.api.lua.ILuaContext;
-import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
-import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemBlock;
@@ -61,6 +55,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidStack;
@@ -71,7 +67,7 @@ import net.minecraftforge.fluids.IFluidContainerItem;
  * @author CD4017BE
  */
 @Optional.InterfaceList(value = {@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft"), @Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")})
-public class Builder extends AutomatedTile implements ISidedInventory, IOperatingArea, IEnergy, IPeripheral, Environment
+public class Builder extends AutomatedTile implements ISidedInventory, IOperatingArea, IEnergy, Environment //,IPeripheral //TODO reimplement
 {
 	public static class VectorConstruction 
 	{
@@ -105,7 +101,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 			if (block == null) {
 				builder.pz = pol.thick;
 			} else if (block[0] >= 0 && block[1] >= 0 && block[2] >= 0 && (block[0] += area[0]) < area[3] && (block[1] += area[1]) < area[4] && (block[2] += area[2]) < area[5] && 
-					!builder.setBlock(block[0], block[1], block[2], builder.tmpData.get(block[3], block[4]))) return false;
+					!builder.setBlock(new BlockPos(block[0], block[1], block[2]), builder.tmpData.get(block[3], block[4]))) return false;
 			
 			if (++builder.pz >= pol.thick) {
 				builder.pz = 0;
@@ -311,12 +307,9 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     private static final byte D_Y = 3;
     private static final byte D_Z = 4;
     private static final byte D_X = 5;
-    public short step;
     private int px;
     private int py;
     private int pz;
-    public byte stackDir;
-    public byte[] stackIter = new byte[8];
     private int stackIterSum;
     private int[] area = new int[6];
     private float storage;
@@ -330,26 +323,26 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     {
         inventory = new Inventory(this, 50, new Component(17, 44, 0));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
-        netData = new TileEntityData(1, 0, 0, 0);
+        netData = new TileEntityData(1, 10, 0, 0);
     }
     
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
-        lastUser = entity instanceof EntityPlayer ? ((EntityPlayer)entity).getGameProfile() : new GameProfile(new UUID(0, 0), entity.getCommandSenderName());
+        lastUser = entity instanceof EntityPlayer ? ((EntityPlayer)entity).getGameProfile() : new GameProfile(new UUID(0, 0), entity.getName());
     }
     
     @Override
-    public boolean onActivated(EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         lastUser = player.getGameProfile();
         return super.onActivated(player, s, X, Y, Z);
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
         if (slave == null || ((TileEntity)slave).isInvalid()) slave = ItemMachineSynchronizer.getLink(inventory.items[48], this);
         if (storage < Energy) {
@@ -363,7 +356,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     
     private boolean build()
     {
-        switch (step) {
+        switch (netData.ints[8]) {
         case S_Offline:
         	synchronized(this.sheduledTasks) {
 	        	if (!this.sheduledTasks.isEmpty() && this.sheduledTasks.get(0).execute(this)) {
@@ -449,15 +442,15 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
             	return true;
         	}
         	if (tmpData.skip()) {
-        		if (stackDir == D_XY) pz++;
-        		else if (stackDir == D_XZ) py++;
-        		else if (stackDir == D_ZY) px++;
+        		if (netData.ints[9] == D_XY) pz++;
+        		else if (netData.ints[9] == D_XZ) py++;
+        		else if (netData.ints[9] == D_ZY) px++;
         		tmpData = null;
         		return true;
         	}
-            if (placeBlock(stackDir)) {
+            if (placeBlock(netData.ints[9])) {
                 boolean e = true;
-                if (stackDir != D_ZY) { 
+                if (netData.ints[9] != D_ZY) { 
                 	if (++px >= area[3]) {
                 		px = area[0];
                 		e = false;
@@ -468,7 +461,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
                 	}
                 if (e) return true;
                 e = true;
-                if (stackDir == D_XZ) {
+                if (netData.ints[9] == D_XZ) {
                 	if (++pz >= area[5]) {
                 		pz = area[2];
                 		e = false;
@@ -478,9 +471,9 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
                 		e = false;
                 	}
                 if (e) return true;
-                if (stackDir == D_XY) {
+                if (netData.ints[9] == D_XY) {
                 	pz++;
-                } else if (stackDir == D_XZ) {
+                } else if (netData.ints[9] == D_XZ) {
                 	py++;
                 } else {
                 	px++;
@@ -492,13 +485,13 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         return false;
     }
     
-    private boolean placeBlock(byte dir)
+    private boolean placeBlock(int dir)
     {
     	if (tmpData == null || tmpData.skip()) {
             nextStep();
             return false;
         }
-    	if (!worldObj.blockExists(px, py, pz)) return false;
+    	if (!worldObj.isBlockLoaded(new BlockPos(px, py, pz))) return false;
         int i = 0, j = 0;
         if (dir == D_Y) i = py - area[1];
         else if (dir == D_Z) i = pz - area[2];
@@ -506,30 +499,30 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         else if (dir == D_XZ) {i = px - area[0]; j = pz - area[2];}
         else if (dir == D_XY) {i = px - area[0]; j = py - area[1];}
         else if (dir == D_ZY) {i = pz - area[2]; j = py - area[1];}
-        return this.setBlock(px, py, pz, tmpData.get(i, j));
+        return this.setBlock(new BlockPos(px, py, pz), tmpData.get(i, j));
     }
     
-    private boolean setBlock(int x, int y, int z, ItemStack item)
+    private boolean setBlock(BlockPos pos, ItemStack item)
     {
     	if (item == null) return true;
     	if (slave != null && !((TileEntity)slave).isInvalid() && (slave instanceof Miner || slave instanceof Pump) && 
         		(slave.getSlave() == null || !(slave.getSlave() instanceof Builder || slave.getSlave().getSlave() != null))) {
-        	if (!slave.remoteOperation(x, y, z)) return false;
+        	if (!slave.remoteOperation(pos)) return false;
         }
         Block id = null;
         int m = 0;
         if (item.getItem() instanceof ItemBuilderAirType) return true;
         if (item.getItem() instanceof ItemBlock) {
         	ItemBlock block = (ItemBlock)item.getItem();
-        	id = block.field_150939_a;
+        	id = block.block;
         	m = block.getMetadata(item.getItemDamage());
         } else if (item.getItem() instanceof ItemFluidDummy) {
         	FluidStack fluid = ((ItemFluidDummy)item.getItem()).getFluid(item);
         	if (fluid != null) id = fluid.getFluid().getBlock();
         } else if (item.getItem() instanceof ItemPlacement) {
         	if (comp == 0) {
-        		Block b = worldObj.getBlock(x, y, z);
-                if (b != null && !b.isReplaceable(worldObj, x, y, z)) return true;
+        		Block b = worldObj.getBlockState(pos).getBlock();
+                if (b != null && !b.isReplaceable(worldObj, pos)) return true;
         	}
         	InventoryPlacement inv = new InventoryPlacement(item);
         	ItemStack stack;
@@ -539,7 +532,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         	}
         	if (storage >= Energy && (stack = remove(inv.inventory[comp], inv.useDamage(comp))) != null) {
         		EntityPlayer player = FakePlayerFactory.get((WorldServer)worldObj, lastUser);
-            	stack = ItemPlacement.doPlacement(worldObj, player, stack, x, y, z, inv.getDir(comp), inv.Vxy[comp], inv.Vxy[comp + 8], inv.sneak(comp), inv.useBlock);
+            	stack = ItemPlacement.doPlacement(worldObj, player, stack, pos, inv.getDir(comp), inv.Vxy[comp], inv.Vxy[comp + 8], inv.sneak(comp), inv.useBlock);
                 storage -= Energy;
             	if (stack != null) {
                 	this.putItemStack(stack, inventory, -1, inventory.componets[0].slots());
@@ -553,12 +546,12 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         }
         comp = 0;
         if (id == null) return true;
-        Block b = worldObj.getBlock(x, y, z);
-        if (!b.isReplaceable(worldObj, x, y, z)) return true;
-        if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, x >> 4, z >> 4)) return true;
+        Block b = worldObj.getBlockState(pos).getBlock();
+        if (!b.isReplaceable(worldObj, pos)) return true;
+        if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, pos.getX() >> 4, pos.getZ() >> 4)) return true;
         if (storage >= Energy && remove(item, true) != null)
         {
-            worldObj.setBlock(x, y, z, id, m, 0x3);
+            worldObj.setBlockState(pos, id.getStateFromMeta(m), 0x3);
             storage -= Energy;
             return true;
         } else
@@ -569,16 +562,16 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     
     private void nextStep()
     {
-        if (++step > 10) step = 0;
+        if (++netData.ints[8] > 10) netData.ints[8] = 0;
         this.setupData();
-        if (step == S_Stack && Vconst != null) {
+        if (netData.ints[8] == S_Stack && Vconst != null) {
         	Vconst.reset(this);
         	return;
         }
         px = area[0];
         py = area[1];
         pz = area[2];
-        switch(step) {
+        switch(netData.ints[8]) {
         case S_WallT:
             py = area[4] - 1;
             break;
@@ -593,23 +586,23 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     
     private void setupData()
     {
-    	if (step == S_Stack && inventory.items[49] != null && inventory.items[49].stackTagCompound != null) {
+    	if (netData.ints[8] == S_Stack && inventory.items[49] != null && inventory.items[49].stackTagCompound != null) {
     		Vconst = VectorConstruction.read(inventory.items[49].stackTagCompound);
     		Vconst.setTexture(this);
-    	} else if (step == S_Offline || step == S_Stack) {
+    	} else if (netData.ints[8] == S_Offline || netData.ints[8] == S_Stack) {
     		tmpData = null;
     		Vconst = null;
-    	} else tmpData = new TextureData(inventory.items[step - 1]);
+    	} else tmpData = new TextureData(inventory.items[netData.ints[8] - 1]);
     }
     
     private void setupStackData()
     {
     	if (stackIterSum <= 0) return;
-    	int n = stackDir == D_XZ ? py - area[1] : stackDir == D_XY ? pz - area[2] : px - area[0];
+    	int n = netData.ints[9] == D_XZ ? py - area[1] : netData.ints[9] == D_XY ? pz - area[2] : px - area[0];
     	n %= stackIterSum;
     	int m = -1;
-    	while (n >= 0 && ++m < stackIter.length) n -= stackIter[m];
-    	if (m >= stackIter.length) m = 0;
+    	while (n >= 0 && ++m < netData.ints.length) n -= netData.ints[m];
+    	if (m >= netData.ints.length) m = 0;
     	tmpData = new TextureData(inventory.items[9 + m]);
     }
     
@@ -637,25 +630,25 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd < 16) {
             int n = (cmd & 1) == 1 ? 1 : -1;
-            stackIter[cmd >> 1] += n;
+            netData.ints[cmd >> 1] += n;
             stackIterSum += n;
-            if (stackIter[cmd >> 1] < 0) {
-                stackIterSum -= stackIter[cmd >> 1];
-                stackIter[cmd >> 1] = 0;
+            if (netData.ints[cmd >> 1] < 0) {
+                stackIterSum -= netData.ints[cmd >> 1];
+                netData.ints[cmd >> 1] = 0;
             }
         } else if (cmd == 16) {
-            stackDir++;
-            if (stackDir >= 3) stackDir = 0;
+            netData.ints[9]++;
+            if (netData.ints[9] >= 3) netData.ints[9] = 0;
         } else if (cmd == 17) {
-            if (step != 0) {
-                step = 0;
+            if (netData.ints[8] != 0) {
+                netData.ints[8] = 0;
                 this.setupData();
             } else {
-                step = 0;
+                netData.ints[8] = 0;
                 nextStep();
             }
         }
@@ -674,9 +667,9 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         for (int i = 0; i < this.area.length && !b;i++){b = area[i] != this.area[i];}
         if (b) {
             this.area = area;
-            step = 0;
+            netData.ints[8] = 0;
         }
-        this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+        this.worldObj.markBlockForUpdate(getPos());
     }
 
     @Override
@@ -690,12 +683,13 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         pz = nbt.getInteger("pz");
         comp = nbt.getByte("part");
         storage = nbt.getFloat("storage");
-        stackDir = nbt.getByte("stackDir");
-        stackIter = nbt.getByteArray("stackIter");
-        if (stackIter == null || stackIter.length != 8) stackIter = new byte[8];
+        netData.ints[9] = nbt.getByte("netData.ints[9]");
+        byte[] buff = nbt.getByteArray("netData.ints");
         stackIterSum = 0;
-        for (int i = 0; i < stackIter.length; i++) stackIterSum += stackIter[i];
-        step = nbt.getShort("step");
+        if (buff.length == 8) 
+        	for (int i = 0; i < buff.length; i++) 
+        		stackIterSum += netData.ints[i] = buff[i] & 0xff;
+        netData.ints[8] = nbt.getShort("step");
         setupData();
         try {lastUser = new GameProfile(new UUID(nbt.getLong("lastUserID0"), nbt.getLong("lastUserID1")), nbt.getString("lastUser"));
         } catch (Exception e) {lastUser = defaultUser;}
@@ -711,17 +705,15 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         nbt.setInteger("py", py);
         nbt.setInteger("pz", pz);
         nbt.setFloat("storage", storage);
-        nbt.setByte("stackDir", stackDir);
-        nbt.setByteArray("stackIter", stackIter);
-        nbt.setShort("step", step);
+        nbt.setByte("netData.ints[9]", (byte)netData.ints[9]);
+        byte[] buff = new byte[8];
+        for (int i = 0; i < buff.length; i++) buff[i] = (byte)netData.ints[i];
+        nbt.setByteArray("netData.ints", buff);
+        nbt.setShort("step", (short)netData.ints[8]);
         nbt.setString("lastUser", lastUser.getName());
         nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
         nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
     }
-    
-    private short lastStep;
-    private byte lastDir;
-    private byte[] lastIter = new byte[8];
     
     @Override
     public void initContainer(TileContainer container)
@@ -749,54 +741,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         container.addEntitySlot(new SlotItemType(this, 49, 152, 52, new ItemStack(Items.paper)));
         container.addPlayerInventory(8, 158);
     }
-    
-    @Override
-    public void addCraftingToCrafters(TileContainer container, ICrafting crafting)
-    {
-        for (int i = 0; i < this.stackIter.length; i++)
-        {
-            crafting.sendProgressBarUpdate(container, i, this.stackIter[i]);
-        }
-        crafting.sendProgressBarUpdate(container, 8, this.stackDir);
-        crafting.sendProgressBarUpdate(container, 9, this.step);
-    }
-    
-    @Override
-    public void updateProgressBar(int var, int val)
-    {
-        if (var >= 0 && var < this.stackIter.length) this.stackIter[var] = (byte)val;
-        else if (var == 8) this.stackDir = (byte)val;
-        else if (var == 9) this.step = (byte)val;
-    }
-    
-    @Override
-    public boolean detectAndSendChanges(TileContainer container, List<ICrafting> crafters, DataOutputStream dis) 
-    {
-        for (int var1 = 0; var1 < crafters.size(); ++var1)
-        {
-            ICrafting var2 = (ICrafting)crafters.get(var1);
-            if (lastDir != this.stackDir)
-            {
-                var2.sendProgressBarUpdate(container, 8, this.stackDir);
-            }
-            if (lastStep != this.step)
-            {
-                var2.sendProgressBarUpdate(container, 9, this.step);
-            }
-            for (int i = 0; i < this.stackIter.length; i++)
-            {
-                if (lastIter[i] != this.stackIter[i])
-                {
-                    var2.sendProgressBarUpdate(container, i, this.stackIter[i]);
-                }
-            }
-        }
-        lastDir = this.stackDir;
-        lastStep = this.step;
-        lastIter = this.stackIter.clone();
-        return false;
-    }
-    
+
     @Override
     public int[] stackTransferTarget(ItemStack item, int s, TileContainer container) 
     {
@@ -821,7 +766,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 	public void onUpgradeChange(int s) 
 	{
 		if (s == 0) {
-			this.worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
+			this.worldObj.markBlockForUpdate(getPos());
 			return;
 		}
 		if (s == 3) {
@@ -836,10 +781,10 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 	}
 
 	@Override
-	public boolean remoteOperation(int x, int y, int z) 
+	public boolean remoteOperation(BlockPos pos) 
 	{
-		if (x < area[0] || y < area[1] || z < area[2] || x >= area[3] || y >= area[4] || z >= area[5]) return true;
-		return this.setBlock(x, y, z, inventory.items[0]);
+		if (pos.getX() < area[0] || pos.getY() < area[1] || pos.getZ() < area[2] || pos.getX() >= area[3] || pos.getY() >= area[4] || pos.getZ() >= area[5]) return true;
+		return this.setBlock(pos, inventory.items[0]);
 	}
 
 	@Override
@@ -865,10 +810,11 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     	
     	public boolean execute(Builder builder)
     	{
-    		if (!builder.worldObj.blockExists(x, y, z)) return false;
-            Block block = builder.worldObj.getBlock(x, y, z);
-            boolean can = block == null || block.isReplaceable(builder.worldObj, x, y, z);
-            if (builder.setBlock(x, y, z, builder.inventory.items[s])) {
+    		BlockPos pos = new BlockPos(x, y, z);
+    		if (!builder.worldObj.isBlockLoaded(pos)) return false;
+            Block block = builder.worldObj.getBlockState(pos).getBlock();
+            boolean can = block == null || block.isReplaceable(builder.worldObj, pos);
+            if (builder.setBlock(pos, builder.inventory.items[s])) {
             	if (evType) ComputerAPI.sendEvent(src, "set_block", x - builder.area[0], y - builder.area[1], z - builder.area[2], can);
             	else if (builder.sheduledTasks.size() == 1) ComputerAPI.sendEvent(src, "set_done");
             	return true;
@@ -879,7 +825,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     ArrayList<BuildTask> sheduledTasks = new ArrayList<BuildTask>();
     
     //Computercraft:
-    
+    /* TODO reimplement
     @Optional.Method(modid = "ComputerCraft")
     @Override
     public String getType() 
@@ -904,7 +850,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         } else if (cmd == 1) {
             lastUser = new GameProfile(new UUID(0, 0) ,"#Computer" + computer.getID());
             if (par == null || par.length < 4) throw new LuaException("min 4 parameters needed: (int x, int y, int z, int slot_index, bool event) event is optional");
-            if (step != S_Offline) throw new LuaException("Building operation progress, must be stopped first!");
+            if (netData.ints[8] != S_Offline) throw new LuaException("Building operation progress, must be stopped first!");
             int x = ((Double)par[0]).intValue() + area[0];
             int y = ((Double)par[1]).intValue() + area[1];
             int z = ((Double)par[2]).intValue() + area[2];
@@ -919,7 +865,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
             } else return new Object[]{Boolean.FALSE};
         } else if (cmd == 2) {
             if (par != null && par.length > 0) throw new LuaException("This method does not take any parameters");
-            step = S_Offline;
+            netData.ints[8] = S_Offline;
             return null;
         } else if (cmd == 3) {
             if (par == null || par.length != 3) throw new LuaException("3 parameters needed: (int x, int y, int z)");
@@ -950,6 +896,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     {
         return this.hashCode() == peripheral.hashCode();
     }
+    */
     
     //OpenComputers:
 	
@@ -999,7 +946,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 	@Callback(doc = "function():bool --returns true if a user initiated building process is running, in this case computer controlled building is not allowed", direct = true)
 	public Object[] isBuilding(Context cont, Arguments args)
 	{
-		return new Object[]{step != S_Offline};
+		return new Object[]{netData.ints[8] != S_Offline};
 	}
 	
 	@Optional.Method(modid = "OpenComputers")
@@ -1018,11 +965,9 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 	@Callback(doc = "function(x:int, y:int, z:int):bool --returns true if there is a not replaceable block at given operating-area-relative position", direct = true)
 	public Object[] isBlockAt(Context cont, Arguments args)
 	{
-		int x = args.checkInteger(0) + area[0];
-        int y = args.checkInteger(1) + area[1];
-        int z = args.checkInteger(2) + area[2];
-        Block block = worldObj.getBlock(x, y, z);
-        if (block != null && !block.isReplaceable(worldObj, x, y, z)) return new Object[]{Boolean.TRUE};
+		BlockPos pos = new BlockPos(args.checkInteger(0), args.checkInteger(1), args.checkInteger(2)).add(area[0], area[1], area[2]);
+        Block block = worldObj.getBlockState(pos).getBlock();
+        if (block != null && !block.isReplaceable(worldObj, pos)) return new Object[]{Boolean.TRUE};
         else return new Object[]{Boolean.FALSE};
 	}
 	
@@ -1030,7 +975,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 	@Callback(doc = "function(x:int, y:int, z:int, material:int[, notify:bool]):bool --will add the placement of the material in given slot at given position to the processing queue or returns false if queue is full. if notify is given, the caller will receive a \"set_block\"{x:int, y:int, z:int, success:bool} event when executed on true or a \"set_done\" event when processing queue finished on false", direct = true)
 	public Object[] setBlock(Context cont, Arguments args) throws Exception
 	{
-		if (step != S_Offline) throw new Exception("Manual building operation in progress, must be stopped first!");
+		if (netData.ints[8] != S_Offline) throw new Exception("Manual building operation in progress, must be stopped first!");
         int x = args.checkInteger(0) + area[0];
         int y = args.checkInteger(1) + area[1];
         int z = args.checkInteger(2) + area[2];

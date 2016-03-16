@@ -4,12 +4,11 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
@@ -41,7 +40,7 @@ public class GuiTeslaTransmitter extends GuiMachine
         this.xSize = 176;
         this.ySize = 40;
         super.initGui();
-        textField = new GuiTextField(this.fontRendererObj, this.guiLeft + 8, this.guiTop + 16, 34, 16);
+        textField = new GuiTextField(0, this.fontRendererObj, this.guiLeft + 8, this.guiTop + 16, 34, 16);
     }
     
     @Override
@@ -70,22 +69,20 @@ public class GuiTeslaTransmitter extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 40, this.xSize, this.ySize);
         textField.drawTextBox();
         this.drawStringCentered("Energy = " + (int)(tileEntity.netData.floats[0] / 1000F) + "kJ", this.guiLeft + 115, this.guiTop + 20, 0xffdf40);
-        this.drawStringCentered((tileEntity.interdim ? "Interdimensional " : "") + tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered((tileEntity.interdim ? "Interdimensional " : "") + tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
-        if (this.func_146978_c(43, 15, 18, 18, x, y))
+        if (this.isPointInRegion(43, 15, 18, 18, x, y))
         {
             try {
                 tileEntity.netData.ints[0] = Short.parseShort(textField.getText());
-                ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-                DataOutputStream dos = new DataOutputStream(bos);
+                PacketBuffer dos = tileEntity.getPacketTargetData();
                 dos.writeShort(tileEntity.getFrequency());
-                BlockGuiHandler.sendPacketToServer(bos);
-            } catch (NumberFormatException e) {
-            } catch (IOException e) {}
+                BlockGuiHandler.sendPacketToServer(dos);
+            } catch (NumberFormatException e) {}
         }
         {
             textField.mouseClicked(x, y, b);
@@ -94,7 +91,7 @@ public class GuiTeslaTransmitter extends GuiMachine
     }
     
     @Override
-    protected void keyTyped(char par1, int par2) 
+    protected void keyTyped(char par1, int par2) throws IOException 
     {
         if (textField.isFocused()) textField.textboxKeyTyped(par1, par2);
         else super.keyTyped(par1, par2);

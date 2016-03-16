@@ -9,8 +9,7 @@ import java.util.List;
 import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.api.automation.EnergyItemHandler.IEnergyItem;
 import cd4017be.automation.Config;
-import cd4017be.automation.TileEntity.ESU;
-import cd4017be.lib.BlockItemRegistry;
+import cd4017be.automation.Objects;
 import cd4017be.lib.DefaultItemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -38,7 +37,7 @@ public class ItemESU extends DefaultItemBlock implements IEnergyItem
     }
 
     @Override
-	public void getSubItems(Item item, CreativeTabs tab, List list) 
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) 
     {
 		super.getSubItems(item, tab, list);
 		ItemStack stack = new ItemStack(item);
@@ -49,13 +48,13 @@ public class ItemESU extends DefaultItemBlock implements IEnergyItem
 	@Override
     public int getEnergyCap(ItemStack item) 
     {
-        return item.getItem() == Item.getItemFromBlock(BlockItemRegistry.blockId("tile.SCSU")) ? Config.Ecap[0] : item.getItem() == Item.getItemFromBlock(BlockItemRegistry.blockId("tile.OCSU")) ? Config.Ecap[1] : Config.Ecap[2];
+        return item.getItem() == Item.getItemFromBlock(Objects.SCSU) ? Config.Ecap[0] : item.getItem() == Item.getItemFromBlock(Objects.OCSU) ? Config.Ecap[1] : Config.Ecap[2];
     }
 
     @Override
     public int getChargeSpeed(ItemStack item) 
     {
-        return item.getItem() == Item.getItemFromBlock(BlockItemRegistry.blockId("tile.SCSU")) ? 160 : item.getItem() == Item.getItemFromBlock(BlockItemRegistry.blockId("tile.OCSU")) ? 400 : 1000;
+        return item.getItem() == Item.getItemFromBlock(Objects.SCSU) ? 160 : item.getItem() == Item.getItemFromBlock(Objects.OCSU) ? 400 : 1000;
     }
 
     @Override

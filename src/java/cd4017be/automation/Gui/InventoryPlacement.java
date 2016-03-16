@@ -1,13 +1,15 @@
 package cd4017be.automation.Gui;
 
-import java.io.DataInputStream;
 import java.io.IOException;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.oredict.OreDictionary;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 
 public class InventoryPlacement implements IInventory
 {
@@ -48,7 +50,7 @@ public class InventoryPlacement implements IInventory
     	return (byte)(placement[i] & 7);
     }
     
-    public void onCommand(DataInputStream dis) throws IOException
+    public void onCommand(PacketBuffer dis) throws IOException
     {
         byte cmd = dis.readByte();
         if (cmd <= 1) {
@@ -78,12 +80,12 @@ public class InventoryPlacement implements IInventory
     public ItemStack decrStackSize(int i, int n) 
     {
         if (inventory[i] == null) return null;
-        ItemStack item = inventory[i].stackSize <= n ? this.getStackInSlotOnClosing(i) : inventory[i].splitStack(n);
+        ItemStack item = inventory[i].stackSize <= n ? this.removeStackFromSlot(i) : inventory[i].splitStack(n);
         return item;
     }
 
     @Override
-    public ItemStack getStackInSlotOnClosing(int i) 
+    public ItemStack removeStackFromSlot(int i) 
     {
         ItemStack item = inventory[i];
         inventory[i] = null;
@@ -134,12 +136,12 @@ public class InventoryPlacement implements IInventory
     }
 
 	@Override
-	public String getInventoryName() {
+	public String getName() {
 		return "Block placement controller";
 	}
 
 	@Override
-	public boolean hasCustomInventoryName() {
+	public boolean hasCustomName() {
 		return true;
 	}
 
@@ -147,9 +149,29 @@ public class InventoryPlacement implements IInventory
 	public void markDirty() {}
 
 	@Override
-	public void openInventory() {}
+	public void openInventory(EntityPlayer player) {}
 
 	@Override
-	public void closeInventory() {}
+	public void closeInventory(EntityPlayer player) {}
+	@Override
+	public IChatComponent getDisplayName() {
+		return new ChatComponentText(this.getName());
+	}
 
+	@Override
+	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {}
+
+	@Override
+	public int getFieldCount() {
+		return 0;
+	}
+
+	@Override
+	public void clear() {}
+	
 }

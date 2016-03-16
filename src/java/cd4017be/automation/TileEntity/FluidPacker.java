@@ -4,9 +4,9 @@
  */
 package cd4017be.automation.TileEntity;
 
-import cd4017be.automation.Automation;
+
 import cd4017be.automation.Config;
-import cd4017be.lib.BlockItemRegistry;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -17,33 +17,32 @@ import cd4017be.lib.templates.SlotTank;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.IFluidHandler;
 
 /**
  *
  * @author CD4017BE
  */
-public class FluidPacker extends AutomatedTile implements ISidedInventory, IFluidHandler
+public class FluidPacker extends AutomatedTile implements ISidedInventory, IFluidHandler, ITickable
 {
-    private static Item Id = BlockItemRegistry.itemId("item.fluidDummy");
     
     public FluidPacker()
     {
         netData = new TileEntityData(2, 0, 0, 4);
         inventory = new Inventory(this, 7, new Component(0, 1, 1), new Component(1, 2, 1), new Component(2, 3, 1));
-        tanks = new TankContainer(this, new Tank(Config.tankCap[2], -1).setIn(3), new Tank(Config.tankCap[2], -1).setIn(4), new Tank(Config.tankCap[2], -1).setIn(5), new Tank(Config.tankCap[1], -1, Automation.L_antimatter).setIn(6)).setNetLong(1);
+        tanks = new TankContainer(this, new Tank(Config.tankCap[2], -1).setIn(3), new Tank(Config.tankCap[2], -1).setIn(4), new Tank(Config.tankCap[2], -1).setIn(5), new Tank(Config.tankCap[1], -1, Objects.L_antimatter).setIn(6)).setNetLong(1);
     }
 
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         for (int i = 0; i < 3; i++) {
             int n = Math.min(tanks.getAmount(3), tanks.getAmount(i) / 1000);
             if (n <= 0) continue;
-            ItemStack item = new ItemStack(Id, n, tanks.getFluid(i).fluidID);
+            ItemStack item = new ItemStack(Objects.fluidDummy, n, tanks.getFluid(i).getFluid().getID());
             if (inventory.items[i] == null) {
                 inventory.items[i] = item;
             } else if (inventory.items[i].isItemEqual(item)){

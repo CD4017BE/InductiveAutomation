@@ -1,13 +1,13 @@
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import cd4017be.lib.BlockGuiHandler;
@@ -34,7 +34,7 @@ public class GuiPortableTesla extends GuiMachine
         this.xSize = 176;
         this.ySize = 132;
         super.initGui();
-        freq = new GuiTextField(fontRendererObj, this.guiLeft + 8, this.guiTop + 16, 34, 16);
+        freq = new GuiTextField(0, fontRendererObj, this.guiLeft + 8, this.guiTop + 16, 34, 16);
     }
 
     @Override
@@ -87,16 +87,16 @@ public class GuiPortableTesla extends GuiMachine
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         freq.mouseClicked(x, y, b);
     	byte cmd = -1;
         short v = 0;
-    	if (this.func_146978_c(61, 24, 54, 9, x, y)) {
+    	if (this.isPointInRegion(61, 24, 54, 9, x, y)) {
             cmd = 0;
             int i = ((x - this.guiLeft - 61) / 18) % 3;
             mode ^= 1 << i;
-        } else if (this.func_146978_c(115, 24, 54, 9, x, y)) {
+        } else if (this.isPointInRegion(115, 24, 54, 9, x, y)) {
         	cmd = 0;
             int i = ((x - this.guiLeft - 115) / 18) % 3;
             int p = 8 + i * 2;
@@ -104,27 +104,24 @@ public class GuiPortableTesla extends GuiMachine
             k = (k + (b == 0 ? 1 : 2)) % 3;
             mode = (short)((mode & ~(0x3 << p)) | (k << p));
         } else
-        if (this.func_146978_c(44, 16, 16, 16, x, y)) {
+        if (this.isPointInRegion(44, 16, 16, 16, x, y)) {
         	cmd = 1;
         	v = (short)this.getNumber(freq.getText());
         	if (v < 0) v = 0;
         }
         if (cmd >= 0)
         {
-            try {
-            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
             dos.writeByte(cmd);
             if (cmd == 0) dos.writeShort(mode);
             else if (cmd == 1) dos.writeShort(v); 
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
         super.mouseClicked(x, y, b);
     }
     
     @Override
-    protected void keyTyped(char c, int k) 
+    protected void keyTyped(char c, int k) throws IOException 
     {
         if (!freq.isFocused()) super.keyTyped(c, k);
         freq.textboxKeyTyped(c, k);

@@ -1,5 +1,7 @@
 package cd4017be.automation.Gui;
 
+import java.io.IOException;
+
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -56,12 +58,12 @@ public class GuiGraviCond extends GuiMachine
         this.drawLocString(this.guiLeft + 26, this.guiTop + 52, 8, 0x404040, "grav.matter", Utils.formatNumber((double)tileEntity.netData.ints[0] * 1000D, 4, 0));
         this.drawStringCentered(String.format("%.0f kJ", tileEntity.netData.floats[0] / 1000F), this.guiLeft + 61, this.guiTop + 18, 0x404040);
         this.drawStringCentered(tileEntity.getMatterScaled(100) + " %", this.guiLeft + 61, this.guiTop + 36, 0x404040);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         this.clickLiquidConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
         this.clickItemConfig(tileEntity, x - this.guiLeft + 54, y - this.guiTop - 7);

@@ -12,12 +12,16 @@ import cd4017be.automation.Automation;
 import cd4017be.automation.Item.ItemBlockUnbreakable;
 import cd4017be.lib.DefaultBlock;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -30,52 +34,54 @@ public class BlockUnbreakable extends DefaultBlock
     
     public BlockUnbreakable(String id, int tex)
     {
-        super(id, Material.rock, ItemBlockUnbreakable.class, "unbr/stone");
+        super(id, Material.rock, ItemBlockUnbreakable.class);
         this.setCreativeTab(Automation.tabAutomation);
         this.setBlockUnbreakable();
         this.setResistance(Float.POSITIVE_INFINITY);
     }
 
+    private static final PropertyInteger prop = PropertyInteger.create("type", 0, 2);
+    
     @Override
-    public int damageDropped(int m) 
+	public IBlockState getStateFromMeta(int meta) {
+		return this.blockState.getBaseState().withProperty(prop, meta);
+	}
+
+	@Override
+	public int getMetaFromState(IBlockState state) {
+		return state.getValue(prop);
+	}
+    
+    @Override
+	protected BlockState createBlockState() {
+		return new BlockState(this, prop);
+	}
+
+	@Override
+    public int damageDropped(IBlockState m) 
     {
-        return m;
+        return this.getMetaFromState(m);
     }
 
     @Override
-    public void getSubBlocks(Item id, CreativeTabs par2CreativeTabs, List list) 
+    public void getSubBlocks(Item id, CreativeTabs par2CreativeTabs, List<ItemStack> list) 
     {
-        for (int i = 0; i < 16; i++)
-        {
-            list.add(new ItemStack(id, 1, i));
-        }
+        for (int i = 0; i < 16; i++) list.add(new ItemStack(id, 1, i));
     }
 
     @Override
-    public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int s, float X, float Y, float Z) 
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
-        ProtectLvl pr = AreaProtect.instance.getPlayerAccess(player.getCommandSenderName(), world, x >> 4, z >> 4);
+        ProtectLvl pr = AreaProtect.instance.getPlayerAccess(player.getName(), world, pos.getX() >> 4, pos.getZ() >> 4);
         if (pr == ProtectLvl.Free && !world.isRemote && player.isSneaking()) {
-            dropBlockAsItem(world, x, y, z, world.getBlockMetadata(x, y, z), 0);
-            world.setBlockToAir(x, y, z);
+            dropBlockAsItem(world, pos, state, 0);
+            world.setBlockToAir(pos);
         }
         return player.isSneaking();
     }
 
     @Override
-    public int getRenderColor(int m) 
-    {
-        return ItemDye.field_150922_c[~m & 15];
-    }
-
-    @Override
-    public int colorMultiplier(IBlockAccess world, int x, int y, int z) 
-    {
-        return this.getRenderColor(world.getBlockMetadata(x, y, z));
-    }
-
-	@Override
-	public boolean canEntityDestroy(IBlockAccess world, int x, int y, int z, Entity entity) 
+	public boolean canEntityDestroy(IBlockAccess world, BlockPos pos, Entity entity) 
 	{
 		return false;
 	}

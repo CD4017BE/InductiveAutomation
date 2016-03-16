@@ -1,12 +1,11 @@
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import cd4017be.automation.TileEntity.ItemBuffer;
@@ -59,56 +58,53 @@ private final ItemBuffer tileEntity;
         this.drawStringCentered(s, guiLeft + 52, guiTop + 56, 0x000000);
         this.drawStringCentered("" + tileEntity.netData.ints[1], guiLeft + 97, guiTop + 56, 0x000000);
         this.drawStringCentered("" + tileEntity.netData.ints[2], guiLeft + 142, guiTop + 56, 0x000000);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         this.clickItemConfig(tileEntity, x - this.guiLeft + 45, y - this.guiTop - 7);
         byte cmd = -1;
-        if (this.func_146978_c(8, 52, 16, 16, x, y)) {
+        if (this.isPointInRegion(8, 52, 16, 16, x, y)) {
         	cmd = 0;
         	tileEntity.netData.ints[0] ^= 0x100;
-        } else if (this.func_146978_c(43, 51, 18, 5, x, y)) {
+        } else if (this.isPointInRegion(43, 51, 18, 5, x, y)) {
         	cmd = 0;
         	int n = tileEntity.netData.ints[0] & 0xff;
         	n += b == 0 ? 1 : 6;
         	if (n > 18) n = 18;
         	tileEntity.netData.ints[0] = (tileEntity.netData.ints[0] & 0x100) | n;
-        } else if (this.func_146978_c(43, 64, 18, 5, x, y)) {
+        } else if (this.isPointInRegion(43, 64, 18, 5, x, y)) {
         	cmd = 0;
         	int n = tileEntity.netData.ints[0] & 0xff;
         	n -= b == 0 ? 1 : 6;
         	if (n < 0) n = 0;
         	tileEntity.netData.ints[0] = (tileEntity.netData.ints[0] & 0x100) | n;
-        } else if (this.func_146978_c(88, 51, 18, 5, x, y)) {
+        } else if (this.isPointInRegion(88, 51, 18, 5, x, y)) {
         	cmd = 1;
         	tileEntity.netData.ints[1] += b == 0 ? 1 : 8;
         	if (tileEntity.netData.ints[1] > 64 - tileEntity.netData.ints[2]) tileEntity.netData.ints[1] = 64 - tileEntity.netData.ints[2];
-        } else if (this.func_146978_c(88, 64, 18, 5, x, y)) {
+        } else if (this.isPointInRegion(88, 64, 18, 5, x, y)) {
         	cmd = 1;
         	tileEntity.netData.ints[1] -= b == 0 ? 1 : 8;
         	if (tileEntity.netData.ints[1] < 0) tileEntity.netData.ints[1] = 0;
-        } else if (this.func_146978_c(133, 51, 18, 5, x, y)) {
+        } else if (this.isPointInRegion(133, 51, 18, 5, x, y)) {
         	cmd = 2;
         	tileEntity.netData.ints[2] += b == 0 ? 1 : 8;
         	if (tileEntity.netData.ints[2] > 64 - tileEntity.netData.ints[1]) tileEntity.netData.ints[2] = 64 - tileEntity.netData.ints[1];
-        } else if (this.func_146978_c(133, 64, 18, 5, x, y)) {
+        } else if (this.isPointInRegion(133, 64, 18, 5, x, y)) {
         	cmd = 2;
         	tileEntity.netData.ints[2] -= b == 0 ? 1 : 8;
         	if (tileEntity.netData.ints[2] < 0) tileEntity.netData.ints[2] = 0;
         }
         if (cmd >= 0) {
-        	try {
-                ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-                DataOutputStream dos = new DataOutputStream(bos);
+                PacketBuffer dos = tileEntity.getPacketTargetData();
                 dos.writeByte(AutomatedTile.CmdOffset + cmd);
                 dos.writeInt(tileEntity.netData.ints[cmd]);
-                BlockGuiHandler.sendPacketToServer(bos);
-        	} catch (IOException e){}
+                BlockGuiHandler.sendPacketToServer(dos);
         }
     }
 

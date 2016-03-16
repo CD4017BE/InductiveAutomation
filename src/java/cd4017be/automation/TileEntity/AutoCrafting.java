@@ -4,7 +4,8 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.lib.TileContainer;
@@ -42,11 +43,11 @@ public class AutoCrafting extends AutomatedTile implements IAutomatedInv
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if (worldObj.isRemote) return;
-        boolean rst = worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+        boolean rst = worldObj.isBlockPowered(pos);
         if (craftChange) craftOut = getCraftingOutput();
         boolean craft = false;
         int mode = this.getRef(9);
@@ -135,7 +136,7 @@ public class AutoCrafting extends AutomatedTile implements IAutomatedInv
                 }
             }
         }
-        EntityItem entity = new EntityItem(worldObj, xCoord + 0.5D, yCoord + 1.5D, zCoord + 0.5D, item);
+        EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 1.5D, pos.getZ() + 0.5D, item);
         worldObj.spawnEntityInWorld(entity);
     }
     
@@ -151,7 +152,7 @@ public class AutoCrafting extends AutomatedTile implements IAutomatedInv
     }
     
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) {
             netData.longs[1] = dis.readLong();

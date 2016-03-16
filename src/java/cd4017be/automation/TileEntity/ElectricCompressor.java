@@ -4,7 +4,8 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.api.automation.AutomationRecipes;
@@ -44,9 +45,9 @@ public class ElectricCompressor extends AutomatedTile implements ISidedInventory
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-        super.updateEntity();
+    	super.update();
         if(worldObj.isRemote) return;
         //power
         netData.floats[1] = (float)energy.Ucap;
@@ -126,7 +127,7 @@ public class ElectricCompressor extends AutomatedTile implements ISidedInventory
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException {
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
         if (cmd == 0) {
             netData.ints[0] = dis.readShort();
             if (netData.ints[0] < Config.Rmin) netData.ints[0] = Config.Rmin;

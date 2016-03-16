@@ -1,6 +1,5 @@
 package cd4017be.automation.Item;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -16,14 +15,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
 
 public abstract class ItemFilteredSubInventory extends DefaultItem implements IItemStorage, IGuiItem {
 
-	public ItemFilteredSubInventory(String id, String tex)
+	public ItemFilteredSubInventory(String id)
 	{
 		super(id);
-		this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxStackSize(1);
 	}
@@ -142,7 +141,7 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 	}
 
 	@Override
-	public void onPlayerCommand(World world, EntityPlayer player, DataInputStream dis) throws IOException 
+	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
 		if (player.openContainer != null && player.openContainer instanceof ContainerFilteredSubInventory) ((ContainerFilteredSubInventory)player.openContainer).onPlayerCommand(world, player, dis);
 	}

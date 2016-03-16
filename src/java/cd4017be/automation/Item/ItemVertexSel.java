@@ -6,7 +6,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import cd4017be.automation.Automation;
 import cd4017be.automation.TileEntity.VertexShematicGen;
@@ -16,33 +18,32 @@ import cd4017be.lib.DefaultItem;
 
 public class ItemVertexSel extends DefaultItem {
 
-	public ItemVertexSel(String id, String tex) {
+	public ItemVertexSel(String id) {
 		super(id);
-		this.setTextureName(tex);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxStackSize(1);
 	}
 	
 	@Override
-    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, int x, int y, int z, int s, float X, float Y, float Z) 
+    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
 	{
 		if (world.isRemote) return true;
 		if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
         int mx = item.stackTagCompound.getInteger("mx"), my = item.stackTagCompound.getInteger("my"), mz = item.stackTagCompound.getInteger("mz");
         byte mode = item.stackTagCompound.getByte("sel");
         if (mode <= 0 && player.isSneaking()) {
-        	TileEntity te = world.getTileEntity(x, y, z);
-            if (x != mx && y != my && z != mz && te != null && te instanceof VertexShematicGen) {
-            	item.stackTagCompound.setInteger("mx", x);
-            	item.stackTagCompound.setInteger("my", y);
-            	item.stackTagCompound.setInteger("mz", z);
+        	TileEntity te = world.getTileEntity(pos);
+            if (pos.getX() != mx && pos.getY() != my && pos.getZ() != mz && te != null && te instanceof VertexShematicGen) {
+            	item.stackTagCompound.setInteger("mx", pos.getX());
+            	item.stackTagCompound.setInteger("my", pos.getY());
+            	item.stackTagCompound.setInteger("mz", pos.getZ());
             	item.stackTagCompound.setShort("pol", ((VertexShematicGen)te).sel);
             	player.addChatMessage(new ChatComponentText("Linked"));
             }
             return true;
         }
         if (my < 0) return false;
-        TileEntity te = world.getTileEntity(mx, my, mz);
+        TileEntity te = world.getTileEntity(new BlockPos(mx, my, mz));
         if (te == null || !(te instanceof VertexShematicGen)) {
         	item.stackTagCompound.setInteger("my", -1);
         	return false;
@@ -51,7 +52,7 @@ public class ItemVertexSel extends DefaultItem {
         if (mode <= 0) {
         	BlockGuiHandler.openGui(player, world, mx, my, mz);
         } else {
-        	this.use(item, player, tile, (byte)(mode - 1), X + (float)x, Y + (float)y, Z + (float)z);
+        	this.use(item, player, tile, (byte)(mode - 1), X + (float)pos.getX(), Y + (float)pos.getY(), Z + (float)pos.getZ());
         }
         return true;
     }
@@ -64,7 +65,7 @@ public class ItemVertexSel extends DefaultItem {
         int x = item.stackTagCompound.getInteger("mx"), y = item.stackTagCompound.getInteger("my"), z = item.stackTagCompound.getInteger("mz");
         byte mode = item.stackTagCompound.getByte("sel");
         if (y < 0) return item;
-        TileEntity te = world.getTileEntity(x, y, z);
+        TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
         if (te == null || !(te instanceof VertexShematicGen)) {
         	item.stackTagCompound.setInteger("my", -1);
         	return item;
@@ -95,11 +96,11 @@ public class ItemVertexSel extends DefaultItem {
     		item.stackTagCompound.setByte("sel", (byte)0);
     		return;
     	}
-    	int x = Math.round(X) - tile.xCoord, y = Math.round(Y) - tile.yCoord, z = Math.round(Z) - tile.zCoord;
+    	int x = Math.round(X) - tile.getPos().getX(), y = Math.round(Y) - tile.getPos().getY(), z = Math.round(Z) - tile.getPos().getZ();
     	p.vert[mode].x[0] = x;
     	p.vert[mode].x[1] = y;
     	p.vert[mode].x[2] = z;
-    	tile.getWorldObj().markBlockForUpdate(tile.xCoord, tile.yCoord, tile.zCoord);
+    	tile.getWorld().markBlockForUpdate(tile.getPos());
     	return;
     }
     

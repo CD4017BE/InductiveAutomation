@@ -12,22 +12,24 @@ import java.util.BitSet;
 import java.util.List;
 
 import cd4017be.api.automation.IMatterStorage;
+import cd4017be.automation.Objects;
 import cd4017be.automation.TileEntity.AntimatterBomb;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.MovedBlock;
+import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.VecN;
 import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
@@ -70,8 +72,7 @@ public class EntityAntimatterExplosion1 extends Entity
     }
 
     @Override
-    public boolean isEntityInvulnerable() 
-    {
+    public boolean isEntityInvulnerable(DamageSource src) {
         return true;
     }
 
@@ -91,7 +92,7 @@ public class EntityAntimatterExplosion1 extends Entity
         if (size > 0 && run != 0)
         {
             IMatterStorage loot;
-            TileEntity te = worldObj.getTileEntity((int)Math.floor(posX), (int)Math.floor(posY), (int)Math.floor(posZ));
+            TileEntity te = worldObj.getTileEntity(new BlockPos(posX, posY, posZ));
             if (te != null && te instanceof IMatterStorage) loot = (IMatterStorage)te;
             else loot = null;
             explode(loot);
@@ -154,30 +155,15 @@ public class EntityAntimatterExplosion1 extends Entity
     public static final int Density = 2;
     public static int maxSize = 256;
     public static float explMult = 1F;
-    private final Item IdFluid = BlockItemRegistry.itemId("item.fluidDummy");
     private byte run;
     private BitSet editedChunks = new BitSet();
     private int chunkOffsX, chunkOffsZ, chunkSizeX, chunkSizeZ;
-    private final ArrayList<BlockEntry> destroyedBlocks = new ArrayList<BlockEntry>();
-    private class BlockEntry
-    {
-        public int x;
-        public int y;
-        public int z;
-        public boolean drop;
-        public BlockEntry(int x, int y, int z, boolean drop)
-        {
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            this.drop = drop;
-        }
-    }
+    private final ArrayList<Obj2<BlockPos, Boolean>> destroyedBlocks = new ArrayList<Obj2<BlockPos, Boolean>>();
     
     private void initExplosion()
     {
         this.doGammaDamage();
-        worldObj.setBlock((int)Math.floor(posX), (int)Math.floor(posY), (int)Math.floor(posZ), BlockItemRegistry.blockId("tile.antimatterBombE"), 0, 3);
+        worldObj.setBlockState(new BlockPos(posX, posY, posZ), Objects.antimatterBombE.getDefaultState(), 3);
         lastRayPower = new float[6][];
         float e = energy / 6F;
         for (int i = 0; i < 6; i++) lastRayPower[i] = new float[]{e};
@@ -192,25 +178,26 @@ public class EntityAntimatterExplosion1 extends Entity
         float[] power = new float[l * l];
         boolean run = false;
         int n = 0;
-        int j, i, x, y, z;
+        int j, i;
+        BlockPos pos;
         float p, r;
         for (j = 0; j < l; j++)
             for (i = 0; i < l; i++) {
                 p = getPower(i, j, d);
                 if (p <= 0) {n++; continue;}
                 VecN v = this.getPosition(i, j, d, size).norm().scale(size).add(posX, posY, posZ);
-                x = (int)Math.floor(v.x[0]); y = (int)Math.floor(v.x[1]); z = (int)Math.floor(v.x[2]);
-                if (y < -1 || y > 256) {power[n++] = 0; continue;}
-                Block block = worldObj.getBlock(x, y, z);
+                pos = new BlockPos(v.x[0], v.x[1], v.x[2]);
+                if (pos.getY() < -1 || pos.getY() > 256) {power[n++] = 0; continue;}
+                Block block = worldObj.getBlockState(pos).getBlock();
                 if (block == null) {
                     p -= AirLoss;
                 } else if (block.getMaterial().isLiquid()) {
                     p -= FluidLoss;
-                    if (p >= 0) destroyedBlocks.add(new BlockEntry(x, y, z, false));
+                    if (p >= 0) destroyedBlocks.add(new Obj2<BlockPos, Boolean>(pos, false));
                 } else {
-                    r = block.getExplosionResistance(this, worldObj, x, y, z, posX, posY, posZ);
+                    r = block.getExplosionResistance(worldObj, pos, this, null);
                     if (r < AirLoss) r = AirLoss;
-                    if (p >= r) destroyedBlocks.add(new BlockEntry(x, y, z, true));
+                    if (p >= r) destroyedBlocks.add(new Obj2<BlockPos, Boolean>(pos, true));
                     p -= r;
                 }
                 run |= p > 0;
@@ -264,95 +251,89 @@ public class EntityAntimatterExplosion1 extends Entity
         }
     }
     
-    private void damageEntitys(IMatterStorage loot)
-    {
-        List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getBoundingBox(
-                posX - (float)size, posY - (float)size, posZ - (float)size,
-                posX + (float)size, posY + (float)size, posZ + (float)size));
-        for (Entity entity : list) {
-            double dist = entity.getDistance(posX, posY, posZ);
-            if (!entity.isDead && dist < size)
-            {
-                if (entity instanceof EntityItem && loot != null) {
-                    ArrayList<ItemStack> item = new ArrayList();
-                    item.add(((EntityItem)entity).getEntityItem());
-                    loot.addItems(item);
-                    entity.setDead();
-                    continue;
-                } else if (dist < size - 4F) continue;
-                int[] i = this.getIndex(entity.posX, entity.posY, entity.posZ);
-                if (lastRayPower[i[0]] == null) continue;
-                float p = lastRayPower[i[0]][i[1]];
-                float dx = (float)(entity.posX - posX);
-                float dy = (float)(entity.posY - posY);
-                float dz = (float)(entity.posZ - posZ);
-                entity.attackEntityFrom(DamageSource.setExplosionSource(null), (int)(p * EntityDamage));
-                p *= EntityAcleration;
-                if (p > 1) p = 1F;
-                entity.motionX += dx / dist * p;
-                entity.motionY += dy / dist * p;
-                entity.motionZ += dz / dist * p;
-            }
-        }
-    }
-    
-    private void destroyBlocks(IMatterStorage loot)
-    {
-        boolean hasLoot = loot != null;
-        Block id = BlockItemRegistry.blockId("tile.antimatterBombF");
-        Block block;
-        int m;
-        for (BlockEntry next : destroyedBlocks) {
-            block = worldObj.getBlock(next.x, next.y, next.z);
-            m = worldObj.getBlockMetadata(next.x, next.y, next.z);
-            editedChunks.set((next.x >> 4) - chunkOffsX + ((next.z >> 4) - chunkOffsZ) * chunkSizeX);
-            if (block != null)
-            {
-                if (!hasLoot) {}
-                else if (block == id) {
-                    TileEntity te = worldObj.getTileEntity(next.x, next.y, next.z);
-                    if (te != null && te instanceof AntimatterBomb) {
-                        int[] i = this.getIndex(next.x + 0.5, next.y + 0.5, next.z + 0.5);
-                        lastRayPower[i[0]][i[1]] += ((AntimatterBomb)te).antimatter;
-                        ((AntimatterBomb)te).antimatter = 0;
-                    }
-                    loot.addItems(block.getDrops(worldObj, next.x, next.y, next.z, m, 0));
-                }
-                else if (next.drop) loot.addItems(block.getDrops(worldObj, next.x, next.y, next.z, m, 0));
-                else {
-                    ItemStack item = null;
-                    if ((block == Blocks.water || block == Blocks.flowing_water) && m == 0) item = new ItemStack(IdFluid, 1, 1);
-                    else if ((block == Blocks.lava || block == Blocks.flowing_lava) && m == 0) item = new ItemStack(IdFluid, 1, 2);
-                    else if (block instanceof IFluidBlock) {
-                        FluidStack fluid = ((IFluidBlock)block).drain(worldObj, next.x, next.y, next.z, false);
-                        if (fluid != null && fluid.amount >= 1000) item = new ItemStack(IdFluid, fluid.amount / 1000, fluid.fluidID);
-                    }
-                    if (item != null) loot.addItems(new ArrayList<ItemStack>(Arrays.asList(item)));
-                }
-                block.breakBlock(worldObj, next.x, next.y, next.z, block, m);
-                MovedBlock.setBlock(worldObj, next.x, next.y, next.z, Blocks.air, 0, null);
-            }
-        }
-        destroyedBlocks.clear();
-    }
-    
-    private void doGammaDamage()
-    {
-        List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getBoundingBox(
-                posX - (float)maxSize, posY - (float)maxSize, posZ - (float)maxSize,
-                posX + (float)maxSize, posY + (float)maxSize, posZ + (float)maxSize));
-        for (Entity entity : list) {
-            if (entity instanceof EntityLivingBase) {
-                if (worldObj.rayTraceBlocks(Vec3.createVectorHelper(posX, posY, posZ), Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ), true) == null) {
-                    double d = Math.log(energy / (double)(Density * Density) / entity.getDistanceSq(posX, posY, posZ));
-                    double o = d * entity.getLookVec().dotProduct(Vec3.createVectorHelper(posX - entity.posX, posY - entity.posY, posZ - entity.posZ).normalize());
-                    entity.attackEntityFrom(DamageSource.inFire, (int)(d * 2.5));
-                    if (o > 0) ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.blindness.id, (int)(o * 50.0)));
-                }
-            }
-        }
-    }
-    
+	private void damageEntitys(IMatterStorage loot) {
+		List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(
+				posX - (float)size, posY - (float)size, posZ - (float)size,
+				posX + (float)size, posY + (float)size, posZ + (float)size));
+		for (Entity entity : list) {
+			double dist = entity.getDistance(posX, posY, posZ);
+			if (!entity.isDead && dist < size) {
+				if (entity instanceof EntityItem && loot != null) {
+					ArrayList<ItemStack> item = new ArrayList<ItemStack>();
+					item.add(((EntityItem)entity).getEntityItem());
+					loot.addItems(item);
+					entity.setDead();
+					continue;
+				} else if (dist < size - 4F) continue;
+				int[] i = this.getIndex(entity.posX, entity.posY, entity.posZ);
+				if (lastRayPower[i[0]] == null) continue;
+				float p = lastRayPower[i[0]][i[1]];
+				float dx = (float)(entity.posX - posX);
+				float dy = (float)(entity.posY - posY);
+				float dz = (float)(entity.posZ - posZ);
+				entity.attackEntityFrom(DamageSource.setExplosionSource(null), (int)(p * EntityDamage));
+				p *= EntityAcleration;
+				if (p > 1) p = 1F;
+				entity.motionX += dx / dist * p;
+				entity.motionY += dy / dist * p;
+				entity.motionZ += dz / dist * p;
+			}
+		}
+	}
+
+	private void destroyBlocks(IMatterStorage loot) {
+		boolean hasLoot = loot != null;
+		IBlockState state;
+		Block block;
+		BlockPos pos;
+		for (Obj2<BlockPos, Boolean> next : destroyedBlocks) {
+			pos = next.objA;
+			state = worldObj.getBlockState(pos);
+			block = state.getBlock();
+			editedChunks.set((pos.getX() >> 4) - chunkOffsX + ((pos.getZ() >> 4) - chunkOffsZ) * chunkSizeX);
+			if (!hasLoot) {}
+			else if (state.getBlock() == Objects.antimatterBombF) {
+				TileEntity te = worldObj.getTileEntity(pos);
+				if (te != null && te instanceof AntimatterBomb) {
+					int[] i = this.getIndex(pos.getX() + 0.5D, pos.getY() + 0.5, pos.getZ() + 0.5);
+					lastRayPower[i[0]][i[1]] += ((AntimatterBomb)te).antimatter;
+					((AntimatterBomb)te).antimatter = 0;
+				}
+				loot.addItems(block.getDrops(worldObj, pos, state, 0));
+			}
+			else if (next.objB) loot.addItems(block.getDrops(worldObj, pos, state, 0));
+			else {
+				ItemStack item = null;
+				if (state == Blocks.water.getDefaultState() || state == Blocks.flowing_water.getDefaultState()) item = new ItemStack(Objects.fluidDummy, 1, 1);
+				else if (state == Blocks.lava.getDefaultState() || state == Blocks.flowing_lava.getDefaultState()) item = new ItemStack(Objects.fluidDummy, 1, 2);
+				else if (block instanceof IFluidBlock) {
+					FluidStack fluid = ((IFluidBlock)block).drain(worldObj, pos, false);
+					if (fluid != null && fluid.amount >= 1000) item = new ItemStack(Objects.fluidDummy, fluid.amount / 1000, fluid.getFluid().getID());
+				}
+				if (item != null) loot.addItems(new ArrayList<ItemStack>(Arrays.asList(item)));
+			}
+			block.breakBlock(worldObj, pos, state);
+			MovedBlock.setBlock(worldObj, pos, Blocks.air.getDefaultState(), null);
+		}
+		destroyedBlocks.clear();
+	}
+
+	private void doGammaDamage() {
+		List<Entity> list = this.worldObj.getEntitiesWithinAABBExcludingEntity(this, new AxisAlignedBB(
+				posX - (float)maxSize, posY - (float)maxSize, posZ - (float)maxSize,
+				posX + (float)maxSize, posY + (float)maxSize, posZ + (float)maxSize));
+		for (Entity entity : list) {
+			if (entity instanceof EntityLivingBase) {
+				if (worldObj.rayTraceBlocks(new Vec3(posX, posY, posZ), new Vec3(entity.posX, entity.posY, entity.posZ), true) == null) {
+					double d = Math.log(energy / (double)(Density * Density) / entity.getDistanceSq(posX, posY, posZ));
+					double o = d * entity.getLookVec().dotProduct(new Vec3(posX - entity.posX, posY - entity.posY, posZ - entity.posZ).normalize());
+					entity.attackEntityFrom(DamageSource.inFire, (int)(d * 2.5));
+					if (o > 0) ((EntityLivingBase)entity).addPotionEffect(new PotionEffect(Potion.blindness.id, (int)(o * 50.0)));
+				}
+			}
+		}
+	}
+
     private int[] getIndex(double x, double y, double z) 
     {
         double dx = x - this.posX, dy = y - this.posY, dz = z - this.posZ;

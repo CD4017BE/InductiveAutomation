@@ -4,14 +4,15 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.api.automation.IEnergy;
-import cd4017be.api.automation.IEnergyStorage;
 import cd4017be.api.automation.PipeEnergy;
-import cd4017be.automation.Automation;
+import cd4017be.api.energy.EnergyAPI.IEnergyAccess;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -29,7 +30,7 @@ import net.minecraftforge.fluids.IFluidHandler;
  *
  * @author CD4017BE
  */
-public class AntimatterAnihilator extends AutomatedTile implements ISidedInventory, IFluidHandler, IEnergy, IEnergyStorage
+public class AntimatterAnihilator extends AutomatedTile implements ISidedInventory, IFluidHandler, IEnergy, IEnergyAccess
 {
     public static final int AMEnergy = 90000;
     private static final int MaxPower = 160;
@@ -41,7 +42,7 @@ public class AntimatterAnihilator extends AutomatedTile implements ISidedInvento
     {
         netData = new TileEntityData(1, 4, 1, 3);
         energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Automation.L_heliumL).setIn(0), new Tank(Config.tankCap[1], 1, Automation.L_heliumG).setOut(1), new Tank(Config.tankCap[1], -1, Automation.L_antimatter).setIn(2));
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_heliumL).setIn(0), new Tank(Config.tankCap[1], 1, Objects.L_heliumG).setOut(1), new Tank(Config.tankCap[1], -1, Objects.L_antimatter).setIn(2));
         inventory = new Inventory(this, 3);
         /**
          * long: tanks
@@ -53,13 +54,13 @@ public class AntimatterAnihilator extends AutomatedTile implements ISidedInvento
     }
     
     @Override
-    public void updateEntity() 
+    public void update() 
     {
-		super.updateEntity();
+		super.update();
 		if (worldObj.isRemote) return;
 		//energy
 	        double e = energy.getEnergy(netData.ints[0], 1);
-	        double e1 = this.addEnergy(e);
+	        double e1 = this.addEnergy(e, 0);
 	        if (e != e1) energy.addEnergy(-e1);
 	        else energy.Ucap = netData.ints[0];
 	        //cooling
@@ -72,10 +73,10 @@ public class AntimatterAnihilator extends AutomatedTile implements ISidedInvento
 	            if (c > netData.ints[2]) c = netData.ints[2];
 	            netData.ints[3] -= c;
 	            netData.ints[2] -= c;
-	            tanks.fill(1, new FluidStack(Automation.L_heliumG, c), true);
+	            tanks.fill(1, new FluidStack(Objects.L_heliumG, c), true);
 	        }
 		//antimatter
-		int p = Math.min((MaxTemp - netData.ints[3]) / AMHeat, (int)Math.ceil((1F - netData.floats[0] / this.getCapacity() * 2F) * MaxPower));
+		int p = Math.min((MaxTemp - netData.ints[3]) / AMHeat, (int)Math.ceil((1F - netData.floats[0] / this.getCapacity(0) * 2F) * MaxPower));
 		if (p > tanks.getAmount(2)) p = tanks.getAmount(2);
 		if (p > 0) {
 	            tanks.drain(2, p, true);
@@ -87,7 +88,7 @@ public class AntimatterAnihilator extends AutomatedTile implements ISidedInvento
 	
     public int getStorageScaled(int s)
     {
-        return (int)(netData.floats[0] * (double)s / this.getCapacity());
+        return (int)(netData.floats[0] * (double)s / this.getCapacity(0));
     }
 	
     public int getHeatScaled(int s)
@@ -116,7 +117,7 @@ public class AntimatterAnihilator extends AutomatedTile implements ISidedInvento
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) {
             netData.ints[0] = dis.readShort();
@@ -134,26 +135,26 @@ public class AntimatterAnihilator extends AutomatedTile implements ISidedInvento
     }
 
     @Override
-    public double getEnergy() 
+    public double getStorage(int s) 
     {
         return netData.floats[0];
     }
 
     @Override
-    public double getCapacity() {
+    public double getCapacity(int s) {
         return Config.Ecap[1] * 1000D;
     }
 
     @Override
-    public double addEnergy(double e) 
+    public double addEnergy(double e, int s) 
     {
         netData.floats[0] += e;
         if (netData.floats[0] < 0) {
             e -= netData.floats[0];
             netData.floats[0] = 0;
-        } else if (netData.floats[0] > this.getCapacity()) {
-            e -= netData.floats[0] - this.getCapacity();
-            netData.floats[0] = (float)this.getCapacity();
+        } else if (netData.floats[0] > this.getCapacity(0)) {
+            e -= netData.floats[0] - this.getCapacity(0);
+            netData.floats[0] = (float)this.getCapacity(0);
         }
         return e;
     }

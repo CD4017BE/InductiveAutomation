@@ -4,7 +4,8 @@
  */
 package cd4017be.automation.TileEntity;
 
-import java.io.DataInputStream;
+import net.minecraft.network.PacketBuffer;
+
 import java.io.IOException;
 
 import cd4017be.api.automation.AutomationRecipes;
@@ -49,9 +50,9 @@ public class AdvancedFurnace extends AutomatedTile implements IEnergy, ISidedInv
     }
     
     @Override
-    public void updateEntity() 
+    public void update()
     {
-        super.updateEntity();
+        super.update();
         if (this.worldObj.isRemote) return;
         if (recipe == null && (tanks.getAmount(0) > 0 || inventory.items[2] != null || inventory.items[3] != null || inventory.items[4] != null))
         {
@@ -118,7 +119,7 @@ public class AdvancedFurnace extends AutomatedTile implements IEnergy, ISidedInv
     }
 
     @Override
-    protected void customPlayerCommand(byte cmd, DataInputStream dis, EntityPlayerMP player) throws IOException 
+    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0)
         {

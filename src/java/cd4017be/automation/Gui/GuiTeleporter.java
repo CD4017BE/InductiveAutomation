@@ -4,12 +4,11 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -49,10 +48,10 @@ public class GuiTeleporter extends GuiMachine
         this.xSize = 176;
         this.ySize = 168;
         super.initGui();
-        tfX = new GuiTextField(fontRendererObj, this.guiLeft + 8, this.guiTop + 52, 34, 16);
-        tfY = new GuiTextField(fontRendererObj, this.guiLeft + 44, this.guiTop + 52, 34, 16);
-        tfZ = new GuiTextField(fontRendererObj, this.guiLeft + 80, this.guiTop + 52, 34, 16);
-        name = new GuiTextField(fontRendererObj, this.guiLeft + 134, this.guiTop + 34, 34, 16);
+        tfX = new GuiTextField(0, fontRendererObj, this.guiLeft + 8, this.guiTop + 52, 34, 16);
+        tfY = new GuiTextField(1, fontRendererObj, this.guiLeft + 44, this.guiTop + 52, 34, 16);
+        tfZ = new GuiTextField(2, fontRendererObj, this.guiLeft + 80, this.guiTop + 52, 34, 16);
+        name = new GuiTextField(3, fontRendererObj, this.guiLeft + 134, this.guiTop + 34, 34, 16);
     }
 
     @Override
@@ -99,7 +98,7 @@ public class GuiTeleporter extends GuiMachine
         tfY.drawTextBox();
         tfZ.drawTextBox();
         name.drawTextBox();
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 4, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 4, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.teleport." + ((tileEntity.netData.ints[3] & 16) != 0 ?"copy":"move")), this.guiLeft + this.xSize * 3 / 4, this.guiTop + 4, 0xff4040);
         showWarning();
@@ -114,7 +113,7 @@ public class GuiTeleporter extends GuiMachine
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         tfX.mouseClicked(x, y, b);
@@ -124,40 +123,37 @@ public class GuiTeleporter extends GuiMachine
         int kb = -1;
         this.clickItemConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
         this.clickEnergyConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
-        if (this.func_146978_c(7, 33, 90, 18, x, y)) {
+        if (this.isPointInRegion(7, 33, 90, 18, x, y)) {
             if (warned == 1 && (tileEntity.netData.ints[3] & 4) == 0) warned = 2;
             else kb = 0;
         } else
-        if (this.func_146978_c(97, 33, 18, 18, x, y))
+        if (this.isPointInRegion(97, 33, 18, 18, x, y))
         {
             kb = 1;
         } else
-        if (this.func_146978_c(115, 33, 18, 18, x, y))
+        if (this.isPointInRegion(115, 33, 18, 18, x, y))
         {
             kb = 2;
         } else
-        if (this.func_146978_c(133, 51, 18, 18, x, y))
+        if (this.isPointInRegion(133, 51, 18, 18, x, y))
         {
             kb = 3;
         } else
-        if (this.func_146978_c(this.xSize / 2, 4, this.xSize / 2, 8, x, y))
+        if (this.isPointInRegion(this.xSize / 2, 4, this.xSize / 2, 8, x, y))
         {
             kb = 4;
         }
         if (kb >= 0)
         {
-            try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(AutomatedTile.CmdOffset);
             dos.writeByte(kb);
-            BlockGuiHandler.sendPacketToServer(bos);
-            } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
         }
     }
 
     @Override
-    protected void keyTyped(char c, int k) 
+    protected void keyTyped(char c, int k) throws IOException 
     {
         if (!tfX.isFocused() && !tfY.isFocused() && !tfZ.isFocused() && !name.isFocused())super.keyTyped(c, k);
         tfX.textboxKeyTyped(c, k);
@@ -192,14 +188,12 @@ public class GuiTeleporter extends GuiMachine
             try
             {
                 int n = (i == 4 ? 0 : Integer.parseInt(tf.getText()));
-                ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-                DataOutputStream dos = new DataOutputStream(bos);
+                PacketBuffer dos = tileEntity.getPacketTargetData();
                 dos.writeByte(i + AutomatedTile.CmdOffset);
                 if (i != 4) dos.writeInt(n);
-                else dos.writeUTF(tf.getText());
-                BlockGuiHandler.sendPacketToServer(bos);
-            } catch (NumberFormatException e) {
-            } catch (IOException e) {}
+                else dos.writeString(tf.getText());
+                BlockGuiHandler.sendPacketToServer(dos);
+            } catch (NumberFormatException e) {}
         }
     }
     

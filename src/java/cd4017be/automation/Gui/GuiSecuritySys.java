@@ -4,12 +4,11 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.input.Mouse;
@@ -44,7 +43,7 @@ public class GuiSecuritySys extends GuiMachine
         this.xSize = 179;
         this.ySize = 201;
         super.initGui();
-        name = new GuiTextField(fontRendererObj, this.guiLeft + 137, this.guiTop + 117, 34, 16);
+        name = new GuiTextField(0, fontRendererObj, this.guiLeft + 137, this.guiTop + 117, 34, 16);
     }
 
     @Override
@@ -90,9 +89,9 @@ public class GuiSecuritySys extends GuiMachine
         n = listS > 6 ? 6 : listS;
         for (int i = 0; i < n; i++) this.drawTexturedModalRect(this.guiLeft + 18, this.guiTop + 145 + i * 8, 187, 52, 8, 8);
         drawArea(this.guiLeft + 8, this.guiTop + 16);
-        this.drawTexturedModalRect(this.guiLeft + 62 + ((tileEntity.xCoord + 8) & 15), this.guiTop + 70 + ((tileEntity.zCoord + 8) & 15), 179, 64, 4, 4);
+        this.drawTexturedModalRect(this.guiLeft + 62 + ((tileEntity.getPos().getX() + 8) & 15), this.guiTop + 70 + ((tileEntity.getPos().getZ() + 8) & 15), 179, 64, 4, 4);
         this.drawEnergyConfig(tileEntity, -18, 7);
-        this.drawStringCentered(tileEntity.getInventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 163, this.guiTop + 38, 0x404040);
         this.drawStringCentered("Power:", this.guiLeft + 154, this.guiTop + 89, 0x404040);
         this.drawStringCentered("L:" + tileEntity.netData.ints[3] + "kW", this.guiLeft + 154, this.guiTop + 97, 0x405757);
@@ -130,7 +129,7 @@ public class GuiSecuritySys extends GuiMachine
     }
     
     @Override
-    public void handleMouseInput() 
+    public void handleMouseInput() throws IOException 
     {
         this.scroll -= Mouse.getDWheel() / 120;
         if (this.scroll > listS - 6) this.scroll = listS - 6;
@@ -139,18 +138,18 @@ public class GuiSecuritySys extends GuiMachine
     }
 
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
         name.mouseClicked(x, y, b);
         this.clickEnergyConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
-        if (this.func_146978_c(155, 16, 16, 10, x, y)) this.sendButtonClick(b==0 ? 5 : 7);//+10
-        else if (this.func_146978_c(155, 26, 16, 10, x, y)) this.sendButtonClick(b==0 ? 4 : 6);//++
-        else if (this.func_146978_c(155, 48, 16, 10, x, y)) this.sendButtonClick(b==0 ? 0 : 2);//--
-        else if (this.func_146978_c(155, 58, 16, 10, x, y)) this.sendButtonClick(b==0 ? 1 : 3);//-10
-        else if (this.func_146978_c(154, 69, 18, 18, x, y)) this.sendButtonClick(8);//mode Prot
-        else if (this.func_146978_c(136, 69, 18, 18, x, y)) this.sendButtonClick(9);//mode Load
-        else if (this.func_146978_c(137, 145, 34, 48, x, y)) {
+        if (this.isPointInRegion(155, 16, 16, 10, x, y)) this.sendButtonClick(b==0 ? 5 : 7);//+10
+        else if (this.isPointInRegion(155, 26, 16, 10, x, y)) this.sendButtonClick(b==0 ? 4 : 6);//++
+        else if (this.isPointInRegion(155, 48, 16, 10, x, y)) this.sendButtonClick(b==0 ? 0 : 2);//--
+        else if (this.isPointInRegion(155, 58, 16, 10, x, y)) this.sendButtonClick(b==0 ? 1 : 3);//-10
+        else if (this.isPointInRegion(154, 69, 18, 18, x, y)) this.sendButtonClick(8);//mode Prot
+        else if (this.isPointInRegion(136, 69, 18, 18, x, y)) this.sendButtonClick(9);//mode Load
+        else if (this.isPointInRegion(137, 145, 34, 48, x, y)) {
             int n = (y - this.guiTop - 145) / 12;
             listN = n - 1;
             if (listN > 2) listN = 2;
@@ -158,12 +157,12 @@ public class GuiSecuritySys extends GuiMachine
             listS = tileEntity.prot.groups[listN<0 ? 0:listN].members.size();
             if (this.scroll > listS - 6) this.scroll = listS - 6;
             if (this.scroll < 0) this.scroll = 0;
-        } else if (this.func_146978_c(136, 134, 36, 10, x, y)) {
+        } else if (this.isPointInRegion(136, 134, 36, 10, x, y)) {
             sendPlayerAdd(name.getText(), listN<0 ? 0:listN);
-        } else if (this.func_146978_c(18, 145, 8, 48, x, y)) {
+        } else if (this.isPointInRegion(18, 145, 8, 48, x, y)) {
             int n = (y - this.guiTop - 145) / 8 + scroll;
             if (n >= 0 && n < listS) sendPlayerDelete(n, listN<0 ? 0:listN);
-        } else if (this.func_146978_c(8, 16, 128, 128, x, y)) {
+        } else if (this.isPointInRegion(8, 16, 128, 128, x, y)) {
             int dx = (x - this.guiLeft - 8) / 16;
             int dy = (y - this.guiTop - 16) / 16;
             int n = dx + dy * 8;
@@ -172,57 +171,45 @@ public class GuiSecuritySys extends GuiMachine
     }
 
     @Override
-    protected void keyTyped(char c, int k) 
+    protected void keyTyped(char c, int k) throws IOException 
     {
         if (name.isFocused()) name.textboxKeyTyped(c, k);
         else super.keyTyped(c, k);
     }
     
-    private void sendButtonClick(int b)
+    private void sendButtonClick(int b) throws IOException
     {
-        try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+            PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(0);
             dos.writeByte(b);
-            BlockGuiHandler.sendPacketToServer(bos);
-        } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
     }
     
-    private void sendPlayerDelete(int p, int g)
+    private void sendPlayerDelete(int p, int g) throws IOException
     {
-        try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+    	PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(1);
             dos.writeByte(g);
             dos.writeByte(p);
-            BlockGuiHandler.sendPacketToServer(bos);
-        } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
     }
     
-    private void sendPlayerAdd(String name, int g)
+    private void sendPlayerAdd(String name, int g) throws IOException
     {
-        try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+    	PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(2);
             dos.writeByte(g);
-            dos.writeUTF(name);
-            BlockGuiHandler.sendPacketToServer(bos);
-        } catch (IOException e){}
+            dos.writeString(name);
+            BlockGuiHandler.sendPacketToServer(dos);
     }
     
-    private void sendAreaChange(int i, int g)
+    private void sendAreaChange(int i, int g) throws IOException
     {
-        try {
-            ByteArrayOutputStream bos = tileEntity.getPacketTargetData();
-            DataOutputStream dos = new DataOutputStream(bos);
+    	PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(3);
             dos.writeByte(g);
             dos.writeByte(i);
-            BlockGuiHandler.sendPacketToServer(bos);
-        } catch (IOException e){}
+            BlockGuiHandler.sendPacketToServer(dos);
     }
     
 }

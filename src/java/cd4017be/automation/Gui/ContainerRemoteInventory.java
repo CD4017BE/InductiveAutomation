@@ -1,6 +1,5 @@
 package cd4017be.automation.Gui;
 
-import java.io.DataInputStream;
 import java.io.IOException;
 
 import cd4017be.automation.Gui.ContainerFilteredSubInventory.FilterInventory;
@@ -15,7 +14,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.IChatComponent;
 import net.minecraft.world.World;
 
 public class ContainerRemoteInventory extends ItemContainer 
@@ -48,7 +50,7 @@ public class ContainerRemoteInventory extends ItemContainer
 		}
 
 		@Override
-		public ItemStack getStackInSlotOnClosing(int s) {
+		public ItemStack removeStackFromSlot(int s) {
 			return null;
 		}
 
@@ -58,12 +60,12 @@ public class ContainerRemoteInventory extends ItemContainer
 		}
 
 		@Override
-		public String getInventoryName() {
+		public String getName() {
 			return "Client Inventory";
 		}
 
 		@Override
-		public boolean hasCustomInventoryName() {
+		public boolean hasCustomName() {
 			return false;
 		}
 
@@ -81,15 +83,36 @@ public class ContainerRemoteInventory extends ItemContainer
 		}
 
 		@Override
-		public void openInventory() {}
+		public void openInventory(EntityPlayer player) {}
 
 		@Override
-		public void closeInventory() {}
+		public void closeInventory(EntityPlayer player) {}
 
 		@Override
 		public boolean isItemValidForSlot(int s, ItemStack stack) {
 			return true;
 		}
+		
+		@Override
+		public IChatComponent getDisplayName() {
+			return new ChatComponentText(this.getName());
+		}
+
+		@Override
+		public int getField(int id) {
+			return 0;
+		}
+
+		@Override
+		public void setField(int id, int value) {}
+
+		@Override
+		public int getFieldCount() {
+			return 0;
+		}
+
+		@Override
+		public void clear() {}
 		
 	}
 	
@@ -166,7 +189,7 @@ public class ContainerRemoteInventory extends ItemContainer
 		super.onContainerClosed(p_75134_1_);
 	}
 	
-	public void onPlayerCommand(World world, EntityPlayer player, DataInputStream dis) throws IOException
+	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException
 	{
 		byte cmd = dis.readByte();
 		if (cmd >= 0 && cmd < 2) {
@@ -198,6 +221,5 @@ public class ContainerRemoteInventory extends ItemContainer
 		}
 		return ret;
 	}
-	
 
 }

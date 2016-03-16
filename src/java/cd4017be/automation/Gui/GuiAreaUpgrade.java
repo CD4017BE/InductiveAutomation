@@ -1,10 +1,10 @@
 package cd4017be.automation.Gui;
 
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -38,7 +38,7 @@ public class GuiAreaUpgrade extends GuiMachine
         int n = 0;
         for (int i = 0; i < 2; i++)
         	for (int j = 0; j < 3; j++) {
-        		areaDsp[n] = new GuiTextField(this.fontRendererObj, this.guiLeft + 110 + i * 33, this.guiTop + 36 + j * 12, 25, 8);
+        		areaDsp[n] = new GuiTextField(0, this.fontRendererObj, this.guiLeft + 110 + i * 33, this.guiTop + 36 + j * 12, 25, 8);
         		areaDsp[n++].setEnableBackgroundDrawing(false);
         	}
     }
@@ -70,34 +70,29 @@ public class GuiAreaUpgrade extends GuiMachine
     }
     
     @Override
-    protected void mouseClicked(int x, int y, int b) 
+    protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         for (GuiTextField gui: areaDsp) gui.mouseClicked(x, y, b);
-        if (this.func_146978_c(116, 16, 16, 16, x, y)) {
-        	try {
-	            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-	            DataOutputStream dos = new DataOutputStream(bos);
+        if (this.isPointInRegion(116, 16, 16, 16, x, y)) {
+	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
 	            dos.writeByte((byte)6);
-	            BlockGuiHandler.sendPacketToServer(bos);
-	        } catch (IOException e){}
+	            BlockGuiHandler.sendPacketToServer(dos);
         }
         super.mouseClicked(x, y, b);
     }
 
 	@Override
-	protected void keyTyped(char c, int k) 
+	protected void keyTyped(char c, int k) throws IOException 
 	{
 		for (int i = 0; i < areaDsp.length; i++)
 			if (areaDsp[i].isFocused()) {
 				if (k == Keyboard.KEY_RETURN) {
 					try {
-			            ByteArrayOutputStream bos = BlockGuiHandler.getPacketTargetData(0, -1, 0);
-			            DataOutputStream dos = new DataOutputStream(bos);
+			            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
 			            dos.writeByte((byte)i);
 			            dos.writeInt(Integer.parseInt(areaDsp[i].getText()));
-			            BlockGuiHandler.sendPacketToServer(bos);
+			            BlockGuiHandler.sendPacketToServer(dos);
 			            areaDsp[i].setFocused(false);
-			        } catch (IOException e){
 			        } catch (NumberFormatException e) {}
 				} else areaDsp[i].textboxKeyTyped(c, k);
 				return;
