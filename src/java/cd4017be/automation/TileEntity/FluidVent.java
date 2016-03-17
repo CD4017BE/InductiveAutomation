@@ -115,14 +115,13 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
     
     private boolean isValidPos(BlockPos pos)
     {
-    	int y = pos.getY();
-    	pos = pos.subtract(this.pos);
-        if (y < 0 || y >= 256 || Math.max(Math.abs(pos.getX()), Math.abs(pos.getZ())) > blocks.length / 3) return false;
+    	BlockPos pos1 = pos.subtract(this.pos);
+    	int l = blocks.length / 3;
+        if (pos.getY() < 0 || pos.getY() >= 256 || Math.abs(pos1.getY()) > l || Math.abs(pos1.getX()) > l || Math.abs(pos1.getZ()) > l) return false;
         if (!canFill(pos)) return false;
-        int p = (pos.getX() & 0xff) | (pos.getY() & 0xff) << 8 | (pos.getZ() & 0xff) << 16;
-        for (int i = dist - 1; i >= 0; i -= 2) {
+        int p = (pos1.getX() & 0xff) | (pos1.getY() & 0xff) << 8 | (pos1.getZ() & 0xff) << 16;
+        for (int i = dist - 1; i >= 0; i -= 2)
             if ((blocks[i] & 0xffffff) == p) return false;
-        }
         return true;
     }
     
@@ -130,10 +129,9 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
     {
         if (worldObj.isAirBlock(pos)) return true;
         IBlockState state = worldObj.getBlockState(pos);
-        if (state.getBlock() == blockId) return state.getBlock().getMetaFromState(state) != 0;
+        if (state.getBlock() == blockId) return state != state.getBlock().getDefaultState();
         Material material = state.getBlock().getMaterial();
-        if (material.blocksMovement() || material == Material.portal) return false;
-        return !material.isLiquid();
+        return material.isReplaceable() && !material.isLiquid();
     }
     
     private void moveBack(BlockPos pos)
@@ -151,7 +149,7 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
         }
         byte d0 = (byte)(blocks[dist - 1] >> 24), d1;
         if (d0 <= 1) lastDir[0] = null;
-        else if (d0 != lastDir[0].ordinal()) {
+        else if (EnumFacing.VALUES[d0] != lastDir[0]) {
             lastDir[0] = EnumFacing.VALUES[d0];
             for (int i = dist - 2; i >= 0; i--) {
                 d1 = (byte)(blocks[i] >> 24);

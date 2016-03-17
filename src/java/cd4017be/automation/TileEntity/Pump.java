@@ -215,7 +215,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
         }
         byte d0 = (byte)(blocks[dist - 1] >> 24), d1;
         if (d0 <= 1) lastDir[0] = null;
-        else if (d0 != lastDir[0].ordinal()) {
+        else if (EnumFacing.VALUES[d0] != lastDir[0]) {
             lastDir[0] = EnumFacing.VALUES[d0];
             for (int i = dist - 2; i >= 0; i--) {
                 d1 = (byte)(blocks[i] >> 24);

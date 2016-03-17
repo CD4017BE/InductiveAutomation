@@ -64,39 +64,55 @@ public class TileEntityTankRenderer extends TileEntitySpecialRenderer<Tank>
         GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
         GL11.glDepthMask(false);
         GL11.glColor4f(1, 1, 1, 1);
-        float n = (float)te.tanks.getAmount(0) / (float)te.tanks.tanks[0].cap;
+        double n = (double)te.tanks.getAmount(0) / (double)te.tanks.tanks[0].cap;
         int l = te.getWorld().getCombinedLight(te.getPos(), fluid.getFluid().getLuminosity(fluid));
         int c = fluid.getFluid().getColor(fluid);
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
-        WorldRenderer t = Tessellator.getInstance().getWorldRenderer();
-        t.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
-        t.addVertexData(this.renderCube(0.0625F, 0F, 0.0625F, 0.9375F, n, 0.9375F, tex, c, l));
-        Tessellator.getInstance().draw();
+        
+        this.renderCube(x + 0.0625D, y, z + 0.0625D, x + 0.9375D, y + n, z + 0.9375D, tex, c, l);
+        
         GL11.glDepthMask(true);
         GL11.glEnable(GL11.GL_LIGHTING);
         GL11.glEnable(GL11.GL_ALPHA_TEST);
 	}
 	
-	public int[] renderCube(float X0, float X1, float Y0, float Y1, float Z0, float Z1, TextureAtlasSprite tex, int c, int l) {
-		int[] data = new int[CUBE.length * 7];
-		int x0 = Float.floatToIntBits(X0), x1 = Float.floatToIntBits(X1), 
-			y0 = Float.floatToIntBits(Y0), y1 = Float.floatToIntBits(Y1), 
-			z0 = Float.floatToIntBits(Z0), z1 = Float.floatToIntBits(Z1),
-			u0 = Float.floatToIntBits(tex.getMinU()), u1 = Float.floatToIntBits(tex.getMaxU()),
-			v0 = Float.floatToIntBits(tex.getMinV()), v1 = Float.floatToIntBits(tex.getMaxV());
-		int j;
-		byte d;
-		for (int i = 0; i < CUBE.length; i++) {
-			j = i * 7;
-			d = CUBE[i];
-			data[j] 	= (d & 0b100000) != 0 ? x1 : x0;
-			data[j + 1] = (d & 0b010000) != 0 ? y1 : y0;
-			data[j + 2] = (d & 0b001000) != 0 ? z1 : z0;
-			data[j + 3] = c;
-			data[j + 4] = (d & 0b000010) != 0 ? u1 : u0;
-			data[j + 5] = (d & 0b000001) != 0 ? v1 : v0;
-			data[j + 6] = l;
-		}
-		return data;
+	public void renderCube(double X0, double Y0, double Z0, double X1, double Y1, double Z1, TextureAtlasSprite tex, int c, int l) {
+		WorldRenderer t = Tessellator.getInstance().getWorldRenderer();
+        t.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
+		double U0 = tex.getMinU(), U1 = tex.getMaxU(), V0 = tex.getMinV(), V1 = tex.getMaxV();
+        int R = c >> 16 & 0xff, G = c >> 8 & 0xff, B = c & 0xff, A = c >> 24 & 0xff;
+		int BL = l >> 16 & 0xffff, SL = l & 0xffff;
+        
+		t.pos(X0, Y0, Z0).tex(U0, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y0, Z0).tex(U1, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y0, Z1).tex(U1, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X0, Y0, Z1).tex(U0, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        //Top
+        t.pos(X0, Y1, Z1).tex(U0, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y1, Z1).tex(U1, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y1, Z0).tex(U1, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X0, Y1, Z0).tex(U0, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        //North
+        t.pos(X0, Y1, Z0).tex(U0, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y1, Z0).tex(U1, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y0, Z0).tex(U1, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X0, Y0, Z0).tex(U0, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        //South
+        t.pos(X0, Y0, Z1).tex(U0, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y0, Z1).tex(U1, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y1, Z1).tex(U1, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X0, Y1, Z1).tex(U0, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        //East
+        t.pos(X0, Y1, Z0).tex(U0, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X0, Y0, Z0).tex(U1, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X0, Y0, Z1).tex(U1, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X0, Y1, Z1).tex(U0, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        //West
+        t.pos(X1, Y0, Z0).tex(U0, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y1, Z0).tex(U1, V0).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y1, Z1).tex(U1, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        t.pos(X1, Y0, Z1).tex(U0, V1).lightmap(BL, SL).color(R, G, B, A).endVertex();
+        
+        Tessellator.getInstance().draw();
 	}
 }
