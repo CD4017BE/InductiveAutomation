@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:security" },
+		"orient=e": { "model": "automation:security" , "y": 90 },
+		"orient=s": { "model": "automation:security" , "y": 180 },
+		"orient=w": { "model": "automation:security" , "y": 270 }
+	}
+}

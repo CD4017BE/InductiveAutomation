@@ -6,8 +6,8 @@ package cd4017be.automation.Item;
 
 import java.util.List;
 
-import cd4017be.api.automation.EnergyItemHandler;
-import cd4017be.api.automation.EnergyItemHandler.IEnergyItem;
+import cd4017be.api.energy.EnergyAutomation.EnergyItem;
+import cd4017be.api.energy.EnergyAutomation.IEnergyItem;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.DefaultItemBlock;
@@ -32,16 +32,26 @@ public class ItemESU extends DefaultItemBlock implements IEnergyItem
     @Override
     public void addInformation(ItemStack item, EntityPlayer player, List list, boolean f) 
     {
-        EnergyItemHandler.addInformation(item, list);
+    	new EnergyItem(item, this).addInformation(list);
         super.addInformation(item, player, list, f);
     }
+    
+    @Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return true;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
+    	return 1D - (double)new EnergyItem(stack, this).getStorageI() / (double)this.getEnergyCap(stack);
+	}
 
     @Override
 	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) 
     {
 		super.getSubItems(item, tab, list);
 		ItemStack stack = new ItemStack(item);
-		EnergyItemHandler.addEnergy(stack, getEnergyCap(stack), false);
+		new EnergyItem(stack, this).addEnergyI(getEnergyCap(stack), -1);
 		list.add(stack);
 	}
 
@@ -58,7 +68,7 @@ public class ItemESU extends DefaultItemBlock implements IEnergyItem
     }
 
     @Override
-    public String getEnergyTag(ItemStack item) 
+    public String getEnergyTag() 
     {
         return "energy";
     }

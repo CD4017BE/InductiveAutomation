@@ -1,0 +1,21 @@
+{
+    "textures": {
+		"up": "automation:blocks/teslaTransmitterLV0",
+		"down": "automation:blocks/teslaTransmitterLV1",
+		"tex": "automation:blocks/teslaTransmitterLV2",
+        "particle": "automation:blocks/teslaTransmitterLV2"
+    },
+    "elements": [
+        {   "from": [ 3, 0, 3 ],
+            "to": [ 13, 16, 13 ],
+            "faces": {
+                "down":  { "uv": [ 3, 3, 13, 13 ], "texture": "#down", "cullface": "down" },
+                "up":    { "uv": [ 3, 3, 13, 13 ], "texture": "#up", "cullface": "up" },
+                "north": { "uv": [ 3, 0, 13, 16 ], "texture": "#tex"},
+                "south": { "uv": [ 3, 0, 13, 16 ], "texture": "#tex"},
+                "west":  { "uv": [ 3, 0, 13, 16 ], "texture": "#tex"},
+                "east":  { "uv": [ 3, 0, 13, 16 ], "texture": "#tex"}
+            }
+        }
+    ]
+}

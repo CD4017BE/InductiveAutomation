@@ -4,7 +4,6 @@
  */
 package cd4017be.automation.Item;
 
-import cd4017be.api.automation.EnergyItemHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -13,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
+import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
 /**
  *
@@ -42,7 +42,7 @@ public class ItemEnergyTool extends ItemEnergyCell
 	@Override
     public boolean canHarvestBlock(Block block, ItemStack item) 
     {
-    	if (EnergyItemHandler.getEnergy(item) < this.energyUsage) return false;
+    	if (new EnergyItem(item, this).getStorageI() < this.energyUsage) return false;
     	if (block.getMaterial().isToolNotRequired()) return true;
         String tool = block.getHarvestTool(block.getDefaultState());
         int hl = block.getHarvestLevel(block.getDefaultState());
@@ -58,7 +58,7 @@ public class ItemEnergyTool extends ItemEnergyCell
     @Override
     public boolean onBlockDestroyed(ItemStack item, World world, Block b, BlockPos pos, EntityLivingBase entityLiving) 
     {
-        EnergyItemHandler.addEnergy(item, -this.energyUsage, false);
+    	new EnergyItem(item, this).addEnergyI(-this.energyUsage, -1);
         return true;
     }
 
@@ -72,10 +72,11 @@ public class ItemEnergyTool extends ItemEnergyCell
     @Override
     public boolean hitEntity(ItemStack item, EntityLivingBase entityLivingHit, EntityLivingBase par3EntityLiving) 
     {
-        if (EnergyItemHandler.getEnergy(item) >= this.energyUsage)
+        EnergyItem energy = new EnergyItem(item, this);
+    	if (energy.getStorageI() >= this.energyUsage)
         {
             entityLivingHit.attackEntityFrom(DamageSource.causeMobDamage(par3EntityLiving), this.damageVsEntity);
-            EnergyItemHandler.addEnergy(item, -this.energyUsage, false);
+            energy.addEnergyI(-this.energyUsage, -1);
         }
         return true;
     }

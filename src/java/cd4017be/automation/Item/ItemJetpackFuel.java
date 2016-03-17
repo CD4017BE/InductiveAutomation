@@ -6,13 +6,13 @@
 
 package cd4017be.automation.Item;
 
-import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.automation.Automation;
 import cd4017be.lib.DefaultItem;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
 /**
  *
@@ -22,7 +22,7 @@ public class ItemJetpackFuel extends DefaultItem
 {
     
     public static float maxFuel = 2400;
-    public static float electricEmult = 0.005F;
+    public static float electricEmult = 0.000005F;
     
     public ItemJetpackFuel(String id)
     {
@@ -57,7 +57,9 @@ public class ItemJetpackFuel extends DefaultItem
 	        checkNBT(item);
 	        return item.stackTagCompound.getFloat("fuel");
         } else if (item.getItem() instanceof ItemInvEnergy) {
-        	return EnergyItemHandler.getEnergy(item) * electricEmult;
+        	EnergyItem energy = new EnergyItem(item, (ItemInvEnergy)item.getItem());
+        	energy.fractal = item.getTagCompound().getFloat("buff");
+        	return (float)energy.getStorage(-2) * electricEmult;
         } else return 0;
     }
     
@@ -67,7 +69,11 @@ public class ItemJetpackFuel extends DefaultItem
     	float e = getFuel(item);
         if (e > 0) {
             if (item.getItem() instanceof ItemInvEnergy) {
-            	return electricEmult * -EnergyItemHandler.addEnergy(item, -(int)Math.ceil(n / electricEmult), false);
+            	EnergyItem energy = new EnergyItem(item, (ItemInvEnergy)item.getItem());
+            	energy.fractal = item.getTagCompound().getFloat("buff");
+            	e = electricEmult * -(float)energy.addEnergy(-n / electricEmult, -2);
+            	item.getTagCompound().setFloat("buff", (float)energy.fractal);
+            	return e;
             }
         	if (e - n > 0) {
             	item.stackTagCompound.setFloat("fuel", e - n);

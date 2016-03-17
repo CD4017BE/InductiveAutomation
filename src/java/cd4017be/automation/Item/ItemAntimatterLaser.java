@@ -12,9 +12,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import cd4017be.api.automation.AntimatterItemHandler;
 import cd4017be.api.automation.AntimatterItemHandler.IAntimatterItem;
 import cd4017be.api.automation.AreaProtect;
-import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.api.automation.MatterOrbItemHandler;
 import cd4017be.api.automation.MatterOrbItemHandler.IMatterOrb;
+import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Gui.ContainerAMLEnchant;
@@ -131,13 +131,10 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     
     private void useOnEntity(ItemStack item, EntityPlayer player, Entity entity)
     {
-    	if (player.worldObj.isRemote) {
-    		EnergyItemHandler.addEnergy(item, 0, false);
-    		return;
-    	}
-    	if (entity.isDead) return;
-    	else if (!(entity instanceof EntityItem || entity instanceof EntityXPOrb)) {
-    		if (EnergyItemHandler.getEnergy(item) < EnergyUsage) {
+    	if (player.worldObj.isRemote || entity.isDead) return;
+    	if (!(entity instanceof EntityItem || entity instanceof EntityXPOrb)) {
+    		EnergyItem energy = new EnergyItem(item, this);
+    		if (energy.getStorageI() < EnergyUsage) {
         		player.addChatMessage(new ChatComponentText("Out of Energy!"));
                 return;
         	}
@@ -148,7 +145,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     		float am = AntimatterItemHandler.getAntimatter(item) + item.stackTagCompound.getFloat("buff");
             dmg = Math.min(dmg, (float)Math.pow(am / AMDamage, 1D / AMDmgExp));
             if (dmg < 1F) return;
-            EnergyItemHandler.addEnergy(item, -EnergyUsage, false);
+            energy.addEnergyI(-EnergyUsage, -1);
             float r = (float)Math.pow(dmg, AMDmgExp) * AMDamage - item.stackTagCompound.getFloat("buff");
             int n = (int)Math.ceil(r);
             if (n != 0) item.stackTagCompound.setInteger("antimatter", item.stackTagCompound.getInteger("antimatter") - n);
@@ -172,10 +169,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     {
     	int mode = item.stackTagCompound.getByte("mode");
     	if (player.isSneaking()) return false;
-        if (world.isRemote) {
-        	EnergyItemHandler.addEnergy(item, 0, false);
-            return true;
-        }
+        if (world.isRemote) return true;
         if (mode < 0) return true;
         else if (mode < 5) {
         	if (!AreaProtect.instance.isOperationAllowed(player.getName(), world, pos.getX() - mode, pos.getX() + mode + 1, pos.getZ() - mode, pos.getZ() + mode + 1)) {
@@ -206,7 +200,8 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     private boolean breakBlock(ItemStack item, EntityPlayer player, World world, BlockPos pos)
     {
     	Enchantments ench = new Enchantments(item);
-    	if (EnergyItemHandler.getEnergy(item) < ench.Euse) {
+    	EnergyItem energy = new EnergyItem(item, this);
+    	if (energy.getStorageI() < ench.Euse) {
     		player.addChatMessage(new ChatComponentText("Out of Energy!"));
             return false;
     	}
@@ -229,7 +224,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
             player.addChatMessage(new ChatComponentText("Matter Orb is full!"));
             return false;
         }
-        EnergyItemHandler.addEnergy(item, -ench.Euse, false);
+        energy.addEnergyI(-ench.Euse, -1);
         r -= item.stackTagCompound.getFloat("buff");
         int n = (int)Math.ceil(r);
         if (n != 0) item.stackTagCompound.setInteger("antimatter", item.stackTagCompound.getInteger("antimatter") - n);

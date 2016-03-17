@@ -372,7 +372,8 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     @Override
     public int textureForSide(byte s) 
     {
-        TileEntity p = Utils.getTileOnSide(this, s);
+        if (s == -1) return this.getBlockMetadata();
+    	TileEntity p = Utils.getTileOnSide(this, s);
         boolean b0 = getFlowBit(s);
         boolean b1 = getFlowBit(s | 8);
         if (!(b0 && b1) && p != null && p instanceof IInventory)

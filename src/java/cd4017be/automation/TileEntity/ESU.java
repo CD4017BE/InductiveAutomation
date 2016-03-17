@@ -9,8 +9,6 @@ import net.minecraft.network.PacketBuffer;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import cd4017be.api.automation.EnergyItemHandler;
-import cd4017be.api.automation.EnergyItemHandler.IEnergyItem;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.energy.EnergyAPI;
@@ -68,7 +66,7 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
         double d = energy.getEnergy(netData.ints[0], 1);
         double d1 = addEnergy(d, 0);
         if (d1 == d) energy.Ucap = netData.ints[0];
-        else if (d1 != 0) energy.addEnergy(d1);
+        else if (d1 != 0) energy.addEnergy(-d1);
         netData.floats[1] = (float)d1;
     }
     
@@ -96,14 +94,14 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item) 
     {
-    	netData.floats[0] = EnergyItemHandler.getEnergy(item);
+    	netData.floats[0] = (float)EnergyAPI.get(item).getStorage(-1);
     }
 
     @Override
     public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) 
     {
         ItemStack item = new ItemStack(this.getBlockType());
-        netData.floats[0] -= EnergyItemHandler.addEnergy(item, (int)Math.floor(netData.floats[0]), false);
+        netData.floats[0] -= EnergyAPI.get(item).addEnergy(netData.floats[0], -1);
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         list.add(item);
         return list;
@@ -166,7 +164,7 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     @Override
     public boolean isValid(ItemStack item, int cmp, int i) 
     {
-        return item == null || item.getItem() instanceof IEnergyItem;
+        return EnergyAPI.get(item) != EnergyAPI.NULL;
     }
 
     @Override

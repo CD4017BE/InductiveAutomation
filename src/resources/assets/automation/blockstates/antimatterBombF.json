@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:antimatterBombF" },
+		"orient=e": { "model": "automation:antimatterBombF" , "y": 90 },
+		"orient=s": { "model": "automation:antimatterBombF" , "y": 180 },
+		"orient=w": { "model": "automation:antimatterBombF" , "y": 270 }
+	}
+}

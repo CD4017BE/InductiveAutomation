@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/farm0",
+		"bot": "automation:blocks/farm1",
+		"front": "automation:blocks/farm2",
+		"back": "automation:blocks/farm2",
+		"left": "automation:blocks/farm2",
+		"right": "automation:blocks/farm2"
+	}
+}

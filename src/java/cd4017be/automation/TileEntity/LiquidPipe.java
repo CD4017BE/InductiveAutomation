@@ -352,6 +352,7 @@ public class LiquidPipe extends AutomatedTile implements IFluidHandler, IPipe
     @Override
     public int textureForSide(byte s) 
     {
+        if (s == -1) return this.getBlockMetadata();
         TileEntity p = Utils.getTileOnSide(this, s);
         boolean b0 = getFlowBit(s);
         boolean b1 = getFlowBit(s | 8);

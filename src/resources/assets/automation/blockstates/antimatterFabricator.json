@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:antimatterFabricator" },
+		"orient=e": { "model": "automation:antimatterFabricator" , "y": 90 },
+		"orient=s": { "model": "automation:antimatterFabricator" , "y": 180 },
+		"orient=w": { "model": "automation:antimatterFabricator" , "y": 270 }
+	}
+}

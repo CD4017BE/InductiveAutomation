@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/steamTurbine0",
+		"bot": "automation:blocks/steamTurbine0",
+		"front": "automation:blocks/steamTurbine1",
+		"back": "automation:blocks/steamTurbine1",
+		"left": "automation:blocks/steamTurbine1",
+		"right": "automation:blocks/steamTurbine1"
+	}
+}

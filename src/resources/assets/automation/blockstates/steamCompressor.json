@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:steamCompressor" },
+		"orient=e": { "model": "automation:steamCompressor" , "y": 90 },
+		"orient=s": { "model": "automation:steamCompressor" , "y": 180 },
+		"orient=w": { "model": "automation:steamCompressor" , "y": 270 }
+	}
+}

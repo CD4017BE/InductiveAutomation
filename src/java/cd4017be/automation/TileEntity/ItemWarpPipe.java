@@ -288,6 +288,7 @@ public class ItemWarpPipe extends AutomatedTile implements IPipe, IItemPipeCon
     @Override
     public int textureForSide(byte s) 
     {
+        if (s == -1) return 0;
         TileEntity p = Utils.getTileOnSide(this, s);
         boolean b0 = getFlowBit(s);
         boolean b1 = getFlowBit(s | 8);

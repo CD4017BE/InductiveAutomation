@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/voltageTransformer2",
+		"bot": "automation:blocks/voltageTransformer2",
+		"front": "automation:blocks/voltageTransformer0",
+		"back": "automation:blocks/voltageTransformer1",
+		"left": "automation:blocks/voltageTransformer2",
+		"right": "automation:blocks/voltageTransformer2"
+	}
+}

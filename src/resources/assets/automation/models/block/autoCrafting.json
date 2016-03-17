@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/autoCrafting0",
+		"bot": "automation:blocks/autoCrafting1",
+		"front": "automation:blocks/autoCrafting2",
+		"back": "automation:blocks/autoCrafting2",
+		"left": "automation:blocks/autoCrafting2",
+		"right": "automation:blocks/autoCrafting2"
+	}
+}

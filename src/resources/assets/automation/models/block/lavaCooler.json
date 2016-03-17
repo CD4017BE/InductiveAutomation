@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/lavaCooler0",
+		"bot": "automation:blocks/lavaCooler1",
+		"front": "automation:blocks/lavaCooler2",
+		"back": "automation:blocks/lavaCooler2",
+		"left": "automation:blocks/lavaCooler2",
+		"right": "automation:blocks/lavaCooler2"
+	}
+}

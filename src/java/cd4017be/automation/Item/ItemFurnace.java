@@ -2,10 +2,10 @@ package cd4017be.automation.Item;
 
 import java.util.List;
 
-import cd4017be.api.automation.EnergyItemHandler;
-import cd4017be.api.automation.EnergyItemHandler.IEnergyItem;
 import cd4017be.api.automation.InventoryItemHandler;
 import cd4017be.api.automation.InventoryItemHandler.IItemStorage;
+import cd4017be.api.energy.EnergyAutomation.EnergyItem;
+import cd4017be.api.energy.EnergyAutomation.IEnergyItem;
 import cd4017be.automation.Config;
 import cd4017be.automation.Gui.ContainerPortableFurnace;
 import cd4017be.automation.Gui.GuiPortableFurnace;
@@ -39,8 +39,18 @@ public class ItemFurnace extends ItemFilteredSubInventory implements IEnergyItem
 	@Override
 	public void addInformation(ItemStack item, EntityPlayer player, List list, boolean b) 
 	{
-		EnergyItemHandler.addInformation(item, list);
+		new EnergyItem(item, this).addInformation(list);
 		super.addInformation(item, player, list, b);
+	}
+	
+    @Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return true;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
+    	return 1D - (double)new EnergyItem(stack, this).getStorageI() / (double)this.getEnergyCap(stack);
 	}
 
 	@Override
@@ -75,20 +85,21 @@ public class ItemFurnace extends ItemFilteredSubInventory implements IEnergyItem
 	}
 
 	@Override
-	public String getEnergyTag(ItemStack item) {
+	public String getEnergyTag() {
 		return "energy";
 	}
 
 	@Override
 	protected void updateItem(ItemStack item, EntityPlayer player, InventoryPlayer inv, int s, PipeUpgradeItem in, PipeUpgradeItem out) 
 	{
-		if (EnergyItemHandler.getEnergy(item) >= energyUse) {
+		EnergyItem energy = new EnergyItem(item, this);
+		if (energy.getStorageI() >= energyUse) {
 			ItemStack[] cont = InventoryItemHandler.getItemList(item);
 			if (cont.length > 0) {
 				ItemStack stack = FurnaceRecipes.instance().getSmeltingResult(cont[0]);
 				if (stack != null) {
 					stack = stack.copy();
-					EnergyItemHandler.addEnergy(item, -energyUse, false);
+					energy.addEnergyI(-energyUse, -1);
 					cont[0].stackSize = 1;
 					InventoryItemHandler.extractItemStack(item, cont[0]);
 					if (!inv.addItemStackToInventory(stack)) {

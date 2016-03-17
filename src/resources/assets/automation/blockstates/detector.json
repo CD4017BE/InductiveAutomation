@@ -1,0 +1,10 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:detector" },
+		"orient=e": { "model": "automation:detector" , "y": 90 },
+		"orient=s": { "model": "automation:detector" , "y": 180 },
+		"orient=w": { "model": "automation:detector" , "y": 270 },
+		"orient=b": { "model": "automation:detector" , "x": 90 },
+		"orient=t": { "model": "automation:detector" , "x": 270 }
+	}
+}

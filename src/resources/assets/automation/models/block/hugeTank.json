@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/hugeTank0",
+		"bot": "automation:blocks/hugeTank0",
+		"front": "automation:blocks/hugeTank0",
+		"back": "automation:blocks/hugeTank0",
+		"left": "automation:blocks/hugeTank0",
+		"right": "automation:blocks/hugeTank0"
+	}
+}

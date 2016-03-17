@@ -4,8 +4,8 @@ import java.io.IOException;
 
 import org.lwjgl.opengl.GL11;
 
-import cd4017be.api.automation.EnergyItemHandler;
-import cd4017be.api.automation.EnergyItemHandler.IEnergyItem;
+import cd4017be.api.energy.EnergyAPI;
+import cd4017be.api.energy.EnergyAutomation.IEnergyItem;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 import net.minecraft.item.ItemStack;
@@ -41,7 +41,7 @@ public class GuiPortableFurnace extends GuiMachine {
     @Override
 	public void updateScreen() 
     {
-		energy = EnergyItemHandler.getEnergy(this.furnace.player.getCurrentEquippedItem());
+		energy = (int)(EnergyAPI.get(this.furnace.player.getCurrentEquippedItem()).getStorage(0) / 1000D);
 		super.updateScreen();
 	}
 

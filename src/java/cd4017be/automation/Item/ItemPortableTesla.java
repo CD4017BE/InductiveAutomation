@@ -12,8 +12,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
-import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.api.automation.TeslaNetwork;
+import cd4017be.api.energy.EnergyAPI;
 import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
 import cd4017be.automation.Gui.ContainerPortableTesla;
@@ -78,63 +78,34 @@ public class ItemPortableTesla extends DefaultItem implements IGuiItem
 		TeslaNetwork.instance.transmittEnergy(new TeslaTransmitterItem(player, s, item, Config.Umax[3]));
 		double Emax = Config.Umax[3] * Config.Umax[3];
 		short mode = item.stackTagCompound.getShort("mode");
-		if ((mode & 0x7) != 0) 
-		{
+		if ((mode & 0x7) != 0) {
 			InventoryPlayer inv = player.inventory;
             double E0 = item.stackTagCompound.getDouble("voltage");
 			double E = (E0 *= E0);
-			boolean kJ = (mode & 0x1) != 0, RF = (mode & 0x2) != 0, EU = (mode & 0x4) != 0;
-			if ((mode & 0x0300) == 0x0100) {
-				for (int i = 0; i < InventoryPlayer.getHotbarSize(); i++) {
-					E -= this.chargeItem(inv.mainInventory[i], E, kJ, RF, EU);
-				}
-			} else if ((mode & 0x0300) == 0x0200) {
-				for (int i = 0; i < InventoryPlayer.getHotbarSize(); i++) {
-					E += this.dischargeItem(inv.mainInventory[i], Emax - E, kJ, RF, EU);
-				}
-			}
 			
-			if ((mode & 0x0c00) == 0x0400) {
-				for (int i = InventoryPlayer.getHotbarSize(); i < inv.mainInventory.length; i++) {
-					E -= this.chargeItem(inv.mainInventory[i], E, kJ, RF, EU);
-				}
-			} else if ((mode & 0x0c00) == 0x0800) {
-				for (int i = InventoryPlayer.getHotbarSize(); i < inv.mainInventory.length; i++) {
-					E += this.dischargeItem(inv.mainInventory[i], Emax - E, kJ, RF, EU);
-				}
-			}
+			if ((mode & 0x0300) == 0x0100)
+				for (int i = 0; i < InventoryPlayer.getHotbarSize(); i++)
+					E -= EnergyAPI.get(inv.mainInventory[i]).addEnergy(E, 0);
+			else if ((mode & 0x0300) == 0x0200)
+				for (int i = 0; i < InventoryPlayer.getHotbarSize(); i++)
+					E -= EnergyAPI.get(inv.mainInventory[i]).addEnergy(E - Emax, 0);
 			
-			if ((mode & 0x3000) == 0x1000) {
-				for (int i = 0; i < inv.armorInventory.length; i++) {
-					E -= this.chargeItem(inv.armorInventory[i], E, kJ, RF, EU);
-				}
-			} else if ((mode & 0x3000) == 0x2000) {
-				for (int i = 0; i < inv.armorInventory.length; i++) {
-					E += this.dischargeItem(inv.armorInventory[i], Emax - E, kJ, RF, EU);
-				}
-			}
-            if (E != E0) item.stackTagCompound.setDouble("voltage", Math.sqrt(E));
+			if ((mode & 0x0c00) == 0x0400)
+				for (int i = InventoryPlayer.getHotbarSize(); i < inv.mainInventory.length; i++)
+					E -= EnergyAPI.get(inv.mainInventory[i]).addEnergy(E, 0);
+			else if ((mode & 0x0c00) == 0x0800)
+				for (int i = InventoryPlayer.getHotbarSize(); i < inv.mainInventory.length; i++)
+					E -= EnergyAPI.get(inv.mainInventory[i]).addEnergy(E - Emax, 0);
+			
+			if ((mode & 0x3000) == 0x1000)
+				for (int i = 0; i < inv.armorInventory.length; i++)
+					E -= EnergyAPI.get(inv.armorInventory[i]).addEnergy(E, 0);
+			else if ((mode & 0x3000) == 0x2000)
+				for (int i = 0; i < inv.armorInventory.length; i++)
+					E -= EnergyAPI.get(inv.armorInventory[i]).addEnergy(E - Emax, 0);
+			
+			if (E != E0) item.stackTagCompound.setDouble("voltage", Math.sqrt(E));
 		}
-	}
-	
-	private double chargeItem(ItemStack item, double e, boolean kJ, boolean RF, boolean EU)
-	{
-		if (item == null) return 0;
-		else if (kJ && EnergyItemHandler.isEnergyItem(item)) return (double)EnergyItemHandler.addEnergy(item, (int)Math.floor(e * 0.001D), true) * 1000D;
-		/*else if (RF && item.getItem() instanceof IEnergyContainerItem) {
-			IEnergyContainerItem cont = (IEnergyContainerItem)item.getItem();
-			return (double)cont.receiveEnergy(item, (int)Math.floor(e / EnergyThermalExpansion.E_Factor), false) * EnergyThermalExpansion.E_Factor;
-		}*/ else return 0;//TODO reimplement
-	}
-	
-	private double dischargeItem(ItemStack item, double e, boolean kJ, boolean RF, boolean EU)
-	{
-		if (item == null) return 0;
-		if (kJ && EnergyItemHandler.isEnergyItem(item)) return -(double)EnergyItemHandler.addEnergy(item, -(int)Math.floor(e * 0.001D), true) * 1000D;
-		/*else if (RF && item.getItem() instanceof IEnergyContainerItem) {
-			IEnergyContainerItem cont = (IEnergyContainerItem)item.getItem();
-			return (double)cont.extractEnergy(item, (int)Math.floor(e / EnergyThermalExpansion.E_Factor), false) * EnergyThermalExpansion.E_Factor;
-		}*/ else return 0;//TODO reimplement
 	}
 
 }

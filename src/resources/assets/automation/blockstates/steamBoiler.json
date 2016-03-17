@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:steamBoiler" },
+		"orient=e": { "model": "automation:steamBoiler" , "y": 90 },
+		"orient=s": { "model": "automation:steamBoiler" , "y": 180 },
+		"orient=w": { "model": "automation:steamBoiler" , "y": 270 }
+	}
+}

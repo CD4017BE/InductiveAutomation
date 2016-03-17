@@ -5,7 +5,7 @@ import java.io.IOException;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import cd4017be.api.automation.EnergyItemHandler;
+import cd4017be.api.energy.EnergyAPI;
 import cd4017be.automation.Item.ItemPortableTeleporter;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
@@ -69,7 +69,7 @@ public class GuiPortableTeleporter extends GuiMachine
         	for (int i = 0; i < list.length; i++) {
         		list[i] = new Entry(data.getCompoundTagAt(i), x, y, z);
         	}
-        	maxDist = (double)EnergyItemHandler.getEnergy(item) / (double)ItemPortableTeleporter.energyUse;
+        	maxDist = EnergyAPI.get(item).getStorage(0) / (double)ItemPortableTeleporter.energyUse / 1000D;
         }
         if (list.length != l) scroll = 0;
         tfX.updateCursorCounter();

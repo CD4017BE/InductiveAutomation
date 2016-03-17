@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/teleporter0",
+		"bot": "automation:blocks/teleporter1",
+		"front": "automation:blocks/teleporter2",
+		"back": "automation:blocks/teleporter2",
+		"left": "automation:blocks/teleporter2",
+		"right": "automation:blocks/teleporter2"
+	}
+}

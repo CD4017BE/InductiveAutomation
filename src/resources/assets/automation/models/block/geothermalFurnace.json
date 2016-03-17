@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/geothermalFurnace0",
+		"bot": "automation:blocks/geothermalFurnace1",
+		"front": "automation:blocks/geothermalFurnace2",
+		"back": "automation:blocks/geothermalFurnace3",
+		"left": "automation:blocks/geothermalFurnace3",
+		"right": "automation:blocks/geothermalFurnace3"
+	}
+}

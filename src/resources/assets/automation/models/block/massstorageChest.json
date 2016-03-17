@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/massstorageChest0",
+		"bot": "automation:blocks/massstorageChest1",
+		"front": "automation:blocks/massstorageChest2",
+		"back": "automation:blocks/massstorageChest3",
+		"left": "automation:blocks/massstorageChest3",
+		"right": "automation:blocks/massstorageChest3"
+	}
+}

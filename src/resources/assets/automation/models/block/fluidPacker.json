@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/fluidPacker0",
+		"bot": "automation:blocks/fluidPacker1",
+		"front": "automation:blocks/fluidPacker2",
+		"back": "automation:blocks/fluidPacker3",
+		"left": "automation:blocks/fluidPacker3",
+		"right": "automation:blocks/fluidPacker3"
+	}
+}

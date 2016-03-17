@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/quantumTank0",
+		"bot": "automation:blocks/quantumTank0",
+		"front": "automation:blocks/quantumTank0",
+		"back": "automation:blocks/quantumTank0",
+		"left": "automation:blocks/quantumTank0",
+		"right": "automation:blocks/quantumTank0"
+	}
+}

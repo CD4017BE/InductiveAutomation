@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:algaePool" },
+		"orient=e": { "model": "automation:algaePool" , "y": 90 },
+		"orient=s": { "model": "automation:algaePool" , "y": 180 },
+		"orient=w": { "model": "automation:algaePool" , "y": 270 }
+	}
+}

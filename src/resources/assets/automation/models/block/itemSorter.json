@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/itemSorter0",
+		"bot": "automation:blocks/itemSorter0",
+		"front": "automation:blocks/itemSorter0",
+		"back": "automation:blocks/itemSorter0",
+		"left": "automation:blocks/itemSorter0",
+		"right": "automation:blocks/itemSorter0"
+	}
+}

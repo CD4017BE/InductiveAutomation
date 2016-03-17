@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/texMaker0",
+		"bot": "automation:blocks/texMaker1",
+		"front": "automation:blocks/texMaker2",
+		"back": "automation:blocks/texMaker2",
+		"left": "automation:blocks/texMaker2",
+		"right": "automation:blocks/texMaker2"
+	}
+}

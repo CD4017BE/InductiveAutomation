@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/magnet0",
+		"bot": "automation:blocks/magnet0",
+		"front": "automation:blocks/magnet1",
+		"back": "automation:blocks/magnet1",
+		"left": "automation:blocks/magnet1",
+		"right": "automation:blocks/magnet1"
+	}
+}

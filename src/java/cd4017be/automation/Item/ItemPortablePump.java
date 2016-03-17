@@ -2,8 +2,6 @@ package cd4017be.automation.Item;
 
 import java.util.List;
 
-import cd4017be.api.automation.EnergyItemHandler;
-import cd4017be.api.automation.EnergyItemHandler.IEnergyItem;
 import cd4017be.automation.Config;
 import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.Utils;
@@ -17,8 +15,9 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
-public class ItemPortablePump extends ItemEnergyCell implements IEnergyItem, IFluidContainerItem {
+public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerItem {
 
 	public static int energyUse = 8;
 	
@@ -104,7 +103,8 @@ public class ItemPortablePump extends ItemEnergyCell implements IEnergyItem, IFl
 	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
 	{
 		if (world.isRemote) return item;
-		if (EnergyItemHandler.getEnergy(item) < energyUse) return item;
+		EnergyItem energy = new EnergyItem(item, this);
+		if (energy.getStorageI() < energyUse) return item;
 		Vec3 pos = new Vec3(player.posX, player.posY + 1.62D - player.getYOffset(), player.posZ);
         Vec3 dir = player.getLookVec();
         MovingObjectPosition obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 16, dir.yCoord * 16, dir.zCoord * 16), true, false, false);
@@ -112,7 +112,7 @@ public class ItemPortablePump extends ItemEnergyCell implements IEnergyItem, IFl
         FluidStack fluid = Utils.getFluid(world, obj.getBlockPos(), true);
         if (fluid != null && this.fill(item, fluid, false) == fluid.amount) {
         	this.fill(item, fluid, true);
-        	EnergyItemHandler.addEnergy(item, -energyUse, false);
+        	energy.addEnergyI(-energyUse, -1);
         	world.setBlockToAir(obj.getBlockPos());
         }
         return item;

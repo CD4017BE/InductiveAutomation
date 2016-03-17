@@ -1,0 +1,10 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:link" },
+		"orient=e": { "model": "automation:link" , "y": 90 },
+		"orient=s": { "model": "automation:link" , "y": 180 },
+		"orient=w": { "model": "automation:link" , "y": 270 },
+		"orient=b": { "model": "automation:link" , "x": 90 },
+		"orient=t": { "model": "automation:link" , "x": 270 }
+	}
+}

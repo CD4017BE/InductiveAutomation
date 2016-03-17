@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:energyFurnace" },
+		"orient=e": { "model": "automation:energyFurnace" , "y": 90 },
+		"orient=s": { "model": "automation:energyFurnace" , "y": 180 },
+		"orient=w": { "model": "automation:energyFurnace" , "y": 270 }
+	}
+}

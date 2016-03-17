@@ -1,0 +1,8 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:electricCompressor" },
+		"orient=e": { "model": "automation:electricCompressor" , "y": 90 },
+		"orient=s": { "model": "automation:electricCompressor" , "y": 180 },
+		"orient=w": { "model": "automation:electricCompressor" , "y": 270 }
+	}
+}

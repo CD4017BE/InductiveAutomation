@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.List;
 
 import cd4017be.api.automation.AreaProtect;
-import cd4017be.api.automation.EnergyItemHandler;
-import cd4017be.api.automation.EnergyItemHandler.IEnergyItem;
 import cd4017be.automation.Config;
 import cd4017be.automation.Gui.ContainerPortableTeleporter;
 import cd4017be.automation.Gui.GuiPortableTeleporter;
@@ -31,8 +29,9 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
-public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, IEnergyItem 
+public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 {
 	
 	public static float energyUse = 8.0F;
@@ -166,7 +165,8 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, 
 			z0 = MathHelper.floor_double(player.posZ);
 		int dx = x - x0, dy = y - y0, dz = z - z0;
 		int e = MathHelper.floor_double(Math.sqrt(dx * dx + dy * dy + dz * dz) * energyUse);
-		if (EnergyItemHandler.getEnergy(item) < e) {
+		EnergyItem energy = new EnergyItem(item, this);
+		if (energy.getStorageI() < e) {
 			player.addChatMessage(new ChatComponentText("Not enough Energy: " + e + " kJ needed!"));
 			return;
 		}
@@ -174,7 +174,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem, 
 			player.addChatMessage(new ChatComponentText("Destination protected!"));
 			return;
 		}
-		EnergyItemHandler.addEnergy(item, -e, false);
+		energy.addEnergyI(-e, -1);
 		int dim = player.dimension;
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(x0, y0, z0, x0 + 1, y0 + 2, z0 + 1));
 		for (Entity entity : entities) {

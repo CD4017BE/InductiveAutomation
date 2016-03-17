@@ -28,6 +28,7 @@ import cd4017be.lib.TileBlockRegistry;
 import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.render.PipeRenderer;
 import cd4017be.lib.render.SelectionRenderer;
+import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import cd4017be.automation.Gui.*;
 import static cd4017be.automation.Objects.*;
@@ -46,63 +47,9 @@ public class ClientProxy extends CommonProxy
     	TickHandler.init();
         ClientInputHandler.init();
         TooltipInfo.addConfigReference(Config.data);
+        
     	this.registerAdditionalModels();
-    	//Tiles
-    	ClientRegistry.bindTileEntitySpecialRenderer(Miner.class, new SelectionRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(Builder.class, new SelectionRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(Farm.class, new SelectionRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(Pump.class, new SelectionRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(Teleporter.class, new SelectionRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(Tank.class, new TileEntityTankRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(AntimatterBomb.class, new TileEntityAntimatterBombRenderer());
-        ClientRegistry.bindTileEntitySpecialRenderer(VertexShematicGen.class, new Render3DVertexShem());
-        //Pipes
-        ClientRegistry.bindTileEntitySpecialRenderer(Wire.class, new PipeRenderer("automation:wire", "C", "A", "H"));
-        ClientRegistry.bindTileEntitySpecialRenderer(ItemPipe.class, new PipeRenderer("automation:itemPipe", "T", "I", "E"));
-        ClientRegistry.bindTileEntitySpecialRenderer(LiquidPipe.class, new PipeRenderer("automation:liquidPipe", "T", "I", "E"));
-        ClientRegistry.bindTileEntitySpecialRenderer(ItemWarpPipe.class, new PipeRenderer("automation:itemPipe", "W", "I", "E"));
-        ClientRegistry.bindTileEntitySpecialRenderer(LiquidWarpPipe.class, new PipeRenderer("automation:liquidPipe", "W", "I", "E"));
-        //Items
-        BlockItemRegistry.registerItemRender(material, new MaterialTextures("automation:materials/"));
-        BlockItemRegistry.registerItemRender("selectionTool");
-    	BlockItemRegistry.registerItemRender("voltMeter");
-    	BlockItemRegistry.registerItemRender("energyCell");
-    	BlockItemRegistry.registerItemRender("chisle");
-    	BlockItemRegistry.registerItemRender("cutter");
-    	BlockItemRegistry.registerItemRender("portableMagnet");
-    	BlockItemRegistry.registerItemRender("builderTexture");
-    	BlockItemRegistry.registerItemRender("teleporterCoords");
-    	BlockItemRegistry.registerItemRender("stoneDrill");
-    	BlockItemRegistry.registerItemRender("ironDrill");
-    	BlockItemRegistry.registerItemRender("diamondDrill");
-    	BlockItemRegistry.registerItemRender("amLaser");
-    	BlockItemRegistry.registerItemRender("mCannon");
-    	BlockItemRegistry.registerItemRender("contLiquidAir");
-    	BlockItemRegistry.registerItemRender("contAlgaeFood");
-    	BlockItemRegistry.registerItemRender("contInvEnergy");
-    	BlockItemRegistry.registerItemRender("contJetFuel");
-    	BlockItemRegistry.registerItemRender("jetpack");
-    	BlockItemRegistry.registerItemRender("jetpackIron");
-    	BlockItemRegistry.registerItemRender("jetpackSteel");
-    	BlockItemRegistry.registerItemRender("jetpackGraphite");
-    	BlockItemRegistry.registerItemRender("jetpackUnbr");
-    	BlockItemRegistry.registerItemRender("matterInterface");
-    	BlockItemRegistry.registerItemRender("fluidUpgrade");
-    	BlockItemRegistry.registerItemRender("itemUpgrade");
-    	BlockItemRegistry.registerItemRender("portableFurnace");
-    	BlockItemRegistry.registerItemRender("portableInventory");
-    	BlockItemRegistry.registerItemRender("portableCrafter");
-    	BlockItemRegistry.registerItemRender("portableGenerator");
-    	BlockItemRegistry.registerItemRender("portableRemoteInv");
-    	BlockItemRegistry.registerItemRender("portableTeleporter");
-    	BlockItemRegistry.registerItemRender("portablePump");
-    	BlockItemRegistry.registerItemRender("translocator");
-    	BlockItemRegistry.registerItemRender("portableTesla");
-    	BlockItemRegistry.registerItemRender("placement");
-    	BlockItemRegistry.registerItemRender("synchronizer");
-    	BlockItemRegistry.registerItemRender("remBlockType");
-    	BlockItemRegistry.registerItemRender("vertexSel");
-        //BlockItems
+    	//BlockItems
     	BlockItemRegistry.registerBlockRender("ore:0");
     	BlockItemRegistry.registerBlockRender("ore:1");
     	BlockItemRegistry.registerBlockRender("pool:0");
@@ -189,6 +136,61 @@ public class ClientProxy extends CommonProxy
 		BlockItemRegistry.registerBlockRender("itemBuffer:0");
 		BlockItemRegistry.registerBlockRender("quantumTank:0");
 		BlockItemRegistry.registerBlockRender("vertShemGen:0");
+		//Items
+        BlockItemRegistry.registerItemRender(material, new MaterialTextures("automation:"));
+        BlockItemRegistry.registerItemRender("selectionTool");
+    	BlockItemRegistry.registerItemRender("voltMeter");
+    	BlockItemRegistry.registerItemRender("energyCell");
+    	BlockItemRegistry.registerItemRender("chisle");
+    	BlockItemRegistry.registerItemRender("cutter");
+    	BlockItemRegistry.registerItemRender("portableMagnet");
+    	BlockItemRegistry.registerItemRender("builderTexture");
+    	BlockItemRegistry.registerItemRender("teleporterCoords");
+    	BlockItemRegistry.registerItemRender("stoneDrill");
+    	BlockItemRegistry.registerItemRender("ironDrill");
+    	BlockItemRegistry.registerItemRender("diamondDrill");
+    	BlockItemRegistry.registerItemRender("amLaser");
+    	BlockItemRegistry.registerItemRender("mCannon");
+    	BlockItemRegistry.registerItemRender("contLiquidAir");
+    	BlockItemRegistry.registerItemRender("contAlgaeFood");
+    	BlockItemRegistry.registerItemRender("contInvEnergy");
+    	BlockItemRegistry.registerItemRender("contJetFuel");
+    	BlockItemRegistry.registerItemRender("jetpack");
+    	BlockItemRegistry.registerItemRender("jetpackIron");
+    	BlockItemRegistry.registerItemRender("jetpackSteel");
+    	BlockItemRegistry.registerItemRender("jetpackGraphite");
+    	BlockItemRegistry.registerItemRender("jetpackUnbr");
+    	BlockItemRegistry.registerItemRender("matterInterface");
+    	BlockItemRegistry.registerItemRender("fluidUpgrade");
+    	BlockItemRegistry.registerItemRender("itemUpgrade");
+    	BlockItemRegistry.registerItemRender("portableFurnace");
+    	BlockItemRegistry.registerItemRender("portableInventory");
+    	BlockItemRegistry.registerItemRender("portableCrafter");
+    	BlockItemRegistry.registerItemRender("portableGenerator");
+    	BlockItemRegistry.registerItemRender("portableRemoteInv");
+    	BlockItemRegistry.registerItemRender("portableTeleporter");
+    	BlockItemRegistry.registerItemRender("portablePump");
+    	BlockItemRegistry.registerItemRender("translocator");
+    	BlockItemRegistry.registerItemRender("portableTesla");
+    	BlockItemRegistry.registerItemRender("placement");
+    	BlockItemRegistry.registerItemRender("synchronizer");
+    	BlockItemRegistry.registerItemRender("remBlockType");
+    	BlockItemRegistry.registerItemRender("vertexSel");
+    	//Tiles
+    	ClientRegistry.bindTileEntitySpecialRenderer(Miner.class, new SelectionRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(Builder.class, new SelectionRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(Farm.class, new SelectionRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(Pump.class, new SelectionRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(Teleporter.class, new SelectionRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(Tank.class, new TileEntityTankRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(AntimatterBomb.class, new TileEntityAntimatterBombRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(VertexShematicGen.class, new Render3DVertexShem());
+        //Pipes
+        ClientRegistry.bindTileEntitySpecialRenderer(Wire.class, new PipeRenderer("automation:wire", "C", "A", "H"));
+        ClientRegistry.bindTileEntitySpecialRenderer(ItemPipe.class, new PipeRenderer("automation:itemPipe", "T", "I", "E"));
+        ClientRegistry.bindTileEntitySpecialRenderer(LiquidPipe.class, new PipeRenderer("automation:liquidPipe", "T", "I", "E"));
+        ClientRegistry.bindTileEntitySpecialRenderer(ItemWarpPipe.class, new PipeRenderer("automation:itemPipe", "W", "I", "E"));
+        ClientRegistry.bindTileEntitySpecialRenderer(LiquidWarpPipe.class, new PipeRenderer("automation:liquidPipe", "W", "I", "E"));
     }
     
     private void registerAdditionalModels()
@@ -201,6 +203,10 @@ public class ClientProxy extends CommonProxy
     	BlockItemRegistry.registerModels(liquidPipe, "liquidPipe", "liquidPipe_1", "liquidPipe_2", "liquidPipeT_con", "liquidPipeT_core", "liquidPipeI_con", "liquidPipeI_core", "liquidPipeE_con", "liquidPipeE_core");
     	BlockItemRegistry.registerModels(itemWarpPipe, "itemWarpPipe", "itemPipeW_con", "itemPipeW_core");
     	BlockItemRegistry.registerModels(liquidWarpPipe, "liquidWarpPipe", "liquidPipeW_con", "liquidPipeW_core");
+    	BlockItemRegistry.registerModels(ore, "ore", "ore_1");
+    	String[] tex = new String[16];
+    	for (int i = 0; i < tex.length; i++) tex[i] = "unbrStone" + (i == 0 ? "" : "_" + i);
+    	BlockItemRegistry.registerModels(unbrStone, tex);
     }
 
     @Override
@@ -254,6 +260,12 @@ public class ClientProxy extends CommonProxy
         TileBlockRegistry.registerGui(itemBuffer, GuiItemBuffer.class);
         TileBlockRegistry.registerGui(quantumTank, GuiQuantumTank.class);
         TileBlockRegistry.registerGui(vertShemGen, GuiVertexShematicGen.class);
+        //set block transparencies
+        Objects.tank.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
+        Objects.hugeTank.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
+        Objects.quantumTank.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
+        Objects.pool.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
+        Objects.wormhole.setBlockLayer(EnumWorldBlockLayer.TRANSLUCENT);
     }
     
 }

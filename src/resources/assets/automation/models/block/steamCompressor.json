@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/steamCompressor0",
+		"bot": "automation:blocks/steamCompressor1",
+		"front": "automation:blocks/steamCompressor2",
+		"back": "automation:blocks/steamCompressor3",
+		"left": "automation:blocks/steamCompressor3",
+		"right": "automation:blocks/steamCompressor3"
+	}
+}

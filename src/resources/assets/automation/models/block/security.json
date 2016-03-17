@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/security0",
+		"bot": "automation:blocks/security1",
+		"front": "automation:blocks/security2",
+		"back": "automation:blocks/security3",
+		"left": "automation:blocks/security3",
+		"right": "automation:blocks/security3"
+	}
+}

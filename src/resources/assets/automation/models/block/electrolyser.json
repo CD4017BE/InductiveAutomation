@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/electrolyser0",
+		"bot": "automation:blocks/electrolyser1",
+		"front": "automation:blocks/electrolyser2",
+		"back": "automation:blocks/electrolyser2",
+		"left": "automation:blocks/electrolyser2",
+		"right": "automation:blocks/electrolyser2"
+	}
+}

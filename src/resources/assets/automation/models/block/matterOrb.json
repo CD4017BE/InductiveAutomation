@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/matterOrb0",
+		"bot": "automation:blocks/matterOrb0",
+		"front": "automation:blocks/matterOrb0",
+		"back": "automation:blocks/matterOrb0",
+		"left": "automation:blocks/matterOrb0",
+		"right": "automation:blocks/matterOrb0"
+	}
+}

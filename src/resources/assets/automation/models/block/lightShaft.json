@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/lightShaft0",
+		"bot": "automation:blocks/lightShaft1",
+		"front": "automation:blocks/lightShaft2",
+		"back": "automation:blocks/lightShaft2",
+		"left": "automation:blocks/lightShaft2",
+		"right": "automation:blocks/lightShaft2"
+	}
+}

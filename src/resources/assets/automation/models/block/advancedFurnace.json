@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/advancedFurnace0",
+		"bot": "automation:blocks/advancedFurnace1",
+		"front": "automation:blocks/advancedFurnace2",
+		"back": "automation:blocks/advancedFurnace3",
+		"left": "automation:blocks/advancedFurnace3",
+		"right": "automation:blocks/advancedFurnace3"
+	}
+}

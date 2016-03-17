@@ -1,0 +1,9 @@
+- Fluids don't render
+- Suffocation in tesla tranmitters & solarpanels
+- Wormhole missing Model & texture
+- Too many digits displayed for Ampere/Power
+- Fluid vent fills wrong
+- Fluid dummy item doesn't render
+- Selection Area doesn't render
+- Some tileentity renderer cause graphic glitches
+- Fluid detection not working

@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/antimatterTank0",
+		"bot": "automation:blocks/antimatterTank0",
+		"front": "automation:blocks/antimatterTank1",
+		"back": "automation:blocks/antimatterTank1",
+		"left": "automation:blocks/antimatterTank1",
+		"right": "automation:blocks/antimatterTank1"
+	}
+}

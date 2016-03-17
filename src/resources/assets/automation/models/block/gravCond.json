@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/gravCond0",
+		"bot": "automation:blocks/gravCond0",
+		"front": "automation:blocks/gravCond0",
+		"back": "automation:blocks/gravCond0",
+		"left": "automation:blocks/gravCond0",
+		"right": "automation:blocks/gravCond0"
+	}
+}

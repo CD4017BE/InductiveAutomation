@@ -6,8 +6,8 @@ package cd4017be.automation.Item;
 
 import java.util.List;
 
-import cd4017be.api.automation.EnergyItemHandler;
-import cd4017be.api.automation.EnergyItemHandler.IEnergyItem;
+import cd4017be.api.energy.EnergyAutomation.IEnergyItem;
+import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 import cd4017be.automation.Automation;
 import cd4017be.lib.DefaultItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,11 +32,21 @@ public class ItemEnergyCell extends DefaultItem implements IEnergyItem
     @Override
     public void addInformation(ItemStack item, EntityPlayer player, List list, boolean f) 
     {
-        EnergyItemHandler.addInformation(item, list);
+    	new EnergyItem(item, this).addInformation(list);
         super.addInformation(item, player, list, f);
     }
 
     @Override
+	public boolean showDurabilityBar(ItemStack stack) {
+		return true;
+	}
+
+	@Override
+	public double getDurabilityForDisplay(ItemStack stack) {
+    	return 1D - (double)new EnergyItem(stack, this).getStorageI() / (double)this.getEnergyCap(stack);
+	}
+
+	@Override
     public int getEnergyCap(ItemStack item) 
     {
         return storage;
@@ -49,7 +59,7 @@ public class ItemEnergyCell extends DefaultItem implements IEnergyItem
     }
 
     @Override
-    public String getEnergyTag(ItemStack item) 
+    public String getEnergyTag() 
     {
         return "energy";
     }

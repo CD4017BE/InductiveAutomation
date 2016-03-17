@@ -1,0 +1,10 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:voltageTransformer" },
+		"orient=e": { "model": "automation:voltageTransformer" , "y": 90 },
+		"orient=s": { "model": "automation:voltageTransformer" , "y": 180 },
+		"orient=w": { "model": "automation:voltageTransformer" , "y": 270 },
+		"orient=b": { "model": "automation:voltageTransformer" , "x": 90 },
+		"orient=t": { "model": "automation:voltageTransformer" , "x": 270 }
+	}
+}

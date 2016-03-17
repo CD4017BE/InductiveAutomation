@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/decompCooler0",
+		"bot": "automation:blocks/decompCooler1",
+		"front": "automation:blocks/decompCooler2",
+		"back": "automation:blocks/decompCooler2",
+		"left": "automation:blocks/decompCooler2",
+		"right": "automation:blocks/decompCooler2"
+	}
+}

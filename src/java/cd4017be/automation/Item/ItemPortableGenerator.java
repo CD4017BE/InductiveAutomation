@@ -1,8 +1,8 @@
 package cd4017be.automation.Item;
 
-import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.api.automation.InventoryItemHandler;
 import cd4017be.api.automation.InventoryItemHandler.IItemStorage;
+import cd4017be.api.energy.EnergyAPI;
 import cd4017be.automation.Gui.ContainerPortableGenerator;
 import cd4017be.automation.Gui.GuiPortableGenerator;
 import cd4017be.lib.BlockGuiHandler;
@@ -56,30 +56,26 @@ public class ItemPortableGenerator extends ItemFilteredSubInventory implements I
 	@Override
 	protected void updateItem(ItemStack item, EntityPlayer player, InventoryPlayer inv, int s, PipeUpgradeItem in, PipeUpgradeItem out) 
 	{
-		int e = item.stackTagCompound.getInteger("buff");
+		float e = item.stackTagCompound.getFloat("buff");
 		if (e > 0) {
-			int d0 = e, d1 = e;
-			if (d0 > maxPower) d0 = d1 = maxPower;
+			float d0 = e, d1 = e;
+			if (d0 > maxPower * 1000) d0 = d1 = maxPower * 1000;
             for (int j = 0; j < inv.mainInventory.length && d0 > 0; j++)
-            {
-                ItemStack it = inv.mainInventory[j];
-                if (EnergyItemHandler.isEnergyItem(it)) {
-                	d0 -= EnergyItemHandler.addEnergy(it, d0, true);
-                }
-            }
-            item.stackTagCompound.setInteger("buff", e - d1 + d0);
+                d0 -= EnergyAPI.get(inv.mainInventory[j]).addEnergy(d0, 0);
+            e += d0 - d1;
 		}
-		if (item.stackTagCompound.getInteger("buff") <= 0) {
+		if (e < maxPower) {
 			ItemStack[] cont = InventoryItemHandler.getItemList(item);
 			if (cont.length > 0) {
-				e = TileEntityFurnace.getItemBurnTime(cont[0]);
-				if (e > 0) {
-					item.stackTagCompound.setInteger("buff", e);
+				int h = TileEntityFurnace.getItemBurnTime(cont[0]);
+				if (h > 0) {
+					e += (float)h * 1000F;
 					cont[0].stackSize = 1;
 					InventoryItemHandler.extractItemStack(item, cont[0]);
 				}
 			}
 		}
+		item.stackTagCompound.setFloat("buff", e);
 		if (InventoryItemHandler.hasEmptySlot(item)) super.updateItem(item, player, inv, s, in, out);
 	}
 

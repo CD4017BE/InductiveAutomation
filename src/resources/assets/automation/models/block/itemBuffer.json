@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/itemBuffer0",
+		"bot": "automation:blocks/itemBuffer0",
+		"front": "automation:blocks/itemBuffer0",
+		"back": "automation:blocks/itemBuffer0",
+		"left": "automation:blocks/itemBuffer0",
+		"right": "automation:blocks/itemBuffer0"
+	}
+}

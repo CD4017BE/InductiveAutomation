@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/antimatterFabricator0",
+		"bot": "automation:blocks/antimatterFabricator1",
+		"front": "automation:blocks/antimatterFabricator2",
+		"back": "automation:blocks/antimatterFabricator3",
+		"left": "automation:blocks/antimatterFabricator3",
+		"right": "automation:blocks/antimatterFabricator3"
+	}
+}

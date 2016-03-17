@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/pump0",
+		"bot": "automation:blocks/pump1",
+		"front": "automation:blocks/pump2",
+		"back": "automation:blocks/pump2",
+		"left": "automation:blocks/pump2",
+		"right": "automation:blocks/pump2"
+	}
+}

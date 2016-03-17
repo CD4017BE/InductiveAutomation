@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/trash0",
+		"bot": "automation:blocks/trash1",
+		"front": "automation:blocks/trash2",
+		"back": "automation:blocks/trash2",
+		"left": "automation:blocks/trash2",
+		"right": "automation:blocks/trash2"
+	}
+}

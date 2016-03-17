@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/hpSolarpanel0",
+		"bot": "automation:blocks/hpSolarpanel1",
+		"front": "automation:blocks/hpSolarpanel2",
+		"back": "automation:blocks/hpSolarpanel2",
+		"left": "automation:blocks/hpSolarpanel2",
+		"right": "automation:blocks/hpSolarpanel2"
+	}
+}

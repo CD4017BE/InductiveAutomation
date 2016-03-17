@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/pool0",
+		"bot": "automation:blocks/pool0",
+		"front": "automation:blocks/pool0",
+		"back": "automation:blocks/pool0",
+		"left": "automation:blocks/pool0",
+		"right": "automation:blocks/pool0"
+	}
+}

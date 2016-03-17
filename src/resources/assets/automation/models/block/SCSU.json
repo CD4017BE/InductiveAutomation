@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/SCSU0",
+		"bot": "automation:blocks/SCSU0",
+		"front": "automation:blocks/SCSU1",
+		"back": "automation:blocks/SCSU1",
+		"left": "automation:blocks/SCSU1",
+		"right": "automation:blocks/SCSU1"
+	}
+}

@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/vertShemGen1",
+		"bot": "automation:blocks/vertShemGen0",
+		"front": "automation:blocks/vertShemGen2",
+		"back": "automation:blocks/vertShemGen3",
+		"left": "automation:blocks/vertShemGen5",
+		"right": "automation:blocks/vertShemGen4"
+	}
+}

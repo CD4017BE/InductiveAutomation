@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/algaePool0",
+		"bot": "automation:blocks/algaePool1",
+		"front": "automation:blocks/algaePool2",
+		"back": "automation:blocks/algaePool3",
+		"left": "automation:blocks/algaePool3",
+		"right": "automation:blocks/algaePool3"
+	}
+}

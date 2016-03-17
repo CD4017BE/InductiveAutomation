@@ -13,7 +13,6 @@ import java.util.List;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import cd4017be.api.automation.AreaProtect;
-import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.api.automation.MatterOrbItemHandler;
 import cd4017be.api.automation.MatterOrbItemHandler.IMatterOrb;
 import cd4017be.automation.Config;
@@ -35,6 +34,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
+import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
 /**
  *
@@ -188,7 +188,8 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     
     private boolean placeItem(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z)
     {
-    	if (EnergyItemHandler.getEnergy(item) < EnergyUsage){
+    	EnergyItem energy = new EnergyItem(item, this);
+    	if (energy.getStorageI() < EnergyUsage){
             player.addChatMessage(new ChatComponentText("Out of Energy"));
             return false;
         }
@@ -201,7 +202,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
         boolean empty = refStack == null || !refStack.isItemEqual(stack);
         player.setCurrentItemOrArmor(0, stack);
         if (state.getBlock().onBlockActivated(world, pos, state, player, s, X, Y, Z) || (stack != null && stack.getItem() != null && stack.getItem().onItemUse(stack, player, world, pos, s, X, Y, Z))) {
-            EnergyItemHandler.addEnergy(item, -EnergyUsage, false);
+            energy.addEnergy(-EnergyUsage, -1);
         }
         stack = player.getCurrentEquippedItem();
         if (stack != null) {

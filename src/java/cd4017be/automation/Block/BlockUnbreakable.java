@@ -32,7 +32,7 @@ import net.minecraft.world.World;
 public class BlockUnbreakable extends DefaultBlock
 {   
     
-    public BlockUnbreakable(String id, int tex)
+    public BlockUnbreakable(String id)
     {
         super(id, Material.rock, ItemBlockUnbreakable.class);
         this.setCreativeTab(Automation.tabAutomation);
@@ -40,7 +40,7 @@ public class BlockUnbreakable extends DefaultBlock
         this.setResistance(Float.POSITIVE_INFINITY);
     }
 
-    private static final PropertyInteger prop = PropertyInteger.create("type", 0, 2);
+    private static final PropertyInteger prop = PropertyInteger.create("type", 0, 15);
     
     @Override
 	public IBlockState getStateFromMeta(int meta) {

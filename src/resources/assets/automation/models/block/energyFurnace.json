@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/energyFurnace0",
+		"bot": "automation:blocks/energyFurnace1",
+		"front": "automation:blocks/energyFurnace2",
+		"back": "automation:blocks/energyFurnace3",
+		"left": "automation:blocks/energyFurnace3",
+		"right": "automation:blocks/energyFurnace3"
+	}
+}

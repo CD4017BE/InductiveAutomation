@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/matterInterfaceB0",
+		"bot": "automation:blocks/matterInterfaceB1",
+		"front": "automation:blocks/matterInterfaceB2",
+		"back": "automation:blocks/matterInterfaceB2",
+		"left": "automation:blocks/matterInterfaceB2",
+		"right": "automation:blocks/matterInterfaceB2"
+	}
+}

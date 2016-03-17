@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/linkHV1",
+		"bot": "automation:blocks/linkHV1",
+		"front": "automation:blocks/linkHV0",
+		"back": "automation:blocks/linkHV1",
+		"left": "automation:blocks/linkHV1",
+		"right": "automation:blocks/linkHV1"
+	}
+}

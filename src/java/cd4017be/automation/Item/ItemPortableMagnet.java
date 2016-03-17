@@ -5,7 +5,6 @@
 package cd4017be.automation.Item;
 
 import java.util.ArrayList;
-import cd4017be.api.automation.EnergyItemHandler;
 import cd4017be.automation.TileEntity.Magnet;
 import cd4017be.lib.util.Vec3;
 import net.minecraft.entity.Entity;
@@ -16,6 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
+import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
 /**
  *
@@ -33,8 +33,9 @@ public class ItemPortableMagnet extends ItemEnergyCell
     @Override
     public void onUpdate(ItemStack item, World world, Entity entity, int i, boolean b) 
     {
-        if (world.isRemote || !(entity instanceof EntityPlayer) || item.stackTagCompound == null || EnergyItemHandler.getEnergy(item) < 1) return;
-        if (!item.stackTagCompound.getBoolean("active") || i == 17) return;
+        if (world.isRemote || !(entity instanceof EntityPlayer) || item.stackTagCompound == null) return;
+        EnergyItem energy = new EnergyItem(item, this);
+        if (energy.getStorageI() < 1 || !item.stackTagCompound.getBoolean("active") || i == 17) return;
         ArrayList<Entity> list = new ArrayList<Entity>();
         AxisAlignedBB area = new AxisAlignedBB(entity.posX - Magnet.rad, entity.posY - Magnet.rad, entity.posZ - Magnet.rad, entity.posX + Magnet.rad, entity.posY + Magnet.rad, entity.posZ + Magnet.rad);
         list.addAll(world.getEntitiesWithinAABB(EntityItem.class, area));
@@ -45,7 +46,7 @@ public class ItemPortableMagnet extends ItemEnergyCell
             vec1 = vec1.scale(Magnet.accleration / (vec1.sq() + 2D));
             e.addVelocity(vec1.x, vec1.y, vec1.z);
         }
-        if (!list.isEmpty()) EnergyItemHandler.addEnergy(item, -1, false);
+        if (!list.isEmpty()) energy.addEnergyI(-1, -1);
     }
 
     @Override

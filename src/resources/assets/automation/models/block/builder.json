@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/builder0",
+		"bot": "automation:blocks/builder1",
+		"front": "automation:blocks/builder2",
+		"back": "automation:blocks/builder2",
+		"left": "automation:blocks/builder2",
+		"right": "automation:blocks/builder2"
+	}
+}
