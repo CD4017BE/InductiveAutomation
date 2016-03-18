@@ -18,6 +18,7 @@ import cd4017be.automation.TileEntity.Teleporter;
 import cd4017be.automation.TileEntity.VertexShematicGen;
 import cd4017be.automation.TileEntity.Wire;
 import cd4017be.automation.jetpack.TickHandler;
+import cd4017be.automation.render.FluidTextures;
 import cd4017be.automation.render.MaterialTextures;
 import cd4017be.automation.render.Render3DVertexShem;
 import cd4017be.automation.render.TileEntityAntimatterBombRenderer;
@@ -26,10 +27,19 @@ import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.ClientInputHandler;
 import cd4017be.lib.TileBlockRegistry;
 import cd4017be.lib.TooltipInfo;
+import cd4017be.lib.render.FluidLoader;
 import cd4017be.lib.render.PipeRenderer;
 import cd4017be.lib.render.SelectionRenderer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.model.ModelFluid;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import cd4017be.automation.Gui.*;
 import static cd4017be.automation.Objects.*;
 
@@ -47,7 +57,7 @@ public class ClientProxy extends CommonProxy
     	TickHandler.init();
         ClientInputHandler.init();
         TooltipInfo.addConfigReference(Config.data);
-        
+        MinecraftForge.EVENT_BUS.register(this);
     	this.registerAdditionalModels();
     	//BlockItems
     	BlockItemRegistry.registerBlockRender("ore:0");
@@ -138,6 +148,7 @@ public class ClientProxy extends CommonProxy
 		BlockItemRegistry.registerBlockRender("vertShemGen:0");
 		//Items
         BlockItemRegistry.registerItemRender(material, new MaterialTextures("automation:"));
+        BlockItemRegistry.registerItemRender("fluidDummy");
         BlockItemRegistry.registerItemRender("selectionTool");
     	BlockItemRegistry.registerItemRender("voltMeter");
     	BlockItemRegistry.registerItemRender("energyCell");
@@ -191,6 +202,14 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(LiquidPipe.class, new PipeRenderer("automation:liquidPipe", "T", "I", "E"));
         ClientRegistry.bindTileEntitySpecialRenderer(ItemWarpPipe.class, new PipeRenderer("automation:itemPipe", "W", "I", "E"));
         ClientRegistry.bindTileEntitySpecialRenderer(LiquidWarpPipe.class, new PipeRenderer("automation:liquidPipe", "W", "I", "E"));
+    }
+    
+    @SubscribeEvent
+    public void loadModels(ModelBakeEvent event) {
+    	ModelResourceLocation res = new ModelResourceLocation("automation:fluidDummy", "inventory");
+    	IBakedModel model = event.modelRegistry.getObject(res);
+    	if (model != null) event.modelRegistry.putObject(res, new FluidTextures(model));
+    	else System.out.println("fluid Model missing!");
     }
     
     private void registerAdditionalModels()
@@ -266,6 +285,19 @@ public class ClientProxy extends CommonProxy
         Objects.quantumTank.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
         Objects.pool.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
         Objects.wormhole.setBlockLayer(EnumWorldBlockLayer.TRANSLUCENT);
+        //fluids
+        FluidLoader.setMod("automation");
+        FluidLoader.registerFluid(L_steam);
+        FluidLoader.registerFluid(L_biomass);
+        FluidLoader.registerFluid(L_antimatter);
+        FluidLoader.registerFluid(L_nitrogenG);
+        FluidLoader.registerFluid(L_nitrogenL);
+        FluidLoader.registerFluid(L_hydrogenG);
+        FluidLoader.registerFluid(L_hydrogenL);
+        FluidLoader.registerFluid(L_heliumG);
+        FluidLoader.registerFluid(L_heliumL);
+        FluidLoader.registerFluid(L_oxygenG);
+        FluidLoader.registerFluid(L_oxygenL);
     }
     
 }

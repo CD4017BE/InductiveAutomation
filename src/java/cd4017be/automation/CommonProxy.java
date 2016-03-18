@@ -123,8 +123,7 @@ public class CommonProxy implements IFuelHandler
     	TileBlockRegistry.register(wormhole, InterdimHole.class, null);
     }
     
-    public void registerRenderers()
-    {
+    public void registerRenderers() {
         
     }
 

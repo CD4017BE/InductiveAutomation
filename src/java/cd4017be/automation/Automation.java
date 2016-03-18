@@ -10,9 +10,12 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+
 import java.util.ArrayList;
 import java.util.Random;
+
 import org.apache.logging.log4j.Level;
+
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.AutomationRecipes;
 import cd4017be.api.computers.ComputerAPI;
@@ -26,6 +29,7 @@ import cd4017be.lib.DefaultItemBlock;
 import cd4017be.lib.ModFluid;
 import cd4017be.lib.TileBlock;
 import cd4017be.lib.templates.BlockPipe;
+import cd4017be.lib.templates.BlockSuperfluid;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
@@ -73,9 +77,9 @@ public class Automation implements IWorldGenerator
     	BlockItemRegistry.setMod("automation");
         tabAutomation = new CreativeTabAutomation("automation");
         tabFluids = new CreativeTabFluids("fluids");
+        initFluids();
         initItems();
         initBlocks();
-        initFluids();
         initOres();
         if (event.getSide().isClient()) {
             JetPackConfig.loadData(event.getModConfigurationDirectory());
@@ -254,21 +258,20 @@ public class Automation implements IWorldGenerator
     
     private void initFluids()
     {
-    	String p = "blocks/fluids/";
-        L_steam = registerFluid(new ModFluid("steam", p+"steam").setDensity(0).setGaseous(true).setTemperature(523).setViscosity(10), "lSteam");
-        L_biomass = registerFluid(new ModFluid("biomass", p+"biomass").setTemperature(310).setViscosity(1500), "lBiomass");
-        L_antimatter = registerFluid(new ModFluid("antimatter", p+"antimatter").setDensity(-1000).setGaseous(true).setTemperature(10000000).setViscosity(1), "lAntimatter");
-        L_nitrogenG = registerFluid(new ModFluid("nitrogenG", p+"nitrogenG").setDensity(0).setGaseous(true).setTemperature(273).setViscosity(10), "lNitrogenG");
-        L_nitrogenL = registerFluid(new ModFluid("nitrogenL", p+"nitrogenL").setDensity(800).setTemperature(77), "lNitrogenL");
-        L_heliumG = registerFluid(new ModFluid("heliumG", p+"heliumG").setDensity(-1).setGaseous(true).setTemperature(273).setViscosity(5), "lHeliumG");
-        L_heliumL = registerFluid(new ModFluid("heliumL", p+"heliumL").setDensity(144).setTemperature(4).setViscosity(1), "lHeliumL");
-        L_hydrogenG = registerFluid(new ModFluid("hydrogenG", p+"hydrogenG").setDensity(-1).setGaseous(true).setTemperature(273).setViscosity(5), "lHydrogenG");
-        L_hydrogenL = registerFluid(new ModFluid("hydrogenL", p+"hydrogenL").setDensity(72).setTemperature(21).setViscosity(500), "lHydrogenL");
-        L_oxygenG = registerFluid(new ModFluid("oxygenG", p+"oxygenG").setDensity(0).setGaseous(true).setTemperature(273).setViscosity(10), "lOxygenG");
-        L_oxygenL = registerFluid(new ModFluid("oxygenL", p+"oxygenL").setDensity(1160).setTemperature(90).setViscosity(800), "lOxygenL");
+    	String p = "automation:blocks/fluids/";
+        L_steam = registerFluid(new ModFluid("steam", p+"steam").setDensity(0).setGaseous(true).setTemperature(523).setViscosity(10));
+        L_biomass = registerFluid(new ModFluid("biomass", p+"biomass").setTemperature(310).setViscosity(1500));
+        L_antimatter = registerFluid(new ModFluid("antimatter", p+"antimatter").setDensity(-1000).setGaseous(true).setTemperature(10000000).setViscosity(1));
+        L_nitrogenG = registerFluid(new ModFluid("nitrogenG", p+"nitrogenG").setDensity(0).setGaseous(true).setTemperature(273).setViscosity(10));
+        L_nitrogenL = registerFluid(new ModFluid("nitrogenL", p+"nitrogenL").setDensity(800).setTemperature(77));
+        L_heliumG = registerFluid(new ModFluid("heliumG", p+"heliumG").setDensity(-1).setGaseous(true).setTemperature(273).setViscosity(5));
+        L_heliumL = registerFluid(new ModFluid("heliumL", p+"heliumL").setDensity(144).setTemperature(4).setViscosity(1));
+        L_hydrogenG = registerFluid(new ModFluid("hydrogenG", p+"hydrogenG").setDensity(-1).setGaseous(true).setTemperature(273).setViscosity(5));
+        L_hydrogenL = registerFluid(new ModFluid("hydrogenL", p+"hydrogenL").setDensity(72).setTemperature(21).setViscosity(500));
+        L_oxygenG = registerFluid(new ModFluid("oxygenG", p+"oxygenG").setDensity(0).setGaseous(true).setTemperature(273).setViscosity(10));
+        L_oxygenL = registerFluid(new ModFluid("oxygenL", p+"oxygenL").setDensity(1160).setTemperature(90).setViscosity(800));
         L_water = FluidRegistry.WATER;
         L_lava = FluidRegistry.LAVA;
-        
         /* TODO reimplement
         BlockSuperfluid.reactConversions.put(L_biomass, L_steam);
         BlockSuperfluid.reactConversions.put(L_nitrogenL, L_nitrogenG);
@@ -315,12 +318,12 @@ public class Automation implements IWorldGenerator
     	Config.data.removeEntry(rem.toArray(new String[rem.size()]));
     }
     
-    private Fluid registerFluid(Fluid fluid, String blockId)
+    private Fluid registerFluid(Fluid fluid)
     {
         Fluid ret = FluidRegistry.getFluid(fluid.getName());
         if (ret == null) {
             FluidRegistry.registerFluid(fluid);
-            //fluid.setBlock(new BlockSuperfluid(blockId, (ModFluid)fluid));//TODO reimplement
+            fluid.setBlock(new BlockSuperfluid(fluid.getName(), (ModFluid)fluid));
             return fluid;
         } else return ret;
     }
