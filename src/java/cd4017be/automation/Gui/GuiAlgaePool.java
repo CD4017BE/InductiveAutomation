@@ -15,6 +15,7 @@ import org.lwjgl.opengl.GL11;
 import cd4017be.automation.TileEntity.AlgaePool;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.templates.GuiMachine;
+import cd4017be.lib.util.Utils;
 
 /**
  *
@@ -43,7 +44,7 @@ public class GuiAlgaePool extends GuiMachine
     {
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawFormatInfo(62, 16, 16, 52, "algae.nutr", tileEntity.getNutrientsScaled(100));
-        this.drawFormatInfo(80, 16, 34, 52, "algae.algae", (int)tileEntity.netData.floats[0], tileEntity.netData.ints[0]);
+        this.drawFormatInfo(80, 16, 34, 52, "algae.algae", Utils.formatNumber(tileEntity.netData.floats[0] / 1000F, 3), Utils.formatNumber((float)tileEntity.netData.ints[0] / 1000F, 3));
     }
     
     @Override

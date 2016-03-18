@@ -30,19 +30,15 @@ import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.render.FluidLoader;
 import cd4017be.lib.render.PipeRenderer;
 import cd4017be.lib.render.SelectionRenderer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.util.EnumWorldBlockLayer;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.ModelFluid;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import cd4017be.automation.Gui.*;
 import static cd4017be.automation.Objects.*;
-
 
 /**
  *
@@ -84,6 +80,7 @@ public class ClientProxy extends CommonProxy
     	BlockItemRegistry.registerBlockRender("teslaTransmitterLV:0");
     	BlockItemRegistry.registerBlockRender("teslaTransmitter:0");
     	BlockItemRegistry.registerBlockRender("wormhole:0");
+    	BlockItemRegistry.registerBlockRender("wormhole:1");
         BlockItemRegistry.registerBlockRender("lightShaft:0");
 		BlockItemRegistry.registerBlockRender("wireC:0");
 		BlockItemRegistry.registerBlockRender("wireA:0");
@@ -226,6 +223,7 @@ public class ClientProxy extends CommonProxy
     	String[] tex = new String[16];
     	for (int i = 0; i < tex.length; i++) tex[i] = "unbrStone" + (i == 0 ? "" : "_" + i);
     	BlockItemRegistry.registerModels(unbrStone, tex);
+    	BlockItemRegistry.registerModels(wormhole, "wormhole", "wormhole_1");
     }
 
     @Override

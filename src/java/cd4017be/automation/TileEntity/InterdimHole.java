@@ -351,7 +351,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
             else pos.x += block.minX - box.maxX - 0.125D;
         } else return;
         pos = pos.add((double)linkTile.pos.getX() + 0.5D, (double)linkTile.pos.getY() + 0.5D, (double)linkTile.pos.getZ() + 0.5D);
-        box.offset(pos.x - entity.posX, pos.y - entity.posY, pos.z - entity.posZ);
+        box = box.offset(pos.x - entity.posX, pos.y - entity.posY, pos.z - entity.posZ);
         if (!linkTile.isAreaClear(box)) return;
         MovedBlock.moveEntity(entity, linkTile.worldObj.provider.getDimensionId(), pos.x, pos.y, pos.z);
     }
