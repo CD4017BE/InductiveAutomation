@@ -81,7 +81,7 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item) 
     {
-        tanks.setFluid(0, FluidStack.loadFluidStackFromNBT(item.stackTagCompound));
+        tanks.setFluid(0, FluidStack.loadFluidStackFromNBT(item.getTagCompound()));
     }
 
     @Override
@@ -89,8 +89,8 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
     {
         ItemStack item = new ItemStack(this.getBlockType());
         if (tanks.getAmount(0) > 0) {
-            item.stackTagCompound = new NBTTagCompound();
-            tanks.getFluid(0).writeToNBT(item.stackTagCompound);
+            item.setTagCompound(new NBTTagCompound());
+            tanks.getFluid(0).writeToNBT(item.getTagCompound());
         }
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         list.add(item);

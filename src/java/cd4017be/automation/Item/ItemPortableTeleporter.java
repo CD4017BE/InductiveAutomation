@@ -66,8 +66,8 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
 		ItemStack item = player.getCurrentEquippedItem();
-		if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-		NBTTagList points = item.stackTagCompound.getTagList("points", 10);
+		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+		NBTTagList points = item.getTagCompound().getTagList("points", 10);
 		NBTTagCompound tag;
 		byte cmd = dis.readByte();
 		if (cmd == 0) {//teleport
@@ -110,7 +110,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 			int i = dis.readByte();
 			if (i >= 0 && i < points.tagCount()) points.removeTag(i);
 		}
-		item.stackTagCompound.setTag("points", points);
+		item.getTagCompound().setTag("points", points);
 		player.setCurrentItemOrArmor(0, item);
 	}
 

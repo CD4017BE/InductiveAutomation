@@ -301,7 +301,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
         } else if (!player.isSneaking() && item == null && filter != null) {
             if (worldObj.isRemote) return true;
             item = BlockItemRegistry.stack("item.itemUpgrade", 1);
-            item.stackTagCompound = PipeUpgradeItem.save(filter);
+            item.setTagCompound(PipeUpgradeItem.save(filter));
             filter = null;
             player.setCurrentItemOrArmor(0, item);
             return true;
@@ -312,9 +312,9 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
             player.setCurrentItemOrArmor(0, item);
             worldObj.markBlockForUpdate(getPos());
             return true;
-        } else if (filter == null && canF && item != null && item.getItem() instanceof ItemItemUpgrade && item.stackTagCompound != null) {
+        } else if (filter == null && canF && item != null && item.getItem() instanceof ItemItemUpgrade && item.getTagCompound() != null) {
             if (worldObj.isRemote) return true;
-            filter = PipeUpgradeItem.load(item.stackTagCompound);
+            filter = PipeUpgradeItem.load(item.getTagCompound());
             item.stackSize--;
             if (item.stackSize <= 0) item = null;
             player.setCurrentItemOrArmor(0, item);
@@ -388,7 +388,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
         super.breakBlock();
         if (filter != null) {
             ItemStack item = BlockItemRegistry.stack("item.itemUpgrade", 1);
-            item.stackTagCompound = PipeUpgradeItem.save(filter);
+            item.setTagCompound(PipeUpgradeItem.save(filter));
             filter = null;
             EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, item);
             worldObj.spawnEntityInWorld(entity);

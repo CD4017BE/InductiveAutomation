@@ -275,13 +275,13 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
                 }
                 if (inventory.items[0] != null && (inventory.items[0].getItem() instanceof ItemTeleporterCoords || inventory.items[0].getItem() == Items.paper))
                 {
-                    String name = inventory.items[0].stackTagCompound == null ? "" : inventory.items[0].stackTagCompound.getString("name");
+                    String name = inventory.items[0].getTagCompound() == null ? "" : inventory.items[0].getTagCompound().getString("name");
                     inventory.items[0] = BlockItemRegistry.stack("item.teleporterCoords", inventory.items[0].stackSize);
-                    inventory.items[0].stackTagCompound = new NBTTagCompound();
-                    inventory.items[0].stackTagCompound.setString("name", name);
-                    inventory.items[0].stackTagCompound.setInteger("x", netData.ints[0]);
-                    inventory.items[0].stackTagCompound.setInteger("y", netData.ints[1]);
-                    inventory.items[0].stackTagCompound.setInteger("z", netData.ints[2]);
+                    inventory.items[0].setTagCompound(new NBTTagCompound());
+                    inventory.items[0].getTagCompound().setString("name", name);
+                    inventory.items[0].getTagCompound().setInteger("x", netData.ints[0]);
+                    inventory.items[0].getTagCompound().setInteger("y", netData.ints[1]);
+                    inventory.items[0].getTagCompound().setInteger("z", netData.ints[2]);
                 }
             } else
             if (b == 4)
@@ -302,9 +302,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         {
         	netData.ints[2] = dis.readInt();
         } else
-        if (cmd == 4 && inventory.items[0] != null && inventory.items[0].getItem() instanceof ItemTeleporterCoords && inventory.items[0].stackTagCompound != null)
+        if (cmd == 4 && inventory.items[0] != null && inventory.items[0].getItem() instanceof ItemTeleporterCoords && inventory.items[0].getTagCompound() != null)
         {
-            inventory.items[0].stackTagCompound.setString("name", dis.readStringFromBuffer(64));
+            inventory.items[0].getTagCompound().setString("name", dis.readStringFromBuffer(64));
         }
         netData.ints[3] &= ~8;
     }
@@ -377,11 +377,11 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     @Override
     public void slotChange(ItemStack oldItem, ItemStack newItem, int i) 
     {
-        if (i >= inventory.componets[0].s && i < inventory.componets[0].e && newItem != null && newItem.getItem() instanceof ItemTeleporterCoords && newItem.stackTagCompound != null)
+        if (i >= inventory.componets[0].s && i < inventory.componets[0].e && newItem != null && newItem.getItem() instanceof ItemTeleporterCoords && newItem.getTagCompound() != null)
         {
-        	netData.ints[0] = newItem.stackTagCompound.getInteger("x");
-        	netData.ints[1] = newItem.stackTagCompound.getInteger("y");
-            netData.ints[2] = newItem.stackTagCompound.getInteger("z");
+        	netData.ints[0] = newItem.getTagCompound().getInteger("x");
+        	netData.ints[1] = newItem.getTagCompound().getInteger("y");
+            netData.ints[2] = newItem.getTagCompound().getInteger("z");
         }
     }
     

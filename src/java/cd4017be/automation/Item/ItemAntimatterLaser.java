@@ -83,9 +83,9 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     @Override
     public String getItemStackDisplayName(ItemStack item) 
     {
-    	if (item.stackTagCompound == null) return super.getItemStackDisplayName(item);
+    	if (item.getTagCompound() == null) return super.getItemStackDisplayName(item);
         int am = AntimatterItemHandler.getAntimatter(item);
-        int mode = item.stackTagCompound.getByte("mode") & 0xff;
+        int mode = item.getTagCompound().getByte("mode") & 0xff;
         return super.getItemStackDisplayName(item) + modes[mode % modes.length] + " (" + (am > 0 ? am + " ng)" : "Empty)");
     }
     
@@ -99,7 +99,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     @Override
     public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
     {
-    	int mode = item.stackTagCompound.getByte("mode");
+    	int mode = item.getTagCompound().getByte("mode");
         Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
         Vec3 dir = player.getLookVec();
         Vec3 pos1 = pos.addVector(dir.xCoord * 128, dir.yCoord * 128, dir.zCoord * 128);
@@ -142,14 +142,14 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     		if (entity instanceof EntityLivingBase) {
     			dmg = Math.min(MaxDamage, Math.max(dmg, ((EntityLivingBase)entity).getMaxHealth()));
     		}
-    		float am = AntimatterItemHandler.getAntimatter(item) + item.stackTagCompound.getFloat("buff");
+    		float am = AntimatterItemHandler.getAntimatter(item) + item.getTagCompound().getFloat("buff");
             dmg = Math.min(dmg, (float)Math.pow(am / AMDamage, 1D / AMDmgExp));
             if (dmg < 1F) return;
             energy.addEnergyI(-EnergyUsage, -1);
-            float r = (float)Math.pow(dmg, AMDmgExp) * AMDamage - item.stackTagCompound.getFloat("buff");
+            float r = (float)Math.pow(dmg, AMDmgExp) * AMDamage - item.getTagCompound().getFloat("buff");
             int n = (int)Math.ceil(r);
-            if (n != 0) item.stackTagCompound.setInteger("antimatter", item.stackTagCompound.getInteger("antimatter") - n);
-            item.stackTagCompound.setFloat("buff", n - r);
+            if (n != 0) item.getTagCompound().setInteger("antimatter", item.getTagCompound().getInteger("antimatter") - n);
+            item.getTagCompound().setFloat("buff", n - r);
     		entity.attackEntityFrom(DamageSource.causePlayerDamage(player), dmg);
     		player.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "random.explosion", 2.0F, 2.7F);
     	}
@@ -167,7 +167,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     @Override
     public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
     {
-    	int mode = item.stackTagCompound.getByte("mode");
+    	int mode = item.getTagCompound().getByte("mode");
     	if (player.isSneaking()) return false;
         if (world.isRemote) return true;
         if (mode < 0) return true;
@@ -208,7 +208,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     	IBlockState state = world.getBlockState(pos);
         if (state.getBlock().isAir(world, pos)) return true;
         float r = state.getBlock().getExplosionResistance(world, pos, player, null) * ench.amMult;
-        float am = AntimatterItemHandler.getAntimatter(item) + item.stackTagCompound.getFloat("buff");
+        float am = AntimatterItemHandler.getAntimatter(item) + item.getTagCompound().getFloat("buff");
         if (am < r) {
             player.addChatMessage(new ChatComponentText("Not enough Antimatter, Needed: " + r + " pg"));
             return false;
@@ -225,10 +225,10 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
             return false;
         }
         energy.addEnergyI(-ench.Euse, -1);
-        r -= item.stackTagCompound.getFloat("buff");
+        r -= item.getTagCompound().getFloat("buff");
         int n = (int)Math.ceil(r);
-        if (n != 0) item.stackTagCompound.setInteger("antimatter", item.stackTagCompound.getInteger("antimatter") - n);
-        item.stackTagCompound.setFloat("buff", n - r);
+        if (n != 0) item.getTagCompound().setInteger("antimatter", item.getTagCompound().getInteger("antimatter") - n);
+        item.getTagCompound().setFloat("buff", n - r);
         world.setBlockToAir(pos);
         MatterOrbItemHandler.addItemStacks(item, drop);
         return true;
@@ -340,9 +340,9 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
 		ItemStack item = player.getCurrentEquippedItem();
 		byte cmd = dis.readByte();
 		if (cmd == 0) {
-			item.stackTagCompound.setByte("mode", (byte)((item.stackTagCompound.getByte("mode") - 1 + modes.length) % modes.length));
+			item.getTagCompound().setByte("mode", (byte)((item.getTagCompound().getByte("mode") - 1 + modes.length) % modes.length));
 		} else if (cmd == 1) {
-			item.stackTagCompound.setByte("mode", (byte)((item.stackTagCompound.getByte("mode") + 1) % modes.length));
+			item.getTagCompound().setByte("mode", (byte)((item.getTagCompound().getByte("mode") + 1) % modes.length));
 		} else if (cmd == 2) {
 			BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
 		}

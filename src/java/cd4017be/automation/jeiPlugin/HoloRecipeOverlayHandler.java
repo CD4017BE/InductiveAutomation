@@ -1,16 +1,6 @@
-package cd4017be.automation.neiPlugin;
+package cd4017be.automation.jeiPlugin;
 
-import cd4017be.lib.templates.SlotHolo;
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import codechicken.nei.FastTransferManager;
-import codechicken.nei.PositionedStack;
-import codechicken.nei.api.IOverlayHandler;
-import codechicken.nei.recipe.IRecipeHandler;
-
-public class HoloRecipeOverlayHandler implements IOverlayHandler 
+public class HoloRecipeOverlayHandler
 {
 	private final int[] craftArea = {25, 61, 6, 42};
 	public int offsetx;
@@ -30,8 +20,8 @@ public class HoloRecipeOverlayHandler implements IOverlayHandler
 		craftArea[3] = y1;
 		return this;
 	}
-
-	@Override
+	
+	/*
 	public void overlayRecipe(GuiContainer gui, IRecipeHandler recipe, int r, boolean shift) 
 	{
 		boolean clear;
@@ -68,5 +58,6 @@ public class HoloRecipeOverlayHandler implements IOverlayHandler
 		}
 		if (src != null) FastTransferManager.clickSlot(gui, slot.slotNumber);
 	}
+	*/
 	
 }

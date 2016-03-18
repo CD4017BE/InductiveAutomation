@@ -36,7 +36,7 @@ public class GuiPortableGenerator extends GuiMachine
 	public void updateScreen() 
     {
     	ItemStack item = this.container.player.getCurrentEquippedItem();
-		if (item != null && item.stackTagCompound != null) energy = item.stackTagCompound.getInteger("buff");
+		if (item != null && item.getTagCompound() != null) energy = item.getTagCompound().getInteger("buff");
 		else energy = 0;
 		super.updateScreen();
 	}

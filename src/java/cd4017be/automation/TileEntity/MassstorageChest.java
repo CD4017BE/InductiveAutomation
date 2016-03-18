@@ -264,8 +264,8 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
             }
         }
         if (nbt.tagCount() > 0) {
-            item.stackTagCompound = new NBTTagCompound();
-            item.stackTagCompound.setTag("Items", nbt);
+            item.setTagCompound(new NBTTagCompound());
+            item.getTagCompound().setTag("Items", nbt);
         }
         list.add(item);
         return list;
@@ -274,8 +274,8 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item) 
     {
-        if (item.stackTagCompound != null) {
-            NBTTagList list = item.stackTagCompound.getTagList("Items", 10);
+        if (item.getTagCompound() != null) {
+            NBTTagList list = item.getTagCompound().getTagList("Items", 10);
             for (int id = 0; id < list.tagCount(); ++id)
             {
                 NBTTagCompound tag = list.getCompoundTagAt(id);
@@ -313,9 +313,9 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
                         dos.writeShort((short)Item.getIdFromItem(item.getItem()));
                         dos.writeShort((short)item.stackSize);
                         dos.writeShort((short)item.getItemDamage());
-                        if (item.stackTagCompound != null) {
+                        if (item.getTagCompound() != null) {
                             dos.writeByte(1);
-                            dos.writeNBTTagCompoundToBuffer(item.stackTagCompound);
+                            dos.writeNBTTagCompoundToBuffer(item.getTagCompound());
                         } else dos.writeByte(0);
                     } else dos.writeShort(0);
                 }
@@ -338,7 +338,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
                     else {
                         item = new ItemStack(Item.getItemById(id), dis.readShort(), dis.readShort());
                         id = dis.readByte();
-                        if (id != 0) item.stackTagCompound = dis.readNBTTagCompoundFromBuffer();
+                        if (id != 0) item.setTagCompound(dis.readNBTTagCompoundFromBuffer());
                     }
                     ((Slot)container.inventorySlots.get(i)).putStack(item);
                 }

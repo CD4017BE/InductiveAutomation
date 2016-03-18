@@ -126,14 +126,14 @@ public class ContainerRemoteInventory extends ItemContainer
 		super(player);
 		if (player.worldObj.isRemote) {
 			int s;
-			if (type != null && type.stackTagCompound != null && (s = type.stackTagCompound.getInteger("size")) > 0) linkedInv = new ClientRemoteInventory(s);
+			if (type != null && type.getTagCompound() != null && (s = type.getTagCompound().getInteger("size")) > 0) linkedInv = new ClientRemoteInventory(s);
 		} else {
 			linkedInv = ItemRemoteInv.getLink(type);
 		}
 		filters = new FilterInventory();
 		if (linkedInv == null) linkedInv = new ClientRemoteInventory(0); 
 		if (linkedInv.getSizeInventory() > 0) {
-			byte side = this.type.stackTagCompound.getByte("s");
+			byte side = this.type.getTagCompound().getByte("s");
 			int[] acs = Utils.accessibleSlots(linkedInv, side);
 			size = acs.length;
 			ofsY = (size - 1) / 12 * 18 - 18;
@@ -170,8 +170,8 @@ public class ContainerRemoteInventory extends ItemContainer
 	public boolean isFilterOn(int s)
 	{
 		ItemStack stack = filters.getStackInSlot(s);
-		if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.stackTagCompound != null) {
-			byte m = stack.stackTagCompound.getByte("mode");
+		if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.getTagCompound() != null) {
+			byte m = stack.getTagCompound().getByte("mode");
 			return (m & 128) != 0;
 		} else return false;
 	}
@@ -194,11 +194,11 @@ public class ContainerRemoteInventory extends ItemContainer
 		byte cmd = dis.readByte();
 		if (cmd >= 0 && cmd < 2) {
 			ItemStack stack = filters.getStackInSlot(cmd);
-			if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.stackTagCompound != null) {
-				byte m = stack.stackTagCompound.getByte("mode");
+			if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.getTagCompound() != null) {
+				byte m = stack.getTagCompound().getByte("mode");
 				m |= 64;
 				m ^= 128;
-				stack.stackTagCompound.setByte("mode", m);
+				stack.getTagCompound().setByte("mode", m);
 			}
 		}
 	}

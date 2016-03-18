@@ -29,8 +29,8 @@ public class InventoryItemUpgrade  implements IInventory
     
     public InventoryItemUpgrade(ItemStack item)
     {
-        if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-        upgrade = PipeUpgradeItem.load(item.stackTagCompound);
+        if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+        upgrade = PipeUpgradeItem.load(item.getTagCompound());
         for (int i = 0; i < upgrade.list.length && i < inventory.length; i++)
         {
             if (upgrade.list[i] != null) inventory[i] = upgrade.list[i];
@@ -107,7 +107,7 @@ public class InventoryItemUpgrade  implements IInventory
             }
         }
         upgrade.list = Arrays.copyOf(list, n);
-        item.stackTagCompound = PipeUpgradeItem.save(upgrade);
+        item.setTagCompound(PipeUpgradeItem.save(upgrade));
     }
 
 	@Override

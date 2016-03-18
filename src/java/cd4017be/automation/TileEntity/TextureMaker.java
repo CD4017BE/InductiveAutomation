@@ -137,9 +137,9 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         	else if (i == 3) netData.ints[2] = v;
         } else if (cmd == GuiTextureMaker.CMD_Name) {
             String name = dis.readStringFromBuffer(64);
-            if (inventory[0] != null && inventory[0].getItem() instanceof ItemBuilderTexture && inventory[0].stackTagCompound != null)
+            if (inventory[0] != null && inventory[0].getItem() instanceof ItemBuilderTexture && inventory[0].getTagCompound() != null)
             {
-                inventory[0].stackTagCompound.setString("name", name);
+                inventory[0].getTagCompound().setString("name", name);
             }
         }
     }
@@ -148,7 +148,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     {
         if (inventory[0] == null) return;
         boolean validItem = inventory[0].getItem() instanceof ItemBuilderTexture;
-        if (inventory[0].getItem() == Items.paper || (validItem && inventory[0].stackTagCompound == null)) {
+        if (inventory[0].getItem() == Items.paper || (validItem && inventory[0].getTagCompound() == null)) {
         	drawing = new byte[0];
         	width = 0;
         	height = 0;
@@ -157,8 +157,8 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         	netData.ints[2] = 0;
         	for (int i = 1; i < inventory.length; i++) inventory[i] = null;
         	worldObj.markBlockForUpdate(getPos());
-        } else if (validItem && inventory[0].stackTagCompound != null) {
-        	NBTTagCompound nbt = inventory[0].stackTagCompound;
+        } else if (validItem && inventory[0].getTagCompound() != null) {
+        	NBTTagCompound nbt = inventory[0].getTagCompound();
         	drawing = nbt.getByteArray("data");
         	width = nbt.getByte("width");
         	netData.ints[0] = nbt.getByte("mode");
@@ -176,7 +176,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     private void save()
     {
     	if (inventory[0] == null || !(inventory[0].getItem() instanceof ItemBuilderTexture || inventory[0].getItem() == Items.paper)) return;
-    	String name = inventory[0].stackTagCompound != null ? inventory[0].stackTagCompound.getString("name") : "";
+    	String name = inventory[0].getTagCompound() != null ? inventory[0].getTagCompound().getString("name") : "";
     	int n = inventory[0].stackSize;
     	inventory[0] = null;
     	NBTTagCompound nbt = new NBTTagCompound();
@@ -188,7 +188,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         nbt.setShort("ofsY", (short)netData.ints[2]);
         this.writeItemsToNBT(nbt, "def", inventory);
         inventory[0] = BlockItemRegistry.stack("item.builderTexture", n);
-        inventory[0].stackTagCompound = nbt;
+        inventory[0].setTagCompound(nbt);
     }
     
     private void resize(int x, int y)

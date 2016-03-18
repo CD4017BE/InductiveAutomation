@@ -73,13 +73,13 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 				player.addChatMessage(new ChatComponentText("Block has no inventory!"));
 				return true;
 			}
-			if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-			item.stackTagCompound.setInteger("x", pos.getX());
-			item.stackTagCompound.setInteger("y", pos.getY());
-			item.stackTagCompound.setInteger("z", pos.getZ());
-			item.stackTagCompound.setByte("s", (byte)s.getIndex());
-			item.stackTagCompound.setInteger("d", player.dimension);
-			item.stackTagCompound.setInteger("size", Utils.accessibleSlots((IInventory)te, s.getIndex()).length);
+			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+			item.getTagCompound().setInteger("x", pos.getX());
+			item.getTagCompound().setInteger("y", pos.getY());
+			item.getTagCompound().setInteger("z", pos.getZ());
+			item.getTagCompound().setByte("s", (byte)s.getIndex());
+			item.getTagCompound().setInteger("d", player.dimension);
+			item.getTagCompound().setInteger("size", Utils.accessibleSlots((IInventory)te, s.getIndex()).length);
 			player.addChatMessage(new ChatComponentText("Block inventory linked"));
 			return true;
 		}
@@ -98,8 +98,8 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 	{
 		if (world.isRemote) return;
 		if (entity instanceof EntityPlayer) {
-			if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-			int t = item.stackTagCompound.getByte("t") + 1;
+			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+			int t = item.getTagCompound().getByte("t") + 1;
 			if (t >= 20) {
 				t = 0;
 				EntityPlayer player = (EntityPlayer)entity;
@@ -109,25 +109,25 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 				if (container != null) container.filters.save(item);
 				IInventory link = getLink(item);
 				if (link != null) {
-					PipeUpgradeItem in = item.stackTagCompound.hasKey("fin") ? PipeUpgradeItem.load(item.stackTagCompound.getCompoundTag("fin")) : null;
-					PipeUpgradeItem out = item.stackTagCompound.hasKey("fout") ? PipeUpgradeItem.load(item.stackTagCompound.getCompoundTag("fout")) : null;
-					byte s = item.stackTagCompound.getByte("s");
+					PipeUpgradeItem in = item.getTagCompound().hasKey("fin") ? PipeUpgradeItem.load(item.getTagCompound().getCompoundTag("fin")) : null;
+					PipeUpgradeItem out = item.getTagCompound().hasKey("fout") ? PipeUpgradeItem.load(item.getTagCompound().getCompoundTag("fout")) : null;
+					byte s = item.getTagCompound().getByte("s");
 					this.updateTransfer(link, s, inv, slot, in, out);
-					item.stackTagCompound.setInteger("size", Utils.accessibleSlots(link, s).length);
-				} else item.stackTagCompound.setInteger("size", 0);
+					item.getTagCompound().setInteger("size", Utils.accessibleSlots(link, s).length);
+				} else item.getTagCompound().setInteger("size", 0);
 				if (container != null) container.filters.load(item);
 			}
-			item.stackTagCompound.setByte("t", (byte)t);
+			item.getTagCompound().setByte("t", (byte)t);
 		}
 	}
 	
 	public static IInventory getLink(ItemStack item)
 	{
-		if (item == null || item.stackTagCompound == null) return null;
-		int x = item.stackTagCompound.getInteger("x");
-		int y = item.stackTagCompound.getInteger("y");
-		int z = item.stackTagCompound.getInteger("z");
-		int d = item.stackTagCompound.getInteger("d");
+		if (item == null || item.getTagCompound() == null) return null;
+		int x = item.getTagCompound().getInteger("x");
+		int y = item.getTagCompound().getInteger("y");
+		int z = item.getTagCompound().getInteger("z");
+		int d = item.getTagCompound().getInteger("d");
 		if (y < 0) return null;
 		World world = DimensionManager.getWorld(d);
 		if (world == null) return null;

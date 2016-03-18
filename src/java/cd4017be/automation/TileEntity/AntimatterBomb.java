@@ -112,7 +112,7 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
         if (item != null && item.getItem() == Item.getItemFromBlock(this.getBlockType()))
         {
             this.antimatter = 0;
-            if (item.stackTagCompound != null) antimatter = item.stackTagCompound.getInteger("antimatter");
+            if (item.getTagCompound() != null) antimatter = item.getTagCompound().getInteger("antimatter");
         }
     }
 
@@ -122,8 +122,8 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         ItemStack item = new ItemStack(this.getBlockType(), 1, 0);
         if (antimatter >= 0) {
-            item.stackTagCompound = new NBTTagCompound();
-            item.stackTagCompound.setInteger("antimatter", antimatter);
+            item.setTagCompound(new NBTTagCompound());
+            item.getTagCompound().setInteger("antimatter", antimatter);
         }
         list.add(item);
         return list;

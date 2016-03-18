@@ -28,7 +28,7 @@ import static cd4017be.lib.BlockItemRegistry.stack;
 import cd4017be.lib.NBTRecipe;
 import cd4017be.lib.TileBlockRegistry;
 import cd4017be.lib.TileContainer;
-import cd4017be.lib.util.Obj2;
+import cd4017be.lib.util.OreDictStack;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockMushroom;
 import net.minecraft.init.Blocks;
@@ -198,10 +198,6 @@ public class CommonProxy implements IFuelHandler
         @SuppressWarnings("unchecked")
 		public BioEntry(Object item, int n, int a)
         {
-        	if (item instanceof String) {
-        		try{item = CommonProxy.this.readItemConfig((String)item, false);} catch (MissingNameEntry e){item = null;}
-        		if (item != null && item instanceof Obj2) item = ((Obj2<Short, Integer>)item).objB;
-        	}
         	this.item = item;
         	this.nutrients = n;
         	this.algae = a;
@@ -211,26 +207,12 @@ public class CommonProxy implements IFuelHandler
 		public boolean matches(ItemStack item)
         {
             if (this.item instanceof ItemStack) return ((ItemStack)this.item).isItemEqual(item);
-            else if (this.item instanceof Integer){
-                int i = (Integer)this.item;
-                for (int j : OreDictionary.getOreIDs(item))
-                	if (i == j) return true;
-            	return false;
+            else if (this.item instanceof OreDictStack){
+                return ((OreDictStack)this.item).isEqual(item);
             } else if (this.item instanceof Class) {
                 if (item.getItem() instanceof ItemBlock) return ((Class)this.item).isInstance(((ItemBlock)item.getItem()).block);
                 else return ((Class)this.item).isInstance(item.getItem());
             } else return false;
-        }
-    }
-    
-    public ItemStack getOre(String name, int n)
-    {
-    	List<ItemStack> list = OreDictionary.getOres(name);
-        if (list.isEmpty()) return null;
-        else {
-            ItemStack ret = list.get(0).copy();
-            ret.stackSize = n;
-            return ret;
         }
     }
     
@@ -485,7 +467,7 @@ public class CommonProxy implements IFuelHandler
         	item.stackSize = n;
         	return item;
     	} else {
-    		return new Obj2<Short, Integer>((short)n, OreDictionary.getOreID(cfg));
+    		return new OreDictStack(cfg, n);
     	}
     }
     
@@ -539,7 +521,7 @@ public class CommonProxy implements IFuelHandler
         if (enabled("recipe.stoneToLava")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{"stone"}, new FluidStack(Objects.L_lava, 100), null, 2000));
         if (enabled("recipe.blazedustToLava")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Items.blaze_powder)}, new FluidStack(Objects.L_lava, 100), null, 50));
         if (enabled("recipe.netherrackToLava")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Blocks.netherrack, 2)}, new FluidStack(Objects.L_lava, 100), null, 1500));
-        if (enabled("recipe.cheatedFire")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Items.fire_charge)}, null, new ItemStack[]{new ItemStack(Blocks.fire, 16)}, 1000));
+        //if (enabled("recipe.cheatedFire")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Items.fire_charge)}, null, new ItemStack[]{new ItemStack(Blocks.fire, 16)}, 1000));
         if (enabled("recipe.glowstoneToHelium")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{"glowstone"}, new FluidStack(Objects.L_heliumG, 4000), new ItemStack[]{new ItemStack(Items.redstone, 2), new ItemStack(Items.quartz, 2), new ItemStack(Items.gold_nugget, 3)}, 250));
         if (enabled("recipe.endstoneToHelium")) AutomationRecipes.addRecipe(new LFRecipe(null, new Object[]{new ItemStack(Blocks.end_stone, 4)}, new FluidStack(Objects.L_heliumG, 4000), new ItemStack[]{new ItemStack(Blocks.sand, 3), new ItemStack(Blocks.gravel, 1)}, 250));
         

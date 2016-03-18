@@ -33,8 +33,8 @@ public class InventoryFluidUpgrade implements IInventory
     
     public InventoryFluidUpgrade(ItemStack item)
     {
-        if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-        upgrade = PipeUpgradeFluid.load(item.stackTagCompound);
+        if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+        upgrade = PipeUpgradeFluid.load(item.getTagCompound());
         for (int i = 0; i < upgrade.list.length && i < inventory.length; i++)
         {
             if (upgrade.list[i] != null) inventory[i] = ItemFluidDummy.getFluidContainer(upgrade.list[i].getFluid().getID(), 1);
@@ -118,7 +118,7 @@ public class InventoryFluidUpgrade implements IInventory
             if (list[n] != null) n++;
         }
         upgrade.list = Arrays.copyOf(list, n);
-        item.stackTagCompound = PipeUpgradeFluid.save(upgrade);
+        item.setTagCompound(PipeUpgradeFluid.save(upgrade));
     }
 
 	@Override

@@ -40,8 +40,8 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
     @Override
     public FluidStack getFluid(ItemStack item) 
     {
-        if (item.stackTagCompound == null) return null;
-        else return FluidStack.loadFluidStackFromNBT(item.stackTagCompound.getCompoundTag("fluid"));
+        if (item.getTagCompound() == null) return null;
+        else return FluidStack.loadFluidStackFromNBT(item.getTagCompound().getCompoundTag("fluid"));
     }
 
     @Override
@@ -54,7 +54,7 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
     public int fill(ItemStack item, FluidStack resource, boolean doFill) 
     {
         if (resource == null) return 0;
-        if (doFill && item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
+        if (doFill && item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
         int n;
         FluidStack fluid = this.getFluid(item);
         if (fluid != null) {
@@ -64,7 +64,7 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
                 fluid.amount += n;
                 NBTTagCompound tag = new NBTTagCompound();
                 fluid.writeToNBT(tag);
-                item.stackTagCompound.setTag("fluid", tag);
+                item.getTagCompound().setTag("fluid", tag);
             }
             return n;
         } else {
@@ -74,7 +74,7 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
                 fluid.amount = n;
                 NBTTagCompound tag = new NBTTagCompound();
                 fluid.writeToNBT(tag);
-                item.stackTagCompound.setTag("fluid", tag);
+                item.getTagCompound().setTag("fluid", tag);
             }
             return n;
         }
@@ -89,11 +89,11 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
         ret.amount = Math.min(fluid.amount, maxDrain);
         if (doDrain) {
             fluid.amount -= ret.amount;
-            if (fluid.amount <= 0) item.stackTagCompound.removeTag("fluid");
+            if (fluid.amount <= 0) item.getTagCompound().removeTag("fluid");
             else {
             	NBTTagCompound tag = new NBTTagCompound();
                 fluid.writeToNBT(tag);
-                item.stackTagCompound.setTag("fluid", tag);
+                item.getTagCompound().setTag("fluid", tag);
             }
         }
         return ret;
@@ -122,15 +122,15 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
 	public void onUpdate(ItemStack item, World world, Entity entity, int s, boolean b) 
 	{
 		if (entity instanceof EntityPlayer && !world.isRemote) {
-			if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-			int t = item.stackTagCompound.getByte("t") + 1;
+			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+			int t = item.getTagCompound().getByte("t") + 1;
 			if (t >= 20) {
 				t = 0;
-				if (item.stackTagCompound.hasKey("fluid")) {
+				if (item.getTagCompound().hasKey("fluid")) {
 					this.fillFluid(item, ((EntityPlayer)entity).inventory);
 				}
 			}
-			item.stackTagCompound.setByte("t", (byte)t);
+			item.getTagCompound().setByte("t", (byte)t);
 		}
 	}
 	
@@ -138,7 +138,7 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
 	{
 		FluidStack type = this.getFluid(item);
 		if (type == null) {
-			item.stackTagCompound.removeTag("fluid");
+			item.getTagCompound().removeTag("fluid");
 			return;
 		}
 		int[] list = new int[inv.mainInventory.length];
@@ -162,11 +162,11 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
 			inv.mainInventory[list[i]] = obj.objA;
 		}
 		if (type.amount <= 0) {
-			item.stackTagCompound.removeTag("fluid");
+			item.getTagCompound().removeTag("fluid");
 		} else {
 			NBTTagCompound tag = new NBTTagCompound();
 			type.writeToNBT(tag);
-			item.stackTagCompound.setTag("fluid", tag);
+			item.getTagCompound().setTag("fluid", tag);
 		}
 	}
 }

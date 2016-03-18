@@ -238,14 +238,14 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     			palette = new ItemStack[]{item.copy()};
     			data[0] = 1;
     			expMode = 1;
-    		} else if (item != null && item.getItem() instanceof ItemBuilderTexture && item.stackTagCompound != null) {
-    			data = item.stackTagCompound.getByteArray("data");
-    			width = item.stackTagCompound.getByte("width");
+    		} else if (item != null && item.getItem() instanceof ItemBuilderTexture && item.getTagCompound() != null) {
+    			data = item.getTagCompound().getByteArray("data");
+    			width = item.getTagCompound().getByte("width");
     			height = (byte)(width == 0 ? 0 : data.length / width);
-    			ofsX = item.stackTagCompound.getByte("ofsX");
-    			ofsY = item.stackTagCompound.getByte("ofsY");
-    			palette = Builder.this.readItemsFromNBT(item.stackTagCompound, "def", 16);
-    			expMode = item.stackTagCompound.getByte("mode");
+    			ofsX = item.getTagCompound().getByte("ofsX");
+    			ofsY = item.getTagCompound().getByte("ofsY");
+    			palette = Builder.this.readItemsFromNBT(item.getTagCompound(), "def", 16);
+    			expMode = item.getTagCompound().getByte("mode");
     		} else {
     			data = new byte[0];
     			width = 0; height = 0;
@@ -586,8 +586,8 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     
     private void setupData()
     {
-    	if (netData.ints[8] == S_Stack && inventory.items[49] != null && inventory.items[49].stackTagCompound != null) {
-    		Vconst = VectorConstruction.read(inventory.items[49].stackTagCompound);
+    	if (netData.ints[8] == S_Stack && inventory.items[49] != null && inventory.items[49].getTagCompound() != null) {
+    		Vconst = VectorConstruction.read(inventory.items[49].getTagCompound());
     		Vconst.setTexture(this);
     	} else if (netData.ints[8] == S_Offline || netData.ints[8] == S_Stack) {
     		tmpData = null;

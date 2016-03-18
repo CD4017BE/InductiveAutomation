@@ -404,7 +404,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
 	{
 		super.setInventorySlotContents(i, item);
 		if (i == 36)
-			harvestFilter = item == null || !(item.getItem() instanceof ItemItemUpgrade) || item.stackTagCompound == null ? null : PipeUpgradeItem.load(item.stackTagCompound);
+			harvestFilter = item == null || !(item.getItem() instanceof ItemItemUpgrade) || item.getTagCompound() == null ? null : PipeUpgradeItem.load(item.getTagCompound());
 	}
 
 	@Override

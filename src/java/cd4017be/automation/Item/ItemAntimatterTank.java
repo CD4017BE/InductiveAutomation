@@ -50,9 +50,9 @@ public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterI
     public void addInformation(ItemStack item, EntityPlayer player, List list, boolean par4) 
     {
         AntimatterItemHandler.addInformation(item, list);
-        if (item.stackTagCompound != null && item.isItemEqual(BlockItemRegistry.stack("tile.antimatterBombF", 1)))
+        if (item.getTagCompound() != null && item.isItemEqual(BlockItemRegistry.stack("tile.antimatterBombF", 1)))
         {
-            int d = (int)Math.cbrt((double)item.stackTagCompound.getInteger(getAntimatterTag(item)) * explFaktor);
+            int d = (int)Math.cbrt((double)item.getTagCompound().getInteger(getAntimatterTag(item)) * explFaktor);
             list.add("Crater radius (Stone) ~ " + d + " m");
             if (d > EntityAntimatterExplosion1.maxSize) list.add(String.format("Explosion will stop at %d m !", EntityAntimatterExplosion1.maxSize));
         }
@@ -65,8 +65,8 @@ public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterI
         super.getSubItems(id, tab, list);
         if (id == Item.getItemFromBlock(Objects.antimatterTank)) {
             ItemStack item = new ItemStack(id, 1, 0);
-            item.stackTagCompound = new NBTTagCompound();
-            item.stackTagCompound.setInteger("antimatter", Config.tankCap[4]);
+            item.setTagCompound(new NBTTagCompound());
+            item.getTagCompound().setInteger("antimatter", Config.tankCap[4]);
             list.add(item);
         }
     }

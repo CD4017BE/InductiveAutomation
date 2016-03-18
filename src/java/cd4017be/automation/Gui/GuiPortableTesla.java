@@ -42,16 +42,16 @@ public class GuiPortableTesla extends GuiMachine
     {
         super.updateScreen();
         ItemStack item = container.player.getCurrentEquippedItem();
-        if (item != null && item.stackTagCompound != null) {
-        	mode = item.stackTagCompound.getShort("mode");
-        	double u = item.stackTagCompound.getDouble("voltage");
+        if (item != null && item.getTagCompound() != null) {
+        	mode = item.getTagCompound().getShort("mode");
+        	double u = item.getTagCompound().getDouble("voltage");
         	Estore = (int)(u * u * 0.001D);
         	for (int i = 0; i < 3; i++) {
         		Etype[i] = (mode >> i & 0x1) != 0;
         		Ipos[i] = (byte)(mode >> (8 + i * 2) & 0x3);
         	}
         	if (!freq.isFocused()) 
-        		freq.setText("" + item.stackTagCompound.getShort("freq"));
+        		freq.setText("" + item.getTagCompound().getShort("freq"));
         }
         freq.updateCursorCounter();
     }

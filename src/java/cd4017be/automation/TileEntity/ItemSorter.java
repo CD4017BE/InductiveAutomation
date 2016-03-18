@@ -85,8 +85,8 @@ public class ItemSorter extends AutomatedTile implements IAutomatedInv, IItemPip
     {
         if (i % 2 == 1){
             int j = (i - 1) / 2;
-            if (newItem == null || newItem.getItem() != Objects.itemUpgrade || newItem.stackTagCompound == null) filter[j] = null;
-            else filter[j] = PipeUpgradeItem.load(newItem.stackTagCompound);
+            if (newItem == null || newItem.getItem() != Objects.itemUpgrade || newItem.getTagCompound() == null) filter[j] = null;
+            else filter[j] = PipeUpgradeItem.load(newItem.getTagCompound());
         }
     }
 

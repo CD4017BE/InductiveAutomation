@@ -67,7 +67,7 @@ public class TickHandler
     	ItemStack item = mc.thePlayer.getCurrentArmor(ItemJetpack.slotPos);
     	if (item == null || !(item.getItem() instanceof ItemJetpack)) return;
     	this.updateKeyStates(item);
-        NBTTagCompound nbt = item.stackTagCompound;
+        NBTTagCompound nbt = item.getTagCompound();
         if (nbt == null || !nbt.getBoolean("On")) return;
         if (GameSettings.isKeyDown(mc.gameSettings.keyBindJump)) power++;
         if (GameSettings.isKeyDown(mc.gameSettings.keyBindSneak)) power--;
@@ -130,7 +130,7 @@ public class TickHandler
 				dos.writeByte(2);
 				PacketHandler.eventChannel.sendToServer(new FMLProxyPacket(dos, PacketHandler.channel));
     		}
-    		if (pressMode && item.stackTagCompound != null && item.stackTagCompound.getBoolean("On")) {
+    		if (pressMode && item.getTagCompound() != null && item.getTagCompound().getBoolean("On")) {
     			JetPackConfig.mode++;
                 return;
             } else if (pressMode) {
@@ -145,8 +145,8 @@ public class TickHandler
     {
         if (mc.currentScreen == null && event.phase == TickEvent.Phase.END) {
         	ItemStack item = mc.thePlayer.getCurrentArmor(ItemJetpack.slotPos);
-            if (item == null || !(item.getItem() instanceof ItemJetpack) || item.stackTagCompound == null) return;
-            NBTTagCompound nbt = item.stackTagCompound;
+            if (item == null || !(item.getItem() instanceof ItemJetpack) || item.getTagCompound() == null) return;
+            NBTTagCompound nbt = item.getTagCompound();
             if (!nbt.getBoolean("On")) return;
             mc.fontRendererObj.drawString("Jetpack Control Mode: " + JetPackConfig.getMode().name, 8, 8, 0x40ff40);
             GL11.glColor4f(1, 1, 1, 1);

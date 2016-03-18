@@ -19,7 +19,7 @@ public class TeslaTransmitterItem implements ITeslaTransmitter
 		this.slot = slot;
 		this.type = item.getItem();
 		this.Umax = Umax;
-		this.frequency = item.stackTagCompound == null ? 0 : item.stackTagCompound.getShort("freq");
+		this.frequency = item.getTagCompound() == null ? 0 : item.getTagCompound().getShort("freq");
 	}
 
 	@Override
@@ -32,7 +32,7 @@ public class TeslaTransmitterItem implements ITeslaTransmitter
 	public boolean checkAlive() 
 	{
 		ItemStack item = player.inventory.mainInventory[slot];
-		return !player.isDead && item != null && item.getItem() == type && item.stackTagCompound != null && item.stackTagCompound.getShort("freq") == this.frequency;
+		return !player.isDead && item != null && item.getItem() == type && item.getTagCompound() != null && item.getTagCompound().getShort("freq") == this.frequency;
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public class TeslaTransmitterItem implements ITeslaTransmitter
 	public double getVoltage() 
 	{
 		ItemStack item = player.inventory.mainInventory[slot];
-		return item.stackTagCompound == null ? 0 : item.stackTagCompound.getDouble("voltage");
+		return item.getTagCompound() == null ? 0 : item.getTagCompound().getDouble("voltage");
 	}
 
 	@Override
@@ -73,15 +73,15 @@ public class TeslaTransmitterItem implements ITeslaTransmitter
 	public double addEnergy(double E) 
 	{
 		ItemStack item = player.inventory.mainInventory[slot];
-		if (item.stackTagCompound == null) return 0;
-		double u = item.stackTagCompound.getDouble("voltage");
+		if (item.getTagCompound() == null) return 0;
+		double u = item.getTagCompound().getDouble("voltage");
 		u *= u;
 		if (E < 0) E = Math.max(E, -u);
 		else E = Math.min(E, (double)Umax * (double)Umax - u);
 		if (E != 0) {
 			u = Math.sqrt(u + E);
 	        if (Double.isNaN(u)) u = 0F;
-	        item.stackTagCompound.setDouble("voltage", u);
+	        item.getTagCompound().setDouble("voltage", u);
 		}
         return E;
 	}

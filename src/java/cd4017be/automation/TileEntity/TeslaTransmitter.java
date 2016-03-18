@@ -130,7 +130,7 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
     @Override
 	public void onPlaced(EntityLivingBase entity, ItemStack item) 
     {
-		if (item.stackTagCompound != null) energy.Ucap = item.stackTagCompound.getDouble("voltage");
+		if (item.getTagCompound() != null) energy.Ucap = item.getTagCompound().getDouble("voltage");
 	}
 
 	@Override
@@ -139,8 +139,8 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		ItemStack item = new ItemStack(this.getBlockType(), 1);
 		if (energy.Ucap >= 1.0D) {
-			item.stackTagCompound = new NBTTagCompound();
-			item.stackTagCompound.setDouble("voltage", energy.Ucap);
+			item.setTagCompound(new NBTTagCompound());
+			item.getTagCompound().setDouble("voltage", energy.Ucap);
 		}
 		list.add(item);
 		return list;

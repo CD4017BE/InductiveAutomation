@@ -21,10 +21,10 @@ public class InventoryPlacement implements IInventory
 	
     public InventoryPlacement(ItemStack item)
     {
-        if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-        useBlock = item.stackTagCompound.getBoolean("block");
-        if (item.stackTagCompound.hasKey("list")) {
-            NBTTagList list = item.stackTagCompound.getTagList("list", 10);
+        if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+        useBlock = item.getTagCompound().getBoolean("block");
+        if (item.getTagCompound().hasKey("list")) {
+            NBTTagList list = item.getTagCompound().getTagList("list", 10);
             for (int i = 0; i < list.tagCount(); i++) {
                 NBTTagCompound tag = list.getCompoundTagAt(i);
             	inventory[i] = ItemStack.loadItemStackFromNBT(tag);
@@ -119,8 +119,8 @@ public class InventoryPlacement implements IInventory
     public void onClose(ItemStack item)
     {
         if (item == null) return;
-        if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-        item.stackTagCompound.setBoolean("block", useBlock);
+        if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+        item.getTagCompound().setBoolean("block", useBlock);
         NBTTagList list = new NBTTagList();
         for (int i = 0; i < inventory.length; i++) {
         	if (inventory[i] == null) continue;
@@ -131,7 +131,7 @@ public class InventoryPlacement implements IInventory
         	tag.setFloat("Vy", Vxy[i|8]);
         	list.appendTag(tag);
         }
-        item.stackTagCompound.setTag("list", list);
+        item.getTagCompound().setTag("list", list);
         
     }
 

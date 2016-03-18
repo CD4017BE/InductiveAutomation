@@ -36,9 +36,9 @@ public class ItemVoltMeter extends DefaultItem
     @Override
     public void addInformation(ItemStack item, EntityPlayer player, List list, boolean par4) 
     {
-        if (item.stackTagCompound != null)
+        if (item.getTagCompound() != null)
         {
-            list.add("Link=(" + item.stackTagCompound.getInteger("lx") + ", " + item.stackTagCompound.getInteger("ly") + ", " + item.stackTagCompound.getInteger("lz") + ")");
+            list.add("Link=(" + item.getTagCompound().getInteger("lx") + ", " + item.getTagCompound().getInteger("ly") + ", " + item.getTagCompound().getInteger("lz") + ")");
         }
         super.addInformation(item, player, list, par4);
     }
@@ -46,64 +46,64 @@ public class ItemVoltMeter extends DefaultItem
     @Override
     public String getItemStackDisplayName(ItemStack item) 
     {
-        if (item.stackTagCompound == null)
+        if (item.getTagCompound() == null)
         {
             return super.getItemStackDisplayName(item);
         } else
-        if (item.stackTagCompound.getInteger("ly") < 0)
+        if (item.getTagCompound().getInteger("ly") < 0)
         {
             return super.getItemStackDisplayName(item) + " (not linked)";
         } else
         {
-            return super.getItemStackDisplayName(item) + " (" + String.format("%.2f", item.stackTagCompound.getFloat("Ucap")) + "V / " + item.stackTagCompound.getInteger("Umax") + "V)";
+            return super.getItemStackDisplayName(item) + " (" + String.format("%.2f", item.getTagCompound().getFloat("Ucap")) + "V / " + item.getTagCompound().getInteger("Umax") + "V)";
         }
     }
 
     @Override
     public void onUpdate(ItemStack item, World world, Entity entity, int i, boolean b) 
     {
-        if (item.stackTagCompound == null) createNBT(item);
-        if (world.isRemote || item.stackTagCompound.getInteger("ly") < 0) return;
-        TileEntity te = world.getTileEntity(new BlockPos(item.stackTagCompound.getInteger("lx"), item.stackTagCompound.getInteger("ly"), item.stackTagCompound.getInteger("lz")));
-        PipeEnergy energy = te != null && te instanceof IEnergy ? ((IEnergy)te).getEnergy(item.stackTagCompound.getByte("ls")) : null;
+        if (item.getTagCompound() == null) createNBT(item);
+        if (world.isRemote || item.getTagCompound().getInteger("ly") < 0) return;
+        TileEntity te = world.getTileEntity(new BlockPos(item.getTagCompound().getInteger("lx"), item.getTagCompound().getInteger("ly"), item.getTagCompound().getInteger("lz")));
+        PipeEnergy energy = te != null && te instanceof IEnergy ? ((IEnergy)te).getEnergy(item.getTagCompound().getByte("ls")) : null;
         if (energy != null)
         {
-            float e = item.stackTagCompound.getFloat("Ucap") * 19F + (float)energy.Ucap;
-            item.stackTagCompound.setFloat("Ucap", e / 20F);
+            float e = item.getTagCompound().getFloat("Ucap") * 19F + (float)energy.Ucap;
+            item.getTagCompound().setFloat("Ucap", e / 20F);
         } else
         {
-            item.stackTagCompound.setInteger("ly", -1);
+            item.getTagCompound().setInteger("ly", -1);
         }
     }
     
     private void createNBT(ItemStack item)
     {
-        item.stackTagCompound = new NBTTagCompound();
-        item.stackTagCompound.setFloat("Ucap", 0F);
-        item.stackTagCompound.setInteger("lx", 0);
-        item.stackTagCompound.setInteger("ly", -1);
-        item.stackTagCompound.setInteger("lz", 0);
+        item.setTagCompound(new NBTTagCompound());
+        item.getTagCompound().setFloat("Ucap", 0F);
+        item.getTagCompound().setInteger("lx", 0);
+        item.getTagCompound().setInteger("ly", -1);
+        item.getTagCompound().setInteger("lz", 0);
     }
     
     @Override
     public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
     {
         if (world.isRemote) return true;
-        if (item.stackTagCompound == null) createNBT(item);
+        if (item.getTagCompound() == null) createNBT(item);
         TileEntity te = world.getTileEntity(pos);
         PipeEnergy energy = te != null && te instanceof IEnergy ? ((IEnergy)te).getEnergy((byte)s.getIndex()) : null;
         if (energy != null)
         {
-            item.stackTagCompound.setInteger("lx", pos.getX());
-            item.stackTagCompound.setInteger("ly", pos.getY());
-            item.stackTagCompound.setInteger("lz", pos.getZ());
-            item.stackTagCompound.setFloat("Ucap", (float)energy.Ucap);
-            item.stackTagCompound.setInteger("Umax", energy.Umax);
-            item.stackTagCompound.setByte("ls", (byte)s.getIndex());
+            item.getTagCompound().setInteger("lx", pos.getX());
+            item.getTagCompound().setInteger("ly", pos.getY());
+            item.getTagCompound().setInteger("lz", pos.getZ());
+            item.getTagCompound().setFloat("Ucap", (float)energy.Ucap);
+            item.getTagCompound().setInteger("Umax", energy.Umax);
+            item.getTagCompound().setByte("ls", (byte)s.getIndex());
             player.addChatMessage(new ChatComponentText("Energy linked"));
         } else
         {
-            item.stackTagCompound.setInteger("ly", -1);
+            item.getTagCompound().setInteger("ly", -1);
             player.addChatMessage(new ChatComponentText("Unlinked"));
         }
         return true;

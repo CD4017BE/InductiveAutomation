@@ -43,8 +43,8 @@ public class ItemTank extends DefaultItemBlock implements IFluidContainerItem
     @Override
     public FluidStack getFluid(ItemStack item) 
     {
-        if (item.stackTagCompound == null) return null;
-        else return FluidStack.loadFluidStackFromNBT(item.stackTagCompound);
+        if (item.getTagCompound() == null) return null;
+        else return FluidStack.loadFluidStackFromNBT(item.getTagCompound());
     }
 
     @Override
@@ -64,15 +64,15 @@ public class ItemTank extends DefaultItemBlock implements IFluidContainerItem
             n = Math.min(this.getCapacity(item) - fluid.amount, resource.amount);
             if (doFill){
                 fluid.amount += n;
-                fluid.writeToNBT(item.stackTagCompound);
+                fluid.writeToNBT(item.getTagCompound());
             }
         } else {
             n = Math.min(this.getCapacity(item), resource.amount);
             if (doFill) {
-                item.stackTagCompound = new NBTTagCompound();
+                item.setTagCompound(new NBTTagCompound());
                 fluid = resource.copy();
                 fluid.amount = n;
-                fluid.writeToNBT(item.stackTagCompound);
+                fluid.writeToNBT(item.getTagCompound());
             }
         }
         return n;
@@ -87,8 +87,8 @@ public class ItemTank extends DefaultItemBlock implements IFluidContainerItem
         ret.amount = Math.min(fluid.amount, maxDrain);
         if (doDrain) {
             fluid.amount -= ret.amount;
-            if (fluid.amount <= 0) item.stackTagCompound = null;
-            else fluid.writeToNBT(item.stackTagCompound);
+            if (fluid.amount <= 0) item.setTagCompound(null);
+            else fluid.writeToNBT(item.getTagCompound());
         }
         return ret;
     }

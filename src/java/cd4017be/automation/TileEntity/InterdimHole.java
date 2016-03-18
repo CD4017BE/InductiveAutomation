@@ -64,19 +64,19 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         if (worldObj.isRemote) return;
         if (item.getItemDamage() == 0) {
             ItemStack drop = new ItemStack(item.getItem(), 1, 1);
-            drop.stackTagCompound = new NBTTagCompound();
-            drop.stackTagCompound.setInteger("lx", pos.getX());
-            drop.stackTagCompound.setInteger("ly", pos.getY());
-            drop.stackTagCompound.setInteger("lz", pos.getZ());
-            drop.stackTagCompound.setInteger("ld", worldObj.provider.getDimensionId());
+            drop.setTagCompound(new NBTTagCompound());
+            drop.getTagCompound().setInteger("lx", pos.getX());
+            drop.getTagCompound().setInteger("ly", pos.getY());
+            drop.getTagCompound().setInteger("lz", pos.getZ());
+            drop.getTagCompound().setInteger("ld", worldObj.provider.getDimensionId());
             EntityItem eitem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, drop);
             worldObj.spawnEntityInWorld(eitem);
             if (entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new ChatComponentText("The droped Wormhole will link to this"));
-        } else if (item.stackTagCompound != null) {
-            linkX = item.stackTagCompound.getInteger("lx");
-            linkY = item.stackTagCompound.getInteger("ly");
-            linkZ = item.stackTagCompound.getInteger("lz");
-            linkD = item.stackTagCompound.getInteger("ld");
+        } else if (item.getTagCompound() != null) {
+            linkX = item.getTagCompound().getInteger("lx");
+            linkY = item.getTagCompound().getInteger("ly");
+            linkZ = item.getTagCompound().getInteger("lz");
+            linkD = item.getTagCompound().getInteger("ld");
             link(true);
             if (linkTile != null && entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new ChatComponentText(String.format("Link found in dimension %d at position %d , %d , %d", linkD, linkX, linkY, linkZ)));
             else if (entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new ChatComponentText("Error: Link not Found!"));
@@ -89,11 +89,11 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     {
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         ItemStack drop = new ItemStack(this.getBlockType(), 1, 1);
-        drop.stackTagCompound = new NBTTagCompound();
-        drop.stackTagCompound.setInteger("lx", linkX);
-        drop.stackTagCompound.setInteger("ly", linkY);
-        drop.stackTagCompound.setInteger("lz", linkZ);
-        drop.stackTagCompound.setInteger("ld", linkD);
+        drop.setTagCompound(new NBTTagCompound());
+        drop.getTagCompound().setInteger("lx", linkX);
+        drop.getTagCompound().setInteger("ly", linkY);
+        drop.getTagCompound().setInteger("lz", linkZ);
+        drop.getTagCompound().setInteger("ld", linkD);
         list.add(drop);
         return list;
     }
@@ -112,10 +112,10 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
             return true;
         } else if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == Items.paper) {
             ItemStack item = BlockItemRegistry.stack("item.teleporterCoords", player.getCurrentEquippedItem().stackSize);
-            item.stackTagCompound = new NBTTagCompound();
-            item.stackTagCompound.setInteger("x", pos.getX());
-            item.stackTagCompound.setInteger("y", pos.getY());
-            item.stackTagCompound.setInteger("z", pos.getZ());
+            item.setTagCompound(new NBTTagCompound());
+            item.getTagCompound().setInteger("x", pos.getX());
+            item.getTagCompound().setInteger("y", pos.getY());
+            item.getTagCompound().setInteger("z", pos.getZ());
             player.setCurrentItemOrArmor(0, item);
         }
         return false;

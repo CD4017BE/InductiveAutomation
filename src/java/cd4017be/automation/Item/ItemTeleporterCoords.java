@@ -32,18 +32,18 @@ public class ItemTeleporterCoords extends DefaultItem
     @Override
     public String getItemStackDisplayName(ItemStack item) 
     {
-        if (item.stackTagCompound == null) return super.getItemStackDisplayName(item);
-        else return super.getItemStackDisplayName(item) + " " + item.stackTagCompound.getString("name");
+        if (item.getTagCompound() == null) return super.getItemStackDisplayName(item);
+        else return super.getItemStackDisplayName(item) + " " + item.getTagCompound().getString("name");
     }
     
     @Override
     public void addInformation(ItemStack item, EntityPlayer player, List list, boolean b) 
     {
-        if (item.stackTagCompound != null)
+        if (item.getTagCompound() != null)
         {
-            list.add("x = " + item.stackTagCompound.getInteger("x"));
-            list.add("y = " + item.stackTagCompound.getInteger("y"));
-            list.add("z = " + item.stackTagCompound.getInteger("z"));
+            list.add("x = " + item.getTagCompound().getInteger("x"));
+            list.add("y = " + item.getTagCompound().getInteger("y"));
+            list.add("z = " + item.getTagCompound().getInteger("z"));
         }
         super.addInformation(item, player, list, b);
     }
@@ -59,16 +59,16 @@ public class ItemTeleporterCoords extends DefaultItem
     public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
     {
         if (world.isRemote) return true;
-        if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
+        if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
         if (!player.isSneaking()) {
-            item.stackTagCompound.setInteger("pos.getX()", pos.getX());
-            item.stackTagCompound.setInteger("pos.getY()", pos.getY());
-            item.stackTagCompound.setInteger("pos.getZ()", pos.getZ());
+            item.getTagCompound().setInteger("pos.getX()", pos.getX());
+            item.getTagCompound().setInteger("pos.getY()", pos.getY());
+            item.getTagCompound().setInteger("pos.getZ()", pos.getZ());
             player.addChatMessage(new ChatComponentText("Target set to: pX=" + pos.getX() + " pY=" + pos.getY() + " pZ=" + pos.getZ()));
         } else {
-            item.stackTagCompound.setInteger("pos.getX()", pos.getX() - item.stackTagCompound.getInteger("x"));
-            item.stackTagCompound.setInteger("pos.getY()", pos.getY() - item.stackTagCompound.getInteger("y"));
-            item.stackTagCompound.setInteger("pos.getZ()", pos.getZ() - item.stackTagCompound.getInteger("z"));
+            item.getTagCompound().setInteger("pos.getX()", pos.getX() - item.getTagCompound().getInteger("x"));
+            item.getTagCompound().setInteger("pos.getY()", pos.getY() - item.getTagCompound().getInteger("y"));
+            item.getTagCompound().setInteger("pos.getZ()", pos.getZ() - item.getTagCompound().getInteger("z"));
             player.addChatMessage(new ChatComponentText("Translation set to: dX=" + pos.getX() + " dY=" + pos.getY() + " dZ=" + pos.getZ()));
         }
         return true;

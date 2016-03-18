@@ -94,7 +94,7 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
         int d = stack.getItemDamage() + damage;
         if (d >= stack.getMaxDamage()) {
             ItemStack item = BlockItemRegistry.stack("item.jetpack", 1);
-            item.stackTagCompound = (NBTTagCompound)stack.stackTagCompound.copy();
+            item.setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
             entity.setCurrentItemOrArmor(slot + 1, item);
         } else {
             stack.setItemDamage(d);
@@ -115,15 +115,15 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack item) 
     {
-        if (item.stackTagCompound == null) {
-            item.stackTagCompound = new NBTTagCompound();
-            item.stackTagCompound.setBoolean("On", false);
-            item.stackTagCompound.setInteger("power", 0);
-            item.stackTagCompound.setFloat("vecX", 0);
-            item.stackTagCompound.setFloat("vecY", 1);
-            item.stackTagCompound.setFloat("vecZ", 0);
+        if (item.getTagCompound() == null) {
+            item.setTagCompound(new NBTTagCompound());
+            item.getTagCompound().setBoolean("On", false);
+            item.getTagCompound().setInteger("power", 0);
+            item.getTagCompound().setFloat("vecX", 0);
+            item.getTagCompound().setFloat("vecY", 1);
+            item.getTagCompound().setFloat("vecZ", 0);
         }
-        NBTTagCompound nbt = item.stackTagCompound;
+        NBTTagCompound nbt = item.getTagCompound();
         if (!nbt.getBoolean("On")) return;
         if (!world.isRemote) {
             int power = this.updateEnergy(nbt, player.inventory);

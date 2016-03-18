@@ -33,8 +33,8 @@ public class ContainerPortableCrafting extends ItemContainer
 	
 	private void load(ItemStack item)
 	{
-		if (item.stackTagCompound == null) return;
-		NBTTagList data = item.stackTagCompound.getTagList("grid", 10);
+		if (item.getTagCompound() == null) return;
+		NBTTagList data = item.getTagCompound().getTagList("grid", 10);
 		NBTTagCompound tag;
 		for (int i = 0; i < data.tagCount(); i++) {
 			tag = data.getCompoundTagAt(i);
@@ -46,7 +46,7 @@ public class ContainerPortableCrafting extends ItemContainer
 	
 	private void save(ItemStack item)
 	{
-		if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
+		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 		NBTTagList data = new NBTTagList();
 		NBTTagCompound tag;
 		for (int i = 0; i < 9; i++) {
@@ -58,7 +58,7 @@ public class ContainerPortableCrafting extends ItemContainer
 				data.appendTag(tag);
 			}
 		}
-		item.stackTagCompound.setTag("grid", data);
+		item.getTagCompound().setTag("grid", data);
 	}
 
 	@Override
@@ -85,19 +85,19 @@ public class ContainerPortableCrafting extends ItemContainer
 	public boolean isActive()
 	{
 		ItemStack item = this.player.getCurrentEquippedItem();
-		return item != null && item.stackTagCompound != null && item.stackTagCompound.getBoolean("active");
+		return item != null && item.getTagCompound() != null && item.getTagCompound().getBoolean("active");
 	}
 	
 	public boolean isAuto()
 	{
 		ItemStack item = this.player.getCurrentEquippedItem();
-		return item != null && item.stackTagCompound != null && item.stackTagCompound.getBoolean("auto");
+		return item != null && item.getTagCompound() != null && item.getTagCompound().getBoolean("auto");
 	}
 	
 	public int getAmount()
 	{
 		ItemStack item = this.player.getCurrentEquippedItem();
-		if (item != null && item.stackTagCompound != null) return item.stackTagCompound.getByte("amount");
+		if (item != null && item.getTagCompound() != null) return item.getTagCompound().getByte("amount");
 		else return 0;
 	}
 

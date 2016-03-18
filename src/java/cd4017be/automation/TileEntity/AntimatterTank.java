@@ -84,7 +84,7 @@ public class AntimatterTank extends AutomatedTile implements ISidedInventory, IF
     {
         if (item != null && item.getItem() == Item.getItemFromBlock(this.getBlockType()));
         {
-            if (item.stackTagCompound != null) tanks.setFluid(0, new FluidStack(Objects.L_antimatter, item.stackTagCompound.getInteger("antimatter")));
+            if (item.getTagCompound() != null) tanks.setFluid(0, new FluidStack(Objects.L_antimatter, item.getTagCompound().getInteger("antimatter")));
             else this.tanks.setFluid(0, new FluidStack(Objects.L_antimatter, 0));
         }
     }
@@ -95,8 +95,8 @@ public class AntimatterTank extends AutomatedTile implements ISidedInventory, IF
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
         ItemStack item = new ItemStack(this.getBlockType(), 1, 0);
         if (tanks.getAmount(0) >= 0) {
-            item.stackTagCompound = new NBTTagCompound();
-            item.stackTagCompound.setInteger("antimatter", tanks.getAmount(0));
+            item.setTagCompound(new NBTTagCompound());
+            item.getTagCompound().setInteger("antimatter", tanks.getAmount(0));
         }
         list.add(item);
         return list;

@@ -27,28 +27,28 @@ public class ContainerFilteredSubInventory extends Container
 		public void load(ItemStack item)
 		{
 			items = new ItemStack[2];
-			if (item.stackTagCompound == null) return;
-			if (item.stackTagCompound.hasKey("fin")) {
+			if (item.getTagCompound() == null) return;
+			if (item.getTagCompound().hasKey("fin")) {
 				items[0] = BlockItemRegistry.stack("item.itemUpgrade", 1);
-				items[0].stackTagCompound = item.stackTagCompound.getCompoundTag("fin");
+				items[0].setTagCompound(item.getTagCompound().getCompoundTag("fin"));
 			}
-			if (item.stackTagCompound.hasKey("fout")) {
+			if (item.getTagCompound().hasKey("fout")) {
 				items[1] = BlockItemRegistry.stack("item.itemUpgrade", 1);
-				items[1].stackTagCompound = item.stackTagCompound.getCompoundTag("fout");
+				items[1].setTagCompound(item.getTagCompound().getCompoundTag("fout"));
 			}
 		}
 		
 		public void save(ItemStack item)
 		{
-			if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
+			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 			if (items[0] != null && items[0].getItem() == Objects.itemUpgrade) {
-				if (items[0].stackTagCompound == null) items[0].stackTagCompound = new NBTTagCompound();
-				item.stackTagCompound.setTag("fin", items[0].stackTagCompound);
-			} else item.stackTagCompound.removeTag("fin");
+				if (items[0].getTagCompound() == null) items[0].setTagCompound(new NBTTagCompound());
+				item.getTagCompound().setTag("fin", items[0].getTagCompound());
+			} else item.getTagCompound().removeTag("fin");
 			if (items[1] != null && items[1].getItem() == Objects.itemUpgrade) {
-				if (items[1].stackTagCompound == null) items[1].stackTagCompound = new NBTTagCompound();
-				item.stackTagCompound.setTag("fout", items[1].stackTagCompound);
-			} else item.stackTagCompound.removeTag("fout");
+				if (items[1].getTagCompound() == null) items[1].setTagCompound(new NBTTagCompound());
+				item.getTagCompound().setTag("fout", items[1].getTagCompound());
+			} else item.getTagCompound().removeTag("fout");
 		}
 		
 		@Override
@@ -244,8 +244,8 @@ public class ContainerFilteredSubInventory extends Container
 	public boolean isFilterOn(int s)
 	{
 		ItemStack stack = filters.getStackInSlot(s);
-		if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.stackTagCompound != null) {
-			byte m = stack.stackTagCompound.getByte("mode");
+		if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.getTagCompound() != null) {
+			byte m = stack.getTagCompound().getByte("mode");
 			return (m & 128) != 0;
 		} else return false;
 	}
@@ -255,11 +255,11 @@ public class ContainerFilteredSubInventory extends Container
 		byte cmd = dis.readByte();
 		if (cmd >= 0 && cmd < 2) {
 			ItemStack stack = filters.getStackInSlot(cmd);
-			if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.stackTagCompound != null) {
-				byte m = stack.stackTagCompound.getByte("mode");
+			if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.getTagCompound() != null) {
+				byte m = stack.getTagCompound().getByte("mode");
 				m |= 64;
 				m ^= 128;
-				stack.stackTagCompound.setByte("mode", m);
+				stack.getTagCompound().setByte("mode", m);
 			}
 		}
 	}

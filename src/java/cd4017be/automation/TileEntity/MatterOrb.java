@@ -108,7 +108,7 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
             tag.setShort("i", (short)Item.getIdFromItem(item.getItem()));
             tag.setShort("d", (short)item.getItemDamage());
             tag.setInteger("n", item.stackSize);
-            if (item.stackTagCompound != null) tag.setTag("t", item.stackTagCompound);
+            if (item.getTagCompound() != null) tag.setTag("t", item.getTagCompound());
             list.appendTag(tag);
         }
         nbt.setTag("Items", list);
@@ -128,7 +128,7 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound tag = list.getCompoundTagAt(i);
             ItemStack item = new ItemStack(Item.getItemById(tag.getShort("i")), tag.getInteger("n"), tag.getShort("d"));
-            if (tag.hasKey("t")) item.stackTagCompound = tag.getCompoundTag("t");
+            if (tag.hasKey("t")) item.setTagCompound(tag.getCompoundTag("t"));
             storage.add(item);
         }
         if (nbt.hasKey("In")) {

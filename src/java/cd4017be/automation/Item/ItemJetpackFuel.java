@@ -44,9 +44,9 @@ public class ItemJetpackFuel extends DefaultItem
     
     private static void checkNBT(ItemStack item)
     {
-        if (item.stackTagCompound == null) {
-            item.stackTagCompound = new NBTTagCompound();
-            item.stackTagCompound.setFloat("fuel", maxFuel);
+        if (item.getTagCompound() == null) {
+            item.setTagCompound(new NBTTagCompound());
+            item.getTagCompound().setFloat("fuel", maxFuel);
         }
     }
     
@@ -55,7 +55,7 @@ public class ItemJetpackFuel extends DefaultItem
         if (item == null || item.getItem() == null) return 0;
         if (item.getItem() instanceof ItemJetpackFuel) {
 	        checkNBT(item);
-	        return item.stackTagCompound.getFloat("fuel");
+	        return item.getTagCompound().getFloat("fuel");
         } else if (item.getItem() instanceof ItemInvEnergy) {
         	EnergyItem energy = new EnergyItem(item, (ItemInvEnergy)item.getItem());
         	energy.fractal = item.getTagCompound().getFloat("buff");
@@ -76,11 +76,11 @@ public class ItemJetpackFuel extends DefaultItem
             	return e;
             }
         	if (e - n > 0) {
-            	item.stackTagCompound.setFloat("fuel", e - n);
+            	item.getTagCompound().setFloat("fuel", e - n);
                 depleteItem(inv, slot);
                 return n;
             } else {
-            	item.stackTagCompound.setFloat("fuel", 0);
+            	item.getTagCompound().setFloat("fuel", 0);
                 depleteItem(inv, slot);
                 return e;
             }
@@ -90,7 +90,7 @@ public class ItemJetpackFuel extends DefaultItem
     private static void depleteItem(InventoryPlayer inv, int slot)
     {
         ItemStack item = inv.mainInventory[slot];
-    	float fuel = item.stackTagCompound.getFloat("fuel");
+    	float fuel = item.getTagCompound().getFloat("fuel");
         int d = (int)Math.ceil(fuel / maxFuel * (float)item.getMaxDamage());
         if (d > 0) {
             d = item.getMaxDamage() - d;

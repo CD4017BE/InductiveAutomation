@@ -42,7 +42,7 @@ public class PacketHandler
                 EntityPlayer player = ((NetHandlerPlayServer)event.handler).playerEntity;
                 PacketBuffer dis = (PacketBuffer)event.packet.payload();
                 ItemStack item = player.getCurrentArmor(ItemJetpack.slotPos);
-                if (item == null || !(item.getItem() instanceof ItemJetpack) || item.stackTagCompound == null) return;
+                if (item == null || !(item.getItem() instanceof ItemJetpack) || item.getTagCompound() == null) return;
                 byte cmd = dis.readByte();
                 if (cmd == 0) {
                     int power = dis.readInt();
@@ -52,14 +52,14 @@ public class PacketHandler
                     if (vec.isNaN()) vec = Vec3.Def(0, 1, 0);
                     if (power < 0) power = 0;
                     else if (power > ItemJetpack.maxPower) power = ItemJetpack.maxPower;
-                    item.stackTagCompound.setInteger("power", power);
-                    item.stackTagCompound.setFloat("vecX", (float)vec.x);
-                    item.stackTagCompound.setFloat("vecY", (float)vec.y);
-                    item.stackTagCompound.setFloat("vecZ", (float)vec.z);
+                    item.getTagCompound().setInteger("power", power);
+                    item.getTagCompound().setFloat("vecX", (float)vec.x);
+                    item.getTagCompound().setFloat("vecY", (float)vec.y);
+                    item.getTagCompound().setFloat("vecZ", (float)vec.z);
                 } else if (cmd == 1) {
                 } else if (cmd == 2) {
-                    boolean state = !item.stackTagCompound.getBoolean("On");
-                    item.stackTagCompound.setBoolean("On", state);
+                    boolean state = !item.getTagCompound().getBoolean("On");
+                    item.getTagCompound().setBoolean("On", state);
                 }
         }
     }

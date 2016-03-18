@@ -52,24 +52,24 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 	{
 		ItemStack item = player.getCurrentEquippedItem();
 		if (item == null || item.getItem() != this) return;
-		if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
+		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 		byte cmd = dis.readByte();
 		if (cmd == 0) {
-			item.stackTagCompound.setBoolean("active", !item.stackTagCompound.getBoolean("active"));
+			item.getTagCompound().setBoolean("active", !item.getTagCompound().getBoolean("active"));
 		} else if (cmd == 1) {
-			item.stackTagCompound.setBoolean("auto", !item.stackTagCompound.getBoolean("auto"));
-			item.stackTagCompound.setBoolean("active", false);
+			item.getTagCompound().setBoolean("auto", !item.getTagCompound().getBoolean("auto"));
+			item.getTagCompound().setBoolean("active", false);
 		} else if (cmd == 2) {
-			byte n = item.stackTagCompound.getByte("amount");
+			byte n = item.getTagCompound().getByte("amount");
 			n += dis.readByte();
 			if (n < 0) n = 0;
 			if (n > 64) n = 64;
-			item.stackTagCompound.setByte("amount", n);
+			item.getTagCompound().setByte("amount", n);
 		} else if (cmd == 3) {
 			byte n = dis.readByte();
-			ItemStack[] recipe = loadRecipe(item.stackTagCompound.getTagList("grid", 10), world);
+			ItemStack[] recipe = loadRecipe(item.getTagCompound().getTagList("grid", 10), world);
 			if (recipe[0] != null) this.craft(player.inventory, recipe, n > 0 ? n : Integer.MAX_VALUE, false);
-			item.stackTagCompound.setBoolean("active", false);
+			item.getTagCompound().setBoolean("active", false);
 		}
 	}
 	
@@ -84,25 +84,25 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 	public void onUpdate(ItemStack item, World world, Entity entity, int s, boolean b) 
 	{
 		if (entity instanceof EntityPlayer) {
-			if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-			int t = item.stackTagCompound.getByte("t") + 1;
+			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+			int t = item.getTagCompound().getByte("t") + 1;
 			if (t >= 20) {
 				t = 0;
 				EntityPlayer player = (EntityPlayer)entity;
 				InventoryPlayer inv = player.inventory;
-				int n = item.stackTagCompound.getByte("amount");
-				boolean auto = item.stackTagCompound.getBoolean("auto");
-				boolean on = item.stackTagCompound.getBoolean("active");
+				int n = item.getTagCompound().getByte("amount");
+				boolean auto = item.getTagCompound().getBoolean("auto");
+				boolean on = item.getTagCompound().getBoolean("active");
 				if (on) {
-					ItemStack[] recipe = loadRecipe(item.stackTagCompound.getTagList("grid", 10), world);
+					ItemStack[] recipe = loadRecipe(item.getTagCompound().getTagList("grid", 10), world);
 					if (recipe[0] != null) {
 						n -= this.craft(inv, recipe, n, auto);
-						if (!auto) item.stackTagCompound.setByte("amount", (byte)n);
-						if (n <= 0) item.stackTagCompound.setBoolean("active", false);
-					} else item.stackTagCompound.setBoolean("active", false);
+						if (!auto) item.getTagCompound().setByte("amount", (byte)n);
+						if (n <= 0) item.getTagCompound().setBoolean("active", false);
+					} else item.getTagCompound().setBoolean("active", false);
 				}
 			}
-			item.stackTagCompound.setByte("t", (byte)t);
+			item.getTagCompound().setByte("t", (byte)t);
 		}
 	}
 	

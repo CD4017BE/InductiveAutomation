@@ -43,10 +43,10 @@ public class ItemMachineSynchronizer extends DefaultItem
         	else if (te instanceof Builder) m = 4;
         	else m = 1;
         	stack = new ItemStack(this, stack.stackSize, m);
-        	stack.stackTagCompound = new NBTTagCompound();
-        	stack.stackTagCompound.setInteger("lx", pos.getX());
-        	stack.stackTagCompound.setInteger("ly", pos.getY());
-        	stack.stackTagCompound.setInteger("lz", pos.getZ());
+        	stack.setTagCompound(new NBTTagCompound());
+        	stack.getTagCompound().setInteger("lx", pos.getX());
+        	stack.getTagCompound().setInteger("ly", pos.getY());
+        	stack.getTagCompound().setInteger("lz", pos.getZ());
         	player.setCurrentItemOrArmor(0, stack);
         	player.addChatMessage(new ChatComponentText("Linked to machine"));
         	return true;
@@ -72,20 +72,20 @@ public class ItemMachineSynchronizer extends DefaultItem
     @Override
     public void addInformation(ItemStack item, EntityPlayer par2EntityPlayer, List list, boolean par4) 
     {
-        if (item.stackTagCompound != null) {
-            list.add("Linked to (" + item.stackTagCompound.getInteger("lx")
-                    + "|" + item.stackTagCompound.getInteger("ly")
-                    + "|" + item.stackTagCompound.getInteger("lz") + ")");
+        if (item.getTagCompound() != null) {
+            list.add("Linked to (" + item.getTagCompound().getInteger("lx")
+                    + "|" + item.getTagCompound().getInteger("ly")
+                    + "|" + item.getTagCompound().getInteger("lz") + ")");
         }
         super.addInformation(item, par2EntityPlayer, list, par4);
     }
     
     public static IOperatingArea getLink(ItemStack item, ModTileEntity mach)
     {
-    	if (item == null || !(item.getItem() instanceof ItemMachineSynchronizer) || item.stackTagCompound == null) return null;
-        int lx = item.stackTagCompound.getInteger("lx");
-        int ly = item.stackTagCompound.getInteger("ly");
-        int lz = item.stackTagCompound.getInteger("lz");
+    	if (item == null || !(item.getItem() instanceof ItemMachineSynchronizer) || item.getTagCompound() == null) return null;
+        int lx = item.getTagCompound().getInteger("lx");
+        int ly = item.getTagCompound().getInteger("ly");
+        int lz = item.getTagCompound().getInteger("lz");
         TileEntity te = mach.getLoadedTile(new BlockPos(lx, ly, lz));
         if (te != null && te instanceof IOperatingArea) {
         	((IOperatingArea)te).remoteOperation(new BlockPos(0, -1, 0));

@@ -56,7 +56,7 @@ public class ItemPortableGenerator extends ItemFilteredSubInventory implements I
 	@Override
 	protected void updateItem(ItemStack item, EntityPlayer player, InventoryPlayer inv, int s, PipeUpgradeItem in, PipeUpgradeItem out) 
 	{
-		float e = item.stackTagCompound.getFloat("buff");
+		float e = item.getTagCompound().getFloat("buff");
 		if (e > 0) {
 			float d0 = e, d1 = e;
 			if (d0 > maxPower * 1000) d0 = d1 = maxPower * 1000;
@@ -75,7 +75,7 @@ public class ItemPortableGenerator extends ItemFilteredSubInventory implements I
 				}
 			}
 		}
-		item.stackTagCompound.setFloat("buff", e);
+		item.getTagCompound().setFloat("buff", e);
 		if (InventoryItemHandler.hasEmptySlot(item)) super.updateItem(item, player, inv, s, in, out);
 	}
 

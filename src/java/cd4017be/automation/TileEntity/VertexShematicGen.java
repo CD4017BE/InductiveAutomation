@@ -139,26 +139,26 @@ public class VertexShematicGen extends AutomatedTile
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
 	{
 		if (cmd == 0) {//load add
-			if (inventory.items[0] == null || inventory.items[0].stackTagCompound == null) return;
-			NBTTagList list = inventory.items[0].stackTagCompound.getTagList("pol", 10);
+			if (inventory.items[0] == null || inventory.items[0].getTagCompound() == null) return;
+			NBTTagList list = inventory.items[0].getTagCompound().getTagList("pol", 10);
 			for (int i = 0; i < list.tagCount(); i++) polygons.add(new Polygon(list.getCompoundTagAt(i)));
 			this.name = inventory.items[0].getDisplayName();
 		} else if (cmd == 1) {//save
 			if (inventory.items[0] == null) return;
-			inventory.items[0].stackTagCompound = new NBTTagCompound();
-			if (inventory.items[0].getItem() == Items.book) this.save(inventory.items[0].stackTagCompound);
-			else if (inventory.items[0].getItem() == Items.paper) this.triangulate(inventory.items[0].stackTagCompound);
+			inventory.items[0].setTagCompound(new NBTTagCompound());
+			if (inventory.items[0].getItem() == Items.book) this.save(inventory.items[0].getTagCompound());
+			else if (inventory.items[0].getItem() == Items.paper) this.triangulate(inventory.items[0].getTagCompound());
 			inventory.items[0].setStackDisplayName(name);
-			NBTTagCompound tag = inventory.items[0].stackTagCompound.getCompoundTag("display");
+			NBTTagCompound tag = inventory.items[0].getTagCompound().getCompoundTag("display");
 			NBTTagList info = new NBTTagList();
-			info.appendTag(new NBTTagString(inventory.items[0].stackTagCompound.getTagList("pol", 10).tagCount() + (inventory.items[0].getItem() == Items.book ? " Polygons" : " Triangles")));
+			info.appendTag(new NBTTagString(inventory.items[0].getTagCompound().getTagList("pol", 10).tagCount() + (inventory.items[0].getItem() == Items.book ? " Polygons" : " Triangles")));
 			tag.setTag("Lore", info);
-			inventory.items[0].stackTagCompound.setTag("ench", new NBTTagList());
+			inventory.items[0].getTagCompound().setTag("ench", new NBTTagList());
 			return;
 		} else if (cmd == 2) {//save selected
 			int sel = (int)dis.readShort();
-			if (inventory.items[0] == null || inventory.items[0].stackTagCompound == null || inventory.items[0].getItem() != Items.book || sel < 0 || sel >= polygons.size()) return;
-			NBTTagList list = inventory.items[0].stackTagCompound.getTagList("pol", 10);
+			if (inventory.items[0] == null || inventory.items[0].getTagCompound() == null || inventory.items[0].getItem() != Items.book || sel < 0 || sel >= polygons.size()) return;
+			NBTTagList list = inventory.items[0].getTagCompound().getTagList("pol", 10);
 			list.appendTag(polygons.get(sel).save());
 			return;
 		} else if (cmd == 3) {//clear

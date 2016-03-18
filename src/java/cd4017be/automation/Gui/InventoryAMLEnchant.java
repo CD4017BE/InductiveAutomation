@@ -30,8 +30,8 @@ public class InventoryAMLEnchant extends BasicInventory
 	public void save(ItemStack item)
 	{
 		if (item == null) return;
-		if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-		item.stackTagCompound.removeTag("ench");
+		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+		item.getTagCompound().removeTag("ench");
 		NBTTagList list = new NBTTagList();
 		boolean ench = false;
 		for (int i = 0; i < items.length; i++) {
@@ -43,7 +43,7 @@ public class InventoryAMLEnchant extends BasicInventory
 				}
 			}
 		}
-		if (ench) item.stackTagCompound.setTag("ench", list);
+		if (ench) item.getTagCompound().setTag("ench", list);
 	}
 
 	@Override

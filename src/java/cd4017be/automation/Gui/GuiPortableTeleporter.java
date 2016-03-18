@@ -58,13 +58,13 @@ public class GuiPortableTeleporter extends GuiMachine
         super.updateScreen();
         int l = list.length;
         ItemStack item = container.player.getCurrentEquippedItem();
-        if (item == null || item.stackTagCompound == null) {
+        if (item == null || item.getTagCompound() == null) {
         	list = new Entry[0];
         } else {
         	int x = MathHelper.floor_double(container.player.posX);
         	int y = MathHelper.floor_double(container.player.posY) - 1;
         	int z = MathHelper.floor_double(container.player.posZ);
-        	NBTTagList data = item.stackTagCompound.getTagList("points", 10);
+        	NBTTagList data = item.getTagCompound().getTagList("points", 10);
         	list = new Entry[data.tagCount()];
         	for (int i = 0; i < list.length; i++) {
         		list[i] = new Entry(data.getCompoundTagAt(i), x, y, z);

@@ -177,7 +177,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
         } else if (!player.isSneaking() && item == null && cover == null && filter[s] != null) {
             if (worldObj.isRemote) return true;
             item = BlockItemRegistry.stack("item.fluidUpgrade", 1);
-            item.stackTagCompound = PipeUpgradeFluid.save(filter[s]);
+            item.setTagCompound(PipeUpgradeFluid.save(filter[s]));
             if ((filter[s].mode & 2) != 0) this.filterChange(s, false);
             filter[s] = null;
             player.setCurrentItemOrArmor(0, item);
@@ -189,9 +189,9 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
             player.setCurrentItemOrArmor(0, item);
             worldObj.markBlockForUpdate(getPos());
             return true;
-        } else if (filter[s] == null && (bo ^ bi) && item != null && item.getItem() instanceof ItemFluidUpgrade && item.stackTagCompound != null) {
+        } else if (filter[s] == null && (bo ^ bi) && item != null && item.getItem() instanceof ItemFluidUpgrade && item.getTagCompound() != null) {
             if (worldObj.isRemote) return true;
-            filter[s] = PipeUpgradeFluid.load(item.stackTagCompound);
+            filter[s] = PipeUpgradeFluid.load(item.getTagCompound());
             if ((filter[s].mode & 2) != 0) this.filterChange(s, true);
             item.stackSize--;
             if (item.stackSize <= 0) item = null;
@@ -671,7 +671,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
         for (int i = 0; i < filter.length; i++) {
         	if (filter[i] != null) {
                 ItemStack item = BlockItemRegistry.stack("item.fluidUpgrade", 1);
-                item.stackTagCompound = PipeUpgradeFluid.save(filter[i]);
+                item.setTagCompound(PipeUpgradeFluid.save(filter[i]));
                 filter[i] = null;
                 EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, item);
                 worldObj.spawnEntityInWorld(entity);

@@ -33,9 +33,9 @@ public class ItemPortableMagnet extends ItemEnergyCell
     @Override
     public void onUpdate(ItemStack item, World world, Entity entity, int i, boolean b) 
     {
-        if (world.isRemote || !(entity instanceof EntityPlayer) || item.stackTagCompound == null) return;
+        if (world.isRemote || !(entity instanceof EntityPlayer) || item.getTagCompound() == null) return;
         EnergyItem energy = new EnergyItem(item, this);
-        if (energy.getStorageI() < 1 || !item.stackTagCompound.getBoolean("active") || i == 17) return;
+        if (energy.getStorageI() < 1 || !item.getTagCompound().getBoolean("active") || i == 17) return;
         ArrayList<Entity> list = new ArrayList<Entity>();
         AxisAlignedBB area = new AxisAlignedBB(entity.posX - Magnet.rad, entity.posY - Magnet.rad, entity.posZ - Magnet.rad, entity.posX + Magnet.rad, entity.posY + Magnet.rad, entity.posZ + Magnet.rad);
         list.addAll(world.getEntitiesWithinAABB(EntityItem.class, area));
@@ -52,15 +52,15 @@ public class ItemPortableMagnet extends ItemEnergyCell
     @Override
     public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
     {
-        if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-        item.stackTagCompound.setBoolean("active", !item.stackTagCompound.getBoolean("active"));
+        if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+        item.getTagCompound().setBoolean("active", !item.getTagCompound().getBoolean("active"));
         return item;
     }
 
     @Override
     public String getItemStackDisplayName(ItemStack item) 
     {
-        if (item.stackTagCompound != null && item.stackTagCompound.getBoolean("active")) return super.getItemStackDisplayName(item) + " (ON)";
+        if (item.getTagCompound() != null && item.getTagCompound().getBoolean("active")) return super.getItemStackDisplayName(item) + " (ON)";
         else return super.getItemStackDisplayName(item);
     }
     

@@ -8,7 +8,6 @@ package cd4017be.automation.TileEntity;
 import java.util.ArrayList;
 
 import cd4017be.api.automation.IFluidPipeCon;
-import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
 import cd4017be.automation.Block.BlockLiquidPipe;
 import cd4017be.automation.Item.ItemFluidUpgrade;
@@ -281,7 +280,7 @@ public class LiquidPipe extends AutomatedTile implements IFluidHandler, IPipe
         } else if (!player.isSneaking() && item == null && filter != null) {
             if (worldObj.isRemote) return true;
             item = BlockItemRegistry.stack("item.fluidUpgrade", 1);
-            item.stackTagCompound = PipeUpgradeFluid.save(filter);
+            item.setTagCompound(PipeUpgradeFluid.save(filter));
             filter = null;
             player.setCurrentItemOrArmor(0, item);
             return true;
@@ -292,9 +291,9 @@ public class LiquidPipe extends AutomatedTile implements IFluidHandler, IPipe
             player.setCurrentItemOrArmor(0, item);
             worldObj.markBlockForUpdate(getPos());
             return true;
-        } else if (filter == null && canF && item != null && item.getItem() instanceof ItemFluidUpgrade && item.stackTagCompound != null) {
+        } else if (filter == null && canF && item != null && item.getItem() instanceof ItemFluidUpgrade && item.getTagCompound() != null) {
             if (worldObj.isRemote) return true;
-            filter = PipeUpgradeFluid.load(item.stackTagCompound);
+            filter = PipeUpgradeFluid.load(item.getTagCompound());
             item.stackSize--;
             if (item.stackSize <= 0) item = null;
             player.setCurrentItemOrArmor(0, item);
@@ -368,7 +367,7 @@ public class LiquidPipe extends AutomatedTile implements IFluidHandler, IPipe
         super.breakBlock();
         if (filter != null) {
             ItemStack item = BlockItemRegistry.stack("item.fluidUpgrade", 1);
-            item.stackTagCompound = PipeUpgradeFluid.save(filter);
+            item.setTagCompound(PipeUpgradeFluid.save(filter));
             filter = null;
             EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, item);
             worldObj.spawnEntityInWorld(entity);

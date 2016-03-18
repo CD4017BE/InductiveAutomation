@@ -61,8 +61,8 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
     
     private void onClick(ItemStack item, EntityPlayer player, boolean b, BlockPos pos)
     {
-        if (item.stackTagCompound == null) return;
-        byte mode = item.stackTagCompound.getByte("mode");
+        if (item.getTagCompound() == null) return;
+        byte mode = item.getTagCompound().getByte("mode");
         if (player.isSneaking())
         {
             if (b)
@@ -73,12 +73,12 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
                     BlockGuiHandler.openItemGui(player, player.worldObj, pos.getX(), pos.getY(), pos.getZ());
                     return;
                 } else
-                if (item.stackTagCompound.getInteger("mx") == pos.getX() && item.stackTagCompound.getInteger("my") == pos.getY()
-                    && item.stackTagCompound.getInteger("mz") == pos.getZ() && te != null && te instanceof IOperatingArea)
+                if (item.getTagCompound().getInteger("mx") == pos.getX() && item.getTagCompound().getInteger("my") == pos.getY()
+                    && item.getTagCompound().getInteger("mz") == pos.getZ() && te != null && te instanceof IOperatingArea)
                 {
-                    item.stackTagCompound.setInteger("mx", 0);
-                    item.stackTagCompound.setInteger("my", -1);
-                    item.stackTagCompound.setInteger("mz", 0);
+                    item.getTagCompound().setInteger("mx", 0);
+                    item.getTagCompound().setInteger("my", -1);
+                    item.getTagCompound().setInteger("mz", 0);
                     player.addChatMessage(new ChatComponentText("Unlinked Machine"));
                     return;
                 } else
@@ -86,16 +86,16 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
                 {
                     player.addChatMessage(new ChatComponentText("Linked Machine"));
                     int[] oa = ((IOperatingArea)te).getOperatingArea();
-                    item.stackTagCompound.setInteger("mx", pos.getX());
-                    item.stackTagCompound.setInteger("my", pos.getY());
-                    item.stackTagCompound.setInteger("mz", pos.getZ());
+                    item.getTagCompound().setInteger("mx", pos.getX());
+                    item.getTagCompound().setInteger("my", pos.getY());
+                    item.getTagCompound().setInteger("mz", pos.getZ());
                     this.storeArea(oa, item);
                     return;
                 }
             }
             mode++;
             if (mode >= modes.length) mode = 0;
-            item.stackTagCompound.setByte("mode", mode);
+            item.getTagCompound().setByte("mode", mode);
             return;
         }
         String msg = null;
@@ -160,29 +160,29 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
     @Override
     public void onUpdate(ItemStack item, World world, Entity par3Entity, int par4, boolean par5) 
     {
-        if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
+        if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
     }
 
     @Override
     public String getItemStackDisplayName(ItemStack item) 
     {
-        if (item.stackTagCompound == null) return super.getItemStackDisplayName(item);
-        return super.getItemStackDisplayName(item) + " (" + modes[item.stackTagCompound.getByte("mode")] + ")";
+        if (item.getTagCompound() == null) return super.getItemStackDisplayName(item);
+        return super.getItemStackDisplayName(item) + " (" + modes[item.getTagCompound().getByte("mode")] + ")";
     }
     
     @Override
     public void addInformation(ItemStack item, EntityPlayer par2EntityPlayer, List list, boolean par4) 
     {
-        if (item.stackTagCompound != null) {
-            list.add("P1 = (" + item.stackTagCompound.getInteger("px0")
-                    + "|" + item.stackTagCompound.getInteger("py0")
-                    + "|" + item.stackTagCompound.getInteger("pz0") + ")");
-            list.add("P2 = (" + item.stackTagCompound.getInteger("px1")
-                    + "|" + item.stackTagCompound.getInteger("py1")
-                    + "|" + item.stackTagCompound.getInteger("pz1") + ")");
-            list.add("Link (" + item.stackTagCompound.getInteger("mx")
-                    + "|" + item.stackTagCompound.getInteger("my")
-                    + "|" + item.stackTagCompound.getInteger("mz") + ")");
+        if (item.getTagCompound() != null) {
+            list.add("P1 = (" + item.getTagCompound().getInteger("px0")
+                    + "|" + item.getTagCompound().getInteger("py0")
+                    + "|" + item.getTagCompound().getInteger("pz0") + ")");
+            list.add("P2 = (" + item.getTagCompound().getInteger("px1")
+                    + "|" + item.getTagCompound().getInteger("py1")
+                    + "|" + item.getTagCompound().getInteger("pz1") + ")");
+            list.add("Link (" + item.getTagCompound().getInteger("mx")
+                    + "|" + item.getTagCompound().getInteger("my")
+                    + "|" + item.getTagCompound().getInteger("mz") + ")");
         }
         super.addInformation(item, par2EntityPlayer, list, par4);
     }
@@ -191,10 +191,10 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
 	public Container getContainer(World world, EntityPlayer player, int x, int y, int z) 
 	{
 		ItemStack item = player.getCurrentEquippedItem();
-		if (item == null || item.stackTagCompound == null) return null;
+		if (item == null || item.getTagCompound() == null) return null;
 		TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 		if (te == null || !(te instanceof IOperatingArea)) {
-			te = world.getTileEntity(new BlockPos(item.stackTagCompound.getInteger("mx"), item.stackTagCompound.getInteger("my"), item.stackTagCompound.getInteger("mz")));
+			te = world.getTileEntity(new BlockPos(item.getTagCompound().getInteger("mx"), item.getTagCompound().getInteger("my"), item.getTagCompound().getInteger("mz")));
 			if (te == null || !(te instanceof IOperatingArea)) return null;
 		}
 		return new ContainerAreaUpgrade((IOperatingArea)te, new int[]{te.getPos().getX(), te.getPos().getY(), te.getPos().getZ()}, player);
@@ -221,7 +221,7 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
 				IOperatingArea.Handler.setCorrectArea(cont.machine, area, true);
 			} else if (cmd == 6) {
 				ItemStack item = player.getCurrentEquippedItem();
-				if (item != null && item.stackTagCompound != null) {
+				if (item != null && item.getTagCompound() != null) {
 					int[] area = new int[6];
 					this.loadArea(area, item, player.worldObj);
 					if (!IOperatingArea.Handler.setCorrectArea(cont.machine, area, false)) {
@@ -235,28 +235,28 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
 	
 	private void storeArea(int[] area, ItemStack item)
 	{
-		item.stackTagCompound.setInteger("px0", area[0]);
-        item.stackTagCompound.setInteger("py0", area[1]);
-        item.stackTagCompound.setInteger("pz0", area[2]);
-        item.stackTagCompound.setInteger("px1", area[3]);
-        item.stackTagCompound.setInteger("py1", area[4]);
-        item.stackTagCompound.setInteger("pz1", area[5]);
+		item.getTagCompound().setInteger("px0", area[0]);
+        item.getTagCompound().setInteger("py0", area[1]);
+        item.getTagCompound().setInteger("pz0", area[2]);
+        item.getTagCompound().setInteger("px1", area[3]);
+        item.getTagCompound().setInteger("py1", area[4]);
+        item.getTagCompound().setInteger("pz1", area[5]);
 	}
 	
 	private IOperatingArea loadArea(int[] area, ItemStack item, World world)
 	{
-		TileEntity te = world.getTileEntity(new BlockPos(item.stackTagCompound.getInteger("mx"), item.stackTagCompound.getInteger("my"), item.stackTagCompound.getInteger("mz")));
+		TileEntity te = world.getTileEntity(new BlockPos(item.getTagCompound().getInteger("mx"), item.getTagCompound().getInteger("my"), item.getTagCompound().getInteger("mz")));
         if (te != null && te instanceof IOperatingArea) {
         	IOperatingArea mach = (IOperatingArea)te;
         	System.arraycopy(mach.getOperatingArea(), 0, area, 0, 6);
         	return mach;
         } else {
-			area[0] = item.stackTagCompound.getInteger("px0");
-			area[1] = item.stackTagCompound.getInteger("py0");
-			area[2] = item.stackTagCompound.getInteger("pz0");
-			area[3] = item.stackTagCompound.getInteger("px1");
-			area[4] = item.stackTagCompound.getInteger("py1");
-			area[5] = item.stackTagCompound.getInteger("pz1");
+			area[0] = item.getTagCompound().getInteger("px0");
+			area[1] = item.getTagCompound().getInteger("py0");
+			area[2] = item.getTagCompound().getInteger("pz0");
+			area[3] = item.getTagCompound().getInteger("px1");
+			area[4] = item.getTagCompound().getInteger("py1");
+			area[5] = item.getTagCompound().getInteger("pz1");
 			return null;
         }
 	}

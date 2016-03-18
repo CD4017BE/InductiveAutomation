@@ -178,7 +178,7 @@ public class ItemWarpPipe extends AutomatedTile implements IPipe, IItemPipeCon
         } else if (!player.isSneaking() && item == null && cover == null && filter[s] != null) {
             if (worldObj.isRemote) return true;
             item = BlockItemRegistry.stack("item.itemUpgrade", 1);
-            item.stackTagCompound = PipeUpgradeItem.save(filter[s]);
+            item.setTagCompound(PipeUpgradeItem.save(filter[s]));
             filter[s] = null;
             player.setCurrentItemOrArmor(0, item);
             if (this.network != null) this.network.reorder();
@@ -190,9 +190,9 @@ public class ItemWarpPipe extends AutomatedTile implements IPipe, IItemPipeCon
             player.setCurrentItemOrArmor(0, item);
             worldObj.markBlockForUpdate(getPos());
             return true;
-        } else if (filter[s] == null && (bo ^ bi) && item != null && item.getItem() instanceof ItemItemUpgrade && item.stackTagCompound != null) {
+        } else if (filter[s] == null && (bo ^ bi) && item != null && item.getItem() instanceof ItemItemUpgrade && item.getTagCompound() != null) {
             if (worldObj.isRemote) return true;
-            filter[s] = PipeUpgradeItem.load(item.stackTagCompound);
+            filter[s] = PipeUpgradeItem.load(item.getTagCompound());
             item.stackSize--;
             if (item.stackSize <= 0) item = null;
             player.setCurrentItemOrArmor(0, item);
@@ -647,7 +647,7 @@ public class ItemWarpPipe extends AutomatedTile implements IPipe, IItemPipeCon
         for (int i = 0; i < filter.length; i++) {
         	if (filter[i] != null) {
                 ItemStack item = BlockItemRegistry.stack("item.itemUpgrade", 1);
-                item.stackTagCompound = PipeUpgradeItem.save(filter[i]);
+                item.setTagCompound(PipeUpgradeItem.save(filter[i]));
                 filter[i] = null;
                 EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, item);
                 worldObj.spawnEntityInWorld(entity);

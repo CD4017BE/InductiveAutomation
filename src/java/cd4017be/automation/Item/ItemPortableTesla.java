@@ -57,10 +57,10 @@ public class ItemPortableTesla extends DefaultItem implements IGuiItem
 	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
 		ItemStack item = player.getCurrentEquippedItem();
-		if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
+		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 		byte cmd = dis.readByte();
-		if (cmd == 0) item.stackTagCompound.setShort("mode", dis.readShort());
-		else if (cmd == 1) item.stackTagCompound.setShort("freq", dis.readShort());
+		if (cmd == 0) item.getTagCompound().setShort("mode", dis.readShort());
+		else if (cmd == 1) item.getTagCompound().setShort("freq", dis.readShort());
 	}
 
 	@Override
@@ -73,14 +73,14 @@ public class ItemPortableTesla extends DefaultItem implements IGuiItem
 	@Override
 	public void onUpdate(ItemStack item, World world, Entity entity, int s, boolean b) 
 	{
-		if (!(entity instanceof EntityPlayer) || world.isRemote || item.stackTagCompound == null) return;
+		if (!(entity instanceof EntityPlayer) || world.isRemote || item.getTagCompound() == null) return;
 		EntityPlayer player = (EntityPlayer)entity;
 		TeslaNetwork.instance.transmittEnergy(new TeslaTransmitterItem(player, s, item, Config.Umax[3]));
 		double Emax = Config.Umax[3] * Config.Umax[3];
-		short mode = item.stackTagCompound.getShort("mode");
+		short mode = item.getTagCompound().getShort("mode");
 		if ((mode & 0x7) != 0) {
 			InventoryPlayer inv = player.inventory;
-            double E0 = item.stackTagCompound.getDouble("voltage");
+            double E0 = item.getTagCompound().getDouble("voltage");
 			double E = (E0 *= E0);
 			
 			if ((mode & 0x0300) == 0x0100)
@@ -104,7 +104,7 @@ public class ItemPortableTesla extends DefaultItem implements IGuiItem
 				for (int i = 0; i < inv.armorInventory.length; i++)
 					E -= EnergyAPI.get(inv.armorInventory[i]).addEnergy(E - Emax, 0);
 			
-			if (E != E0) item.stackTagCompound.setDouble("voltage", Math.sqrt(E));
+			if (E != E0) item.getTagCompound().setDouble("voltage", Math.sqrt(E));
 		}
 	}
 

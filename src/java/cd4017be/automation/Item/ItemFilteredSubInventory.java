@@ -49,8 +49,8 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 	{
 		if (world.isRemote) return;
 		if (entity instanceof EntityPlayer) {
-			if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-			int t = item.stackTagCompound.getByte("t") + 1;
+			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+			int t = item.getTagCompound().getByte("t") + 1;
 			if (t >= this.tickTime()) {
 				t = 0;
 				EntityPlayer player = (EntityPlayer)entity;
@@ -58,12 +58,12 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 				if (b && player.openContainer != null && player.openContainer instanceof ContainerFilteredSubInventory) container = (ContainerFilteredSubInventory)player.openContainer;
 				if (container != null) container.save(item);
 				InventoryPlayer inv = player.inventory;
-				PipeUpgradeItem in = item.stackTagCompound.hasKey("fin") ? PipeUpgradeItem.load(item.stackTagCompound.getCompoundTag("fin")) : null;
-				PipeUpgradeItem out = item.stackTagCompound.hasKey("fout") ? PipeUpgradeItem.load(item.stackTagCompound.getCompoundTag("fout")) : null;
+				PipeUpgradeItem in = item.getTagCompound().hasKey("fin") ? PipeUpgradeItem.load(item.getTagCompound().getCompoundTag("fin")) : null;
+				PipeUpgradeItem out = item.getTagCompound().hasKey("fout") ? PipeUpgradeItem.load(item.getTagCompound().getCompoundTag("fout")) : null;
 				this.updateItem(item, player, inv, s, in, out);
 				if (container != null) container.update(item);
 			}
-			item.stackTagCompound.setByte("t", (byte)t);
+			item.getTagCompound().setByte("t", (byte)t);
 		}
 	}
 	

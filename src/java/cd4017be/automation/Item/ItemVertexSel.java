@@ -28,16 +28,16 @@ public class ItemVertexSel extends DefaultItem {
     public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
 	{
 		if (world.isRemote) return true;
-		if (item.stackTagCompound == null) item.stackTagCompound = new NBTTagCompound();
-        int mx = item.stackTagCompound.getInteger("mx"), my = item.stackTagCompound.getInteger("my"), mz = item.stackTagCompound.getInteger("mz");
-        byte mode = item.stackTagCompound.getByte("sel");
+		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+        int mx = item.getTagCompound().getInteger("mx"), my = item.getTagCompound().getInteger("my"), mz = item.getTagCompound().getInteger("mz");
+        byte mode = item.getTagCompound().getByte("sel");
         if (mode <= 0 && player.isSneaking()) {
         	TileEntity te = world.getTileEntity(pos);
             if (pos.getX() != mx && pos.getY() != my && pos.getZ() != mz && te != null && te instanceof VertexShematicGen) {
-            	item.stackTagCompound.setInteger("mx", pos.getX());
-            	item.stackTagCompound.setInteger("my", pos.getY());
-            	item.stackTagCompound.setInteger("mz", pos.getZ());
-            	item.stackTagCompound.setShort("pol", ((VertexShematicGen)te).sel);
+            	item.getTagCompound().setInteger("mx", pos.getX());
+            	item.getTagCompound().setInteger("my", pos.getY());
+            	item.getTagCompound().setInteger("mz", pos.getZ());
+            	item.getTagCompound().setShort("pol", ((VertexShematicGen)te).sel);
             	player.addChatMessage(new ChatComponentText("Linked"));
             }
             return true;
@@ -45,7 +45,7 @@ public class ItemVertexSel extends DefaultItem {
         if (my < 0) return false;
         TileEntity te = world.getTileEntity(new BlockPos(mx, my, mz));
         if (te == null || !(te instanceof VertexShematicGen)) {
-        	item.stackTagCompound.setInteger("my", -1);
+        	item.getTagCompound().setInteger("my", -1);
         	return false;
         }
         VertexShematicGen tile = (VertexShematicGen)te;
@@ -61,13 +61,13 @@ public class ItemVertexSel extends DefaultItem {
     @Override
     public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
     {
-        if (world.isRemote || item.stackTagCompound == null) return item;
-        int x = item.stackTagCompound.getInteger("mx"), y = item.stackTagCompound.getInteger("my"), z = item.stackTagCompound.getInteger("mz");
-        byte mode = item.stackTagCompound.getByte("sel");
+        if (world.isRemote || item.getTagCompound() == null) return item;
+        int x = item.getTagCompound().getInteger("mx"), y = item.getTagCompound().getInteger("my"), z = item.getTagCompound().getInteger("mz");
+        byte mode = item.getTagCompound().getByte("sel");
         if (y < 0) return item;
         TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
         if (te == null || !(te instanceof VertexShematicGen)) {
-        	item.stackTagCompound.setInteger("my", -1);
+        	item.getTagCompound().setInteger("my", -1);
         	return item;
         }
         VertexShematicGen tile = (VertexShematicGen)te;
@@ -75,9 +75,9 @@ public class ItemVertexSel extends DefaultItem {
         	if (tile.sel >= 0 && tile.sel < tile.polygons.size()) {
         		mode++;
         		if (mode > tile.polygons.get(tile.sel).vert.length) mode = 0;
-        		item.stackTagCompound.setShort("pol", tile.sel);
+        		item.getTagCompound().setShort("pol", tile.sel);
         	} else mode = 0;
-        	item.stackTagCompound.setByte("sel", mode);
+        	item.getTagCompound().setByte("sel", mode);
         	return item;
         }
         if (mode <= 0) {
@@ -90,10 +90,10 @@ public class ItemVertexSel extends DefaultItem {
     
     private void use(ItemStack item, EntityPlayer player, VertexShematicGen tile, byte mode, float X, float Y, float Z)
     {
-    	short pol = item.stackTagCompound.getShort("pol");
+    	short pol = item.getTagCompound().getShort("pol");
     	Polygon p = pol < 0 || pol >= tile.polygons.size() ? null : tile.polygons.get(pol);
     	if (mode >= p.vert.length) {
-    		item.stackTagCompound.setByte("sel", (byte)0);
+    		item.getTagCompound().setByte("sel", (byte)0);
     		return;
     	}
     	int x = Math.round(X) - tile.getPos().getX(), y = Math.round(Y) - tile.getPos().getY(), z = Math.round(Z) - tile.getPos().getZ();
@@ -107,19 +107,19 @@ public class ItemVertexSel extends DefaultItem {
     @Override
     public String getItemStackDisplayName(ItemStack item) 
     {
-        if (item.stackTagCompound == null) return super.getItemStackDisplayName(item);
-        byte sel = item.stackTagCompound.getByte("sel");
+        if (item.getTagCompound() == null) return super.getItemStackDisplayName(item);
+        byte sel = item.getTagCompound().getByte("sel");
         return super.getItemStackDisplayName(item) + " (" + (sel == 0 ? "open GUI" : sel - 1) + ")";
     }
     
     @Override
     public void addInformation(ItemStack item, EntityPlayer par2EntityPlayer, List list, boolean par4) 
     {
-        if (item.stackTagCompound != null) {
-            list.add("Link (" + item.stackTagCompound.getInteger("mx")
-                    + "|" + item.stackTagCompound.getInteger("my")
-                    + "|" + item.stackTagCompound.getInteger("mz") + ")");
-            list.add("Polygon " + item.stackTagCompound.getShort("pol"));
+        if (item.getTagCompound() != null) {
+            list.add("Link (" + item.getTagCompound().getInteger("mx")
+                    + "|" + item.getTagCompound().getInteger("my")
+                    + "|" + item.getTagCompound().getInteger("mz") + ")");
+            list.add("Polygon " + item.getTagCompound().getShort("pol"));
         }
         super.addInformation(item, par2EntityPlayer, list, par4);
     }

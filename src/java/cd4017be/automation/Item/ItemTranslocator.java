@@ -26,10 +26,10 @@ public class ItemTranslocator extends DefaultItem
 	@Override
 	public String getItemStackDisplayName(ItemStack item) 
 	{
-		if (item.stackTagCompound == null) {
+		if (item.getTagCompound() == null) {
 			return super.getItemStackDisplayName(item) + " (Empty)";
 		} else {
-			Block block = Block.getBlockById(item.stackTagCompound.getShort("id"));
+			Block block = Block.getBlockById(item.getTagCompound().getShort("id"));
 			return super.getItemStackDisplayName(item) + " (" + block.getLocalizedName() + ")";
 		}
 	}
@@ -37,20 +37,20 @@ public class ItemTranslocator extends DefaultItem
 	@Override
 	public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
 	{
-		if (item.stackTagCompound == null) {
+		if (item.getTagCompound() == null) {
 			if (item.stackSize == 0) return false;
 	        else if (!player.canPlayerEdit(pos, s, item)) return false;
 	        else if (world.isRemote) return true;
 			MovedBlock pickup = MovedBlock.get(world, pos);
 			if ((new MovedBlock(Blocks.air.getDefaultState(), null)).set(world, pos)) {
 				world.playSoundEffect((double)((float)pos.getX() + 0.5F), (double)((float)pos.getY() + 0.5F), (double)((float)pos.getZ() + 0.5F), pickup.block.getBlock().stepSound.getPlaceSound(), (pickup.block.getBlock().stepSound.getVolume() + 1.0F) / 2.0F, pickup.block.getBlock().stepSound.getFrequency() * 0.8F);
-				item.stackTagCompound = new NBTTagCompound();
-				item.stackTagCompound.setShort("id", (short)Block.getStateId(pickup.block));
-				if (pickup.nbt != null) item.stackTagCompound.setTag("data", pickup.nbt);
+				item.setTagCompound(new NBTTagCompound());
+				item.getTagCompound().setShort("id", (short)Block.getStateId(pickup.block));
+				if (pickup.nbt != null) item.getTagCompound().setTag("data", pickup.nbt);
 			}
 			return true;
 		} else {
-			IBlockState obj = Block.getStateById(item.stackTagCompound.getShort("id"));
+			IBlockState obj = Block.getStateById(item.getTagCompound().getShort("id"));
 	        if (obj == Blocks.air) return false;
 	        IBlockState state = world.getBlockState(pos);
 	        Block block = state.getBlock();
@@ -62,10 +62,10 @@ public class ItemTranslocator extends DefaultItem
 	        else if (!player.canPlayerEdit(pos, s, item)) return false;
 	        else if (pos.getY() == 255 && obj.getBlock().getMaterial().isSolid()) return false;
 	        else if (world.canBlockBePlaced(obj.getBlock(), pos, false, s, player, item)) {
-	        	MovedBlock placement = new MovedBlock(obj, item.stackTagCompound.hasKey("data") ? item.stackTagCompound.getCompoundTag("data") : null);
+	        	MovedBlock placement = new MovedBlock(obj, item.getTagCompound().hasKey("data") ? item.getTagCompound().getCompoundTag("data") : null);
 	            if (placement.set(world, pos)) {
 	                world.playSoundEffect((double)((float)pos.getX() + 0.5F), (double)((float)pos.getY() + 0.5F), (double)((float)pos.getZ() + 0.5F), obj.getBlock().stepSound.getPlaceSound(), (obj.getBlock().stepSound.getVolume() + 1.0F) / 2.0F, obj.getBlock().stepSound.getFrequency() * 0.8F);
-	                item.stackTagCompound = null;
+	                item.setTagCompound(null);
 	            }
 	            return true;
 	        } else return false;

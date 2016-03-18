@@ -67,8 +67,8 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     @Override
     public String getItemStackDisplayName(ItemStack item) 
     {
-    	int sel = item.stackTagCompound == null ? 0 : item.stackTagCompound.getShort("sel");
-    	int mode = item.stackTagCompound == null ? 0 : item.stackTagCompound.getByte("mode");
+    	int sel = item.getTagCompound() == null ? 0 : item.getTagCompound().getShort("sel");
+    	int mode = item.getTagCompound() == null ? 0 : item.getTagCompound().getByte("mode");
     	if (mode < 0 || mode >= modes.length) mode = 0;
     	ItemStack stack = MatterOrbItemHandler.getItem(item, sel);
         return super.getItemStackDisplayName(item) + modes[mode] + " (" + (stack != null ? stack.stackSize + "x " + stack.getDisplayName() + ")" : "Empty)");
@@ -128,7 +128,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
     {
         if (world.isRemote) return true;
-        int mode = item.stackTagCompound == null ? 0 : item.stackTagCompound.getByte("mode");
+        int mode = item.getTagCompound() == null ? 0 : item.getTagCompound().getByte("mode");
     	if (mode < 0) return true;
     	if (mode == 0) {
     		if (!AreaProtect.instance.isOperationAllowed(player.getName(), world, pos.getX() >> 4, pos.getZ() >> 4)) {
@@ -194,7 +194,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
             return false;
         }
         IBlockState state = world.getBlockState(pos);
-        int sel = item.stackTagCompound.getShort("sel");
+        int sel = item.getTagCompound().getShort("sel");
         int tps = MatterOrbItemHandler.getUsedTypes(item);
         if (sel >= tps && tps > 0) sel %= tps;
         ItemStack stack = MatterOrbItemHandler.decrStackSize(item, sel, 1);
@@ -238,11 +238,11 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
 		ItemStack item = player.getCurrentEquippedItem();
         int n = MatterOrbItemHandler.getUsedTypes(item);
 		if (cmd == 1 && n > 0) {
-			item.stackTagCompound.setShort("sel", (short)((item.stackTagCompound.getShort("sel") + 1) % n));
+			item.getTagCompound().setShort("sel", (short)((item.getTagCompound().getShort("sel") + 1) % n));
 		} else if (cmd == 0 && n > 0) {
-			item.stackTagCompound.setShort("sel", (short)((item.stackTagCompound.getShort("sel") + n - 1) % n));
+			item.getTagCompound().setShort("sel", (short)((item.getTagCompound().getShort("sel") + n - 1) % n));
 		} else if (cmd == 2) {
-			item.stackTagCompound.setByte("mode", (byte)((item.stackTagCompound.getByte("mode") + 1) % modes.length));
+			item.getTagCompound().setByte("mode", (byte)((item.getTagCompound().getByte("mode") + 1) % modes.length));
 		}
 	}
 
