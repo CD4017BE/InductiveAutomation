@@ -373,6 +373,7 @@ gui.cd4017be.amLaser.name=Enchantment upgrades
 gui.cd4017be.selectionTool.name=Machine Area Configurations
 gui.cd4017be.portableTesla.name=Portable Tesla Transmitter
 # Gui tooltips
+gui.cd4017be.recipe.euse=Used Energy:\n%.0f kJ
 gui.cd4017be.energyFlow=Power:\n%.1f kW\n@ %.0f A
 gui.cd4017be.resistor=Electric working Resistance
 gui.cd4017be.voltage=Reference Voltage

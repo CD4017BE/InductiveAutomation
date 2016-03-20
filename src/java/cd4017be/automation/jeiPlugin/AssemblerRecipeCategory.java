@@ -20,7 +20,7 @@ public class AssemblerRecipeCategory extends BlankRecipeCategory {
 	private static final int SlotIn = 0, SlotOut = 4;
 	
 	private final ResourceLocation backgroundLocation;
-	private final IDrawableAnimated power;
+	private final IDrawableStatic power;
 	private final IDrawableAnimated arrow;
 	private final IDrawable background;
 	private final String localizedName;
@@ -28,8 +28,7 @@ public class AssemblerRecipeCategory extends BlankRecipeCategory {
 	
 	public AssemblerRecipeCategory(IGuiHelper guiHelper) {
 		backgroundLocation = new ResourceLocation("automation", "textures/gui/recipesJEI/compressor.png");
-		IDrawableStatic powerDrawable = guiHelper.createDrawable(backgroundLocation, 176, 0, 8, 52);
-		power = guiHelper.createAnimatedDrawable(powerDrawable, 200, IDrawableAnimated.StartDirection.TOP, true);
+		power = guiHelper.createDrawable(backgroundLocation, 176, 0, 8, 52);
 		IDrawableStatic arrowDrawable = guiHelper.createDrawable(backgroundLocation, 184, 0, 32, 10);
 		this.arrow = guiHelper.createAnimatedDrawable(arrowDrawable, 40, IDrawableAnimated.StartDirection.LEFT, false);
 		background = guiHelper.createDrawable(backgroundLocation, 25, 15, 126, 54);
@@ -45,7 +44,6 @@ public class AssemblerRecipeCategory extends BlankRecipeCategory {
 
 	@Override
 	public void drawAnimations(Minecraft minecraft) {
-		power.draw(minecraft, 1, 1);
 		arrow.draw(minecraft, 74, 22);
 	}
 
@@ -72,8 +70,10 @@ public class AssemblerRecipeCategory extends BlankRecipeCategory {
 		guiItemStacks.init(4, false, 108, 18);
 
 		if (recipeWrapper instanceof AssemblerRecipeWrapper) {
-			craftingGridHelper.setInput(guiItemStacks, recipeWrapper.getInputs(), 3, 3);
-			craftingGridHelper.setOutput(guiItemStacks, ((AssemblerRecipeWrapper)recipeWrapper).getOutputs());
+			AssemblerRecipeWrapper recipe = (AssemblerRecipeWrapper)recipeWrapper;
+			recipe.setPowerDraw(power, 1, 1);
+			craftingGridHelper.setInput(guiItemStacks, recipe.getInputs(), 3, 3);
+			craftingGridHelper.setOutput(guiItemStacks, recipe.getOutputs());
 		}
 	}
 

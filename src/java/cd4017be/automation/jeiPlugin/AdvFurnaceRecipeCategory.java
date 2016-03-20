@@ -21,7 +21,7 @@ public class AdvFurnaceRecipeCategory extends BlankRecipeCategory {
 	private static final int SlotIn = 0, SlotOut = 3;
 	
 	private final ResourceLocation backgroundLocation;
-	private final IDrawableAnimated power;
+	private final IDrawableStatic power;
 	private final IDrawableAnimated arrow;
 	private final IDrawable background;
 	private final IDrawable tankOverlay;
@@ -31,8 +31,7 @@ public class AdvFurnaceRecipeCategory extends BlankRecipeCategory {
 	
 	public AdvFurnaceRecipeCategory(IGuiHelper guiHelper) {
 		backgroundLocation = new ResourceLocation("automation", "textures/gui/recipesJEI/advFurnace.png");
-		IDrawableStatic powerDrawable = guiHelper.createDrawable(backgroundLocation, 176, 0, 8, 52);
-		power = guiHelper.createAnimatedDrawable(powerDrawable, 200, IDrawableAnimated.StartDirection.TOP, true);
+		power = guiHelper.createDrawable(backgroundLocation, 176, 0, 8, 52);
 		IDrawableStatic arrowDrawable = guiHelper.createDrawable(backgroundLocation, 200, 0, 32, 10);
 		this.arrow = guiHelper.createAnimatedDrawable(arrowDrawable, 40, IDrawableAnimated.StartDirection.LEFT, false);
 		tankOverlay = guiHelper.createDrawable(backgroundLocation, 184, 0, 16, 52);
@@ -50,7 +49,6 @@ public class AdvFurnaceRecipeCategory extends BlankRecipeCategory {
 
 	@Override
 	public void drawAnimations(Minecraft minecraft) {
-		power.draw(minecraft, 1, 1);
 		arrow.draw(minecraft, 65, 22);
 	}
 
@@ -81,10 +79,12 @@ public class AdvFurnaceRecipeCategory extends BlankRecipeCategory {
 		guiFluidStacks.init(1, false, 118, 1, 16, 52, 8000, false, tankOverlay);
 
 		if (recipeWrapper instanceof AdvFurnaceRecipeWrapper) {
-			craftingGridHelper.setInput(guiItemStacks, recipeWrapper.getInputs(), 3, 3);
-			craftingGridHelperOut.setInput(guiItemStacks, ((AdvFurnaceRecipeWrapper)recipeWrapper).getOutputs(), 3, 3);
-			guiFluidStacks.set(0, recipeWrapper.getFluidInputs());
-			guiFluidStacks.set(1, recipeWrapper.getFluidOutputs());
+			AdvFurnaceRecipeWrapper recipe = (AdvFurnaceRecipeWrapper)recipeWrapper;
+			recipe.setPowerDraw(power, 1, 1);
+			craftingGridHelper.setInput(guiItemStacks, recipe.getInputs(), 3, 3);
+			craftingGridHelperOut.setInput(guiItemStacks, recipe.getOutputs(), 3, 3);
+			guiFluidStacks.set(0, recipe.getFluidInputs());
+			guiFluidStacks.set(1, recipe.getFluidOutputs());
 		}
 	}
 

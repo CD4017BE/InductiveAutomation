@@ -6,10 +6,9 @@ import java.util.List;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import cd4017be.api.automation.AutomationRecipes.CoolRecipe;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 
-public class DecompCoolerRecipeWrapper extends BlankRecipeWrapper {
-	
+public class DecompCoolerRecipeWrapper extends EnergyRecipeWrapper {
+	private static float MAXPOWER = 0F;
 	private final CoolRecipe recipe;
 	public final FluidStack[] inputF;
 	public final FluidStack[] outputF;
@@ -31,6 +30,7 @@ public class DecompCoolerRecipeWrapper extends BlankRecipeWrapper {
 		else if (recipe.out0 instanceof FluidStack) outputF[0] = (FluidStack)recipe.out0;
 		if (recipe.out1 instanceof ItemStack) outputI[1] = (ItemStack)recipe.out1;
 		else if (recipe.out1 instanceof FluidStack) outputF[1] = (FluidStack)recipe.out1;
+		if (recipe.energy > MAXPOWER) MAXPOWER = recipe.energy;
 	}
 
 	@Override
@@ -53,8 +53,14 @@ public class DecompCoolerRecipeWrapper extends BlankRecipeWrapper {
 		return Arrays.asList(outputF);
 	}
 	
+	@Override
 	public float getEnergy() {
 		return recipe.energy;
+	}
+
+	@Override
+	public float getMaxEnergy() {
+		return MAXPOWER;
 	}
 	
 }

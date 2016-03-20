@@ -18,7 +18,7 @@ import mezz.jei.util.Translator;
 public class DecompCoolerRecipeCategory extends BlankRecipeCategory {
 	
 	private final ResourceLocation backgroundLocation;
-	private final IDrawableAnimated power;
+	private final IDrawableStatic power;
 	private final IDrawableAnimated arrow;
 	private final IDrawableAnimated arrow1;
 	private final IDrawable background;
@@ -27,8 +27,7 @@ public class DecompCoolerRecipeCategory extends BlankRecipeCategory {
 	
 	public DecompCoolerRecipeCategory(IGuiHelper guiHelper) {
 		backgroundLocation = new ResourceLocation("automation", "textures/gui/recipesJEI/decompCooler.png");
-		IDrawableStatic powerDrawable = guiHelper.createDrawable(backgroundLocation, 176, 0, 8, 52);
-		power = guiHelper.createAnimatedDrawable(powerDrawable, 200, IDrawableAnimated.StartDirection.TOP, true);
+		power = guiHelper.createDrawable(backgroundLocation, 176, 0, 8, 52);
 		IDrawableStatic arrowDrawable = guiHelper.createDrawable(backgroundLocation, 200, 0, 18, 10);
 		this.arrow = guiHelper.createAnimatedDrawable(arrowDrawable, 40, IDrawableAnimated.StartDirection.LEFT, false);
 		arrowDrawable = guiHelper.createDrawable(backgroundLocation, 200, 10, 18, 10);
@@ -46,7 +45,6 @@ public class DecompCoolerRecipeCategory extends BlankRecipeCategory {
 
 	@Override
 	public void drawAnimations(Minecraft minecraft) {
-		power.draw(minecraft, 1, 1);
 		arrow.draw(minecraft, 45, 22);
 		arrow1.draw(minecraft, 108, 22);
 	}
@@ -79,6 +77,7 @@ public class DecompCoolerRecipeCategory extends BlankRecipeCategory {
 
 		if (recipeWrapper instanceof DecompCoolerRecipeWrapper) {
 			DecompCoolerRecipeWrapper recipe = (DecompCoolerRecipeWrapper)recipeWrapper;
+			recipe.setPowerDraw(power, 1, 1);
 			if (recipe.inputI[0] != null) guiItemStacks.set(0, recipe.inputI[0]);
 			if (recipe.inputI[1] != null) guiItemStacks.set(1, recipe.inputI[1]);
 			if (recipe.outputI[0] != null) guiItemStacks.set(2, recipe.outputI[0]);

@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.List;
 
 import cd4017be.api.automation.AutomationRecipes.CmpRecipe;
+import cd4017be.automation.TileEntity.ElectricCompressor;
 import net.minecraft.item.ItemStack;
-import mezz.jei.api.recipe.BlankRecipeWrapper;
 
-public class AssemblerRecipeWrapper extends BlankRecipeWrapper {
+public class AssemblerRecipeWrapper extends EnergyRecipeWrapper {
 	
 	private final CmpRecipe recipe;
 	private final Object[] input;
@@ -30,6 +30,16 @@ public class AssemblerRecipeWrapper extends BlankRecipeWrapper {
 	@Override
 	public List<ItemStack> getOutputs() {
 		return Collections.singletonList(recipe.output);
+	}
+
+	@Override
+	public float getEnergy() {
+		return ElectricCompressor.Energy;
+	}
+
+	@Override
+	public float getMaxEnergy() {
+		return ElectricCompressor.Energy;
 	}
 
 }
