@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import cd4017be.lib.util.OreDictStack;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 
 public class Utils 
@@ -21,6 +22,7 @@ public class Utils
     public static boolean valid(Object o) {
     	if (o == null || o instanceof ItemStack) return true;
     	else if (o instanceof OreDictStack) return !OreDictionary.getOres(((OreDictStack)o).id).isEmpty();
+    	else if (o instanceof FluidStack) return true;
     	else return false;
     }
 	

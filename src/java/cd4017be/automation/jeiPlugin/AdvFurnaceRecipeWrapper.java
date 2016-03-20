@@ -43,5 +43,9 @@ public class AdvFurnaceRecipeWrapper extends BlankRecipeWrapper implements IReci
 	public List<FluidStack> getFluidOutputs() {
 		return Collections.singletonList(recipe.Loutput);
 	}
+	
+	public float getEnergy() {
+		return recipe.energy;
+	}
 
 }
