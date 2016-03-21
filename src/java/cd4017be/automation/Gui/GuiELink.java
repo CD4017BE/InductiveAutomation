@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 import cd4017be.automation.TileEntity.ELink;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.GuiMachine;
 
@@ -68,8 +69,8 @@ public class GuiELink extends GuiMachine
         this.drawEnergyConfig(tileEntity, -18, 7);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 133, this.guiTop + 56, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[1] + "V", this.guiLeft + 133, this.guiTop + 38, 0x404040);
-        this.drawStringCentered(String.format("%+.1f kW", tileEntity.netData.floats[3] / 1000F), this.guiLeft + 34, this.guiTop + 38, 0x404040);
-        this.drawStringCentered(String.format("%.0f / %.0f kJ", tileEntity.netData.floats[1] / 1000F, tileEntity.netData.floats[2] / 1000F), this.guiLeft + 88, this.guiTop + 16, 0x404040);
+        this.drawStringCentered(String.format("%+.1f %s", tileEntity.netData.floats[3] / 1000F, TooltipInfo.getPowerUnit()), this.guiLeft + 34, this.guiTop + 38, 0x404040);
+        this.drawStringCentered(String.format("%.0f / %.0f %s", tileEntity.netData.floats[1] / 1000F, tileEntity.netData.floats[2] / 1000F, TooltipInfo.getEnergyUnit()), this.guiLeft + 88, this.guiTop + 16, 0x404040);
         this.drawStringCentered(String.format("%.2f V", tileEntity.netData.floats[0]), this.guiLeft + 88, this.guiTop + 24, 0x404040);
         this.drawStringCentered("Umin=", this.guiLeft + 79, this.guiTop + 56, 0x404040);
         this.drawStringCentered("Umax=", this.guiLeft + 79, this.guiTop + 38, 0x404040);

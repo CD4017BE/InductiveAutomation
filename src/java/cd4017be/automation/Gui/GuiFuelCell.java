@@ -13,6 +13,7 @@ import cd4017be.automation.Config;
 import cd4017be.automation.TileEntity.FuelCell;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.GuiMachine;
 
@@ -60,8 +61,8 @@ protected FuelCell tileEntity;
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 133, this.guiTop + 20, 0x404040);
-        this.drawStringCentered("P = " + tileEntity.netData.ints[1] + " kW", this.guiLeft + 133, this.guiTop + 38, 0x804040);
-        this.drawStringCentered((int)(tileEntity.netData.floats[0] / 1000F) + " kJ", this.guiLeft + 133, this.guiTop + 56, 0x404040);
+        this.drawStringCentered("P = " + tileEntity.netData.ints[1] + " " + TooltipInfo.getPowerUnit(), this.guiLeft + 133, this.guiTop + 38, 0x804040);
+        this.drawStringCentered((int)(tileEntity.netData.floats[0] / 1000F) + " " + TooltipInfo.getEnergyUnit(), this.guiLeft + 133, this.guiTop + 56, 0x404040);
     }
     
     @Override

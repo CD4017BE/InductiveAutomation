@@ -3,6 +3,7 @@ package cd4017be.automation.Item;
 import java.util.List;
 
 import cd4017be.automation.Config;
+import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.Utils;
 import net.minecraft.entity.Entity;
@@ -20,6 +21,7 @@ import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerItem {
 
 	public static int energyUse = 8;
+	public static float reachDist = 16F;
 	
 	public ItemPortablePump(String id) 
 	{
@@ -27,12 +29,17 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
 		this.setMaxStackSize(1);
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
     public void addInformation(ItemStack item, EntityPlayer player, List list, boolean par4) 
     {
         FluidStack fluid = this.getFluid(item);
         if (fluid != null) {
-            list.add(Utils.formatNumber((float)fluid.amount / 1000F, 3) + "/" + Utils.formatNumber((float)this.getCapacity(item) / 1000F, 3) + " m³ " +  fluid.getLocalizedName());
+            list.add(String.format("%s/%s %s %s", 
+            		Utils.formatNumber((float)fluid.amount / 1000F, 3), 
+            		Utils.formatNumber((float)this.getCapacity(item) / 1000F, 3),
+            		TooltipInfo.getFluidUnit(),
+            		fluid.getLocalizedName()));
         }
         super.addInformation(item, player, list, par4);
     }
@@ -105,9 +112,9 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
 		if (world.isRemote) return item;
 		EnergyItem energy = new EnergyItem(item, this);
 		if (energy.getStorageI() < energyUse) return item;
-		Vec3 pos = new Vec3(player.posX, player.posY + 1.62D - player.getYOffset(), player.posZ);
+		Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
         Vec3 dir = player.getLookVec();
-        MovingObjectPosition obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 16, dir.yCoord * 16, dir.zCoord * 16), true, false, false);
+        MovingObjectPosition obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * reachDist, dir.yCoord * reachDist, dir.zCoord * reachDist), true, false, false);
         if (obj == null) return item;
         FluidStack fluid = Utils.getFluid(world, obj.getBlockPos(), true);
         if (fluid != null && this.fill(item, fluid, false) == fluid.amount) {

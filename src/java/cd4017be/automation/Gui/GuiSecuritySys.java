@@ -17,6 +17,7 @@ import org.lwjgl.opengl.GL11;
 import cd4017be.automation.TileEntity.SecuritySys;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.templates.GuiMachine;
 
 /**
@@ -66,7 +67,7 @@ public class GuiSecuritySys extends GuiMachine
         this.drawInfo(137, 169, 34, 24, "\\i", "security.special");
         this.drawInfo(137, 96, 34, 8, "\\i", "security.costL");
         this.drawInfo(137, 105, 34, 8, "\\i", "security.costP");
-        this.drawInfo(137, 16, 16, 52, "Energy:", (int)tileEntity.netData.floats[0] + "kJ");
+        this.drawInfo(137, 16, 16, 52, "Energy:", (int)tileEntity.netData.floats[0] + TooltipInfo.getEnergyUnit());
     }
 
     @Override
@@ -94,8 +95,8 @@ public class GuiSecuritySys extends GuiMachine
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 163, this.guiTop + 38, 0x404040);
         this.drawStringCentered("Power:", this.guiLeft + 154, this.guiTop + 89, 0x404040);
-        this.drawStringCentered("L:" + tileEntity.netData.ints[3] + "kW", this.guiLeft + 154, this.guiTop + 97, 0x405757);
-        this.drawStringCentered("P:" + tileEntity.netData.ints[1] + "kW", this.guiLeft + 154, this.guiTop + 106, 0x604040);
+        this.drawStringCentered("L:" + tileEntity.netData.ints[3] + TooltipInfo.getPowerUnit(), this.guiLeft + 154, this.guiTop + 97, 0x405757);
+        this.drawStringCentered("P:" + tileEntity.netData.ints[1] + TooltipInfo.getPowerUnit(), this.guiLeft + 154, this.guiTop + 106, 0x604040);
         this.drawStringCentered("Load", this.guiLeft + 154, this.guiTop + 147, 0x404040);
         this.drawStringCentered("Owner", this.guiLeft + 154, this.guiTop + 159, 0x404040);
         this.drawStringCentered("List 1", this.guiLeft + 154, this.guiTop + 171, 0x404040);

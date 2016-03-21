@@ -16,6 +16,7 @@ import org.lwjgl.opengl.GL11;
 import cd4017be.automation.TileEntity.TeslaTransmitter;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.templates.GuiMachine;
 
 /**
@@ -68,7 +69,7 @@ public class GuiTeslaTransmitter extends GuiMachine
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/tesla.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 40, this.xSize, this.ySize);
         textField.drawTextBox();
-        this.drawStringCentered("Energy = " + (int)(tileEntity.netData.floats[0] / 1000F) + "kJ", this.guiLeft + 115, this.guiTop + 20, 0xffdf40);
+        this.drawStringCentered("Energy = " + (int)(tileEntity.netData.floats[0] / 1000F) + TooltipInfo.getEnergyUnit(), this.guiLeft + 115, this.guiTop + 20, 0xffdf40);
         this.drawStringCentered((tileEntity.interdim ? "Interdimensional " : "") + tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
     }
     

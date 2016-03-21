@@ -1,5 +1,3 @@
-Portable pump (probably also other tools) has wrong (too high) aim level
 missing recipe handlers for JEI: ?bio reactor?
 missing transfer handlers for JEI: portable crafter, compression assembler
 Model loading errors displayed on startup for models that are not needed
-missing item tooltips

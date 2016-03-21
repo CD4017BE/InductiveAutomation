@@ -9,6 +9,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import cd4017be.automation.TileEntity.GraviCond;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.templates.GuiMachine;
 import cd4017be.lib.util.Utils;
 
@@ -56,7 +57,7 @@ public class GuiGraviCond extends GuiMachine
         this.drawItemConfig(tileEntity, -54, 7);
         this.drawEnergyConfig(tileEntity, -72, 7);
         this.drawLocString(this.guiLeft + 26, this.guiTop + 52, 8, 0x404040, "grav.matter", Utils.formatNumber((double)tileEntity.netData.ints[0] * 1000D, 4, 0));
-        this.drawStringCentered(String.format("%.0f kJ", tileEntity.netData.floats[0] / 1000F), this.guiLeft + 61, this.guiTop + 18, 0x404040);
+        this.drawStringCentered(String.format("%.0f %s", tileEntity.netData.floats[0] / 1000F, TooltipInfo.getEnergyUnit()), this.guiLeft + 61, this.guiTop + 18, 0x404040);
         this.drawStringCentered(tileEntity.getMatterScaled(100) + " %", this.guiLeft + 61, this.guiTop + 36, 0x404040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);

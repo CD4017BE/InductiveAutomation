@@ -10,6 +10,7 @@ import java.util.List;
 
 import cd4017be.automation.Config;
 import cd4017be.lib.DefaultItemBlock;
+import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,12 +31,17 @@ public class ItemTank extends DefaultItemBlock implements IFluidContainerItem
         super(id);
     }
 
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
     public void addInformation(ItemStack item, EntityPlayer player, List list, boolean par4) 
     {
         FluidStack fluid = this.getFluid(item);
         if (fluid != null) {
-            list.add(Utils.formatNumber((float)fluid.amount / 1000F, 3) + "/" + Utils.formatNumber((float)this.getCapacity(item) / 1000F, 3) + " m³ " +  fluid.getLocalizedName());
+        	list.add(String.format("%s/%s %s %s", 
+            		Utils.formatNumber((float)fluid.amount / 1000F, 3), 
+            		Utils.formatNumber((float)this.getCapacity(item) / 1000F, 3),
+            		TooltipInfo.getFluidUnit(),
+            		fluid.getLocalizedName()));
         }
         super.addInformation(item, player, list, par4);
     }

@@ -28,6 +28,7 @@ public class ItemMachineSynchronizer extends DefaultItem
 		super(id);
         this.setCreativeTab(Automation.tabAutomation);
         this.setMaxStackSize(1);
+        this.setHasSubtypes(true);
 	}
 	
 	@Override
@@ -65,8 +66,7 @@ public class ItemMachineSynchronizer extends DefaultItem
     @Override
     public String getItemStackDisplayName(ItemStack item) 
     {
-    	int d = item.getItemDamage();
-        return super.getItemStackDisplayName(item) + " (" + types[d <= 0 || d >= types.length ? 0 : d] + ")";
+        return super.getItemStackDisplayName(item);
     }
     
     @Override

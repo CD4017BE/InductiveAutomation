@@ -17,6 +17,7 @@ import cd4017be.automation.Config;
 import cd4017be.automation.TileEntity.ESU;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.GuiMachine;
 
@@ -70,7 +71,7 @@ public class GuiESU extends GuiMachine
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 43, this.guiTop + 20, 0x404040);
-        this.drawStringCentered((int)(tileEntity.netData.floats[0] / 1000F) + "/" + tileEntity.getMaxStorage() + " kJ", this.guiLeft + 88, this.guiTop + 56, 0x404040);
+        this.drawStringCentered((int)(tileEntity.netData.floats[0] / 1000F) + "/" + tileEntity.getMaxStorage() + " " + TooltipInfo.getEnergyUnit(), this.guiLeft + 88, this.guiTop + 56, 0x404040);
     }
     
     @Override

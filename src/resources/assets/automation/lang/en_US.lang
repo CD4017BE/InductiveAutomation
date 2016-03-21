@@ -1,4 +1,10 @@
 #PARSE_ESCAPES
+# The text displayed for unexpanded tooltip
+cd4017be.shiftHint=<SHIFT for info>
+cd4017be.fluidUnit=m³
+cd4017be.energyUnit=kJ
+cd4017be.powerUnit=kW
+
 # Blocks
 # names
 tile.cd4017be.ore\:0.name=Silver Ore
@@ -88,6 +94,7 @@ tile.cd4017be.itemBuffer.name=Item Flow Regulator
 tile.cd4017be.quantumTank.name=Quantum Tank
 tile.cd4017be.vertShemGen.name=3D-Vertex Schematic Printer
 # tooltips
+tile.cd4017be.ore.tip=spawns in the world
 tile.cd4017be.placementHelper.tip=You shouldn't be able to get this.\nJust throw it away it's useless for you.\nPlacement controllers will temporary place\nthese blocks to click items against them.
 tile.cd4017be.pool.tip=Place directly or indirectly next to an BioReactor.\nIncreases Algae capacity by \\<AI.FluidTiers.TankCap:1>L.\nOptimal if it has access to sunlight.
 tile.cd4017be.unbrStone.tip=Unbreakable with infinite explosion resistance\nand indestructable for mobs.\nSneak-click is the only possible way to remove it.
@@ -171,6 +178,20 @@ fluid.hydrogenG.name=Gaseous Hydrogen
 fluid.hydrogenL.name=Liquid Hydrogen
 fluid.oxygenG.name=Gaseous Oxygen
 fluid.oxygenL.name=Liquid Oxygen
+# tooltips (displayed on the fluid-dummy item)
+fluid.water.tip=It's wet!
+fluid.lava.tip=It's hot!
+fluid.steam.tip=Hot pressurized water vapor
+fluid.biomass.tip=Discomposed organic material
+fluid.antimatter.tip=Contains a lot of energy.\nWarranty void if exposed to ... anything!
+fluid.nitrogeng.tip=Main compound of air.\nProduced for free in a Collector (N2-mode)
+fluid.nitrogenl.tip=It's used as coolant material.
+fluid.oxygeng.tip=You are currently breathing this.\nProduced for free in a Collector (O2-mode)
+fluid.oxygenl.tip=Very cold pressurized Oxygen.
+fluid.heliumg.tip=Breathing this is funny.
+fluid.heliuml.tip=Extremely cold!\nUsed to cool down superconductors.
+fluid.hydrogeng.tip=Flammable gas!
+fluid.hydrogenl.tip=Extremely cold pressurized hydrogen.\nIf cooled even more it becomes solid.
 
 # Items
 # Material names
@@ -271,7 +292,11 @@ item.cd4017be.portablePump.name=Portable Pump
 item.cd4017be.translocator.name=Block Translocator
 item.cd4017be.portableTesla.name=Portable Tesla Transmitter
 item.cd4017be.placement.name=Block placement controller
-item.cd4017be.synchronizer.name=Machine co-op synchronizer
+item.cd4017be.synchronizer\:0.name=Machine co-op synchronizer (Unlinked)
+item.cd4017be.synchronizer\:1.name=Machine co-op synchronizer (Linked)
+item.cd4017be.synchronizer\:2.name=Machine co-op synchronizer (Pump)
+item.cd4017be.synchronizer\:3.name=Machine co-op synchronizer (Miner)
+item.cd4017be.synchronizer\:4.name=Machine co-op synchronizer (Builder)
 item.cd4017be.remBlockType.name=Remove block pattern
 item.cd4017be.vertexSel.name=Vertex Selection Tool
 # tooltips
@@ -299,8 +324,6 @@ item.cd4017be.jetpackSteel.tip=Provides a bit more armor than iron chestplate.\n
 item.cd4017be.jetpackGraphite.tip=Provides armor like diamond chestplate.\nBecomes normal Jetpack when armor breaks.\n(see Jetpack item for more info)
 item.cd4017be.jetpackUnbr.tip=Provides armor like diamond chestplate.\nArmor will never break.\n(see Jetpack item for more info)
 item.cd4017be.matterInterface.tip=Used to access the content of a Matterorb.\nClick to open GUI.
-item.cd4017be.fluidDummy:0.tip=This item is used to display Errors.
-item.cd4017be.fluidDummy.tip=Contains 1000L of liquid.\nCan be filled in tanks or placed in world.\nCreated in Fluid Stabilizer or by Antimatter Bombs.
 item.cd4017be.fluidUpgrade.tip=A filter for liquid extraction/injection pipes.\nClick in air to open GUI.\nClick on pipe to insert.
 item.cd4017be.itemUpgrade.tip=A filter for item extraction/injection pipes & item sorter.\nClick in air to open GUI.\nClick on pipe to insert.
 item.cd4017be.portableFurnace.tip=An electric furnace that runs in your inventory.\nInsert an Item Pipe Filter to auto smelt specific items.\nClick to open GUI.\nUses \\<I.Tool.Furnace.Euse> kJ/op
@@ -313,11 +336,11 @@ item.cd4017be.portablePump.tip=Click on liquid blocks to drain (16m range).\nSto
 item.cd4017be.translocator.tip=Click on Block to pickup then click\nsomewhere else to place down.\nThe moved Block will keep all its data/content.
 item.cd4017be.portableTesla.tip=Functions like a LV Tesla Transmitter.\nCan charge items in your inventory\nusing its stored energy.\nClick in air to open GUI. 
 item.cd4017be.placement.tip=Will perform the block and item placement\noperations configured in GUI using items\nfrom your inventory when clicked on the ground.\nClick in air to open GUI.\nCan be used by the Builder and Farm. 
-item.cd4017be.synchronizer:0.tip=Used to let a machine work for another machine.\nSneak-click on a machine to link.\nUse a Selection Tool in configure-mode to insert.\nFunctions as upgrade for another machine.
-item.cd4017be.synchronizer:1.tip=This machine can't be used by other machines!
-item.cd4017be.synchronizer:2.tip=Insert into Miner to let it also "mine" fluids.\nInsert into Builder to drain fluid blocks before replacing them.
-item.cd4017be.synchronizer:3.tip=Insert into Builder to let it break already existing blocks.\nInsert into Farm to allow it harvesting stronger blocks.
-item.cd4017be.synchronizer:4.tip=Insert into Pump or Miner to let them replace drained/mined blocks\nusing the material set in the Builders first config-slot.
+item.cd4017be.synchronizer\:0.tip=Used to let a machine work for another machine.\nSneak-click on a machine to link.\nUse a Selection Tool in configure-mode to insert.\nFunctions as upgrade for another machine.
+item.cd4017be.synchronizer\:1.tip=This machine can't be used by other machines!
+item.cd4017be.synchronizer\:2.tip=Insert into Miner to let it also "mine" fluids.\nInsert into Builder to drain fluid blocks before replacing them.
+item.cd4017be.synchronizer\:3.tip=Insert into Builder to let it break already existing blocks.\nInsert into Farm to allow it harvesting stronger blocks.
+item.cd4017be.synchronizer\:4.tip=Insert into Pump or Miner to let them replace drained/mined blocks\nusing the material set in the Builders first config-slot.
 item.cd4017be.remBlockType.tip=If a Builder is upgraded with a Pump or Miner you\ncan use this as material type to let it remove blocks.
 item.cd4017be.vertexSel.tip=Sneak-click on a 3D-Vertex Schematic Printer to link.\nSneak-click in air to switch between the\nvertices of the currently selected Polygon\nand right-click on block/air to set it's position.\nclick in air with "open GUI" mode to open linked machine. 
 

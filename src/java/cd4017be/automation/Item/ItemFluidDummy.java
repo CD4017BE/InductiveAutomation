@@ -51,6 +51,13 @@ public class ItemFluidDummy extends DefaultItem implements IFluidContainerItem
     }
 
     @Override
+	public String getUnlocalizedName(ItemStack item) {
+    	int id = item.getItemDamage();
+        Fluid fluid = FluidRegistry.getFluid(id);
+        return fluid != null ? "fluid." + fluid.getName() : super.getUnlocalizedName(item);
+	}
+
+	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) 
     {
 		if (tab == Automation.tabFluids)

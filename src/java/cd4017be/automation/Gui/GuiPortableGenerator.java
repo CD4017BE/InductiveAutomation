@@ -5,6 +5,7 @@ import java.io.IOException;
 import org.lwjgl.opengl.GL11;
 
 import cd4017be.lib.BlockGuiHandler;
+import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.templates.GuiMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -36,7 +37,7 @@ public class GuiPortableGenerator extends GuiMachine
 	public void updateScreen() 
     {
     	ItemStack item = this.container.player.getCurrentEquippedItem();
-		if (item != null && item.getTagCompound() != null) energy = item.getTagCompound().getInteger("buff");
+		if (item != null && item.getTagCompound() != null) energy = item.getTagCompound().getInteger("buff") / 1000;
 		else energy = 0;
 		super.updateScreen();
 	}
@@ -57,7 +58,7 @@ public class GuiPortableGenerator extends GuiMachine
         if (this.container.isFilterOn(0)) this.drawTexturedModalRect(this.guiLeft + 61, this.guiTop + 19, 176, 16, 18, 10);
         if (energy > 0) {
         	this.drawTexturedModalRect(this.guiLeft + 99, this.guiTop + 18, 176, 0, 14, 14);
-        	this.drawStringCentered(energy + " kJ", this.guiLeft + 142, this.guiTop + 20, 0x404040);
+        	this.drawStringCentered(energy + " " + TooltipInfo.getEnergyUnit(), this.guiLeft + 142, this.guiTop + 20, 0x404040);
         }
         this.drawStringCentered(this.container.inventory.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
