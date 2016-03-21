@@ -94,7 +94,7 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
     
     private EnumFacing findNextDir(BlockPos pos)
     {
-        if (this.isValidPos(pos.add(0, flowDir ? 1 : -1, 0))) return flowDir ? EnumFacing.UP : EnumFacing.DOWN;
+        if (this.isValidPos(pos.up(flowDir ? 1 : -1))) return flowDir ? EnumFacing.UP : EnumFacing.DOWN;
         else if (lastDir[0] != null && this.isValidPos(pos.add(lastDir[0].getFrontOffsetX(), 0, lastDir[0].getFrontOffsetZ()))) return lastDir[0];
         else if (lastDir[0] == null || lastDir[1] == null) {
             for (EnumFacing dir : SearchArray) {
@@ -106,7 +106,7 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
             BlockPos pos1 = pos.add(-lastDir[1].getFrontOffsetX(), 0, -lastDir[1].getFrontOffsetZ()); int d1 = dist - 1;
             while (--d1 > 0) {
                 pos1.add(-lastDir[0].getFrontOffsetX(), 0, -lastDir[0].getFrontOffsetZ());
-                if ((byte)blocks[d1] + pos.getX() == pos1.getX() && (byte)(blocks[d1] >> 16) + pos.getZ() == pos1.getZ()) return null;
+                if ((byte)blocks[d1] + this.pos.getX() == pos1.getX() && (byte)(blocks[d1] >> 16) + this.pos.getZ() == pos1.getZ()) return null;
                 else if (!this.isValidPos(pos1)) return lastDir[1].getOpposite();
             }
             return null;

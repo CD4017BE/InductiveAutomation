@@ -70,7 +70,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
     
     public Pump()
     {
-        netData = new TileEntityData(2, 1, 0, 1);
+        netData = new TileEntityData(2, 2, 0, 1);
         inventory = new Inventory(this, 6);
         tanks = new TankContainer(this, new Tank(Config.tankCap[1] * 2, 1).setOut(0)).setNetLong(1);
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
@@ -149,6 +149,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
         }
         if (storage < Energy) return false;
         int target = blocks[dist];
+        netData.ints[1] = target;
         byte dx = (byte)target, dy = (byte)(target >> 8), dz = (byte)(target >> 16);
         if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, (pos.getX() + dx) >> 4, (pos.getZ() + dz) >> 4)) return true;
         if (dist >= blocks.length - 1) {
@@ -180,7 +181,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
             return null;
         } else if (this.isValidPos(pos.add(lastDir[1].getFrontOffsetX(), 0, lastDir[1].getFrontOffsetZ()))) return lastDir[1];
         else if (this.isValidPos(pos.add(-lastDir[1].getFrontOffsetX(), 0, -lastDir[1].getFrontOffsetZ()))) {
-            BlockPos pos1 = pos.add(lastDir[1].getFrontOffsetX(), 0, lastDir[1].getFrontOffsetZ()); int d1 = dist - 1;
+            BlockPos pos1 = pos.add(-lastDir[1].getFrontOffsetX(), 0, -lastDir[1].getFrontOffsetZ()); int d1 = dist - 1;
             while (--d1 > 0) {
                 pos1 = pos1.add(-lastDir[0].getFrontOffsetX(), 0, -lastDir[0].getFrontOffsetZ());
                 if ((byte)blocks[d1] + px == pos1.getX() && (byte)(blocks[d1] >> 16) + pz == pos1.getZ()) return null;
@@ -193,11 +194,12 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
     private boolean isValidPos(BlockPos pos)
     {
         if (pos.getX() >= area[0] && pos.getX() < area[3] && pos.getY() >= area[1] && pos.getY() < area[4] && pos.getZ() >= area[2] && pos.getZ() < area[5]) return false;
-        pos = pos.subtract(this.pos);
-        if (Math.max(Math.max(Math.abs(pos.getX()), Math.abs(pos.getZ())), Math.abs(pos.getY())) > blocks.length / 3) return false;
-        FluidStack fluid = Utils.getFluid(worldObj, pos.add(this.pos), this.blockNotify);
+        BlockPos pos1 = pos.add(-px, -py, -pz);
+        int l = blocks.length / 3;
+        if (pos.getY() < 0 || pos.getY() >= 256 || Math.abs(pos1.getY()) > l || Math.abs(pos1.getX()) > l || Math.abs(pos1.getZ()) > l) return false;
+        FluidStack fluid = Utils.getFluid(worldObj, pos, this.blockNotify);
         if (fluid == null || fluid.getFluid() != fluidId) return false;
-        int p = (pos.getX() & 0xff) | (pos.getY() & 0xff) << 8 | (pos.getZ() & 0xff) << 16;
+        int p = (pos1.getX() & 0xff) | (pos1.getY() & 0xff) << 8 | (pos1.getZ() & 0xff) << 16;
         for (int i = dist - 1; i >= 0; i -= 2) {
             if ((blocks[i] & 0xffffff) == p) return false;
         }

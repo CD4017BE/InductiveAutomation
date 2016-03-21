@@ -1,3 +1,5 @@
 missing recipe handlers for JEI: ?bio reactor?
 missing transfer handlers for JEI: portable crafter, compression assembler
 Model loading errors displayed on startup for models that are not needed
+GUI components sometimes don't update
+Farm doesn't work

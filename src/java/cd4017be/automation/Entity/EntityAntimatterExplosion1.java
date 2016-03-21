@@ -33,7 +33,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidBlock;
 
@@ -68,7 +67,7 @@ public class EntityAntimatterExplosion1 extends Entity
     protected void entityInit() 
     {
         this.setSize(1, 1);
-        this.dataWatcher.addObject(2, new Integer(size));
+        this.dataWatcher.addObject(5, new Integer(size));
     }
 
     @Override
@@ -81,7 +80,7 @@ public class EntityAntimatterExplosion1 extends Entity
     {
         if (worldObj.isRemote)
         {
-            size = dataWatcher.getWatchableObjectInt(2);
+            size = dataWatcher.getWatchableObjectInt(5);
             return;
         }
         size++;
@@ -97,10 +96,9 @@ public class EntityAntimatterExplosion1 extends Entity
             else loot = null;
             explode(loot);
         } else if (size > 0) {
-        	this.doChunkUpdates();
         	this.setDead();
         }
-        this.dataWatcher.updateObject(2, new Integer(size));
+        this.dataWatcher.updateObject(5, new Integer(size));
     }
     
     private void explode(IMatterStorage loot)
@@ -114,17 +112,6 @@ public class EntityAntimatterExplosion1 extends Entity
         t = System.nanoTime() - t;
         if (t > 50000000) System.out.println(String.format("Layer %d took %.3f s", size, (double)t / 1000000000D));
         if (size >= maxSize) run = 0;
-    }
-    
-    private void doChunkUpdates()
-    {
-    	Chunk chunk;
-    	for (int x = 0; x < chunkSizeX; x++)
-    		for (int z = 0; z < chunkSizeZ; z++)
-    			if (editedChunks.get(x + z * chunkSizeX)) {
-    				chunk = worldObj.getChunkFromChunkCoords(chunkOffsX + x, chunkOffsZ + z);
-    				chunk.generateSkylightMap();
-    			}
     }
     
     @Override
