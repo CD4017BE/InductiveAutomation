@@ -81,6 +81,12 @@ dependencies {
 	// deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}"
 }
 
+jar {
+	manifest {
+		attributes 'FMLAT': 'automation_at.cfg'
+	}
+}
+
 processResources
 {
     // this will ensure that this task is redone when the versions change.
