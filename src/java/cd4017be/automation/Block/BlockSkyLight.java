@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
@@ -28,7 +27,7 @@ public class BlockSkyLight extends DefaultBlock
     
     public BlockSkyLight(String id)
     {
-        super(id, Material.air, ItemBlock.class);
+        super(id, Material.air, null);
         ID = this;
         this.setLightOpacity(0);
     }

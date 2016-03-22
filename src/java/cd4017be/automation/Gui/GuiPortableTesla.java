@@ -81,7 +81,7 @@ public class GuiPortableTesla extends GuiMachine
         	else if (Ipos[i] == 2) this.drawTexturedModalRect(guiLeft + 115 + i * 18, guiTop + 24, 176 + i * 18, 18, 18, 9);
         }
         freq.drawTextBox();
-        this.drawLocString(this.guiLeft + 115, this.guiTop + 16, 8, 0xffdf40, "gui.cd4017be.tesla.stor", Estore);
+        this.drawLocString(this.guiLeft + 62, this.guiTop + 16, 8, 0xffdf40, "tesla.stor", Estore);
         this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.portableTesla.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
     }

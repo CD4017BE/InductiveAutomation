@@ -17,12 +17,12 @@ import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.automation.Gui.InventoryPlacement;
 import cd4017be.automation.Item.ItemItemUpgrade;
 import cd4017be.automation.Item.ItemMachineSynchronizer;
 import cd4017be.automation.Item.ItemPlacement;
 import cd4017be.automation.Item.PipeUpgradeItem;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -122,44 +122,26 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     
     private boolean checkBlock()
     {
-        BlockPos pos = new BlockPos(px, py, pz);
-    	while (!worldObj.isBlockLoaded(pos) || worldObj.isAirBlock(pos)) {
+        BlockPos pos;
+    	while (!worldObj.isBlockLoaded(pos = new BlockPos(px, py, pz)) || worldObj.isAirBlock(pos)) {
             if (py <= area[1]) return true;
             py--;
         }
         IBlockState state = worldObj.getBlockState(pos);
         Block block = state.getBlock();
         int m = block.getMetaFromState(state);
-        if (worldObj.isAirBlock(pos.up())) {
-            ArrayList<Object[]> list = new ArrayList<Object[]>();
-            int n = 0;
-            for (int i = 0; i < 8; i++)
-            {
-                if (inventory.items[i] == null) continue;
-                Object plant = inventory.items[i].getItem() instanceof ItemBlock ? ((ItemBlock)inventory.items[i].getItem()).block : inventory.items[i].getItem();
-                if (plant instanceof IPlantable && block.canSustainPlant(worldObj, pos, EnumFacing.UP, (IPlantable)plant)) {
-                    list.add(new Object[]{i, plant, n, n += inventory.items[i].stackSize});
-                } else if (plant instanceof ItemPlacement) {
-                	InventoryPlacement inv = new InventoryPlacement(inventory.items[i]);
-                	if (this.equalsBlock(inv.inventory[0], state, pos, m, !inv.useDamage(0))) {
-                		list.add(new Object[]{i, inv, n, n += inventory.items[i].stackSize});
-                	}
-                }
-            }
-            if (n > 0) {
-            	if (storage < Energy) return false;
-            	if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, px >> 4, pz >> 4)) return true;
-            	int o = random.nextInt(n);
-                for (Object[] obj : list) {
-                    if (o >= (Integer)obj[2] && o < (Integer)obj[3]) {
-                        return this.plantItem(inventory.items[(Integer)obj[0]], obj[1], pos);
-                    }
-                }
-            }
-        }
-        boolean hasSlave = this.checkSlave();
-        if (!(block.getMaterial().isToolNotRequired() || hasSlave) || harvestFilter == null) return true;
-        if ((harvestFilter.mode&64) != 0 && (worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0 ^ (harvestFilter.mode&128) == 0)) return true;
+        byte Z;
+        //harvesting
+        if ((Z = this.doHarvest(pos, state, block, m)) >= 0) return Z != 0;
+        //planting
+        return this.doPlant(pos, state, block, m) != 0;
+    }
+    
+    /** @return -1 = nothing, 0 = block, 1 = next */
+    private byte doHarvest(BlockPos pos, IBlockState state, Block block, int m) {
+    	boolean hasSlave = this.checkSlave();
+        if (!(block.getMaterial().isToolNotRequired() || hasSlave) || harvestFilter == null) return -1;
+        if ((harvestFilter.mode&64) != 0 && (worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0 ^ (harvestFilter.mode&128) == 0)) return -1;
         ItemType filter = harvestFilter.getFilter();
         List<ItemStack> list = block.getDrops(worldObj, pos, state, 0);
         if ((harvestFilter.mode&2) != 0) list.add(new ItemStack(block));
@@ -173,20 +155,46 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
             	break;
             }
         }
-        if (harvest ^ (harvestFilter.mode&1) != 0) {
-            if (hasSlave) return slave.remoteOperation(pos);
-        	if (invFull && invFull()) return false;
-            invFull = false;
-            if (storage >= Energy) {
-            	if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, px >> 4, pz >> 4)) return true;
-                storage -= Energy;
-                worldObj.setBlockToAir(pos);
-                list = block.getDrops(worldObj, pos, state, 0);
-                for (ItemStack list1 : list) add(list1);
-                return true;
-            } else return false;
+        if (harvest ^ (harvestFilter.mode&1) == 0) return -1;
+        if (hasSlave) return slave.remoteOperation(pos) ? (byte)1 : 0;
+        if (invFull && invFull()) return 0;
+        invFull = false;
+        if (storage < Energy) return 0;
+        if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, px >> 4, pz >> 4)) return 1;
+        storage -= Energy;
+        worldObj.setBlockToAir(pos);
+        list = block.getDrops(worldObj, pos, state, 0);
+        for (ItemStack list1 : list) add(list1);
+        return 1;
+    }
+    
+    /** @return -1 = nothing, 0 = block, 1 = next */
+    private byte doPlant(BlockPos pos, IBlockState state, Block block, int m) {
+    	boolean air = worldObj.isAirBlock(pos.up());
+        ArrayList<Object[]> list = new ArrayList<Object[]>();
+        int n = 0;
+        for (int i = 0; i < 8; i++) {
+        	if (inventory.items[i] == null) continue;
+        	Object plant = inventory.items[i].getItem() instanceof ItemBlock ? ((ItemBlock)inventory.items[i].getItem()).block : inventory.items[i].getItem();
+        	if (air && plant instanceof IPlantable && block.canSustainPlant(worldObj, pos, EnumFacing.UP, (IPlantable)plant)) {
+        		list.add(new Object[]{i, plant, n, n += inventory.items[i].stackSize});
+        	} else if (plant instanceof ItemPlacement) {
+        		InventoryPlacement inv = new InventoryPlacement(inventory.items[i]);
+        		if (this.equalsBlock(inv.inventory[0], state, pos, m, !inv.useDamage(0))) {
+        			list.add(new Object[]{i, inv, n, n += inventory.items[i].stackSize});
+        		}
+        	}
         }
-        return true;
+        if (n == 0) return -1;
+        if (storage < Energy) return 0;
+        if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, px >> 4, pz >> 4)) return 1;
+        int o = random.nextInt(n);
+        for (Object[] obj : list) {
+        	if (o >= (Integer)obj[2] && o < (Integer)obj[3]) {
+        		return this.plantItem(inventory.items[(Integer)obj[0]], obj[1], pos) ? (byte)1 : 0;
+        	}
+        }
+    	return -1;
     }
     
     private boolean checkSlave()
@@ -360,7 +368,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
                 for (int i = 0; i < 4; i++)
                     container.addEntitySlot(new Slot(this, 8 + i + j * 4 + k * 12, 8 + 18 * (i + 5 * k), 34 + 18 * j));
         
-        container.addEntitySlot(new SlotItemType(this, 36, 152, 16, BlockItemRegistry.stack("item.itemUpgrade", 1)));
+        container.addEntitySlot(new SlotItemType(this, 36, 152, 16, new ItemStack(Objects.itemUpgrade)));
         
         container.addPlayerInventory(8, 104);
     }

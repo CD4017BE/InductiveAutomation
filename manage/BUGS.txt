@@ -1,5 +1,16 @@
+v4.0.1:
+
 missing recipe handlers for JEI: ?bio reactor?
 missing transfer handlers for JEI: portable crafter, compression assembler
 Model loading errors displayed on startup for models that are not needed
+Portable teleporter aim too high.
+Portable crafter: inventory not updating when direct click.
+
+fixed in v4.0.2:
+
 GUI components sometimes don't update
-Farm doesn't work
+Farm not working
+Energy display in portable Tesla-transmitter not localized correctly
+InterdimensionalWormhole linking inventories wrong
+Selection tool config Inventory not accepting Machine co-op synchronizer
+Item filters not working in some devices

@@ -1,7 +1,7 @@
 package cd4017be.automation.Gui;
 
+import cd4017be.automation.Objects;
 import cd4017be.automation.Item.ItemItemUpgrade;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.templates.SlotItemType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -15,7 +15,7 @@ public class ContainerPortableGenerator extends ContainerFilteredSubInventory
 		super(player);
 		this.addPlayerInventory(8, 50);
 		this.addSlotToContainer(new Slot(this.inventory, 0, 80, 16));
-		this.addSlotToContainer(new SlotItemType(this.filters, 0, 44, 16, BlockItemRegistry.stack("item.itemUpgrade", 1)));
+		this.addSlotToContainer(new SlotItemType(this.filters, 0, 44, 16, new ItemStack(Objects.itemUpgrade)));
 	}
 	
 	@Override

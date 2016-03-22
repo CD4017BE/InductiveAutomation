@@ -9,10 +9,10 @@ import java.util.ArrayList;
 
 import cd4017be.api.automation.IFluidPipeCon;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.automation.Block.BlockLiquidPipe;
 import cd4017be.automation.Item.ItemFluidUpgrade;
 import cd4017be.automation.Item.PipeUpgradeFluid;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IPipe;
@@ -279,7 +279,7 @@ public class LiquidPipe extends AutomatedTile implements IFluidHandler, IPipe
             return true;
         } else if (!player.isSneaking() && item == null && filter != null) {
             if (worldObj.isRemote) return true;
-            item = BlockItemRegistry.stack("item.fluidUpgrade", 1);
+            item = new ItemStack(Objects.fluidUpgrade);
             item.setTagCompound(PipeUpgradeFluid.save(filter));
             filter = null;
             player.setCurrentItemOrArmor(0, item);
@@ -366,7 +366,7 @@ public class LiquidPipe extends AutomatedTile implements IFluidHandler, IPipe
     {
         super.breakBlock();
         if (filter != null) {
-            ItemStack item = BlockItemRegistry.stack("item.fluidUpgrade", 1);
+            ItemStack item = new ItemStack(Objects.fluidUpgrade);
             item.setTagCompound(PipeUpgradeFluid.save(filter));
             filter = null;
             EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, item);

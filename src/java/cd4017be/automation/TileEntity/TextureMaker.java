@@ -7,12 +7,13 @@ package cd4017be.automation.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IChatComponent;
+
 import java.io.IOException;
 
+import cd4017be.automation.Objects;
 import cd4017be.automation.Gui.GuiTextureMaker;
 import cd4017be.automation.Item.ItemBuilderTexture;
 import cd4017be.automation.Item.ItemFluidDummy;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.ModTileEntity;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
@@ -187,7 +188,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         nbt.setShort("ofsX", (short)netData.ints[1]);
         nbt.setShort("ofsY", (short)netData.ints[2]);
         this.writeItemsToNBT(nbt, "def", inventory);
-        inventory[0] = BlockItemRegistry.stack("item.builderTexture", n);
+        inventory[0] = new ItemStack(Objects.builderTexture, n);
         inventory[0].setTagCompound(nbt);
     }
     

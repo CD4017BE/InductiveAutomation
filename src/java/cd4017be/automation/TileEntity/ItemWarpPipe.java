@@ -18,6 +18,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import cd4017be.api.automation.IItemPipeCon;
+import cd4017be.automation.Objects;
 import cd4017be.automation.Block.BlockItemPipe;
 import cd4017be.automation.Item.ItemItemPipe;
 import cd4017be.automation.Item.ItemItemUpgrade;
@@ -177,7 +178,7 @@ public class ItemWarpPipe extends AutomatedTile implements IPipe, IItemPipeCon
             return true;
         } else if (!player.isSneaking() && item == null && cover == null && filter[s] != null) {
             if (worldObj.isRemote) return true;
-            item = BlockItemRegistry.stack("item.itemUpgrade", 1);
+            item = new ItemStack(Objects.itemUpgrade);
             item.setTagCompound(PipeUpgradeItem.save(filter[s]));
             filter[s] = null;
             player.setCurrentItemOrArmor(0, item);
@@ -646,7 +647,7 @@ public class ItemWarpPipe extends AutomatedTile implements IPipe, IItemPipeCon
         super.breakBlock();
         for (int i = 0; i < filter.length; i++) {
         	if (filter[i] != null) {
-                ItemStack item = BlockItemRegistry.stack("item.itemUpgrade", 1);
+                ItemStack item = new ItemStack(Objects.itemUpgrade);
                 item.setTagCompound(PipeUpgradeItem.save(filter[i]));
                 filter[i] = null;
                 EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, item);

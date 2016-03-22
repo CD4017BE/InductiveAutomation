@@ -10,7 +10,6 @@ package cd4017be.automation.TileEntity;
 import cd4017be.api.automation.IItemPipeCon;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Item.PipeUpgradeItem;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -94,7 +93,7 @@ public class ItemSorter extends AutomatedTile implements IAutomatedInv, IItemPip
     public void initContainer(TileContainer container) 
     {
         for (int i = 1; i < 9; i+=2)
-            container.addEntitySlot(new SlotItemType(this, i, 8 + i * 18, 16, BlockItemRegistry.stack("item.itemUpgrade", 1)));
+            container.addEntitySlot(new SlotItemType(this, i, 8 + i * 18, 16, new ItemStack(Objects.itemUpgrade)));
         for (int i = 0; i < 9; i+=2)
             container.addEntitySlot(new Slot(this, i, 8 + i * 18, 16));
         

@@ -11,7 +11,6 @@ import cd4017be.api.automation.AntimatterItemHandler.IAntimatterItem;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Entity.EntityAntimatterExplosion1;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.DefaultItemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -43,14 +42,15 @@ public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterI
     @Override
 	public EnumRarity getRarity(ItemStack item) 
     {
-		return item.isItemEqual(BlockItemRegistry.stack("tile.antimatterBombF", 1)) ? EnumRarity.EPIC : EnumRarity.UNCOMMON;
+		return item.isItemEqual(new ItemStack(Objects.antimatterBombF)) ? EnumRarity.EPIC : EnumRarity.UNCOMMON;
 	}
     
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
     public void addInformation(ItemStack item, EntityPlayer player, List list, boolean par4) 
     {
         AntimatterItemHandler.addInformation(item, list);
-        if (item.getTagCompound() != null && item.isItemEqual(BlockItemRegistry.stack("tile.antimatterBombF", 1)))
+        if (item.getTagCompound() != null && item.isItemEqual(new ItemStack(Objects.antimatterBombF)))
         {
             int d = (int)Math.cbrt((double)item.getTagCompound().getInteger(getAntimatterTag(item)) * explFaktor);
             list.add("Crater radius (Stone) ~ " + d + " m");

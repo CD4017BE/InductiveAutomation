@@ -24,8 +24,8 @@ import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.computers.ComputerAPI;
 import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.automation.Item.ItemTeleporterCoords;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.MovedBlock;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
@@ -276,7 +276,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
                 if (inventory.items[0] != null && (inventory.items[0].getItem() instanceof ItemTeleporterCoords || inventory.items[0].getItem() == Items.paper))
                 {
                     String name = inventory.items[0].getTagCompound() == null ? "" : inventory.items[0].getTagCompound().getString("name");
-                    inventory.items[0] = BlockItemRegistry.stack("item.teleporterCoords", inventory.items[0].stackSize);
+                    inventory.items[0] = new ItemStack(Objects.teleporterCoords, inventory.items[0].stackSize);
                     inventory.items[0].setTagCompound(new NBTTagCompound());
                     inventory.items[0].getTagCompound().setString("name", name);
                     inventory.items[0].getTagCompound().setInteger("x", netData.ints[0]);

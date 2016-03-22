@@ -27,6 +27,7 @@ import net.minecraftforge.common.ISpecialArmor;
 import org.lwjgl.input.Keyboard;
 
 import cd4017be.automation.Automation;
+import cd4017be.automation.Objects;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.util.Vec3;
@@ -93,7 +94,7 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
         if (this.armor == 0 || this.armor == 4) return;
         int d = stack.getItemDamage() + damage;
         if (d >= stack.getMaxDamage()) {
-            ItemStack item = BlockItemRegistry.stack("item.jetpack", 1);
+            ItemStack item = new ItemStack(Objects.jetpack);
             item.setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
             entity.setCurrentItemOrArmor(slot + 1, item);
         } else {
@@ -101,7 +102,8 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
         }
     }
 
-    @Override
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+	@Override
     public void addInformation(ItemStack item, EntityPlayer player, List list, boolean b) 
     {
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) {

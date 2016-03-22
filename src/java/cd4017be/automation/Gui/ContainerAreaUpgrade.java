@@ -5,6 +5,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import cd4017be.api.automation.IOperatingArea;
+import cd4017be.automation.Objects;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.ItemContainer;
 import cd4017be.lib.templates.SlotItemType;
@@ -25,8 +26,8 @@ public class ContainerAreaUpgrade extends ItemContainer
 		this.addSlotToContainer(new SlotItemType(machine, s[1], 8, 16, BlockItemRegistry.stack("AreaFrame", 1)));
 		this.addSlotToContainer(new SlotItemType(machine, s[2], 8, 34, BlockItemRegistry.stack("EMatrix", 1)));
 		this.addSlotToContainer(new SlotItemType(machine, s[3], 8, 52, BlockItemRegistry.stack("CoilSC", 1)));
-		this.addSlotToContainer(new SlotItemType(machine, s[4], 134, 16, BlockItemRegistry.stack("item.synchronizer", 1, 1), 
-				BlockItemRegistry.stack("item.synchronizer", 1, 2), BlockItemRegistry.stack("item.synchronizer", 1, 3), BlockItemRegistry.stack("item.synchronizer", 1, 4)));
+		this.addSlotToContainer(new SlotItemType(machine, s[4], 134, 16, new ItemStack(Objects.synchronizer, 1, 1), 
+				new ItemStack(Objects.synchronizer, 1, 2), new ItemStack(Objects.synchronizer, 1, 3), new ItemStack(Objects.synchronizer, 1, 4)));
 	}
 
 	@Override

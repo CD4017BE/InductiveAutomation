@@ -1,7 +1,7 @@
 package cd4017be.automation.Gui;
 
+import cd4017be.automation.Objects;
 import cd4017be.automation.Item.ItemItemUpgrade;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.templates.SlotItemType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
@@ -16,8 +16,8 @@ public class ContainerPortableInventory extends ContainerFilteredSubInventory {
 		for (int j = 0; j < 3; j++) 
 			for (int i = 0; i < 8; i++) 
 				this.addSlotToContainer(new Slot(this.inventory, i + 8 * j, 26 + i * 18, 16 + j * 18));
-		this.addSlotToContainer(new SlotItemType(this.filters, 0, 8, 16, BlockItemRegistry.stack("item.itemUpgrade", 1)));
-		this.addSlotToContainer(new SlotItemType(this.filters, 1, 8, 52, BlockItemRegistry.stack("item.itemUpgrade", 1)));
+		this.addSlotToContainer(new SlotItemType(this.filters, 0, 8, 16, new ItemStack(Objects.itemUpgrade)));
+		this.addSlotToContainer(new SlotItemType(this.filters, 1, 8, 52, new ItemStack(Objects.itemUpgrade)));
 	}
 
 	@Override

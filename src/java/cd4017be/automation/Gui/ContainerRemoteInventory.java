@@ -2,10 +2,10 @@ package cd4017be.automation.Gui;
 
 import java.io.IOException;
 
+import cd4017be.automation.Objects;
 import cd4017be.automation.Gui.ContainerFilteredSubInventory.FilterInventory;
 import cd4017be.automation.Item.ItemItemUpgrade;
 import cd4017be.automation.Item.ItemRemoteInv;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.ItemContainer;
 import cd4017be.lib.templates.SlotItemType;
 import cd4017be.lib.templates.SlotRemote;
@@ -145,8 +145,8 @@ public class ContainerRemoteInventory extends ItemContainer
 			for (int i = 0; i < w; i++)
 				this.addSlotToContainer(new SlotRemote(linkedInv, acs[i + 12 * h], side, 8 + i * 18, 16 + h * 18));
 		} else ofsY = -18;
-		this.addSlotToContainer(new SlotItemType(this.filters, 0, 8, 86 + ofsY, BlockItemRegistry.stack("item.itemUpgrade", 1)));
-		this.addSlotToContainer(new SlotItemType(this.filters, 1, 26, 86 + ofsY, BlockItemRegistry.stack("item.itemUpgrade", 1)));
+		this.addSlotToContainer(new SlotItemType(this.filters, 0, 8, 86 + ofsY, new ItemStack(Objects.itemUpgrade)));
+		this.addSlotToContainer(new SlotItemType(this.filters, 1, 26, 86 + ofsY, new ItemStack(Objects.itemUpgrade)));
 		this.addPlayerInventory(62, 68 + ofsY);
 		filters.load(type);
 	}
@@ -170,7 +170,7 @@ public class ContainerRemoteInventory extends ItemContainer
 	public boolean isFilterOn(int s)
 	{
 		ItemStack stack = filters.getStackInSlot(s);
-		if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.getTagCompound() != null) {
+		if (stack != null && stack.getItem() == Objects.itemUpgrade && stack.getTagCompound() != null) {
 			byte m = stack.getTagCompound().getByte("mode");
 			return (m & 128) != 0;
 		} else return false;
@@ -194,7 +194,7 @@ public class ContainerRemoteInventory extends ItemContainer
 		byte cmd = dis.readByte();
 		if (cmd >= 0 && cmd < 2) {
 			ItemStack stack = filters.getStackInSlot(cmd);
-			if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.getTagCompound() != null) {
+			if (stack != null && stack.getItem() == Objects.itemUpgrade && stack.getTagCompound() != null) {
 				byte m = stack.getTagCompound().getByte("mode");
 				m |= 64;
 				m ^= 128;

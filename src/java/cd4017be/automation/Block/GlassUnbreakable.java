@@ -16,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -74,6 +75,16 @@ public class GlassUnbreakable extends DefaultBlock
 	public boolean canEntityDestroy(IBlockAccess world, BlockPos pos, Entity entity) 
 	{
 		return false;
+	}
+
+	@Override
+	public float getExplosionResistance(Entity exploder) {
+		return Float.POSITIVE_INFINITY;
+	}
+
+	@Override
+	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
+		return Float.POSITIVE_INFINITY;
 	}
     
 }

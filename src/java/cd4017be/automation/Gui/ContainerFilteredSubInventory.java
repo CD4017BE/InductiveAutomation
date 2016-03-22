@@ -5,7 +5,6 @@ import java.io.IOException;
 import cd4017be.api.automation.InventoryItemHandler;
 import cd4017be.api.automation.InventoryItemHandler.ItemInventory;
 import cd4017be.automation.Objects;
-import cd4017be.lib.BlockItemRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -29,11 +28,11 @@ public class ContainerFilteredSubInventory extends Container
 			items = new ItemStack[2];
 			if (item.getTagCompound() == null) return;
 			if (item.getTagCompound().hasKey("fin")) {
-				items[0] = BlockItemRegistry.stack("item.itemUpgrade", 1);
+				items[0] = new ItemStack(Objects.itemUpgrade);
 				items[0].setTagCompound(item.getTagCompound().getCompoundTag("fin"));
 			}
 			if (item.getTagCompound().hasKey("fout")) {
-				items[1] = BlockItemRegistry.stack("item.itemUpgrade", 1);
+				items[1] = new ItemStack(Objects.itemUpgrade);
 				items[1].setTagCompound(item.getTagCompound().getCompoundTag("fout"));
 			}
 		}
@@ -112,7 +111,7 @@ public class ContainerFilteredSubInventory extends Container
 
 		@Override
 		public boolean isItemValidForSlot(int s, ItemStack stack) {
-			return stack == null || stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade");
+			return stack == null || stack.getItem() == Objects.itemUpgrade;
 		}
 
 		@Override
@@ -244,7 +243,7 @@ public class ContainerFilteredSubInventory extends Container
 	public boolean isFilterOn(int s)
 	{
 		ItemStack stack = filters.getStackInSlot(s);
-		if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.getTagCompound() != null) {
+		if (stack != null && stack.getItem() == Objects.itemUpgrade && stack.getTagCompound() != null) {
 			byte m = stack.getTagCompound().getByte("mode");
 			return (m & 128) != 0;
 		} else return false;
@@ -255,7 +254,7 @@ public class ContainerFilteredSubInventory extends Container
 		byte cmd = dis.readByte();
 		if (cmd >= 0 && cmd < 2) {
 			ItemStack stack = filters.getStackInSlot(cmd);
-			if (stack != null && stack.getItem() == BlockItemRegistry.getItem("item.itemUpgrade") && stack.getTagCompound() != null) {
+			if (stack != null && stack.getItem() == Objects.itemUpgrade && stack.getTagCompound() != null) {
 				byte m = stack.getTagCompound().getByte("mode");
 				m |= 64;
 				m ^= 128;

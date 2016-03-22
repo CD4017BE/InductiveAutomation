@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
-import cd4017be.lib.BlockItemRegistry;
+import cd4017be.automation.Objects;
 import cd4017be.lib.ModTileEntity;
 import cd4017be.lib.MovedBlock;
 import cd4017be.lib.util.Utils;
@@ -111,7 +111,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
             player.addChatMessage(new ChatComponentText("Both linked Wormholes removed"));
             return true;
         } else if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == Items.paper) {
-            ItemStack item = BlockItemRegistry.stack("item.teleporterCoords", player.getCurrentEquippedItem().stackSize);
+            ItemStack item = new ItemStack(Objects.teleporterCoords, player.getCurrentEquippedItem().stackSize);
             item.setTagCompound(new NBTTagCompound());
             item.getTagCompound().setInteger("x", pos.getX());
             item.getTagCompound().setInteger("y", pos.getY());
@@ -403,9 +403,9 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         linkIdx = new int[n];
         n = 0;
         for (int i = 0; i < 6; i++) {
-            for (int j = 0; j < invIdx[i].length; j++)
-            {
-                linkIdx[n++] = i << 28 | invIdx[i][j];
+            for (int j = 0; j < invIdx[i].length; j++) {
+                linkIdx[n] = i << 28 | invIdx[i][j];
+                invIdx[i][j] = n++;
             }
         }
     }

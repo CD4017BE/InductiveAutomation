@@ -8,10 +8,10 @@ package cd4017be.automation.TileEntity;
 import java.util.ArrayList;
 
 import cd4017be.api.automation.IItemPipeCon;
+import cd4017be.automation.Objects;
 import cd4017be.automation.Block.BlockItemPipe;
 import cd4017be.automation.Item.ItemItemUpgrade;
 import cd4017be.automation.Item.PipeUpgradeItem;
-import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IPipe;
@@ -300,7 +300,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
             return true;
         } else if (!player.isSneaking() && item == null && filter != null) {
             if (worldObj.isRemote) return true;
-            item = BlockItemRegistry.stack("item.itemUpgrade", 1);
+            item = new ItemStack(Objects.itemUpgrade);
             item.setTagCompound(PipeUpgradeItem.save(filter));
             filter = null;
             player.setCurrentItemOrArmor(0, item);
@@ -387,7 +387,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     {
         super.breakBlock();
         if (filter != null) {
-            ItemStack item = BlockItemRegistry.stack("item.itemUpgrade", 1);
+            ItemStack item = new ItemStack(Objects.itemUpgrade);
             item.setTagCompound(PipeUpgradeItem.save(filter));
             filter = null;
             EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, item);

@@ -18,6 +18,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
 import cd4017be.api.automation.IFluidPipeCon;
+import cd4017be.automation.Objects;
 import cd4017be.automation.Block.BlockLiquidPipe;
 import cd4017be.automation.Item.ItemFluidUpgrade;
 import cd4017be.automation.Item.ItemLiquidPipe;
@@ -176,7 +177,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
             return true;
         } else if (!player.isSneaking() && item == null && cover == null && filter[s] != null) {
             if (worldObj.isRemote) return true;
-            item = BlockItemRegistry.stack("item.fluidUpgrade", 1);
+            item = new ItemStack(Objects.fluidUpgrade);
             item.setTagCompound(PipeUpgradeFluid.save(filter[s]));
             if ((filter[s].mode & 2) != 0) this.filterChange(s, false);
             filter[s] = null;
@@ -670,7 +671,7 @@ public class LiquidWarpPipe extends AutomatedTile implements IPipe, IFluidPipeCo
         super.breakBlock();
         for (int i = 0; i < filter.length; i++) {
         	if (filter[i] != null) {
-                ItemStack item = BlockItemRegistry.stack("item.fluidUpgrade", 1);
+                ItemStack item = new ItemStack(Objects.fluidUpgrade);
                 item.setTagCompound(PipeUpgradeFluid.save(filter[i]));
                 filter[i] = null;
                 EntityItem entity = new EntityItem(worldObj, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, item);

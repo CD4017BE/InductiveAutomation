@@ -185,7 +185,7 @@ public class Automation implements IWorldGenerator
     
     private void initBlocks()
     {
-    	(lightShaft = TileBlock.create("lightShaft", Material.glass, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeGlass);
+    	(lightShaft = TileBlock.create("lightShaft", Material.glass, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeGlass);
     	(wireC = new BlockPipe("wireC", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(wireA = new BlockPipe("wireA", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(wireH = new BlockPipe("wireH", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
