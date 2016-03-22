@@ -1,16 +1,19 @@
-v4.0.1:
+latest release: v4.0.1
 
-missing recipe handlers for JEI: ?bio reactor?
-missing transfer handlers for JEI: portable crafter, compression assembler
-Model loading errors displayed on startup for models that are not needed
-Portable teleporter aim too high.
-Portable crafter: inventory not updating when direct click.
+Still existing bugs:
+
+- missing recipe handlers for JEI: ?bio reactor? (missing feature, not really a bug)
+- missing transfer handlers for JEI: portable crafter, compression assembler (missing feature, not really a bug)
+- Model loading errors displayed on startup for models that are not needed (doesn't influence gameplay)
+- Unbreakable stone/glass can be broken by WitherSkull projectile (bug related to forge/minecraft's hard-coded explosion resistance handling)
 
 fixed in v4.0.2:
 
-GUI components sometimes don't update
-Farm not working
-Energy display in portable Tesla-transmitter not localized correctly
-InterdimensionalWormhole linking inventories wrong
-Selection tool config Inventory not accepting Machine co-op synchronizer
-Item filters not working in some devices
+- GUI components sometimes don't update
+- Farm not working
+- Energy display in portable Tesla-transmitter not localized correctly
+- InterdimensionalWormhole linking inventories wrong
+- Selection tool config Inventory not accepting Machine co-op synchronizer
+- Item filters not working in some devices
+- Portable teleporter aim too high.
+- Portable crafter: inventory not updating when direct click.

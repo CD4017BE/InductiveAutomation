@@ -56,7 +56,6 @@ public class GuiPortableCrafting extends GuiMachine
     @Override
 	protected void mouseClicked(int x, int y, int b) throws IOException 
 	{
-		super.mouseClicked(x, y, b);
 		int n = 0;
 		byte cmd = -1;
 		if (this.isPointInRegion(124, 33, 18, 18, x, y)) {
@@ -78,6 +77,6 @@ public class GuiPortableCrafting extends GuiMachine
 	            dos.writeByte(cmd);
 	            if (cmd == 2 || cmd == 3) dos.writeByte(n);
 	            BlockGuiHandler.sendPacketToServer(dos);
-		}
+		} else super.mouseClicked(x, y, b);
 	}
 }

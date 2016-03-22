@@ -125,7 +125,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 	{
 		if (player.isSneaking()) {
 			if (world.isRemote) return item;
-			Vec3 pos = new Vec3(player.posX, player.posY + 1.62D - player.getYOffset(), player.posZ);
+			Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
 	        Vec3 dir = player.getLookVec();
 	        MovingObjectPosition obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 256, dir.yCoord * 256, dir.zCoord * 256), false, true, false);
 	        if (obj == null) return item;
