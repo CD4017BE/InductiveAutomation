@@ -131,9 +131,9 @@ public class SteamCompressor extends AutomatedTile implements ISidedInventory, I
     @Override
     public void initContainer(TileContainer container)
     {
-        for (int i = 0; i < 2; i++)
         for (int j = 0; j < 2; j++)
-        container.addEntitySlot(new Slot(this, i + 2 * j, 71 + 18 * i, 25 + 18 * j));
+        	for (int i = 0; i < 2; i++)
+        		container.addEntitySlot(new Slot(this, i + 2 * j, 71 + 18 * i, 25 + 18 * j));
         container.addEntitySlot(new SlotOutput(this, 4, 143, 34));
         container.addEntitySlot(new SlotTank(this, 6, 17, 34));
         

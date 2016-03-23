@@ -138,9 +138,9 @@ public class ElectricCompressor extends AutomatedTile implements ISidedInventory
     @Override
     public void initContainer(TileContainer container)
     {
-        for (int i = 0; i < 2; i++)
-        for (int j = 0; j < 2; j++)
-        container.addEntitySlot(new Slot(this, i + 2 * j, 62 + 18 * i, 25 + 18 * j));
+    	for (int j = 0; j < 2; j++)
+        	for (int i = 0; i < 2; i++)
+        		container.addEntitySlot(new Slot(this, i + 2 * j, 62 + 18 * i, 25 + 18 * j));
         container.addEntitySlot(new SlotOutput(this, 4, 134, 34));
         
         container.addPlayerInventory(8, 86);

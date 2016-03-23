@@ -505,7 +505,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     private boolean setBlock(BlockPos pos, ItemStack item)
     {
     	if (item == null) return true;
-    	if (slave != null && !((TileEntity)slave).isInvalid() && (slave instanceof Miner || slave instanceof Pump) && 
+    	if (slave != null && comp == 0 && !((TileEntity)slave).isInvalid() && (slave instanceof Miner || slave instanceof Pump) && 
         		(slave.getSlave() == null || !(slave.getSlave() instanceof Builder || slave.getSlave().getSlave() != null))) {
         	if (!slave.remoteOperation(pos)) return false;
         }

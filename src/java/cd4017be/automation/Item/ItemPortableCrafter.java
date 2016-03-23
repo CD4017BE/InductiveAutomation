@@ -70,6 +70,16 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 			ItemStack[] recipe = loadRecipe(item.getTagCompound().getTagList("grid", 10), world);
 			if (recipe[0] != null) this.craft(player.inventory, recipe, n > 0 ? n : Integer.MAX_VALUE, false);
 			item.getTagCompound().setBoolean("active", false);
+		} else if (cmd == 4) {// set crafting grid (used for JEI recipe transfer)
+			NBTTagCompound nbt = dis.readNBTTagCompoundFromBuffer();
+			item.getTagCompound().setTag("grid", nbt.getTagList("grid", 10));
+			byte n = nbt.getByte("amount");
+			if (n < 0) n = 0;
+			if (n > 64) n = 64;
+			item.getTagCompound().setByte("amount", n);
+			item.getTagCompound().setBoolean("active", false);
+			if (player.openContainer instanceof ContainerPortableCrafting) 
+				((ContainerPortableCrafting)player.openContainer).load(item);
 		}
 	}
 	
@@ -129,7 +139,7 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 					recipe[j].stackSize++;
 					stack = null;
 				}
-			if (stack != null) recipe[n++] = stack;
+			if (stack != null) recipe[n++] = stack.splitStack(1);
 		}
 		ItemStack[] ret = new ItemStack[n + 1];
 		ret[0] = CraftingManager.getInstance().findMatchingRecipe(icr, world);

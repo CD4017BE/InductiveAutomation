@@ -147,6 +147,10 @@ public class CommonProxy implements IFuelHandler
     	if (n > 0 || a > 0) bioList.add(new BioEntry(item, n, a));
     }
     
+    public List<BioEntry> getBioFuels() {
+    	return bioList;
+    }
+    
     public void registerBioFuels()
     {
     	String[] ids = Config.data.getStringArray("rcp.bioReact.id");
@@ -157,7 +161,7 @@ public class CommonProxy implements IFuelHandler
     	} else {
     		int n = ids.length;
     		for (int i = 0; i < n; i++) 
-    			this.registerBioFuel(ids[i], nutr[i], alg[i]);
+    			this.registerBioFuel(new OreDictStack(ids[i], 1), nutr[i], alg[i]);
     	}
     	
     	this.registerBioFuel(ItemSeeds.class, 80);
@@ -195,7 +199,7 @@ public class CommonProxy implements IFuelHandler
         {
             this(item, n, 0);
         }
-        @SuppressWarnings("unchecked")
+        
 		public BioEntry(Object item, int n, int a)
         {
         	this.item = item;

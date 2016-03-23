@@ -31,11 +31,12 @@ public class ContainerPortableCrafting extends ItemContainer
 		this.load(type);
 	}
 	
-	private void load(ItemStack item)
+	public void load(ItemStack item)
 	{
 		if (item.getTagCompound() == null) return;
 		NBTTagList data = item.getTagCompound().getTagList("grid", 10);
 		NBTTagCompound tag;
+		craftingIn.clear();
 		for (int i = 0; i < data.tagCount(); i++) {
 			tag = data.getCompoundTagAt(i);
 			int s = tag.getByte("slot");

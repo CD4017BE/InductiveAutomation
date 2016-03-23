@@ -17,7 +17,7 @@ public class GuiPortableTesla extends GuiMachine
 {
 	private final ContainerPortableTesla container;
 	private GuiTextField freq;
-	private boolean[] Etype = new boolean[3];
+	private boolean Enabled;
 	private byte[] Ipos = new byte[3];
 	private int Estore;
 	private short mode;
@@ -46,8 +46,9 @@ public class GuiPortableTesla extends GuiMachine
         	mode = item.getTagCompound().getShort("mode");
         	double u = item.getTagCompound().getDouble("voltage");
         	Estore = (int)(u * u * 0.001D);
+        	Enabled = (mode & 0x1) != 0;
         	for (int i = 0; i < 3; i++) {
-        		Etype[i] = (mode >> i & 0x1) != 0;
+        		
         		Ipos[i] = (byte)(mode >> (8 + i * 2) & 0x3);
         	}
         	if (!freq.isFocused()) 
@@ -61,9 +62,7 @@ public class GuiPortableTesla extends GuiMachine
     {
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawInfo(44, 16, 16, 16, "\\i", "tesla.set");
-        this.drawInfo(62, 25, 16, 7, "\\i", "teslaP.kJ");
-        this.drawInfo(80, 25, 16, 7, "\\i", "teslaP.RF");
-        this.drawInfo(98, 25, 16, 7, "\\i", "teslaP.EU");
+        this.drawInfo(62, 25, 16, 7, "\\i", "teslaP.on");
         this.drawInfo(116, 25, 16, 7, "\\i", "teslaP.invH");
         this.drawInfo(134, 25, 16, 7, "\\i", "teslaP.invM");
         this.drawInfo(152, 25, 16, 7, "\\i", "teslaP.invA");
@@ -75,8 +74,8 @@ public class GuiPortableTesla extends GuiMachine
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/portableTesla.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
+        this.drawTexturedModalRect(guiLeft + 61, guiTop + 24, 230, Enabled ? 18 : 9, 18, 9);
         for (int i = 0; i < 3; i++) {
-        	if (Etype[i]) this.drawTexturedModalRect(guiLeft + 61 + i * 18, guiTop + 24, 176 + i * 18, 0, 18, 9);
         	if (Ipos[i] == 1) this.drawTexturedModalRect(guiLeft + 115 + i * 18, guiTop + 24, 176 + i * 18, 9, 18, 9);
         	else if (Ipos[i] == 2) this.drawTexturedModalRect(guiLeft + 115 + i * 18, guiTop + 24, 176 + i * 18, 18, 18, 9);
         }
@@ -92,10 +91,9 @@ public class GuiPortableTesla extends GuiMachine
         freq.mouseClicked(x, y, b);
     	byte cmd = -1;
         short v = 0;
-    	if (this.isPointInRegion(61, 24, 54, 9, x, y)) {
+    	if (this.isPointInRegion(61, 24, 18, 9, x, y)) {
             cmd = 0;
-            int i = ((x - this.guiLeft - 61) / 18) % 3;
-            mode ^= 1 << i;
+            mode ^= 1;
         } else if (this.isPointInRegion(115, 24, 54, 9, x, y)) {
         	cmd = 0;
             int i = ((x - this.guiLeft - 115) / 18) % 3;

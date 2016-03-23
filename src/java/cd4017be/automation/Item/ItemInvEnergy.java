@@ -44,7 +44,7 @@ public class ItemInvEnergy extends ItemEnergyCell
             IEnergyAccess eit;
         	for (int j = 0; j < inv.mainInventory.length; j++) {
                 ItemStack it = inv.mainInventory[j];
-                if (!(it.getItem() instanceof ItemInvEnergy) && (eit = EnergyAPI.get(it)) != EnergyAPI.NULL)
+                if (!(it != null && it.getItem() instanceof ItemInvEnergy) && (eit = EnergyAPI.get(it)) != EnergyAPI.NULL)
                 	energy.addEnergy(-eit.addEnergy(energy.getStorage(-2), 0), -2);
             }
             for (int j = 0; j < inv.armorInventory.length; j++) {

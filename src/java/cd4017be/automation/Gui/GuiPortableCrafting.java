@@ -37,7 +37,8 @@ public class GuiPortableCrafting extends GuiMachine
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawInfo(124, 33, 18, 18, "\\i", "startCraft");
         this.drawInfo(142, 33, 18, 18, "\\i", "autoCraft");
-        this.drawInfo(72, 38, 16, 8, "\\i", "directCraft");
+        this.drawInfo(92, 55, 10, 10, "\\i", "directCraft");
+        this.drawInfo(74, 55, 10, 10, "\\i", "clearRecipe");
     }
     
     @Override
@@ -71,6 +72,9 @@ public class GuiPortableCrafting extends GuiMachine
 		} else if (this.isPointInRegion(89, 34, 16, 16, x, y)) {
 			n = (b == 0 ? 1 : 8) * (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? 64 : 1);
 			cmd = 3;
+		} else if (this.isPointInRegion(74, 55, 10, 10, x, y)) {
+			for (int i = 0; i < 9; i++) 
+				this.mc.playerController.windowClick(this.inventorySlots.windowId, i + 36, 0, 0, this.mc.thePlayer);
 		}
 		if (cmd >= 0) {
 	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));

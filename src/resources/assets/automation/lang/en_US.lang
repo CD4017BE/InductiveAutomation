@@ -306,7 +306,9 @@ item.cd4017be.voltMeter.tip=Displays cable-voltage.\nClick on machine/cable to l
 item.cd4017be.energyCell.tip=Can be charged/discharged in storage units.
 item.cd4017be.chisle.tip=Pickaxe, Axe & Shovel in one\nUses \\<I.Tool.Chisle.Euse>kJ to break a block.
 item.cd4017be.cutter.tip=Shears & Sword in one\nHits faster than normal weapon (8 damage).\nUses \\<I.Tool.Cutter.Euse>kJ to hit an entity / break a block.
-item.cd4017be.portableMagnet.tip=Pulls nearby items and XP towards you if on.\nClick to turn on/off or put in\nmost top right inventory slot to disable.\nUses 1kW while pulling stuff.
+item.cd4017be.portableMagnet.tip=Pulls nearby items and XP towards you if on.\nClick to turn on/off or put in\nmost top right inventory slot to disable.\nSneak-click to change mode.\nUses 1kW while pulling stuff.
+item.cd4017be.portableMagnet.auto0=Mode: always running when on.
+item.cd4017be.portableMagnet.auto1=Mode: shutdown near Players.
 item.cd4017be.builderTexture.tip=Used in a Builder to build layers of different block types.\nPut Paper into a Texture drawing table to create this.
 item.cd4017be.teleporterCoords.tip=Stores locations for a Teleporter.\nClick to set position.\nSneak-click to set previous position\nrelative to clicked position.\nPut Paper into a Teleporter to create this.
 item.cd4017be.stoneDrill.tip=Lets a Miner break blocks with harvest-lvl stone.\nLasts for \\<AS.minerDrill.durability:0> blocks.\nCan be enchanted & repaired in anvil.\nRepair material: Stone (x20)
@@ -397,6 +399,8 @@ gui.cd4017be.selectionTool.name=Machine Area Configurations
 gui.cd4017be.portableTesla.name=Portable Tesla Transmitter
 # Gui tooltips
 gui.cd4017be.recipe.euse=Used Energy:\n%.0f kJ
+gui.cd4017be.recipe.algae=Algae:\n%d mB
+gui.cd4017be.recipe.nutrient=Nutrients:\n%d mB
 gui.cd4017be.energyFlow=Power:\n%.1f kW\n@ %.0f A
 gui.cd4017be.resistor=Electric working Resistance
 gui.cd4017be.voltage=Reference Voltage
@@ -489,6 +493,7 @@ gui.cd4017be.outputFilter=Auto export items?
 gui.cd4017be.startCraft=Run
 gui.cd4017be.autoCraft=Autocraft?
 gui.cd4017be.directCraft=Click on result to craft directly:\nleft-click = 1x\nright-click = 8x\nshift-left-click = 64x\nshift-right-click = ALL\nOr specify amount and click RUN.
+gui.cd4017be.clearRecipe=Clear Crafting Grid
 gui.cd4017be.teleporter.add=Add waypoint
 gui.cd4017be.teleporter.save=Save changes
 gui.cd4017be.teleporter.move=Teleport
@@ -510,8 +515,7 @@ gui.cd4017be.buffer.overfl=min amount of slots filled\nbefore output overflow.
 gui.cd4017be.buffer.split=amount of items for this output.
 gui.cd4017be.tesla.set=Set frequency
 gui.cd4017be.tesla.stor=Energy = %dkJ
-gui.cd4017be.teslaP.kJ=Inductive Automation\npowered items
-gui.cd4017be.teslaP.RF=Thermal Expansion\npowered items
+gui.cd4017be.teslaP.on=Toggle inventory power
 gui.cd4017be.teslaP.invH=charge/discharge\nhotbar
 gui.cd4017be.teslaP.invM=charge/discharge\nmain inventory
 gui.cd4017be.teslaP.invA=charge/discharge\narmor slots

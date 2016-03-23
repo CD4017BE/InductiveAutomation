@@ -242,7 +242,7 @@ public class Automation implements IWorldGenerator
     	(gravCond = TileBlock.create("gravCond", Material.iron, DefaultItemBlock.class, 0x10)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeMetal);
     	(itemBuffer = TileBlock.create("itemBuffer", Material.wood, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
     	(quantumTank = TileBlock.create("quantumTank", Material.glass, ItemQuantumTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeGlass);
-    	(vertShemGen = TileBlock.create("vertShemGen", Material.water, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
+    	(vertShemGen = TileBlock.create("vertShemGen", Material.rock, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
     	(ore = new BlockOre("ore")).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeStone);
         (pool = TileBlock.create("pool", Material.glass, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone).setLightOpacity(5);
         (unbrStone = new BlockUnbreakable("unbrStone")).setStepSound(Block.soundTypeStone);
