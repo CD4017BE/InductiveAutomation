@@ -8,13 +8,11 @@ package cd4017be.automation.Gui;
 
 import java.io.IOException;
 
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import cd4017be.automation.TileEntity.Detector;
@@ -31,7 +29,8 @@ public class GuiDetector extends GuiMachine
 {
     
     private final Detector tileEntity;
-    private GuiTextField[] values = new GuiTextField[6];
+    private int sel = -1;
+    private TextField text = new TextField("", 11);
     
     public GuiDetector(Detector tileEntity, EntityPlayer player)
     {
@@ -45,7 +44,6 @@ public class GuiDetector extends GuiMachine
         this.xSize = 176;
         this.ySize = 222;
         super.initGui();
-        for (int i = 0; i < 6; i++) values[i] = new GuiTextField(0, fontRendererObj, this.guiLeft + 80, this.guiTop + 16 + i * 18, 70, 16);
     }
 
     @Override
@@ -55,94 +53,95 @@ public class GuiDetector extends GuiMachine
         this.drawInfo(7, 15, 18, 108, "\\i", "detector.obj");
         this.drawInfo(25, 15, 18, 108, "\\i", "detector.dir");
         this.drawInfo(43, 15, 18, 108, "\\i", "detector.filter");
-        this.drawInfo(65, 15, 10, 108, "\\i", "detector.comp");
-        this.drawInfo(100, 15, 30, 108, "\\i", "detector.ref");
-        this.drawInfo(152, 15, 16, 108, "\\i", "detector.out");
+        this.drawInfo(71, 16, 61, 8, "\\i", "detector.refH");
+        this.drawInfo(71, 24, 61, 8, "\\i", "detector.refL");
+        this.drawInfo(142, 15, 27, 108, "\\i", "detector.out");
     }
     
     @Override
-    protected void drawGuiContainerBackgroundLayer(float f, int x, int y) 
+    protected void drawGuiContainerBackgroundLayer(float f, int mx, int my) 
     {
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/detector.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         for (int i = 0; i < 6; i++) {
-            this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 15 + i * 18, 176, 18 * (tileEntity.getMode(i) & 3), 18, 18);
-            this.drawTexturedModalRect(this.guiLeft + 25, this.guiTop + 15 + i * 18, 194, 18 * (tileEntity.getSide(i) % 6), 18, 18);
-            if ((tileEntity.getMode(i) & 4) != 0)
-                this.drawTexturedModalRect(this.guiLeft + 65, this.guiTop + 15 + i * 18, 212, 0, 10, 18);
-            if (tileEntity.getState(i))
-                this.drawTexturedModalRect(this.guiLeft + 151, this.guiTop + 15 + i * 18, 212, 18, 10, 18);
+            this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 15 + i * 18, 176, 18 * (tileEntity.getConfig(i) & 3), 18, 18);
+            this.drawTexturedModalRect(this.guiLeft + 25, this.guiTop + 15 + i * 18, 194, 18 * (tileEntity.getConfig(i + 8) % 6), 18, 18);
+            int n = (tileEntity.getState(i) >> 4 & 0xf) + 1;
+            this.drawTexturedModalRect(this.guiLeft + 142, this.guiTop + 32 - n + i * 18, 212, 16 - n, 8, n);
         }
-        for (int i = 0; i < 6; i++) values[i].drawTextBox();
+        int x = guiLeft + 71, y;
+        boolean b;
+        for (int i = 0; i < 12; i++) {
+        	b = i % 2 == 0;
+        	y = guiTop + i * 9 + (b ? 16 : 15);
+        	if (i == sel) text.draw(x, y, b ? 0xffff0000 : 0xff0000ff, 0xff00ff00);
+        	else this.fontRendererObj.drawString("" + tileEntity.netData.ints[i], x, y, b ? 0xff0000 : 0x0000ff);
+        }
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 126, 0x404040);
     }
-    
-    @Override
-	public void updateScreen() 
-    {
-		super.updateScreen();
-		for (int i = 0; i < 6; i++)
-			if (!values[i].isFocused())
-				values[i].setText("" + tileEntity.netData.ints[i + 1]);
-	}
 
 	@Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
-        for (int i = 0; i < 6; i++) values[i].mouseClicked(x, y, b);
-        int s = (y - this.guiTop - 15) / 18;
-        y -= s * 18;
-        byte cmd = -1;
+		byte cmd = -1;
         byte mode = 0;
-        if (s >= 0 && s < 6) {
-            if (this.isPointInRegion(7, 15, 18, 18, x, y)) {
-                cmd = 0;
-                mode = tileEntity.getMode(s);
-                mode = (byte)((mode & 4) | (mode + 1 & 3));
-            } else if (this.isPointInRegion(25, 15, 18, 18, x, y)) {
-                cmd = 2;
-                mode = tileEntity.getSide(s);
-                mode = (byte)((mode + 1) % 6);
-            } else if (this.isPointInRegion(65, 15, 10, 18, x, y)) {
-                cmd = 0;
-                mode = (byte)(tileEntity.getMode(s) ^ 4);
-            }
+		int s = (y - this.guiTop - 15) / 18;
+        if (s < 0 || s >= 6) s = -1;
+        else y -= s * 18;
+        if (this.isPointInRegion(7, 15, 18, 18, x, y)) {
+            cmd = 1;
+            mode = tileEntity.getConfig(s);
+            mode = (byte)((mode & 4) | (mode + 1 & 3));
+        } else if (this.isPointInRegion(25, 15, 18, 18, x, y)) {
+            cmd = 2;
+            mode = tileEntity.getConfig(s + 8);
+            mode = (byte)((mode + 1) % 6);
         }
-        if (cmd >= 0) {
-            if (tileEntity.netData.ints[s + 1] < 0) tileEntity.netData.ints[s + 1] = 0;
+        if (cmd > 0) {
             PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(cmd + AutomatedTile.CmdOffset);
             dos.writeByte(s);
-            if (cmd == 0) dos.writeByte(mode);
-            else if (cmd == 2) dos.writeByte(mode);
+            dos.writeByte(mode);
             BlockGuiHandler.sendPacketToServer(dos);
         }
+        if (this.isPointInRegion(71, 16, 61, 8, x, y)) s *= 2;
+        else if (this.isPointInRegion(71, 24, 61, 8, x, y)) s = s * 2 + 1;
+        else s = -1;
+        if (s != sel) this.setTextField(s);
     }
 
 	@Override
 	protected void keyTyped(char c, int k) throws IOException 
 	{
-		for (int i = 0; i < 6; i++)
-			if (values[i].isFocused()) {
-				if (k == Keyboard.KEY_RETURN) {
-					try {
-						int v = Integer.parseInt(values[i].getText());
-						PacketBuffer dos = tileEntity.getPacketTargetData();
-			            dos.writeByte(1 + AutomatedTile.CmdOffset);
-			            dos.writeByte(i);
-			            dos.writeInt(v);
-			            BlockGuiHandler.sendPacketToServer(dos);
-						values[i].setFocused(false);
-					} catch (NumberFormatException e) {}
-				} else values[i].textboxKeyTyped(c, k);
-				break;
-			}
-		super.keyTyped(c, k);
+		if (sel >= 0) {
+    		byte r = text.keyTyped(c, k);
+    		if (r == 1) this.setTextField(-1);
+    		else if (r >= 0) this.setTextField((sel + r + 11) % 12);
+    	} else super.keyTyped(c, k);
 	}
     
-    
+	private void setTextField(int k) throws IOException {
+		if (k == sel) return;
+		if (sel >= 0) try {
+			tileEntity.netData.ints[sel] = Integer.parseInt(text.text);
+			this.sendCurrentChange();
+		} catch(NumberFormatException e) {}
+		if (k >= 0) {
+			text.text = "" + tileEntity.netData.ints[k];
+			if (sel < 0 || text.cur > text.text.length()) text.cur = text.text.length();
+		}
+		sel = k;
+	}
+	
+	private void sendCurrentChange() throws IOException {
+		PacketBuffer dos = tileEntity.getPacketTargetData();
+		dos.writeByte(AutomatedTile.CmdOffset);
+		dos.writeByte(sel);
+		dos.writeInt(tileEntity.netData.ints[sel]);
+		BlockGuiHandler.sendPacketToServer(dos);
+	}
     
 }

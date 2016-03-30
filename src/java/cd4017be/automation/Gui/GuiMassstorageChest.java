@@ -7,13 +7,16 @@ package cd4017be.automation.Gui;
 import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
 import cd4017be.automation.TileEntity.MassstorageChest;
+import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.GuiMachine;
 
 /**
@@ -44,6 +47,7 @@ public class GuiMassstorageChest extends GuiMachine
     {
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawInfo(182, 164, 16, 16, "\\i", "massstorage");
+        this.drawInfo(182, 210, 16, 16, "\\i", "autoSort");
     }
     
     @Override
@@ -62,6 +66,11 @@ public class GuiMassstorageChest extends GuiMachine
     {
         super.mouseClicked(x, y, b);
         this.clickItemConfig(tileEntity, x - this.guiLeft + 27, y - this.guiTop - 7);
+        if (this.isPointInRegion(182, 210, 16, 16, x, y)) {
+        	PacketBuffer dis = tileEntity.getPacketTargetData();
+        	dis.writeByte(AutomatedTile.CmdOffset);
+        	BlockGuiHandler.sendPacketToServer(dis);
+        }
     }
     
 }

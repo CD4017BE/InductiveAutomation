@@ -141,21 +141,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     private byte doHarvest(BlockPos pos, IBlockState state, Block block, int m) {
     	boolean hasSlave = this.checkSlave();
         if (!(block.getMaterial().isToolNotRequired() || hasSlave) || harvestFilter == null) return -1;
-        if ((harvestFilter.mode&64) != 0 && (worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0 ^ (harvestFilter.mode&128) == 0)) return -1;
-        ItemType filter = harvestFilter.getFilter();
-        List<ItemStack> list = block.getDrops(worldObj, pos, state, 0);
-        if ((harvestFilter.mode&2) != 0) list.add(new ItemStack(block));
-        boolean harvest = false;
-        int match;
-        for (ItemStack item : list) {
-            if ((match = filter.getMatch(item)) >= 0) {
-            	if ((harvestFilter.mode&32) != 0 && harvestFilter.list[match].stackSize <= 16 && (harvestFilter.list[match].stackSize & 15) != m)
-            		continue;
-            	harvest = true;
-            	break;
-            }
-        }
-        if (harvest ^ (harvestFilter.mode&1) == 0) return -1;
+        if (!this.ckeckFilter(harvestFilter, state, block, m)) return -1;
         if (hasSlave) return slave.remoteOperation(pos) ? (byte)1 : 0;
         if (invFull && invFull()) return 0;
         invFull = false;
@@ -163,7 +149,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, px >> 4, pz >> 4)) return 1;
         storage -= Energy;
         worldObj.setBlockToAir(pos);
-        list = block.getDrops(worldObj, pos, state, 0);
+        List<ItemStack> list = block.getDrops(worldObj, pos, state, 0);
         for (ItemStack list1 : list) add(list1);
         return 1;
     }
@@ -237,10 +223,30 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         }
     }
     
+    private boolean ckeckFilter(PipeUpgradeItem blockFilter, IBlockState state, Block block, int m) {
+    	if ((blockFilter.mode&64) != 0 && (worldObj.isBlockIndirectlyGettingPowered(getPos()) > 0 ^ (blockFilter.mode&128) == 0)) return false;
+        ItemType filter = blockFilter.getFilter();
+        List<ItemStack> list = block.getDrops(worldObj, pos, state, 0);
+        if ((blockFilter.mode&2) != 0) list.add(new ItemStack(block));
+        boolean harvest = false;
+        int match;
+        for (ItemStack item : list) {
+            if ((match = filter.getMatch(item)) >= 0) {
+            	if ((blockFilter.mode&32) != 0 && blockFilter.list[match].stackSize <= 16 && (blockFilter.list[match].stackSize & 15) != m)
+            		continue;
+            	harvest = true;
+            	break;
+            }
+        }
+        return harvest ^ (blockFilter.mode&1) != 0;
+    }
+    
     private boolean equalsBlock(ItemStack item, IBlockState state, BlockPos pos, int m, boolean drop)
     {
     	if (item == null) return false;
-    	else if (drop) {
+    	else if (item.getItem() instanceof ItemItemUpgrade) {
+    		return this.ckeckFilter(PipeUpgradeItem.load(item.getTagCompound()), state, state.getBlock(), m);
+    	} else if (drop) {
     		List<ItemStack> list = state.getBlock().getDrops(worldObj, pos, state, 0);
     		for (ItemStack stack : list)
     			if (Utils.itemsEqual(item, stack)) return true;

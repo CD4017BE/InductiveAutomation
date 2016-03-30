@@ -2,8 +2,9 @@ Still existing bugs:
 
 - Model loading errors displayed on startup for models that are not needed (doesn't influence gameplay)
 - Unbreakable stone/glass can be broken by WitherSkull projectile (bug related to forge/minecraft's hard-coded explosion resistance handling)
+- Fluid Exhaust still not completely filling complex connected areas.
 
-fixed in v4.0.3:
+fixed in v4.0.3: <-
 
 - fixed unused gui components in portable tesla transmitter
 - fixed bio reactor fuels not loading correctly from config
@@ -11,6 +12,7 @@ fixed in v4.0.3:
 - added JEI transfer handlers for: portable crafter, compression assembler
 - fixed inventory energy container spamming the console with errors
 - fixed crash caused by Vertex Shematic Generator because its block-material was WATER <- WTF Why?
+- fixed client glitches in masstorage chest
 - Builder breaking its own blocks when using block placement controllers with multiple tasks and having a miner attached
 
 fixed in v4.0.2:

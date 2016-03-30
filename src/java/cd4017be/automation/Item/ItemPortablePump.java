@@ -6,9 +6,9 @@ import cd4017be.automation.Config;
 import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.Utils;
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.MovingObjectPosition;
@@ -114,39 +114,28 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
 		if (energy.getStorageI() < energyUse) return item;
 		Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
         Vec3 dir = player.getLookVec();
-        MovingObjectPosition obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * reachDist, dir.yCoord * reachDist, dir.zCoord * reachDist), true, false, false);
-        if (obj == null) return item;
-        FluidStack fluid = Utils.getFluid(world, obj.getBlockPos(), true);
+        boolean sneak = player.isSneaking();
+        MovingObjectPosition obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * reachDist, dir.yCoord * reachDist, dir.zCoord * reachDist), true, false, sneak);
+        if (obj == null) {
+        	return this.fillFluid(item, player.inventory);
+        }
+        FluidStack fluid = Utils.getFluid(world, obj.getBlockPos(), !sneak);
         if (fluid != null && this.fill(item, fluid, false) == fluid.amount) {
         	this.fill(item, fluid, true);
-        	energy.addEnergyI(-energyUse, -1);
-        	world.setBlockToAir(obj.getBlockPos());
+        	energy.addEnergyI(fluid.amount == 0 ? energyUse / -4 : -energyUse, -1);
+        	if (sneak) world.setBlockState(obj.getBlockPos(), Blocks.air.getDefaultState(), 2);
+        	else world.setBlockToAir(obj.getBlockPos());
         }
-        return item;
-	}
-
-	@Override
-	public void onUpdate(ItemStack item, World world, Entity entity, int s, boolean b) 
-	{
-		if (entity instanceof EntityPlayer && !world.isRemote) {
-			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
-			int t = item.getTagCompound().getByte("t") + 1;
-			if (t >= 20) {
-				t = 0;
-				if (item.getTagCompound().hasKey("fluid")) {
-					this.fillFluid(item, ((EntityPlayer)entity).inventory);
-				}
-			}
-			item.getTagCompound().setByte("t", (byte)t);
-		}
+        return this.fillFluid(item, player.inventory);
 	}
 	
-	private void fillFluid(ItemStack item, InventoryPlayer inv)
+	private ItemStack fillFluid(ItemStack item, InventoryPlayer inv)
 	{
+		item = item.copy();
 		FluidStack type = this.getFluid(item);
 		if (type == null) {
 			item.getTagCompound().removeTag("fluid");
-			return;
+			return item;
 		}
 		int[] list = new int[inv.mainInventory.length];
 		int n = 0;
@@ -175,5 +164,7 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
 			type.writeToNBT(tag);
 			item.getTagCompound().setTag("fluid", tag);
 		}
+		return item;
 	}
+
 }

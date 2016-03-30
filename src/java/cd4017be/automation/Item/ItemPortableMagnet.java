@@ -5,6 +5,8 @@
 package cd4017be.automation.Item;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import cd4017be.automation.TileEntity.Magnet;
 import cd4017be.lib.util.Vec3;
 import net.minecraft.entity.Entity;
@@ -14,6 +16,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
@@ -38,6 +41,7 @@ public class ItemPortableMagnet extends ItemEnergyCell
         if (energy.getStorageI() < 1 || !item.getTagCompound().getBoolean("active") || i == 17) return;
         ArrayList<Entity> list = new ArrayList<Entity>();
         AxisAlignedBB area = new AxisAlignedBB(entity.posX - Magnet.rad, entity.posY - Magnet.rad, entity.posZ - Magnet.rad, entity.posX + Magnet.rad, entity.posY + Magnet.rad, entity.posZ + Magnet.rad);
+        if (item.getTagCompound().getBoolean("auto") && world.getEntitiesWithinAABB(EntityPlayer.class, area).size() > 1) return;
         list.addAll(world.getEntitiesWithinAABB(EntityItem.class, area));
         list.addAll(world.getEntitiesWithinAABB(EntityXPOrb.class, area));
         Vec3 vec0 = Vec3.Def(entity.posX, entity.posY, entity.posZ), vec1;
@@ -53,7 +57,8 @@ public class ItemPortableMagnet extends ItemEnergyCell
     public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
     {
         if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
-        item.getTagCompound().setBoolean("active", !item.getTagCompound().getBoolean("active"));
+        if (player.isSneaking()) item.getTagCompound().setBoolean("auto", !item.getTagCompound().getBoolean("auto"));
+        else item.getTagCompound().setBoolean("active", !item.getTagCompound().getBoolean("active"));
         return item;
     }
 
@@ -63,5 +68,11 @@ public class ItemPortableMagnet extends ItemEnergyCell
         if (item.getTagCompound() != null && item.getTagCompound().getBoolean("active")) return super.getItemStackDisplayName(item) + " (ON)";
         else return super.getItemStackDisplayName(item);
     }
+
+	@Override
+	public void addInformation(ItemStack item, EntityPlayer player, List list, boolean f) {
+		if (item.hasTagCompound()) list.add(StatCollector.translateToLocal("item.cd4017be.portableMagnet.auto" + (item.getTagCompound().getBoolean("auto") ? "1" : "0")));
+		super.addInformation(item, player, list, f);
+	}
     
 }

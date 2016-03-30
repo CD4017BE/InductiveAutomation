@@ -21,17 +21,22 @@ import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
+import cd4017be.api.circuits.IRedstone1bit;
 import cd4017be.api.circuits.IRedstone8bit;
-import cd4017be.api.circuits.RedstoneHandler;
 import cd4017be.api.computers.ComputerAPI;
 import cd4017be.api.energy.EnergyAPI;
 import cd4017be.api.energy.EnergyAPI.IEnergyAccess;
+import cd4017be.automation.Objects;
+import cd4017be.automation.Item.PipeUpgradeFluid;
+import cd4017be.automation.Item.PipeUpgradeItem;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
+import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.SlotHolo;
+import cd4017be.lib.templates.SlotItemType;
 import cd4017be.lib.util.Utils;
+import cd4017be.lib.util.Utils.ItemType;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
@@ -49,17 +54,18 @@ import net.minecraftforge.fluids.IFluidHandler;
  * @author CD4017BE
  */
 @Optional.InterfaceList(value = {@Interface(iface = "dan200.computercraft.api.peripheral.IPeripheral", modid = "ComputerCraft"), @Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")})
-public class Detector extends AutomatedTile implements IRedstone8bit, Environment //,IPeripheral //TODO reimplement
+public class Detector extends AutomatedTile implements IAutomatedInv, IRedstone8bit, IRedstone1bit, Environment //,IPeripheral //TODO reimplement
 {
-    
+	private final Object[] filter = new Object[6];
+	
     public Detector()
     {
         inventory = new Inventory(this, 6);
         /**
-         * long:
-         * int: modes, ref0, ref1, ref2, ref3, ref4, ref5, sides
+         * long: states, config
+         * int: ref 0-5 +/-
          */
-        netData = new TileEntityData(1, 8, 0, 0);
+        netData = new TileEntityData(2, 12, 0, 0);
     }
 
     @Override
@@ -68,123 +74,127 @@ public class Detector extends AutomatedTile implements IRedstone8bit, Environmen
     	super.update();
         if (worldObj.isRemote) return;
         ComputerAPI.update(this, node, 0);
-        if (netData.ints[0] == 0) return;
+        if (netData.longs[1] == 0) return;
         int s = this.getOrientation();
         TileEntity te = Utils.getTileOnSide(this, (byte)s);
         IInventory inv = te != null && te instanceof IInventory ? (IInventory)te : null;
         IFluidHandler tank = te != null && te instanceof IFluidHandler ? (IFluidHandler)te : null;
-        boolean change = false;
         for (int i = 0; i < 6; i++) {
-            byte m = this.getMode(i);
-            byte d = this.getSide(i);
-            boolean op = (m & 4) != 0;
-            boolean os = this.getState(i);
-            boolean ns;
+            byte m = this.getConfig(i);
+            byte d = this.getConfig(i + 8);
+            byte os = this.getState(i);
+            byte ns;
+            float v;
             m &= 3;
-            if (d >= 6) ns = (netData.ints[i + 1] < 0) ^ op;
+            int high = netData.ints[i * 2], low = netData.ints[i * 2 + 1], max = Math.max(low, high);
+            if (d >= 6) v = 0;
             else if (m == 1) {
-                ns = this.checkVoltage(te, d, netData.ints[i + 1]) ^ op;
+                v = this.checkVoltage(te, d);
             } else if (m == 2) {
-                ns = this.checkInventory(inv, d, netData.ints[i + 1], inventory.items[i]) ^ op;
+                v = this.checkInventory(inv, d, max, filter[i] instanceof PipeUpgradeItem ? (PipeUpgradeItem)filter[i] : null);
             } else if (m == 3) {
-                ns = this.checkTank(tank, d, netData.ints[i + 1], inventory.items[i]) ^ op;
-            } else ns = false;
-            this.setState(i, ns);
-            if (os ^ ns) {
-                change = true;
-                worldObj.notifyBlockOfStateChange(pos.offset(EnumFacing.VALUES[i]), this.getBlockType());
+                v = this.checkTank(tank, d, max, filter[i] instanceof PipeUpgradeFluid ? (PipeUpgradeFluid)filter[i] : null);
+            } else v = Float.NaN;
+            
+            if (Float.isNaN(v)) ns = 0; 
+            else if (high == low) ns = v <= low ? 0 : (byte)255;
+            else {
+            	v -= low;
+            	v *= 255F / (float)(high - low);
+            	ns = v > 255F ? (byte)255 : v < 0 ? 0 : (byte)Math.round(v);
             }
+            
+            this.setState(i, ns);
+            if (os != ns)
+                worldObj.notifyBlockOfStateChange(pos.offset(EnumFacing.VALUES[i]), this.getBlockType());
         }
-        if (change) RedstoneHandler.notify8bitNeighbors(this, this.getValue(0), 1);
     }
     
-    private boolean checkVoltage(TileEntity te, int s, int ref)
+    private float checkVoltage(TileEntity te, int s)
     {
-        if (te == null) return ref < 0;
+        if (te == null) return 0;
         IEnergyAccess energy = EnergyAPI.get(te);
-        return ref < energy.getStorage(s) / 1000D;
+        return (float)(energy.getStorage(s) / 1000D);
     }
     
-    private boolean checkInventory(IInventory inv, int s, int ref, ItemStack type)
+    private float checkInventory(IInventory inv, int s, int max, PipeUpgradeItem type)
     {
-        if (inv == null) return ref < 0;
+        if (inv == null) return 0;
+        ItemType filter = type == null ? new ItemType() : type.getFilter();
+        boolean neg = type == null || (type.mode & 1) != 0;
         int[] slots = Inventory.getSlots(inv, s);
         int n = 0;
         for (int slot : slots) {
             ItemStack item = inv.getStackInSlot(slot);
-            if (item != null && (type == null || item.isItemEqual(type)) && (n += item.stackSize) > ref)
-                return true;
+            if (filter.types == null || filter.types.length == 0) {
+            	n += item == null ? neg ? 0 : 1 : neg ? item.stackSize : 0;
+            } else if (item != null && (filter.matches(item) ^ neg)) {
+            	n += item.stackSize;
+            }
+            if (n >= max) break;
         }
-        return false;
+        return n;
     }
     
-    private boolean checkTank(IFluidHandler tank, int s, int ref, ItemStack type)
+    private float checkTank(IFluidHandler tank, int s, int max, PipeUpgradeFluid type)
     {
-        if (tank == null) return ref < 0;
+        if (tank == null) return 0;
         FluidTankInfo[] data = tank.getTankInfo(EnumFacing.VALUES[s]);
-        if (data == null) return ref < 0;
+        if (data == null) return 0;
+        boolean neg = type == null || (type.mode & 1) != 0;
+        if (type == null) type = new PipeUpgradeFluid();
         int n = 0;
         for (FluidTankInfo info : data) {
-            if (info.fluid != null && (type == null || info.fluid.isFluidEqual(type)) && (n += info.fluid.amount) > ref)
-                return true;
+            if (type.list.length == 0) {
+            	n += info.fluid == null ? neg ? 0 : info.capacity : neg ? info.fluid.amount : info.capacity - info.fluid.amount;
+            } else if (info.fluid != null) {
+            	boolean match = false;
+            	for (FluidStack fluid : type.list)
+            		if (info.fluid.isFluidEqual(fluid)) {
+            			match = true;
+            			break;
+            		}
+            	if (match ^ neg) n += info.fluid.amount;
+            }
+        	if (n >= max) break;
         }
-        return false;
+        return n;
     }
     
-    public byte getMode(int s)
+    public byte getConfig(int s)
     {
-        return (byte)(netData.ints[0] >> (s * 4) & 0xf);
+        return (byte)(netData.longs[1] >> (s * 4) & 0xfL);
     }
     
-    public void setMode(int s, byte v)
+    public void setConfig(int s, byte v)
     {
-        netData.ints[0] &= ~(0xf << (s * 4));
-        netData.ints[0] |= (v & 0xf) << (s * 4);
+        netData.longs[1] &= ~(0xfL << (s * 4));
+        netData.longs[1] |= (long)(v & 0xf) << (s * 4);
     }
     
-    public boolean getState(int s)
+    public byte getState(int s)
     {
-        return (byte)(netData.ints[0] >> (s + 24) & 1) != 0;
+        return (byte)(netData.longs[0] >> (s * 8) & 0xffL);
     }
     
-    public void setState(int s, boolean v)
+    public void setState(int s, byte v)
     {
-        if (v) netData.ints[0] |= 1 << (24 + s);
-        else netData.ints[0] &= ~(1 << (24 + s));
-    }
-    
-    public byte getSide(int s)
-    {
-        return (byte)(netData.ints[7] >> (s * 4) & 0xf);
-    }
-    
-    public void setSide(int s, byte v)
-    {
-        netData.ints[7] &= ~(0xf << (s * 4));
-        netData.ints[7] |= (v & 0xf) << (s * 4);
-    }
-
-    @Override
-    public int redstoneLevel(int s, boolean str) 
-    {
-        return !str && this.getState(s) ? 15 : 0;
+    	netData.longs[0] &= ~(0xffL << (s * 8));
+        netData.longs[0] |= (long)(v & 0xff) << (s * 8);
     }
     
     @Override
     protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         if (cmd == 0) {
-            byte s = dis.readByte();
-            if (s >= 0 && s < 6)
-            this.setMode(s, dis.readByte());
+        	byte s = dis.readByte();
+            if (s >= 0 && s < 12) netData.ints[s] = dis.readInt();
         } else if (cmd == 1) {
-            byte s = dis.readByte();
-            if (s >= 0 && s < 6)
-            netData.ints[s + 1] = dis.readInt();
+        	byte s = dis.readByte();
+            if (s >= 0 && s < 6) this.setConfig(s, dis.readByte());
         } else if (cmd == 2) {
             byte s = dis.readByte();
-            if (s >= 0 && s < 6)
-            this.setSide(s, dis.readByte());
+            if (s >= 0 && s < 6) this.setConfig(s + 8, dis.readByte());
         }
     }
 
@@ -193,36 +203,52 @@ public class Detector extends AutomatedTile implements IRedstone8bit, Environmen
     {
         super.writeToNBT(nbt);
         nbt.setIntArray("data", netData.ints);
+        nbt.setLong("state", netData.longs[0]);
+        nbt.setLong("cfg", netData.longs[1]);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) 
     {
         super.readFromNBT(nbt);
+        for (int i = 0; i < inventory.items.length; i++) this.slotChange(null, inventory.items[i], i);
         int[] data = nbt.getIntArray("data");
         System.arraycopy(data, 0, netData.ints, 0, Math.min(data.length, netData.ints.length));
+        netData.longs[0] = nbt.getLong("state");
+        netData.longs[1] = nbt.getLong("cfg");
     }
     
     @Override
-    public void initContainer(TileContainer container) 
+    public void slotChange(ItemStack oldItem, ItemStack newItem, int i) 
+    {
+    	if (newItem != null && newItem.getItem() != Objects.itemUpgrade && newItem.getItem() != Objects.fluidUpgrade) newItem = null; //TODO remove later
+    	if (newItem == null || newItem.getTagCompound() == null) filter[i] = null;
+        else filter[i] = newItem.getItem() == Objects.itemUpgrade ? PipeUpgradeItem.load(newItem.getTagCompound()) : newItem.getItem() == Objects.fluidUpgrade ? PipeUpgradeFluid.load(newItem.getTagCompound()) : null;
+    }
+    
+    @Override
+	public boolean canInsert(ItemStack item, int cmp, int i) {return true;}
+
+	@Override
+	public boolean canExtract(ItemStack item, int cmp, int i) {return true;}
+
+	@Override
+	public boolean isValid(ItemStack item, int cmp, int i) {return true;}
+    
+	@Override
+    public void initContainer(TileContainer container)
     {
         for (int i = 0; i < 6; i++) {
-            container.addEntitySlot(new SlotHolo(this, i, 44, 16 + i * 18, false, false));
+            container.addEntitySlot(new SlotItemType(this, i, 44, 16 + i * 18, new ItemStack(Objects.itemUpgrade), new ItemStack(Objects.fluidUpgrade)));
         }
         
         container.addPlayerInventory(8, 140);
-    }
-    
-    @Override
-    public ItemStack removeStackFromSlot(int i) 
-    {
-        return null;
     }
 
     @Override
     public byte getValue(int s) 
     {
-        return (byte)(netData.ints[0] >> 24);
+        return this.getState(s);
     }
 
     @Override
@@ -232,8 +258,25 @@ public class Detector extends AutomatedTile implements IRedstone8bit, Environmen
     }
 
     @Override
-    public void setValue(int s, byte v, int recursion) 
+    public void setValue(int s, byte v, int recursion) {}
+    
+	@Override
+	public byte getBitValue(int s) {
+		return (byte)(this.getState(s) >> 4);
+	}
+
+	@Override
+	public byte getBitDirection(int s) {
+		return 1;
+	}
+
+	@Override
+	public void setBitValue(int s, byte state, int recursion) {}
+	
+	@Override
+    public int redstoneLevel(int s, boolean str) 
     {
+        return !str ? this.getState(s) >> 4 & 0xf : 0;
     }
 
     //ComputerCraft:

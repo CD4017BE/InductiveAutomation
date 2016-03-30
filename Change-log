@@ -1,0 +1,202 @@
+Inductive Automation
+
+################################# plans / ideas #################################
+add other mod's energy types 
+combine fluid + item warp pipes
+
+/fix
+- better pump / fill algorithm
+- more block placement compatibility <- done ?
+- portable magnet instant pickup
+
+/content
+- portable allInOne Factory {Crafting, Furnace, Assembler, Magnet, Trash, Generator*2, ItemStorage, OCSU}
+- portable trash
+- item/fluid warp pipe interface (AE/LP?)
+- mob interacting machine
+
+---THERMODYNAMIC-PHYSICS!!!!
+
+- balance recipes via mine_tweaker scripts.
+
+################################# VERSIONS 1.8.9 #################################
+
+4.0.3 Changes: <-
+- improved functionality of Detector (it now emits analog redstone signals)
+- item pipe filters can be used in placement controllers for automatic farm plant configuration
+- added function to portable magnets to auto disable when players nearby
+- added no block update mode to portable pump
+- added sort button & comfortable item extract to masstorage chest
+- fixed client glitches in masstorage chest
+- fixed unused gui components in portable tesla transmitter
+- fixed bio reactor fuels not loading correctly from config
+- added JEI recipe handler for bio reactor
+- added JEI transfer handlers for: portable crafter, compression assembler
+- fixed inventory energy container spamming the console with errors
+- fixed crash caused by Vertex Shematic Generator because its block-material was WATER <- WTF Why?
+- fixed Builder breaking its own blocks when using block placement controllers with multiple tasks and having a miner attached
+
+4.0.2 Changes:
+- bug fixes
+- added JEI recipe transfer handlers:
+	portable crafting
+	compression assembler
+- added JEI recipe handler for bio reactor
+
+4.0.1 Changes:
+- fixed Access Transformer bugs
+- fixed AntimatterBomb crash
+- fixed tool tip display bugs
+- fixed wrong fill/pump behavior of Fluid Vent / Pump
+- added JEI recipe handlers
+- added energy tool tip to JEI recipes
+
+4.0.0 Changes:
+- update to MC-1.8.9
+- improved Energy-API to make implementing other mod's energy easier
+- improved recipe-API
+- temporarily removed interaction to ComputerCraft and ThermalExpansion 
+- restructured block initialization
+
+################################# VERSIONS 1.7.10 #################################
+
+changes 3.1.1:
+-Tesla Transmitters keep energy when broken
+-fixed suffocating in pipes
+-added fluid container slots for all tank interfaces
+-fixed some GUI bugs
+changes 3.1.2:
+-fixed redstone output problems
+-fixed typing bug in GUI-textfields
+-fixed sometimes disrupted inventory when opening item-GUI
+-removed broken chat message on Jetpack mode toggle
+-increased Voltage Transformer max-factor to 20
+-fixed server crash on startup
+changes 3.1.3:
+-Texture Drawing Table:
+  added drawing tools (move, copy, rotate, mirror...)
+  using item-palette instead of directly painting with items
+  additional texture settings (offset, extension behavior)
+  -> old builder textures won't work anymore
+-optimized block placement & rendering as item
+-bug fixes
+changes 3.2.0:
+-splitted
+changes 3.2.1:
+-added configuration file
+-fixed tank blocking by empty fluid stacks
+-fixed a tesla transmitter bug
+changes 3.3.0:
+-added machine: "Gravitational Condenser"
+-added some crafting items ^^
+-changed some recipes
+-added fluid placement functionality for Builder
+-added configurable recipes for Advanced Furnace
+-added a block translocator tool.
+-added pre-filled Energy Storage Units to creative tab.
+-added creative tab for fluids.
+-fixed stacked fluid container filling bugs with other mods.
+changes 3.3.1:
+-fixed tick synch crash on computer controlled Miner / Builder,
+  which is caused by lua-threads editing the world at the wrong time.
+-computer controlled Miner / Builder don't execute tasks immediately anymore,
+  using a task queue instead, which is processed during game ticks.
+changes 3.4.0:
+-Mod name changed to Inductive Automation
+-operating areas of machines are no longer unlimited in size and distance.
+-upgrades can be installed to allow bigger areas, more distance between machine and area, and energy supply with higher voltages.
+-Miner & Builder can process up to 16 Blocks per tick.
+-added HV Energy Link
+-fixed item dragging problems in holo-slots
+-added Item Flow Regulator
+-added Portable Tesla Transmitter
+changes 3.4.1:
+-fixed energy buffer in Antimatter Annihilator being 1000x smaller than it should.
+-fixed energy amount in Teleporter being displayed wrongly if more than 2147484 kJ stored/needed.
+-removed energy compatibility for RedstoneFlux in Antimatter Annihilator, Antimatter Fabricator and Energy Storage Units.
+	(It sometimes caused wrong energy transfer and its not needed because Energy Links can do the conversion) 
+changes 3.4.2:
+-some bug fixes for use of Inventory Connectors from Automated Redstone.
+-fixed incorrect Steam Engine water output amount.
+-fixed energy use for Builder being 1000x smaller than it should.
+changes 3.4.3:
+-detector interface changed
+-removed possible energy wasting with tesla-transmitters when transferring from HV to LV.
+-added Energy Link compatibility for RF conduits without internal storage.
+changes 3.5.0:
+-added Block Placement Controller tool for use in Builder and Farm to do special placement.
+-improved the Builder ^^
+-added colored background tiles for transparent blocks/items to the Texture Drawing Table.
+-improved the Farm: it now has 8 plant slots instead of 4, it can theoretically "plant" everything using Block Placement Controllers
+	,it now uses an Item Pipe Filter instead of 4 slots for harvesting with some special new functions (Block metadata check).
+-reduced Umax of Solarpanels to 120V for standard and 240V for High Power.
+-improved Antimatter Laser by adding multiple operating modes and it can be also used as powerful ranged weapon now.
+-improved Matter Cannon by adding operating modes and easy item switching by sneak scroll.
+-added the possibility of removing wire connections.
+-added configuration tab for energy connections.
+-added rarity colors to some items.
+-fixed crash when removing held item while its GUI is open.
+changes 3.5.1:
+-fixed server startup crash
+-fixed possible infinite loop caused during automatic import by portable machines.
+-fixed loosing items with portable machines when exporting more than 64 of a type.
+-changed/added some compressor recipes
+-added NEI recipe overlay for portable automatic Crafter.
+changes 3.5.2:
+-bug fixes
+changes 3.6.0:
+-added item & fluid warp pipe for instant transport without storage.
+-added another even bigger fluid tank (Quantum Tank)
+-added direct item transport pipe connectivity for item sorter.
+-added config options for the Security System
+-fixed some problems with Energy Link
+-some other random fixes
+changes 3.6.1:
+-added config options for entity damage of Antimatter Laser.
+-added possibility to let machines do work for other machines.
+-added remove block pattern for Builder
+-made unbreakable stone/glass Wither & Enderdragon proof (why do they ignore unbreakability and explosion resistance !?)
+-changed mining behavior of Miner.
+-fixed item/fluid warp pipes sometimes not working.
+-fixed item warp Pipes inserting items to wrong inventory sides.
+changes 3.6.2:
+-pipes now have a complex hitbox.
+-increased minimum configurable working resistance to 5 Ohm (can be changed in config file).
+-now jetpacks can be also powered using Inventory Energy Containers
+-added display of electric current to power tooltips.
+-fixed some recipe bugs
+changes 3.6.3:
+-added possibility to set priorities for item warp pipe destinations.
+-ESUs and Inventory Energy Containers can now also charge RF-items.
+-fixed display glitches in Energy Link.
+-prepared automated building of complex 3D-polygon structures. (usable next update)
+changes 3.7.0:
+-added 3D-vertex shematic printer to let the builder build complex 3D-polygon structures.
+-added vertex selection tool for use with ^^.
+-added config options for most crafting recipes
+-added config options for harvestLevel and digSpeed of electric chisel
+-config-file renamed to "inductiveAutomation.cfg"
+-fixed block placement controller bugs.
+-removed some old unused texture files.
+changes 3.7.1:
+-added chunkloader functionality to Security System / "Chunk loading & protection manager"
+-changed Lava Cooler / "Geothermal Heat Exchanger" recipe
+-miner can be started with redstone signal and emits redstone when done.
+-mining drills can be enchanted now.
+-added config settings for drills.
+-renamed a few items
+-fixed incorrect pipe hitbox when covered
+-fixed crash in NEI-Plugin
+chnages 3.7.2:
+- added OpenComputers compatibility
+- added direct manual crafting to portable automatic crafter.
+- now portable magnets can be also disabled by putting into the top right inventory slot.
+- the Gravitational Condenser now emits redstone based on its fill state.
+- added another default jetpack-mode for fast flying.
+- added some processing recipes (ex.: Compression Assembler can now convert ingots to dusts)
+- added possibility to add processing recipes for almost all machines via config.
+- added config settings for the Bioreactor and its fuels.
+- improved performance of Antimatter Bomb by not causing neighbor block & light updates.
+- fixed Oredictionary compatibility in machine recipes.
+- fixed wrong ambient occlusion light value on pipes.
+- fixed a crash in jetpack config gui 
