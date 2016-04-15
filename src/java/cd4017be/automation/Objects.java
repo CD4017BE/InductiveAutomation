@@ -83,8 +83,7 @@ public class Objects {
 	public static BlockPipe wireH;
 	public static BlockPipe liquidPipe;
 	public static BlockPipe itemPipe;
-	public static BlockPipe itemWarpPipe;
-	public static BlockPipe liquidWarpPipe;
+	public static BlockPipe warpPipe;
 	public static TileBlock voltageTransformer;
 	public static TileBlock SCSU;
 	public static TileBlock OCSU;

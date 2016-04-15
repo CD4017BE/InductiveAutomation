@@ -65,8 +65,7 @@ public class CommonProxy implements IFuelHandler
 		TileBlockRegistry.register(wireH, Wire.class, null);
 		TileBlockRegistry.register(liquidPipe, LiquidPipe.class, null);
 		TileBlockRegistry.register(itemPipe, ItemPipe.class, null);
-		TileBlockRegistry.register(itemWarpPipe, ItemWarpPipe.class, null);
-		TileBlockRegistry.register(liquidWarpPipe, LiquidWarpPipe.class, null);
+		TileBlockRegistry.register(warpPipe, WarpPipe.class, null);
 		TileBlockRegistry.register(voltageTransformer, VoltageTransformer.class, TileContainer.class);
 		TileBlockRegistry.register(SCSU, ESU.class, TileContainer.class);
 		TileBlockRegistry.register(OCSU, ESU.class, TileContainer.class);
@@ -345,13 +344,12 @@ public class CommonProxy implements IFuelHandler
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.wireA", 8), "000", '0', "ingotConductiveAlloy"));
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.wireH", 8), "010", "222", "010", '0', "ingotElectrum", '1', stack("SiliconI", 1), '2', stack("HydrogenI", 1)));
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("liquidPipeT", 24), "000", '0', "AIcasingGlass"));
-        GameRegistry.addRecipe(new ShapedOreRecipe(stack("liquidPipeI", 8), "000", "010", "000", '0', stack("liquidPipeT", 1), '1', new ItemStack(Blocks.piston)));
-        GameRegistry.addRecipe(new ShapedOreRecipe(stack("liquidPipeE", 8), "000", "010", "000", '0', stack("liquidPipeT", 1), '1', new ItemStack(Blocks.sticky_piston)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(stack("liquidPipeI", 4), " 0 ", "010", " 0 ", '0', stack("liquidPipeT", 1), '1', new ItemStack(Blocks.piston)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(stack("liquidPipeE", 4), " 0 ", "010", " 0 ", '0', stack("liquidPipeT", 1), '1', new ItemStack(Blocks.sticky_piston)));
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("itemPipeT", 24), "000", '0', "AIcasingWood"));
-        GameRegistry.addRecipe(new ShapedOreRecipe(stack("itemPipeI", 8), "000", "010", "000", '0', stack("itemPipeT", 1), '1', new ItemStack(Blocks.piston)));
-        GameRegistry.addRecipe(new ShapedOreRecipe(stack("itemPipeE", 8), "000", "010", "000", '0', stack("itemPipeT", 1), '1', new ItemStack(Blocks.sticky_piston)));
-        configurableRecipe("tile.itemWarpPipe", new ShapedOreRecipe(stack("tile.itemWarpPipe", 8), "000", "010", "000", '0', stack("itemPipeT", 1), '1', stack("EMatrix", 1)));
-        configurableRecipe("tile.liquidWarpPipe", new ShapedOreRecipe(stack("tile.liquidWarpPipe", 8), "000", "010", "000", '0', stack("liquidPipeT", 1), '1', stack("EMatrix", 1)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(stack("itemPipeI", 4), " 0 ", "010", " 0 ", '0', stack("itemPipeT", 1), '1', new ItemStack(Blocks.piston)));
+        GameRegistry.addRecipe(new ShapedOreRecipe(stack("itemPipeE", 4), " 0 ", "010", " 0 ", '0', stack("itemPipeT", 1), '1', new ItemStack(Blocks.sticky_piston)));
+        configurableRecipe("tile.warpPipe", new ShapedOreRecipe(stack("tile.warpPipe", 24), "000", "232", "111", '0', "AIcasingWood", '1', "AIcasingGlass", '2', new ItemStack(Blocks.obsidian), '3', stack("EMatrix", 1)));
         GameRegistry.addRecipe(new NBTRecipe(stack("tile.SCSU", 1), "+energy", "0", "1", '0', stack("item.energyCell", 1, OreDictionary.WILDCARD_VALUE), '1', stack("tile.wireC", 1)));
         GameRegistry.addRecipe(new NBTRecipe(stack("tile.OCSU", 1), "+energy", "000", "010", "000", '0', stack("item.energyCell", 1, OreDictionary.WILDCARD_VALUE), '1', stack("tile.wireA", 1)));
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.CCSU", 1), "010", "232", "010", '0', stack("SiliconI", 1), '1', "AIcasingGraphite", '2', stack("CoilSC", 1), '3', stack("LCHelium", 1)));

@@ -37,8 +37,7 @@ tile.cd4017be.liquidPipe\:2.name=Liquid Extraction Pipe
 tile.cd4017be.itemPipe\:0.name=Item Transport Pipe
 tile.cd4017be.itemPipe\:1.name=Item Injection Pipe
 tile.cd4017be.itemPipe\:2.name=Item Extraction Pipe
-tile.cd4017be.itemWarpPipe.name=Item Warp Pipe
-tile.cd4017be.liquidWarpPipe.name=Liquid Warp Pipe
+tile.cd4017be.warpPipe.name=Warp Pipe
 tile.cd4017be.voltageTransformer.name=Voltage Transformer
 tile.cd4017be.SCSU.name=Single-Cell Storage Unit
 tile.cd4017be.OCSU.name=Octa-Cell Storage Unit
@@ -106,11 +105,10 @@ tile.cd4017be.wireH.tip=Umax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.Energy
 tile.cd4017be.liquidPipe\:0.tip=Transfers fluids from extraction to injection pipes.\nMoves \\<AI.FluidTiers.TankCap:0> L/t from red to green connections.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
 tile.cd4017be.liquidPipe\:1.tip=Fills fluids into connected tanks/machines.\nCan be upgraded with a Fluid Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
 tile.cd4017be.liquidPipe\:2.tip=Pumps fluids out of connected tanks/machines.\nCan be upgraded with a Fluid Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
-tile.cd4017be.liquidWarpPipe.tip=Transfers fluids between connected tanks/machines instantly\nwithout internal storage at unlimited pump rate.\nClick with Liquid extraction/injection Pipe on\nside to extract/inject fluids from that side.\nFluid Pipe Filters can be applied per connected side.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
 tile.cd4017be.itemPipe\:0.tip=Transfers items from extraction to injection pipes.\nMoves 1 stack/t from red to green connections.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
 tile.cd4017be.itemPipe\:1.tip=Puts items into connected inventories.\nCan be upgraded with an Item Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
 tile.cd4017be.itemPipe\:2.tip=Pulls items out of connected inventories.\nCan be upgraded with an Item Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
-tile.cd4017be.itemWarpPipe.tip=Transfers items between connected inventories instantly\nwithout internal storage at 1 stack/t extraction rate.\nClick with Item extraction/injection Pipe on\nside to extract/inject items from that side.\nItem Pipe Filters are applied per connected side.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.warpPipe.tip=Transfers items & fluids between connected blocks instantly\nwithout internal storage at 1 stack/t extraction rate.\nClick with Item/Fluid extraction/injection Pipe on\nside to extract/inject items/fluids from that side.\nItem/Fluid Pipe Filters are applied per connected side.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
 tile.cd4017be.voltageTransformer.tip=Conducts Energy between two\nnetworks of different Voltage.\nHV = LV * VoltageFactor
 tile.cd4017be.SCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:0> V\nRcond = \\<AF.EnergyTiers.Rcond:0> Ohm
 tile.cd4017be.OCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
@@ -156,7 +154,7 @@ tile.cd4017be.electrolyser.tip=Separates materials into their chemical compounds
 tile.cd4017be.fuelCell.tip=Lets Hydrogen & Oxygen react into\nSteam to produce electric Energy\nPmax = 80 L/t + 144 kW\nUmax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm
 tile.cd4017be.detector.tip=Emits redstone signals depending on configurable triggers for:\nitem storage, fluid storage and energy storage (also MJ,RF,EU).\nUse as Computercraft peripheral for more detailed control.
 tile.cd4017be.itemSorter.tip=Routes items into 5 different slots with 4 Item Filters + else.
-tile.cd4017be.wormhole.tip=Creates an interdimensional link between two points being anywhere.\nWalk into this block to get teleported to its link.\nCan transfer entities, items, fluids & energy (also RF).\nCan be used by Teleporters to teleport between dimensions:\nClick this block with paper to get the coordinates.
+tile.cd4017be.wormhole.tip=Creates an interdimensional link between two points being anywhere.\nWalk into this block to get teleported to its link.\nCan transfer entities, items, fluids & energy (also RF).\nCan be used by Teleporters to teleport between dimensions:\nClick this block with paper to get the coordinates.\nAlso acts as warp pipe.
 tile.cd4017be.matterInterfaceB.tip=Used to automatically insert/extract items from a Matterorb.
 tile.cd4017be.fluidPacker.tip=Converts fluids into an item-version that can be stored in chests etc.\nNeeds 1 ng antimatter per 1000 L fluid.
 tile.cd4017be.hugeTank.tip=A bigger tank with 4.096 m³ capacity.

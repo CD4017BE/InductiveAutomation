@@ -191,8 +191,7 @@ public class Automation implements IWorldGenerator
     	(wireH = new BlockPipe("wireH", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(liquidPipe = new BlockLiquidPipe("liquidPipe", Material.glass, 0x20)).setHardness(0.5F).setCreativeTab(tabAutomation).setResistance(10F).setStepSound(Block.soundTypeGlass);
     	(itemPipe = new BlockItemPipe("itemPipe", Material.wood, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
-    	(itemWarpPipe = new BlockPipe("itemWarpPipe", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F).setStepSound(Block.soundTypeMetal);
-    	(liquidWarpPipe = new BlockPipe("liquidWarpPipe", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F).setStepSound(Block.soundTypeMetal);
+    	(warpPipe = new BlockPipe("warpPipe", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F).setStepSound(Block.soundTypeMetal);
     	(voltageTransformer = TileBlock.create("voltageTransformer", Material.iron, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(SCSU = TileBlock.create("SCSU", Material.iron, ItemESU.class, 0x40)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(OCSU = TileBlock.create("OCSU", Material.iron, ItemESU.class, 0x40)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);

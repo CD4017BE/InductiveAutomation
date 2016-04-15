@@ -13,8 +13,12 @@ import java.util.ArrayList;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Objects;
+import cd4017be.automation.pipes.BasicWarpPipe;
+import cd4017be.automation.pipes.IWarpPipe;
+import cd4017be.automation.pipes.InterdimWarpPipe;
 import cd4017be.lib.ModTileEntity;
 import cd4017be.lib.MovedBlock;
+import cd4017be.lib.templates.SharedNetwork;
 import cd4017be.lib.util.Utils;
 import cd4017be.lib.util.Vec3;
 import net.minecraft.block.state.IBlockState;
@@ -45,13 +49,14 @@ import net.minecraftforge.fluids.IFluidHandler;
  *
  * @author CD4017BE
  */
-public class InterdimHole extends ModTileEntity implements ISidedInventory, IFluidHandler, IEnergy, ITickable //, IEnergyHandler //TODO reimplement
+public class InterdimHole extends ModTileEntity implements ISidedInventory, IFluidHandler, IEnergy, ITickable, IWarpPipe //, IEnergyHandler //TODO reimplement
 {
     public int linkX = 0;
     public int linkY = -1;
     public int linkZ = 0;
     public int linkD = 0;
     private InterdimHole linkTile;
+    private InterdimWarpPipe pipe = new InterdimWarpPipe(this);
     public TileEntity[] neighbors = new TileEntity[6];
 
     private int[] linkIdx = new int[0];
@@ -133,11 +138,13 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     @Override
     public void update() 
     {
-        if (updateCon && !worldObj.isRemote) {
+        if (worldObj.isRemote) return;
+    	if (updateCon) {
             init();
             link(false);
             updateCon = false;
         }
+		pipe.network.updateTick(pipe);
     }
 
     @Override
@@ -381,7 +388,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     @Override
     public void onNeighborTileChange(BlockPos pos) 
     {
-        this.init();
+        if (!worldObj.isRemote) this.init();
     }
 
     public void init()
@@ -408,6 +415,8 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
                 invIdx[i][j] = n++;
             }
         }
+        pipe.network.updateLink(pipe);
+        if (linkTile != null) linkTile.pipe.network.add(pipe);
     }
     
     @Override
@@ -415,6 +424,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     {
         super.validate();
         updateCon = true;
+        if (!worldObj.isRemote) pipe.initUID(SharedNetwork.ExtPosUID(pos, dimensionId));
     }
 
     @Override
@@ -426,7 +436,14 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
             linkTile = null;
         }
         neighbors = null;
+        pipe.remove();
     }
+    
+    @Override
+	public void onChunkUnload() {
+		super.onChunkUnload();
+		pipe.remove();
+	}
     
     public boolean hasLink()
     {
@@ -485,6 +502,11 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
 
 	@Override
 	public void clear() {}
+
+	@Override
+	public BasicWarpPipe getWarpPipe() {
+		return pipe;
+	}
 	
 	/* TODO reimplement
     @Override

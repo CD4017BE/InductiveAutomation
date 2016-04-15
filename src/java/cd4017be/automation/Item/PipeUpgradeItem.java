@@ -107,21 +107,33 @@ public class PipeUpgradeItem
         return upgrade;
     }
     
+    public void save(NBTTagCompound nbt) {
+    	nbt.setByte("mode", mode);
+        nbt.setByte("prior", priority);
+        if (list.length > 0) {
+            NBTTagList tlist = new NBTTagList();
+            for (ItemStack item : list) {
+                NBTTagCompound tag = new NBTTagCompound();
+                item.writeToNBT(tag);
+                tlist.appendTag(tag);
+            }
+            nbt.setTag("list", tlist);
+        }
+    }
+    
     public static NBTTagCompound save(PipeUpgradeItem upgrade)
     {
         NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setByte("mode", upgrade.mode);
-        nbt.setByte("prior", upgrade.priority);
-        if (upgrade.list.length > 0) {
-            NBTTagList list = new NBTTagList();
-            for (ItemStack item : upgrade.list) {
-                NBTTagCompound tag = new NBTTagCompound();
-                item.writeToNBT(tag);
-                list.appendTag(tag);
-            }
-            nbt.setTag("list", list);
-        }
+        upgrade.save(nbt);
         return nbt;
+    }
+    
+    public boolean isEmpty() {
+    	return list.length == 0 && (mode & 1) == 0;
+    }
+    
+    public static boolean isNullEq(PipeUpgradeItem filter) {
+    	return filter == null || (filter.list.length == 0 && (filter.mode & 1) != 0);
     }
     
 }

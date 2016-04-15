@@ -2,7 +2,6 @@ Inductive Automation
 
 ################################# plans / ideas #################################
 add other mod's energy types 
-combine fluid + item warp pipes
 
 /fix
 - better pump / fill algorithm
@@ -20,6 +19,10 @@ combine fluid + item warp pipes
 - balance recipes via mine_tweaker scripts.
 
 ################################# VERSIONS 1.8.9 #################################
+
+4.1.0 Changes:
+- combined fluid & item warp pipes
+- interdimensional wormhole now also connects warp pipes
 
 4.0.3 Changes: <-
 - improved functionality of Detector (it now emits analog redstone signals)

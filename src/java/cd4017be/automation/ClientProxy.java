@@ -8,9 +8,8 @@ import cd4017be.automation.TileEntity.AntimatterBomb;
 import cd4017be.automation.TileEntity.Builder;
 import cd4017be.automation.TileEntity.Farm;
 import cd4017be.automation.TileEntity.ItemPipe;
-import cd4017be.automation.TileEntity.ItemWarpPipe;
+import cd4017be.automation.TileEntity.WarpPipe;
 import cd4017be.automation.TileEntity.LiquidPipe;
-import cd4017be.automation.TileEntity.LiquidWarpPipe;
 import cd4017be.automation.TileEntity.Miner;
 import cd4017be.automation.TileEntity.Pump;
 import cd4017be.automation.TileEntity.Tank;
@@ -91,8 +90,7 @@ public class ClientProxy extends CommonProxy
 		BlockItemRegistry.registerBlockRender("itemPipe:0");
 		BlockItemRegistry.registerBlockRender("itemPipe:1");
 		BlockItemRegistry.registerBlockRender("itemPipe:2");
-		BlockItemRegistry.registerBlockRender("itemWarpPipe:0");
-		BlockItemRegistry.registerBlockRender("liquidWarpPipe:0");
+		BlockItemRegistry.registerBlockRender("warpPipe:0");
 		BlockItemRegistry.registerBlockRender("voltageTransformer:0");
 		BlockItemRegistry.registerBlockRender("SCSU:0");
 		BlockItemRegistry.registerBlockRender("OCSU:0");
@@ -197,8 +195,7 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(Wire.class, new PipeRenderer("automation:wire", "C", "A", "H"));
         ClientRegistry.bindTileEntitySpecialRenderer(ItemPipe.class, new PipeRenderer("automation:itemPipe", "T", "I", "E"));
         ClientRegistry.bindTileEntitySpecialRenderer(LiquidPipe.class, new PipeRenderer("automation:liquidPipe", "T", "I", "E"));
-        ClientRegistry.bindTileEntitySpecialRenderer(ItemWarpPipe.class, new PipeRenderer("automation:itemPipe", "W", "I", "E"));
-        ClientRegistry.bindTileEntitySpecialRenderer(LiquidWarpPipe.class, new PipeRenderer("automation:liquidPipe", "W", "I", "E"));
+        ClientRegistry.bindTileEntitySpecialRenderer(WarpPipe.class, new PipeRenderer("automation:", "warpPipe", "itemPipeI", "itemPipeE", "liquidPipeI", "liquidPipeE"));
     }
     
     @SubscribeEvent
@@ -217,8 +214,7 @@ public class ClientProxy extends CommonProxy
     	BlockItemRegistry.registerModels(wireH, "wireH", "wireH_con", "wireH_core");
     	BlockItemRegistry.registerModels(itemPipe, "itemPipe", "itemPipe_1", "itemPipe_2", "itemPipeT_con", "itemPipeT_core", "itemPipeI_con", "itemPipeI_core", "itemPipeE_con", "itemPipeE_core");
     	BlockItemRegistry.registerModels(liquidPipe, "liquidPipe", "liquidPipe_1", "liquidPipe_2", "liquidPipeT_con", "liquidPipeT_core", "liquidPipeI_con", "liquidPipeI_core", "liquidPipeE_con", "liquidPipeE_core");
-    	BlockItemRegistry.registerModels(itemWarpPipe, "itemWarpPipe", "itemPipeW_con", "itemPipeW_core");
-    	BlockItemRegistry.registerModels(liquidWarpPipe, "liquidWarpPipe", "liquidPipeW_con", "liquidPipeW_core");
+    	BlockItemRegistry.registerModels(warpPipe, "warpPipe", "warpPipe_con", "warpPipe_core");
     	BlockItemRegistry.registerModels(ore, "ore", "ore_1");
     	String[] tex = new String[16];
     	for (int i = 0; i < tex.length; i++) tex[i] = "unbrStone" + (i == 0 ? "" : "_" + i);

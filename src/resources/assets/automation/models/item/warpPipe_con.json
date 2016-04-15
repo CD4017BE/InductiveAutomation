@@ -1,6 +1,6 @@
 {
 	"parent": "automation:block/pipeCon4",
     "textures": {
-        "tex": "automation:blocks/pipes/liquidWp"
+        "tex": "automation:blocks/pipes/warp"
     }
 }

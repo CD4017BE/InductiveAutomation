@@ -20,6 +20,7 @@ public class PipeUpgradeFluid
     public int maxAmount;
     public FluidStack[] list = new FluidStack[0];
     public byte mode;//1=invert; 2=force; 4=redstone; 8=invertRS
+    public byte priority;
     
     public int getMaxFillAmount(FluidStack stack, FluidTankInfo info, boolean rs)
     {
@@ -89,21 +90,29 @@ public class PipeUpgradeFluid
         return upgrade;
     }
     
-    public static NBTTagCompound save(PipeUpgradeFluid upgrade)
-    {
-        NBTTagCompound nbt = new NBTTagCompound();
-        nbt.setByte("mode", upgrade.mode);
-        nbt.setInteger("maxAm", upgrade.maxAmount);
-        if (upgrade.list.length > 0) {
+    public void save(NBTTagCompound nbt) {
+    	nbt.setByte("mode", mode);
+        nbt.setInteger("maxAm", maxAmount);
+        if (list.length > 0) {
             NBTTagList list = new NBTTagList();
-            for (FluidStack fluid : upgrade.list) {
+            for (FluidStack fluid : this.list) {
                 NBTTagCompound tag = new NBTTagCompound();
                 fluid.writeToNBT(tag);
                 list.appendTag(tag);
             }
             nbt.setTag("list", list);
         }
+    }
+    
+    public static NBTTagCompound save(PipeUpgradeFluid upgrade)
+    {
+    	NBTTagCompound nbt = new NBTTagCompound();
+        upgrade.save(nbt);
         return nbt;
+    }
+    
+    public static boolean isNullEq(PipeUpgradeFluid filter) {
+    	return filter == null || (filter.list.length == 0 && (filter.mode & 1) != 0);
     }
     
 }
