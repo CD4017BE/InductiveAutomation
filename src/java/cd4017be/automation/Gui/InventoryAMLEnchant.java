@@ -56,7 +56,7 @@ public class InventoryAMLEnchant extends BasicInventory
 	public ItemStack decrStackSize(int s, int n) 
 	{
 		ItemStack item = super.decrStackSize(s, n);
-		this.save(cont.player.getCurrentEquippedItem());
+		this.save(cont.player.getHeldItemMainhand());
 		return item;
 	}
 
@@ -64,7 +64,7 @@ public class InventoryAMLEnchant extends BasicInventory
 	public void setInventorySlotContents(int s, ItemStack item) 
 	{
 		super.setInventorySlotContents(s, item);
-		this.save(cont.player.getCurrentEquippedItem());
+		this.save(cont.player.getHeldItemMainhand());
 	}
 	
 }

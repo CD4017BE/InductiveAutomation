@@ -23,8 +23,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
@@ -70,7 +70,7 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 		if (!world.isRemote && player.isSneaking()) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te == null || !(te instanceof IInventory)) {
-				player.addChatMessage(new ChatComponentText("Block has no inventory!"));
+				player.addChatMessage(new TextComponentString("Block has no inventory!"));
 				return true;
 			}
 			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
@@ -80,7 +80,7 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 			item.getTagCompound().setByte("s", (byte)s.getIndex());
 			item.getTagCompound().setInteger("d", player.dimension);
 			item.getTagCompound().setInteger("size", Utils.accessibleSlots((IInventory)te, s.getIndex()).length);
-			player.addChatMessage(new ChatComponentText("Block inventory linked"));
+			player.addChatMessage(new TextComponentString("Block inventory linked"));
 			return true;
 		}
 		return false;

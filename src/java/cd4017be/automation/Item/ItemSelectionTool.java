@@ -25,8 +25,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -79,12 +79,12 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
                     item.getTagCompound().setInteger("mx", 0);
                     item.getTagCompound().setInteger("my", -1);
                     item.getTagCompound().setInteger("mz", 0);
-                    player.addChatMessage(new ChatComponentText("Unlinked Machine"));
+                    player.addChatMessage(new TextComponentString("Unlinked Machine"));
                     return;
                 } else
                 if (te != null && te instanceof IOperatingArea)
                 {
-                    player.addChatMessage(new ChatComponentText("Linked Machine"));
+                    player.addChatMessage(new TextComponentString("Linked Machine"));
                     int[] oa = ((IOperatingArea)te).getOperatingArea();
                     item.getTagCompound().setInteger("mx", pos.getX());
                     item.getTagCompound().setInteger("my", pos.getY());
@@ -150,11 +150,11 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
         	if (IOperatingArea.Handler.setCorrectArea(mach, area, false)) {
         		this.storeArea(area, item);
         	} else {
-        		player.addChatMessage(new ChatComponentText("Error: selection out of bounds!"));
+        		player.addChatMessage(new TextComponentString("Error: selection out of bounds!"));
         		return;
         	}
         } else this.storeArea(area, item);
-        if (msg != null) player.addChatMessage(new ChatComponentText(msg));
+        if (msg != null) player.addChatMessage(new TextComponentString(msg));
     }
     
     @Override
@@ -190,7 +190,7 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
 	@Override
 	public Container getContainer(World world, EntityPlayer player, int x, int y, int z) 
 	{
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItemMainhand();
 		if (item == null || item.getTagCompound() == null) return null;
 		TileEntity te = world.getTileEntity(new BlockPos(x, y, z));
 		if (te == null || !(te instanceof IOperatingArea)) {
@@ -220,12 +220,12 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem
 				area[cmd] = dis.readInt();
 				IOperatingArea.Handler.setCorrectArea(cont.machine, area, true);
 			} else if (cmd == 6) {
-				ItemStack item = player.getCurrentEquippedItem();
+				ItemStack item = player.getHeldItemMainhand();
 				if (item != null && item.getTagCompound() != null) {
 					int[] area = new int[6];
 					this.loadArea(area, item, player.worldObj);
 					if (!IOperatingArea.Handler.setCorrectArea(cont.machine, area, false)) {
-						player.addChatMessage(new ChatComponentText("Error: selection out of max bounds!"));
+						player.addChatMessage(new TextComponentString("Error: selection out of max bounds!"));
 					}
 				}
 			}

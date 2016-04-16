@@ -22,7 +22,7 @@ public class ContainerItemUpgrade  extends ItemContainer
     {
         super(player);
         this.addPlayerInventory(8, 68);
-        inventory = new InventoryItemUpgrade(player.getCurrentEquippedItem());
+        inventory = new InventoryItemUpgrade(player.getHeldItemMainhand());
         for (int i = 0; i < 9; i++) {
             this.addSlotToContainer(new SlotHolo(inventory, i, 8 + i * 18, 34, false, true));
         }
@@ -31,7 +31,7 @@ public class ContainerItemUpgrade  extends ItemContainer
     @Override
     public void onContainerClosed(EntityPlayer player) 
     {
-        this.inventory.onClose(player.getCurrentEquippedItem());
+        this.inventory.onClose(player.getHeldItemMainhand());
         super.onContainerClosed(player);
     }
 

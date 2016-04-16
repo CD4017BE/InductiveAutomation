@@ -22,7 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -56,7 +56,7 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) 
     {
         tanks.readFromNBT(pkt.getNbtCompound(), "tank");
     }
@@ -66,7 +66,7 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
     {
         NBTTagCompound nbt = new NBTTagCompound();
         tanks.writeToNBT(nbt, "tank");
-        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
+        return new SPacketUpdateTileEntity(getPos(), -1, nbt);
     }
     
     @Override

@@ -32,12 +32,12 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fluids.Fluid;
@@ -73,18 +73,18 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
             drop.getTagCompound().setInteger("lx", pos.getX());
             drop.getTagCompound().setInteger("ly", pos.getY());
             drop.getTagCompound().setInteger("lz", pos.getZ());
-            drop.getTagCompound().setInteger("ld", worldObj.provider.getDimensionId());
+            drop.getTagCompound().setInteger("ld", worldObj.provider.getDimension());
             EntityItem eitem = new EntityItem(worldObj, entity.posX, entity.posY, entity.posZ, drop);
             worldObj.spawnEntityInWorld(eitem);
-            if (entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new ChatComponentText("The droped Wormhole will link to this"));
+            if (entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new TextComponentString("The droped Wormhole will link to this"));
         } else if (item.getTagCompound() != null) {
             linkX = item.getTagCompound().getInteger("lx");
             linkY = item.getTagCompound().getInteger("ly");
             linkZ = item.getTagCompound().getInteger("lz");
             linkD = item.getTagCompound().getInteger("ld");
             link(true);
-            if (linkTile != null && entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new ChatComponentText(String.format("Link found in dimension %d at position %d , %d , %d", linkD, linkX, linkY, linkZ)));
-            else if (entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new ChatComponentText("Error: Link not Found!"));
+            if (linkTile != null && entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new TextComponentString(String.format("Link found in dimension %d at position %d , %d , %d", linkD, linkX, linkY, linkZ)));
+            else if (entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new TextComponentString("Error: Link not Found!"));
         }
         this.init();
     }
@@ -107,16 +107,16 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         if (worldObj.isRemote) return true;
-        if (player.isSneaking() && player.getCurrentEquippedItem() == null && linkTile != null && !linkTile.isInvalid() && linkTile.linkTile == this) {
+        if (player.isSneaking() && player.getHeldItemMainhand() == null && linkTile != null && !linkTile.isInvalid() && linkTile.linkTile == this) {
             ItemStack item = new ItemStack(this.getBlockType(), 1, 0);
             linkTile.worldObj.setBlockToAir(linkTile.pos);
             worldObj.setBlockToAir(getPos());
             EntityItem eitem = new EntityItem(worldObj, player.posX, player.posY, player.posZ, item);
             worldObj.spawnEntityInWorld(eitem);
-            player.addChatMessage(new ChatComponentText("Both linked Wormholes removed"));
+            player.addChatMessage(new TextComponentString("Both linked Wormholes removed"));
             return true;
-        } else if (player.getCurrentEquippedItem() != null && player.getCurrentEquippedItem().getItem() == Items.paper) {
-            ItemStack item = new ItemStack(Objects.teleporterCoords, player.getCurrentEquippedItem().stackSize);
+        } else if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Items.paper) {
+            ItemStack item = new ItemStack(Objects.teleporterCoords, player.getHeldItemMainhand().stackSize);
             item.setTagCompound(new NBTTagCompound());
             item.getTagCompound().setInteger("x", pos.getX());
             item.getTagCompound().setInteger("y", pos.getY());
@@ -360,7 +360,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         pos = pos.add((double)linkTile.pos.getX() + 0.5D, (double)linkTile.pos.getY() + 0.5D, (double)linkTile.pos.getZ() + 0.5D);
         box = box.offset(pos.x - entity.posX, pos.y - entity.posY, pos.z - entity.posZ);
         if (!linkTile.isAreaClear(box)) return;
-        MovedBlock.moveEntity(entity, linkTile.worldObj.provider.getDimensionId(), pos.x, pos.y, pos.z);
+        MovedBlock.moveEntity(entity, linkTile.worldObj.provider.getDimension(), pos.x, pos.y, pos.z);
     }
     
     protected boolean isAreaClear(AxisAlignedBB area)
@@ -466,7 +466,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
                 linkTile.linkX = pos.getX();
                 linkTile.linkY = pos.getY();
                 linkTile.linkZ = pos.getZ();
-                linkTile.linkD = worldObj.provider.getDimensionId();
+                linkTile.linkD = worldObj.provider.getDimension();
             }
         }
     }
@@ -483,8 +483,8 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
 	public void closeInventory(EntityPlayer player) {}
 
 	@Override
-	public IChatComponent getDisplayName() {
-		return new ChatComponentText(this.getName());
+	public ITextComponent getDisplayName() {
+		return new TextComponentString(this.getName());
 	}
 
 	@Override

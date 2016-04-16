@@ -14,9 +14,9 @@ import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.RayTraceResult;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -87,7 +87,7 @@ public class ItemPlacement extends DefaultItem implements IGuiItem
     
     public static ItemStack doPlacement(World world, EntityPlayer player, ItemStack stack, BlockPos pos, byte s, float A, float B, boolean sneak, boolean useBlock)
     {
-    	ItemStack lItem = player.getCurrentEquippedItem();
+    	ItemStack lItem = player.getHeldItemMainhand();
     	float lYaw = player.rotationYaw, lPitch = player.rotationPitch;
     	double lPx = player.posX, lPy = player.posY, lPz = player.posZ;
     	boolean lSneak = player.isSneaking();
@@ -116,7 +116,7 @@ public class ItemPlacement extends DefaultItem implements IGuiItem
     	BlockPos pos1 = pos.offset(dir, -1);
     	Vec3 v0 = new Vec3((double)pos1.getX() + X, (double)pos1.getY() + Y, (double)pos1.getZ() + Z);
     	Vec3 v1 = new Vec3((double)pos.getX() + X, (double)pos.getX() + Y, (double)pos.getZ() + Z);
-    	MovingObjectPosition obj = state.getBlock().isAir(world, pos) ? null : state.getBlock().collisionRayTrace(world, pos, v0, v1);
+    	RayTraceResult obj = state.getBlock().isAir(world, pos) ? null : state.getBlock().collisionRayTrace(world, pos, v0, v1);
     	if (obj == null && useBlock) obj = world.rayTraceBlocks(v0, v1);
     	boolean flag = false;
     	if (obj != null) {
@@ -132,9 +132,9 @@ public class ItemPlacement extends DefaultItem implements IGuiItem
     	if (!flag) {
     		PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_AIR, world, pos, dir);
     		if (event.useBlock != Event.Result.DENY && event.useItem != Event.Result.DENY) 
-    			stack.getItem().onItemUse(player.getCurrentEquippedItem(), player, world, pos, EnumFacing.VALUES[s^1], X, Y, Z);
+    			stack.getItem().onItemUse(player.getHeldItemMainhand(), player, world, pos, EnumFacing.VALUES[s^1], X, Y, Z);
     	}
-    	stack = player.getCurrentEquippedItem();
+    	stack = player.getHeldItemMainhand();
     	if (stack != null && stack.stackSize <= 0) stack = null;
     	if (useBlock && world.getBlockState(pos) == GhostBlock.ID.getDefaultState()) world.setBlockState(pos, Blocks.air.getDefaultState(), 4);
     	

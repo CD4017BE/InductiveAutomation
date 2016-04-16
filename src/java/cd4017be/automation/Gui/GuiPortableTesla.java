@@ -7,9 +7,9 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 
@@ -41,7 +41,7 @@ public class GuiPortableTesla extends GuiMachine
     public void updateScreen() 
     {
         super.updateScreen();
-        ItemStack item = container.player.getCurrentEquippedItem();
+        ItemStack item = container.player.getHeldItemMainhand();
         if (item != null && item.getTagCompound() != null) {
         	mode = item.getTagCompound().getShort("mode");
         	double u = item.getTagCompound().getDouble("voltage");
@@ -81,8 +81,8 @@ public class GuiPortableTesla extends GuiMachine
         }
         freq.drawTextBox();
         this.drawLocString(this.guiLeft + 62, this.guiTop + 16, 8, 0xffdf40, "tesla.stor", Estore);
-        this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.portableTesla.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("gui.cd4017be.portableTesla.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
     }
     
     @Override

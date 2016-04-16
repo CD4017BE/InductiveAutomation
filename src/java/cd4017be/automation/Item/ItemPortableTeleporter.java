@@ -21,12 +21,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MathHelper;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.RayTraceResult;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
@@ -65,7 +65,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 	@Override
 	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItemMainhand();
 		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 		NBTTagList points = item.getTagCompound().getTagList("points", 10);
 		NBTTagCompound tag;
@@ -78,10 +78,10 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 			int y = tag.getInteger("y");
 			int z = tag.getInteger("z");
 			if (y < 0 || y > 256) {
-				player.addChatMessage(new ChatComponentText("Destination outside the world!"));
+				player.addChatMessage(new TextComponentString("Destination outside the world!"));
 				return;
 			} else if (world.getBlockState(new BlockPos(x, y, z)).getBlock().getMaterial().blocksMovement() || world.getBlockState(new BlockPos(x, y + 1, z)).getBlock().getMaterial().blocksMovement()) {
-				player.addChatMessage(new ChatComponentText("Destination obscured!"));
+				player.addChatMessage(new TextComponentString("Destination obscured!"));
 				return;
 			}
 			this.teleportTo(item, world, x, y, z, player);
@@ -89,7 +89,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 			return;
 		} else if (cmd == 1) {//add Point
 			if (points.tagCount() >= 64) {
-				player.addChatMessage(new ChatComponentText("64 waypoints max!"));
+				player.addChatMessage(new TextComponentString("64 waypoints max!"));
 				return;
 			}
 			tag = new NBTTagCompound();
@@ -127,13 +127,13 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 			if (world.isRemote) return item;
 			Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
 	        Vec3 dir = player.getLookVec();
-	        MovingObjectPosition obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 256, dir.yCoord * 256, dir.zCoord * 256), false, true, false);
+	        RayTraceResult obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 256, dir.yCoord * 256, dir.zCoord * 256), false, true, false);
 	        if (obj == null) return item;
 	        int[] t = this.findTarget(obj, world);
 	        if (t != null) {
 	        	this.teleportTo(item, world, t[0], t[1], t[2], player);
 	        } else {
-	        	player.addChatMessage(new ChatComponentText("Destination obscured!"));
+	        	player.addChatMessage(new TextComponentString("Destination obscured!"));
 	        }
 		} else {
 			BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
@@ -141,7 +141,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 		return item;
 	}
 	
-	private int[] findTarget(MovingObjectPosition pos, World world)
+	private int[] findTarget(RayTraceResult pos, World world)
 	{
 		if (!world.getBlockState(pos.getBlockPos().up()).getBlock().getMaterial().blocksMovement() && !world.getBlockState(pos.getBlockPos().up(2)).getBlock().getMaterial().blocksMovement())
 			return new int[]{pos.getBlockPos().getX(), pos.getBlockPos().getY() + 1, pos.getBlockPos().getZ()};
@@ -167,11 +167,11 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 		int e = MathHelper.floor_double(Math.sqrt(dx * dx + dy * dy + dz * dz) * energyUse);
 		EnergyItem energy = new EnergyItem(item, this);
 		if (energy.getStorageI() < e) {
-			player.addChatMessage(new ChatComponentText("Not enough Energy: " + e + " kJ needed!"));
+			player.addChatMessage(new TextComponentString("Not enough Energy: " + e + " kJ needed!"));
 			return;
 		}
 		if (!AreaProtect.instance.isInteractingAllowed(player.getName(), world, x >> 4, z >> 4)) {
-			player.addChatMessage(new ChatComponentText("Destination protected!"));
+			player.addChatMessage(new TextComponentString("Destination protected!"));
 			return;
 		}
 		energy.addEnergyI(-e, -1);

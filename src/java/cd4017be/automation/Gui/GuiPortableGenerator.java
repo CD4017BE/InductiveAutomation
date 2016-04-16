@@ -9,9 +9,9 @@ import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.templates.GuiMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 public class GuiPortableGenerator extends GuiMachine 
 {
@@ -36,7 +36,7 @@ public class GuiPortableGenerator extends GuiMachine
     @Override
 	public void updateScreen() 
     {
-    	ItemStack item = this.container.player.getCurrentEquippedItem();
+    	ItemStack item = this.container.player.getHeldItemMainhand();
 		if (item != null && item.getTagCompound() != null) energy = item.getTagCompound().getInteger("buff") / 1000;
 		else energy = 0;
 		super.updateScreen();
@@ -61,7 +61,7 @@ public class GuiPortableGenerator extends GuiMachine
         	this.drawStringCentered(energy + " " + TooltipInfo.getEnergyUnit(), this.guiLeft + 142, this.guiTop + 20, 0x404040);
         }
         this.drawStringCentered(this.container.inventory.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
     }
 
 	@Override

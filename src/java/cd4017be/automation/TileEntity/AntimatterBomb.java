@@ -20,7 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 
 /**
  *
@@ -60,7 +60,7 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
         int x = pos.getX() >> 4;
         int z = pos.getZ() >> 4;
         int dx, dz;
-        ArrayList<IAreaConfig> list = AreaProtect.instance.loadedSS.get(this.worldObj.provider.getDimensionId());
+        ArrayList<IAreaConfig> list = AreaProtect.instance.loadedSS.get(this.worldObj.provider.getDimension());
         if (list == null) return false;
         for (IAreaConfig area : list) {
             for (int[] e : area.getProtectedChunks("#antimatterBomb")) {
@@ -78,7 +78,7 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
     }
 
     @Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
     	timer = pkt.getNbtCompound().getShort("timer");
 	}
 
@@ -87,7 +87,7 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
     {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setShort("timer", (short)timer);
-        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
+        return new SPacketUpdateTileEntity(getPos(), -1, nbt);
     }
 
     @Override

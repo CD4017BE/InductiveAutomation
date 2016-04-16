@@ -4,9 +4,9 @@
  */
 package cd4017be.automation.TileEntity;
 
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.ITextComponent;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 /**
@@ -54,11 +54,11 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setByteArray("tex", drawing);
         nbt.setByte("width", width);
-        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
+        return new SPacketUpdateTileEntity(getPos(), -1, nbt);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) 
     {
         drawing = pkt.getNbtCompound().getByteArray("tex");
         width = pkt.getNbtCompound().getByte("width");
@@ -451,8 +451,8 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
 	}
 
 	@Override
-	public IChatComponent getDisplayName() {
-		return new ChatComponentText(this.getName());
+	public ITextComponent getDisplayName() {
+		return new TextComponentString(this.getName());
 	}
     
 }
