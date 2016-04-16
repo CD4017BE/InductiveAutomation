@@ -1,5 +1,12 @@
 {
 	"variants": {
-		"normal": { "model": "automation:wireH" }
+		"normal": { "model": "automation:wireH" },
+		"core0": { "model": "automation:wireH_core" },
+		"con0n": { "model": "automation:wireH_con" },
+		"con0e": { "model": "automation:wireH_con" , "y": 90 },
+		"con0s": { "model": "automation:wireH_con" , "y": 180 },
+		"con0w": { "model": "automation:wireH_con" , "y": 270 },
+		"con0b": { "model": "automation:wireH_con" , "x": 90 },
+		"con0t": { "model": "automation:wireH_con" , "x": 270 }
 	}
 }

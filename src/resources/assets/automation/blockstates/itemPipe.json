@@ -1,7 +1,28 @@
 {
 	"variants": {
-		"type=0": { "model": "automation:itemPipeT" },
-		"type=1": { "model": "automation:itemPipeI" },
-		"type=2": { "model": "automation:itemPipeE" }
+		"type=0": { "model": "automation:itemPipe" },
+		"type=1": { "model": "automation:itemPipe" },
+		"type=2": { "model": "automation:itemPipe" },
+		"core0": { "model": "automation:itemPipeT_core"},
+		"con0n": { "model": "automation:itemPipeT_con" },
+		"con0e": { "model": "automation:itemPipeT_con" , "y": 90 },
+		"con0s": { "model": "automation:itemPipeT_con" , "y": 180 },
+		"con0w": { "model": "automation:itemPipeT_con" , "y": 270 },
+		"con0b": { "model": "automation:itemPipeT_con" , "x": 90 },
+		"con0t": { "model": "automation:itemPipeT_con" , "x": 270 },
+		"core1": { "model": "automation:itemPipeI_core"},
+		"con1n": { "model": "automation:itemPipeI_con" },
+		"con1e": { "model": "automation:itemPipeI_con" , "y": 90 },
+		"con1s": { "model": "automation:itemPipeI_con" , "y": 180 },
+		"con1w": { "model": "automation:itemPipeI_con" , "y": 270 },
+		"con1b": { "model": "automation:itemPipeI_con" , "x": 90 },
+		"con1t": { "model": "automation:itemPipeI_con" , "x": 270 },
+		"core2": { "model": "automation:itemPipeE_core"},
+		"con2n": { "model": "automation:itemPipeE_con" },
+		"con2e": { "model": "automation:itemPipeE_con" , "y": 90 },
+		"con2s": { "model": "automation:itemPipeE_con" , "y": 180 },
+		"con2w": { "model": "automation:itemPipeE_con" , "y": 270 },
+		"con2b": { "model": "automation:itemPipeE_con" , "x": 90 },
+		"con2t": { "model": "automation:itemPipeE_con" , "x": 270 }
 	}
 }
