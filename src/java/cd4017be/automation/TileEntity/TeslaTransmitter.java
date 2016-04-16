@@ -91,7 +91,7 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
     {
     	int[] p = te.getLocation();
     	double d;
-        if (p[3] == worldObj.provider.getDimensionId())
+        if (p[3] == worldObj.provider.getDimension())
         {
             int dx = pos.getX() - p[0];
             int dy = pos.getY() - p[1];
@@ -106,7 +106,7 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
     @Override
     public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
-        ItemStack item = player.getCurrentEquippedItem();
+        ItemStack item = player.getHeldItemMainhand();
         if (!interdim && item != null)
         {
             if (item.isItemEqual(BlockItemRegistry.stack("EMatrix", 1)))
@@ -198,7 +198,7 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
 	@Override
 	public int[] getLocation() 
 	{
-		return new int[]{pos.getX(), pos.getY(), pos.getZ(), worldObj.provider.getDimensionId()};
+		return new int[]{pos.getX(), pos.getY(), pos.getZ(), worldObj.provider.getDimension()};
 	}
     
 }

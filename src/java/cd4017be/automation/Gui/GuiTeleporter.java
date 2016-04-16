@@ -10,7 +10,7 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -98,17 +98,17 @@ public class GuiTeleporter extends GuiMachine
         tfZ.drawTextBox();
         name.drawTextBox();
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 4, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.teleport." + ((tileEntity.netData.ints[3] & 16) != 0 ?"copy":"move")), this.guiLeft + this.xSize * 3 / 4, this.guiTop + 4, 0xff4040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("gui.cd4017be.teleport." + ((tileEntity.netData.ints[3] & 16) != 0 ?"copy":"move")), this.guiLeft + this.xSize * 3 / 4, this.guiTop + 4, 0xff4040);
         showWarning();
         super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
     private void showWarning() {
         if (!tileEntity.isInWorldBounds()) {
-        	this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.teleport.warning"), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize, 0xff8080);
+        	this.drawStringCentered(I18n.translateToLocal("gui.cd4017be.teleport.warning"), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize, 0xff8080);
         	if (warned == 0) warned = 1;
-        	if (warned == 2) this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.teleport.warning2"), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize + 12, 0xffc040);
+        	if (warned == 2) this.drawStringCentered(I18n.translateToLocal("gui.cd4017be.teleport.warning2"), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize + 12, 0xffc040);
         } else warned = 0;
     }
 

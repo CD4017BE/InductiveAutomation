@@ -6,8 +6,8 @@
 
 package cd4017be.automation.TileEntity;
 
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -202,8 +202,8 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
 	public void closeInventory(EntityPlayer player) {}
 
 	@Override
-	public IChatComponent getDisplayName() {
-		return new ChatComponentText(this.getName());
+	public ITextComponent getDisplayName() {
+		return new TextComponentString(this.getName());
 	}
 
 	@Override

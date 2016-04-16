@@ -11,7 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
 /**
@@ -63,12 +63,12 @@ public class ItemInvEnergy extends ItemEnergyCell
         if (item.getTagCompound() == null || !item.getTagCompound().getBoolean("ON"))
         {
             item.getTagCompound().setBoolean("ON", true);
-            player.addChatMessage(new ChatComponentText("Inventory power supply enabled"));
+            player.addChatMessage(new TextComponentString("Inventory power supply enabled"));
         } else
         if (item.getTagCompound().getBoolean("ON"))
         {
             item.getTagCompound().setBoolean("ON", false);
-            player.addChatMessage(new ChatComponentText("Inventory power supply disabled"));
+            player.addChatMessage(new TextComponentString("Inventory power supply disabled"));
         }
         return item;
     }

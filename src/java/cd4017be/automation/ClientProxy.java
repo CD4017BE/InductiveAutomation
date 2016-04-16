@@ -27,7 +27,7 @@ import cd4017be.lib.render.SpecialModelLoader;
 import cd4017be.lib.render.SelectionRenderer;
 import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.util.EnumWorldBlockLayer;
+import net.minecraft.util.BlockRenderLayer;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -263,14 +263,14 @@ public class ClientProxy extends CommonProxy
         TileBlockRegistry.registerGui(vertShemGen, GuiVertexShematicGen.class);
         TileBlockRegistry.registerGui(heatRadiator, GuiHeatRadiator.class);
         //set block transparencies
-        Objects.itemPipe.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
-        Objects.liquidPipe.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
-        Objects.warpPipe.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
-        Objects.tank.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
-        Objects.hugeTank.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
-        Objects.quantumTank.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
-        Objects.pool.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
-        Objects.wormhole.setBlockLayer(EnumWorldBlockLayer.TRANSLUCENT);
+        Objects.itemPipe.setBlockLayer(BlockRenderLayer.CUTOUT);
+        Objects.liquidPipe.setBlockLayer(BlockRenderLayer.CUTOUT);
+        Objects.warpPipe.setBlockLayer(BlockRenderLayer.CUTOUT);
+        Objects.tank.setBlockLayer(BlockRenderLayer.CUTOUT);
+        Objects.hugeTank.setBlockLayer(BlockRenderLayer.CUTOUT);
+        Objects.quantumTank.setBlockLayer(BlockRenderLayer.CUTOUT);
+        Objects.pool.setBlockLayer(BlockRenderLayer.CUTOUT);
+        Objects.wormhole.setBlockLayer(BlockRenderLayer.TRANSLUCENT);
         //fluids
         SpecialModelLoader.setMod("automation");
         SpecialModelLoader.registerFluid(L_steam);

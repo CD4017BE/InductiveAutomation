@@ -15,8 +15,8 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.I18n;
 import net.minecraft.world.World;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
@@ -71,7 +71,7 @@ public class ItemPortableMagnet extends ItemEnergyCell
 
 	@Override
 	public void addInformation(ItemStack item, EntityPlayer player, List list, boolean f) {
-		if (item.hasTagCompound()) list.add(StatCollector.translateToLocal("item.cd4017be.portableMagnet.auto" + (item.getTagCompound().getBoolean("auto") ? "1" : "0")));
+		if (item.hasTagCompound()) list.add(I18n.translateToLocal("item.cd4017be.portableMagnet.auto" + (item.getTagCompound().getBoolean("auto") ? "1" : "0")));
 		super.addInformation(item, player, list, f);
 	}
     

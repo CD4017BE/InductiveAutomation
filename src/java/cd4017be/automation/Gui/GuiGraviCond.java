@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 import cd4017be.automation.TileEntity.GraviCond;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TooltipInfo;
@@ -55,7 +55,7 @@ public class GuiGraviCond extends GuiMachine
         this.drawStringCentered(String.format("%.0f %s", tileEntity.netData.floats[0] / 1000F, TooltipInfo.getEnergyUnit()), this.guiLeft + 61, this.guiTop + 18, 0x404040);
         this.drawStringCentered(tileEntity.getMatterScaled(100) + " %", this.guiLeft + 61, this.guiTop + 36, 0x404040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         super.drawGuiContainerBackgroundLayer(var1, x, y);
     }
 

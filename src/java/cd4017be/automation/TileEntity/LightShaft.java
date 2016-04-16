@@ -4,7 +4,7 @@
  */
 package cd4017be.automation.TileEntity;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ITickable;
 import cd4017be.automation.Block.BlockSkyLight;
 import cd4017be.lib.ModTileEntity;

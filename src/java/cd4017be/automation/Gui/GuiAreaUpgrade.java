@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -65,8 +65,8 @@ public class GuiAreaUpgrade extends GuiMachine
         this.drawLocString(this.guiLeft + 26, this.guiTop + 16, 8, 0x404040, "areaCfg.size_", sx, sy, sz, mx, my, mz);
         this.drawLocString(this.guiLeft + 26, this.guiTop + 34, 8, 0x404040, "areaCfg.dist_", distance, maxDist == Integer.MAX_VALUE ? "inf" : "" + maxDist);
         this.drawLocString(this.guiLeft + 26, this.guiTop + 52, 8, 0x404040, "areaCfg.Umax_", Umax);
-        this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.selectionTool.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("gui.cd4017be.selectionTool.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
     }
     
     @Override

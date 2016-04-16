@@ -206,7 +206,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 	 * @return 
 	 */
 	@Override
-	public ItemStack slotClick(TileContainer container, int s, int mb, int fk, EntityPlayer player) 
+	public ItemStack func_184996_a(TileContainer container, int s, int mb, int fk, EntityPlayer player) 
 	{
 		try {
 			clientInvEdit = true;

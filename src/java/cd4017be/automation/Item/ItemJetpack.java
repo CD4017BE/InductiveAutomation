@@ -20,7 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 
@@ -215,7 +215,7 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
 	@Override
 	public String getItemStackDisplayName(ItemStack item) 
 	{
-		return StatCollector.translateToLocal(this.getUnlocalizedName(item) + ".name");
+		return I18n.translateToLocal(this.getUnlocalizedName(item) + ".name");
 	}
     
 }

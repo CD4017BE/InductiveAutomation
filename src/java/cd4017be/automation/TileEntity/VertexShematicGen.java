@@ -13,9 +13,9 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
@@ -258,7 +258,7 @@ public class VertexShematicGen extends AutomatedTile
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) 
 	{
 		this.load(pkt.getNbtCompound());
 		this.name = pkt.getNbtCompound().getString("name");
@@ -272,7 +272,7 @@ public class VertexShematicGen extends AutomatedTile
 		this.save(nbt);
 		nbt.setString("name", name);
 		nbt.setShort("sel", sel);
-		return new S35PacketUpdateTileEntity(pos, -1, nbt);
+		return new SPacketUpdateTileEntity(pos, -1, nbt);
 	}
 
 	@Override

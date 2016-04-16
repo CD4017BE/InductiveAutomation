@@ -3,7 +3,7 @@ package cd4017be.automation.Gui;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 import cd4017be.automation.Item.ItemAntimatterLaser;
 import cd4017be.automation.Item.ItemAntimatterLaser.Enchantments;
 import cd4017be.lib.TooltipInfo;
@@ -41,7 +41,7 @@ public class GuiAMLEnchant extends GuiMachine
 	public void updateScreen() 
 	{
 		super.updateScreen();
-		Enchantments ench = new Enchantments(cont.player.getCurrentEquippedItem());
+		Enchantments ench = new Enchantments(cont.player.getHeldItemMainhand());
 		AMuse = ench.amMult * 8;
 		Euse = ench.Euse;
 	}
@@ -54,8 +54,8 @@ public class GuiAMLEnchant extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         this.fontRendererObj.drawString("Euse = " + Euse + " " + TooltipInfo.getEnergyUnit(), this.guiLeft + 62, this.guiTop + 17, 0x404040);
         this.fontRendererObj.drawString("AMuse = " + (int)(AMuse * 100F) + " %", this.guiLeft + 62, this.guiTop + 26, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.amLaser.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("gui.cd4017be.amLaser.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
 	}
 
 }

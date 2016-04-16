@@ -13,8 +13,8 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 public class ContainerFilteredSubInventory extends Container 
@@ -115,8 +115,8 @@ public class ContainerFilteredSubInventory extends Container
 		}
 
 		@Override
-		public IChatComponent getDisplayName() {
-			return new ChatComponentText(this.getName());
+		public ITextComponent getDisplayName() {
+			return new TextComponentString(this.getName());
 		}
 
 		@Override
@@ -144,7 +144,7 @@ public class ContainerFilteredSubInventory extends Container
 	public ContainerFilteredSubInventory(EntityPlayer player) 
 	{
 		this.player = player;
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItemMainhand();
 		this.filters = new FilterInventory();
 		this.filters.load(item);
 		this.inventory = InventoryItemHandler.getInventory(item);
@@ -177,7 +177,7 @@ public class ContainerFilteredSubInventory extends Container
     @Override
     public boolean canInteractWith(EntityPlayer player) 
     {
-        return inventory != null && inventory.isUseableByPlayer(player) && InventoryItemHandler.isInventoryItem(player.getCurrentEquippedItem());
+        return inventory != null && inventory.isUseableByPlayer(player) && InventoryItemHandler.isInventoryItem(player.getHeldItemMainhand());
     }
 
     @Override
@@ -213,11 +213,11 @@ public class ContainerFilteredSubInventory extends Container
 	}
 
 	@Override
-    public ItemStack slotClick(int s, int b, int m, EntityPlayer par4EntityPlayer)
+    public ItemStack func_184996_a(int s, int b, int m, EntityPlayer par4EntityPlayer)
     {   
 		Slot slot;
 		if (s >= 0 && s < this.inventorySlots.size() && (slot = (Slot)this.inventorySlots.get(s)) != null && slot.inventory instanceof InventoryPlayer && slot.getSlotIndex() == par4EntityPlayer.inventory.currentItem) return null;
-		else return super.slotClick(s, b, m, par4EntityPlayer);
+		else return super.func_184996_a(s, b, m, par4EntityPlayer);
     }
     
     @Override //prevents client crash IndexOutOfBoundsException sometimes caused by incorrect netdata
@@ -235,7 +235,7 @@ public class ContainerFilteredSubInventory extends Container
 	@Override
 	public void onContainerClosed(EntityPlayer player) 
 	{
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItemMainhand();
 		if (item != null) this.save(item);
 		super.onContainerClosed(player);
 	}

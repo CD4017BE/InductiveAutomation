@@ -56,7 +56,7 @@ public class FluidComp extends ConComp implements IObjLink
 	
 	@Override
 	public boolean onClicked(EntityPlayer player, long uid) {
-		ItemStack item = player == null ? null : player.getCurrentEquippedItem();
+		ItemStack item = player == null ? null : player.getHeldItemMainhand();
 		if (item == null && filter != null) {
 			item = new ItemStack(Objects.fluidUpgrade);
 			item.setTagCompound(PipeUpgradeFluid.save(filter));

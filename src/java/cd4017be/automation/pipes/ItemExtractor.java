@@ -54,7 +54,7 @@ public class ItemExtractor extends ItemComp implements ITickable {
 	public boolean onClicked(EntityPlayer player, long uid) {
 		if (player == null) pipe.pipe.dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Extraction));
 		if (super.onClicked(player, uid) || player == null) return true;
-		if (player.isSneaking() && player.getCurrentEquippedItem() == null) {
+		if (player.isSneaking() && player.getHeldItemMainhand() == null) {
 			pipe.pipe.dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Extraction));
 			pipe.con[side] = 0;
 			pipe.network.remConnector(pipe, side);

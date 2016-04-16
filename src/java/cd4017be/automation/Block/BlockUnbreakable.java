@@ -13,7 +13,7 @@ import cd4017be.automation.Item.ItemBlockUnbreakable;
 import cd4017be.lib.DefaultBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
@@ -21,7 +21,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityWitherSkull;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
@@ -55,8 +55,8 @@ public class BlockUnbreakable extends DefaultBlock
 	}
     
     @Override
-	protected BlockState createBlockState() {
-		return new BlockState(this, prop);
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, prop);
 	}
 
 	@Override

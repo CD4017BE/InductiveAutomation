@@ -6,9 +6,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import cd4017be.api.automation.IFluidPipeCon;
 import cd4017be.api.automation.IItemPipeCon;
@@ -43,7 +43,7 @@ public class WarpPipe extends AutomatedTile implements IPipe, IItemPipeCon, IFlu
 	public boolean onActivated(EntityPlayer player, EnumFacing dir, float X, float Y, float Z) 
 	{
 		if (worldObj.isRemote) return true;
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItemMainhand();
 		if (cover != null) {
 			if (player.isSneaking() && item == null) {
 				this.dropStack(cover.item);
@@ -115,7 +115,7 @@ public class WarpPipe extends AutomatedTile implements IPipe, IItemPipeCon, IFlu
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) 
 	{
 		cover = Cover.read(pkt.getNbtCompound(), "cover");
 		byte[] data = pkt.getNbtCompound().getByteArray("con");
@@ -131,7 +131,7 @@ public class WarpPipe extends AutomatedTile implements IPipe, IItemPipeCon, IFlu
 		byte[] data = new byte[pipe.con.length];
 		System.arraycopy(pipe.con, 0, data, 0, data.length);
 		nbt.setByteArray("con", data);
-		return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
+		return new SPacketUpdateTileEntity(getPos(), -1, nbt);
 	}
 
 	@Override
