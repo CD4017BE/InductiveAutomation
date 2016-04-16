@@ -13,7 +13,7 @@ public class ContainerPlacement extends ItemContainer
 	{
 		super(player);
         this.addPlayerInventory(8, 68);
-        inventory = new InventoryPlacement(player.getCurrentEquippedItem());
+        inventory = new InventoryPlacement(player.getHeldItemMainhand());
         for (int i = 0; i < 8; i++) {
             this.addSlotToContainer(new SlotHolo(inventory, i, 8 + i * 18, 16, false, false));
         }
@@ -22,7 +22,7 @@ public class ContainerPlacement extends ItemContainer
 	@Override
     public void onContainerClosed(EntityPlayer player) 
     {
-        this.inventory.onClose(player.getCurrentEquippedItem());
+        this.inventory.onClose(player.getHeldItemMainhand());
         super.onContainerClosed(player);
     }
 

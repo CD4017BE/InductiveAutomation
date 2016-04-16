@@ -9,7 +9,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 import org.lwjgl.opengl.GL11;
 
@@ -57,7 +57,7 @@ public class GuiPump extends GuiMachine
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/pump.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         if ((tileEntity.netData.ints[0] & 0x100) != 0) this.drawTexturedModalRect(this.guiLeft + 183, this.guiTop + 73, 226, 0, 18, 18);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + 88, this.guiTop + 4, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + 88, this.guiTop + 4, 0x404040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + 201, this.guiTop + 4, 0x404040);
         int n = tileEntity.netData.ints[0] & 0xff;
         this.drawStringCentered(n == 0 ? "off" : "" + n, this.guiLeft + 210, this.guiTop + 78, 0x404040);

@@ -9,7 +9,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 import org.lwjgl.opengl.GL11;
 
@@ -59,7 +59,7 @@ public class GuiLavaCooler extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft + 80, this.guiTop + 16, 176, n, 16, 52);
         this.drawTexturedModalRect(this.guiLeft + ((tileEntity.netData.ints[0] & 0x10) == 0 ? 8 : 26), this.guiTop + ((tileEntity.netData.ints[0] & 0x20) == 0 ? 16 : 34), 176, 104, 16, 16);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     

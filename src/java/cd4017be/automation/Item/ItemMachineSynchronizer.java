@@ -6,8 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import cd4017be.api.automation.IOperatingArea;
@@ -49,7 +49,7 @@ public class ItemMachineSynchronizer extends DefaultItem
         	stack.getTagCompound().setInteger("ly", pos.getY());
         	stack.getTagCompound().setInteger("lz", pos.getZ());
         	player.setCurrentItemOrArmor(0, stack);
-        	player.addChatMessage(new ChatComponentText("Linked to machine"));
+        	player.addChatMessage(new TextComponentString("Linked to machine"));
         	return true;
         }
         return false;
@@ -59,7 +59,7 @@ public class ItemMachineSynchronizer extends DefaultItem
     public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
     {
         if (!player.isSneaking() || item.getItemDamage() == 0) return item;
-        if (!world.isRemote) player.addChatMessage(new ChatComponentText("Link cleared"));
+        if (!world.isRemote) player.addChatMessage(new TextComponentString("Link cleared"));
         return new ItemStack(this, item.stackSize, 0);
     }
     

@@ -24,10 +24,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.WorldServer;
 
@@ -139,9 +139,9 @@ public class SecuritySys extends AutomatedTile implements IEnergy
     public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         if (!prot.isPlayerOwner(player.getName())){
-            if (!worldObj.isRemote) player.addChatMessage(new ChatComponentText("You are not given the necessary rights to use this!"));
+            if (!worldObj.isRemote) player.addChatMessage(new TextComponentString("You are not given the necessary rights to use this!"));
             return true;
-        } else if (player.isSneaking() && player.getCurrentEquippedItem() == null) {
+        } else if (player.isSneaking() && player.getHeldItemMainhand() == null) {
             if (!itemStorage.isEmpty()) {
             	//TODO drop confiscated items;
             }
@@ -156,11 +156,11 @@ public class SecuritySys extends AutomatedTile implements IEnergy
     {
         NBTTagCompound nbt = new NBTTagCompound();
         prot.writeToNbt(nbt);
-        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
+        return new SPacketUpdateTileEntity(getPos(), -1, nbt);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) 
     {
         NBTTagCompound nbt = pkt.getNbtCompound();
         prot.readFromNbt(nbt);
@@ -225,7 +225,7 @@ public class SecuritySys extends AutomatedTile implements IEnergy
         if (AreaProtect.chunkloadPerm < 0 || (!admin && AreaProtect.chunkloadPerm == 0)) perm |= 2;
         if (perm == 0) return;
         if (perm == 3) worldObj.setBlockToAir(getPos());
-        if (entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new ChatComponentText(perm == 3 ? "You are not allowed to use this device on this server !" : perm == 2 ? "Chunk loading functionality of this device disabled for you !" : "Chunk protection functionality of this device disabled for you !"));
+        if (entity instanceof EntityPlayer) ((EntityPlayer)entity).addChatMessage(new TextComponentString(perm == 3 ? "You are not allowed to use this device on this server !" : perm == 2 ? "Chunk loading functionality of this device disabled for you !" : "Chunk protection functionality of this device disabled for you !"));
     }
     
     @Override

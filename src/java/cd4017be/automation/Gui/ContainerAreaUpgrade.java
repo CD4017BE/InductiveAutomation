@@ -3,7 +3,7 @@ package cd4017be.automation.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.automation.Objects;
 import cd4017be.lib.BlockItemRegistry;
@@ -37,8 +37,8 @@ public class ContainerAreaUpgrade extends ItemContainer
 	}
 
 	@Override
-	public ItemStack slotClick(int s, int b, int m, EntityPlayer par4EntityPlayer) {
-		ItemStack item = super.slotClick(s, b, m, par4EntityPlayer);
+	public ItemStack func_184996_a(int s, int b, int m, EntityPlayer par4EntityPlayer) {
+		ItemStack item = super.func_184996_a(s, b, m, par4EntityPlayer);
 		if (s >= 36) this.machine.onUpgradeChange(s - 36);
 		return item;
 	}

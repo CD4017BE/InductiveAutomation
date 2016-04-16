@@ -64,7 +64,7 @@ public class BasicWarpPipe implements IComponent<BasicWarpPipe, WarpPipePhysics>
 	@Override
 	public List<Obj2<Long, Byte>> getConnections() {
 		ArrayList<Obj2<Long, Byte>> list = new ArrayList<Obj2<Long, Byte>>();
-		int dim = pipe.getWorld().provider.getDimensionId();
+		int dim = pipe.getWorld().provider.getDimension();
 		for (int i = 0; i < 6; i++)
 			if (con[i] == 0)
 				list.add(new Obj2<Long, Byte>(SharedNetwork.ExtPosUID(pipe.getPos().offset(EnumFacing.VALUES[i]), dim), (byte)(i^1)));

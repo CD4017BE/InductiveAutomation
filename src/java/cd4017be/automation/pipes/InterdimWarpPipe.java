@@ -3,7 +3,7 @@ package cd4017be.automation.pipes;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import cd4017be.automation.TileEntity.InterdimHole;
 import cd4017be.lib.templates.SharedNetwork;

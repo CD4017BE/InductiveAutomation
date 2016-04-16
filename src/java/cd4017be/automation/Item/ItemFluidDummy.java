@@ -17,9 +17,9 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.MovingObjectPosition.MovingObjectType;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.RayTraceResult;
+import net.minecraft.util.RayTraceResult.MovingObjectType;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -68,7 +68,7 @@ public class ItemFluidDummy extends DefaultItem implements IFluidContainerItem
     @Override
     public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player)
     {
-        MovingObjectPosition movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, false);
+        RayTraceResult movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, false);
 
         if (movingobjectposition == null) return item;
         else if (movingobjectposition.typeOfHit == MovingObjectType.BLOCK)

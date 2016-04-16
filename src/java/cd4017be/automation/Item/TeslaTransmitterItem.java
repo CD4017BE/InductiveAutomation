@@ -41,7 +41,7 @@ public class TeslaTransmitterItem implements ITeslaTransmitter
 		int[] p = t.getLocation();
     	int[] p1 = this.getLocation();
 		double d;
-        if (p[3] == player.worldObj.provider.getDimensionId()) {
+        if (p[3] == player.worldObj.provider.getDimension()) {
             int dx = p1[0] - p[0];
             int dy = p1[1] - p[1];
             int dz = p1[2] - p[2];

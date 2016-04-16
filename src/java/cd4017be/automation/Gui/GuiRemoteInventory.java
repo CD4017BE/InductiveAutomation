@@ -7,9 +7,9 @@ import org.lwjgl.opengl.GL11;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 public class GuiRemoteInventory extends GuiMachine 
 {
@@ -57,7 +57,7 @@ public class GuiRemoteInventory extends GuiMachine
         if (this.container.isFilterOn(0)) this.drawTexturedModalRect(this.guiLeft + 11, this.guiTop + 67 + container.ofsY, 230, 0, 10, 18);
         if (this.container.isFilterOn(1)) this.drawTexturedModalRect(this.guiLeft + 29, this.guiTop + 67 + container.ofsY, 240, 0, 10, 18);
         this.drawStringCentered(this.container.inventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 54 + container.ofsY, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 54 + container.ofsY, 0x404040);
     }
 
 	@Override

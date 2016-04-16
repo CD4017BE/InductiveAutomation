@@ -50,7 +50,7 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 	@Override
 	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItemMainhand();
 		if (item == null || item.getItem() != this) return;
 		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 		byte cmd = dis.readByte();

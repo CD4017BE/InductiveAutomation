@@ -20,7 +20,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.ServerConfigurationManager;
-import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeChunkManager;
@@ -95,7 +95,7 @@ public class AreaConfig implements IAreaConfig
             for (Object obj : manager.playerEntityList) {
                 EntityPlayerMP player = (EntityPlayerMP)obj;
                 ItemStack[] stor = tile.itemStorage.get(player.getName());
-                if (player.worldObj.provider.getDimensionId() == this.tile.getWorld().provider.getDimensionId() && this.getProtectLvlFor(player.getName(), player.chunkCoordX, player.chunkCoordZ) == 3) continue;
+                if (player.worldObj.provider.getDimension() == this.tile.getWorld().provider.getDimension() && this.getProtectLvlFor(player.getName(), player.chunkCoordX, player.chunkCoordZ) == 3) continue;
                 if (stor != null) {
                     for (ItemStack item : stor) {
                         if (item != null && !player.inventory.addItemStackToInventory(item)) {
@@ -247,7 +247,7 @@ public class AreaConfig implements IAreaConfig
     
     public boolean checkOccupied(int x, int z)
     {
-        ArrayList<IAreaConfig> list = AreaProtect.instance.loadedSS.get(tile.getWorld().provider.getDimensionId());
+        ArrayList<IAreaConfig> list = AreaProtect.instance.loadedSS.get(tile.getWorld().provider.getDimension());
     	if (list == null) return true;
         for (IAreaConfig cfg : list)
         	if (cfg != this && cfg.isChunkProtected(x, z)) return false;
@@ -325,7 +325,7 @@ public class AreaConfig implements IAreaConfig
 	
 	@Override
 	public int[] getPosition() {
-		return new int[]{tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.getWorld().provider.getDimensionId()};
+		return new int[]{tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ(), tile.getWorld().provider.getDimension()};
 	}
 
 	public long loadedChunks;

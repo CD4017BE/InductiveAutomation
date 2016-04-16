@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 import cd4017be.automation.TileEntity.ItemBuffer;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.TileContainer;
@@ -58,7 +58,7 @@ private final ItemBuffer tileEntity;
         this.drawStringCentered("" + tileEntity.netData.ints[1], guiLeft + 97, guiTop + 56, 0x000000);
         this.drawStringCentered("" + tileEntity.netData.ints[2], guiLeft + 142, guiTop + 56, 0x000000);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         super.drawGuiContainerBackgroundLayer(f, x, y);
     }
     

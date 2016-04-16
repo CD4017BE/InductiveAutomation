@@ -19,7 +19,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -59,7 +59,7 @@ public class Wire extends AutomatedTile implements IEnergy, IPipe
     public boolean onActivated(EntityPlayer player, EnumFacing dir, float X, float Y, float Z) 
     {
 		int s = dir.getIndex();
-        ItemStack item = player.getCurrentEquippedItem();
+        ItemStack item = player.getHeldItemMainhand();
         if (player.isSneaking() && item == null && cover != null) {
             if (worldObj.isRemote) return true;
             player.setCurrentItemOrArmor(0, cover.item);
@@ -123,11 +123,11 @@ public class Wire extends AutomatedTile implements IEnergy, IPipe
         NBTTagCompound nbt = new NBTTagCompound();
         if (cover != null) cover.write(nbt, "cover");
         nbt.setByte("con", energy.con);
-        return new S35PacketUpdateTileEntity(pos, -1, nbt);
+        return new SPacketUpdateTileEntity(pos, -1, nbt);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) 
     {
         cover = Cover.read(pkt.getNbtCompound(), "cover");
         energy.con = pkt.getNbtCompound().getByte("con");

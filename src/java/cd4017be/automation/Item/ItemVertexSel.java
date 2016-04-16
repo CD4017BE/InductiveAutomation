@@ -6,8 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 import cd4017be.automation.Automation;
@@ -38,7 +38,7 @@ public class ItemVertexSel extends DefaultItem {
             	item.getTagCompound().setInteger("my", pos.getY());
             	item.getTagCompound().setInteger("mz", pos.getZ());
             	item.getTagCompound().setShort("pol", ((VertexShematicGen)te).sel);
-            	player.addChatMessage(new ChatComponentText("Linked"));
+            	player.addChatMessage(new TextComponentString("Linked"));
             }
             return true;
         }

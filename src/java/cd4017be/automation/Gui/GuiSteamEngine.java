@@ -6,7 +6,7 @@ package cd4017be.automation.Gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 import org.lwjgl.opengl.GL11;
 
@@ -52,7 +52,7 @@ public class GuiSteamEngine extends GuiMachine
         int n = tileEntity.getPowerScaled(52);
         this.drawTexturedModalRect(this.guiLeft + 57, this.guiTop + 68 - n, 176, 52 - n, 8, n);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawLocString(this.guiLeft + 120, this.guiTop + 24, 12, 0xc06060, "steamEng.power", tileEntity.getEnergyOut(), (int)tileEntity.getPower());
         super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
