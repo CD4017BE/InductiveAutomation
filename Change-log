@@ -23,6 +23,7 @@ add other mod's energy types
 4.1.0 Changes:
 - combined fluid & item warp pipes
 - interdimensional wormhole now also connects warp pipes
+- improved pipe rendering performance
 
 4.0.3 Changes: <-
 - improved functionality of Detector (it now emits analog redstone signals)
