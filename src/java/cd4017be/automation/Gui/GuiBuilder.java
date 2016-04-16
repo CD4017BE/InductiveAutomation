@@ -9,7 +9,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 import org.lwjgl.opengl.GL11;
 
@@ -67,7 +67,7 @@ public class GuiBuilder extends GuiMachine
         this.drawStringCentered("< Frame", this.guiLeft + 142, this.guiTop + 20, 0x404040);
         this.drawStringCentered("< Walls", this.guiLeft + 142, this.guiTop + 38, 0x404040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 6, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 145, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 145, 0x404040);
         super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 

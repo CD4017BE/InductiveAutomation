@@ -66,14 +66,14 @@ public class ContainerPortableCrafting extends ItemContainer
 	public void onCraftMatrixChanged(IInventory inv) 
 	{
 		this.craftingOut.setInventorySlotContents(0, CraftingManager.getInstance().findMatchingRecipe(this.craftingIn, player.worldObj));
-		this.save(player.getCurrentEquippedItem());
+		this.save(player.getHeldItemMainhand());
 		super.onCraftMatrixChanged(inv);
 	}
 	
 	@Override
 	public void onContainerClosed(EntityPlayer player) 
 	{
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItemMainhand();
 		if (item != null) this.save(item);
 		super.onContainerClosed(player);
 	}
@@ -85,19 +85,19 @@ public class ContainerPortableCrafting extends ItemContainer
 	
 	public boolean isActive()
 	{
-		ItemStack item = this.player.getCurrentEquippedItem();
+		ItemStack item = this.player.getHeldItemMainhand();
 		return item != null && item.getTagCompound() != null && item.getTagCompound().getBoolean("active");
 	}
 	
 	public boolean isAuto()
 	{
-		ItemStack item = this.player.getCurrentEquippedItem();
+		ItemStack item = this.player.getHeldItemMainhand();
 		return item != null && item.getTagCompound() != null && item.getTagCompound().getBoolean("auto");
 	}
 	
 	public int getAmount()
 	{
-		ItemStack item = this.player.getCurrentEquippedItem();
+		ItemStack item = this.player.getHeldItemMainhand();
 		if (item != null && item.getTagCompound() != null) return item.getTagCompound().getByte("amount");
 		else return 0;
 	}

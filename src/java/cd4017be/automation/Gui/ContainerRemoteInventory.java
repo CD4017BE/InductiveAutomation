@@ -16,8 +16,8 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.world.World;
 
 public class ContainerRemoteInventory extends ItemContainer 
@@ -94,8 +94,8 @@ public class ContainerRemoteInventory extends ItemContainer
 		}
 		
 		@Override
-		public IChatComponent getDisplayName() {
-			return new ChatComponentText(this.getName());
+		public ITextComponent getDisplayName() {
+			return new TextComponentString(this.getName());
 		}
 
 		@Override
@@ -184,7 +184,7 @@ public class ContainerRemoteInventory extends ItemContainer
 	@Override
 	public void onContainerClosed(EntityPlayer p_75134_1_) 
 	{
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItemMainhand();
 		if (item != null) filters.save(item);
 		super.onContainerClosed(p_75134_1_);
 	}
@@ -204,9 +204,9 @@ public class ContainerRemoteInventory extends ItemContainer
 	}
 
 	@Override
-	public ItemStack slotClick(int s, int b, int m, EntityPlayer player) 
+	public ItemStack func_184996_a(int s, int b, int m, EntityPlayer player) 
 	{
-		ItemStack ret = super.slotClick(s, b, m, player);
+		ItemStack ret = super.func_184996_a(s, b, m, player);
 		if (!player.worldObj.isRemote) {
 			if (s >= 0 && s < size) {
 				ItemStack item0 = this.getSlot(s).getStack();

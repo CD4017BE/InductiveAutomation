@@ -15,8 +15,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -100,11 +100,11 @@ public class ItemVoltMeter extends DefaultItem
             item.getTagCompound().setFloat("Ucap", (float)energy.Ucap);
             item.getTagCompound().setInteger("Umax", energy.Umax);
             item.getTagCompound().setByte("ls", (byte)s.getIndex());
-            player.addChatMessage(new ChatComponentText("Energy linked"));
+            player.addChatMessage(new TextComponentString("Energy linked"));
         } else
         {
             item.getTagCompound().setInteger("ly", -1);
-            player.addChatMessage(new ChatComponentText("Unlinked"));
+            player.addChatMessage(new TextComponentString("Unlinked"));
         }
         return true;
     }

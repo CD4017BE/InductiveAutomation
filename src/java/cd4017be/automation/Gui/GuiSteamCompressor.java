@@ -6,7 +6,7 @@ package cd4017be.automation.Gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 import org.lwjgl.opengl.GL11;
 
@@ -54,7 +54,7 @@ public class GuiSteamCompressor extends GuiMachine
         n = this.tileEntity.getProgressScaled(32);
         this.drawTexturedModalRect(this.guiLeft + 108, this.guiTop + 37, 184, 0, n, 10);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 

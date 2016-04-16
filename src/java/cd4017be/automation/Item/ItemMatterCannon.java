@@ -28,10 +28,10 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.RayTraceResult;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
@@ -98,7 +98,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     {
         Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
         Vec3 dir = player.getLookVec();
-        MovingObjectPosition obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 128, dir.yCoord * 128, dir.zCoord * 128), false);
+        RayTraceResult obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 128, dir.yCoord * 128, dir.zCoord * 128), false);
         if (obj != null) this.onItemUse(item, player, world, obj.getBlockPos(), obj.sideHit, (float)obj.hitVec.xCoord, (float)obj.hitVec.yCoord, (float)obj.hitVec.zCoord);
         return item;
     }
@@ -132,13 +132,13 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     	if (mode < 0) return true;
     	if (mode == 0) {
     		if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() >> 4, pos.getZ() >> 4)) {
-                player.addChatMessage(new ChatComponentText("Block is Protected"));
+                player.addChatMessage(new TextComponentString("Block is Protected"));
                 return true;
             }
     		this.placeItem(item, player, world, pos, s, X, Y, Z);
     	} else if (mode == 1) {
     		if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - 15, pos.getX() + 16, pos.getZ() - 15, pos.getZ() + 16)) {
-                player.addChatMessage(new ChatComponentText("Block is Protected"));
+                player.addChatMessage(new TextComponentString("Block is Protected"));
                 return true;
             }
     		ArrayList<Position> curList = new ArrayList<Position>();
@@ -155,7 +155,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     		}
     	} else if (mode == 2) {
     		if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
-                player.addChatMessage(new ChatComponentText("Block is Protected"));
+                player.addChatMessage(new TextComponentString("Block is Protected"));
                 return true;
             }
     		byte ax = (byte)(s.getIndex() / 2);
@@ -169,7 +169,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
         		}
     	} else if (mode == 3) {
     		if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
-                player.addChatMessage(new ChatComponentText("Block is Protected"));
+                player.addChatMessage(new TextComponentString("Block is Protected"));
                 return true;
             }
     		IBlockState state = world.getBlockState(pos);
@@ -190,7 +190,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     {
     	EnergyItem energy = new EnergyItem(item, this);
     	if (energy.getStorageI() < EnergyUsage){
-            player.addChatMessage(new ChatComponentText("Out of Energy"));
+            player.addChatMessage(new TextComponentString("Out of Energy"));
             return false;
         }
         IBlockState state = world.getBlockState(pos);
@@ -204,7 +204,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
         if (state.getBlock().onBlockActivated(world, pos, state, player, s, X, Y, Z) || (stack != null && stack.getItem() != null && stack.getItem().onItemUse(stack, player, world, pos, s, X, Y, Z))) {
             energy.addEnergy(-EnergyUsage, -1);
         }
-        stack = player.getCurrentEquippedItem();
+        stack = player.getHeldItemMainhand();
         if (stack != null) {
             ItemStack[] remain = MatterOrbItemHandler.addItemStacks(item, stack);
             if (remain != null && remain.length == 1) {
@@ -235,7 +235,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
 	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
 		byte cmd = dis.readByte();
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItemMainhand();
         int n = MatterOrbItemHandler.getUsedTypes(item);
 		if (cmd == 1 && n > 0) {
 			item.getTagCompound().setShort("sel", (short)((item.getTagCompound().getShort("sel") + 1) % n));

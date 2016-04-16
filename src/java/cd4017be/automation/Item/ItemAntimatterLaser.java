@@ -36,12 +36,12 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.RayTraceResult;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
@@ -105,7 +105,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         Vec3 pos1 = pos.addVector(dir.xCoord * 128, dir.yCoord * 128, dir.zCoord * 128);
         double x0 = pos.xCoord, y0 = pos.yCoord, z0 = pos.zCoord, 
         		x1 = pos1.xCoord, y1 = pos1.yCoord, z1 = pos1.zCoord;
-        MovingObjectPosition obj = mode == 6 || player.isSneaking() ? null : world.rayTraceBlocks(pos, pos1, false);
+        RayTraceResult obj = mode == 6 || player.isSneaking() ? null : world.rayTraceBlocks(pos, pos1, false);
         pos = new Vec3(x0, y0, z0);
         pos1 = new Vec3(x1, y1, z1);
         if (obj != null) {
@@ -117,15 +117,15 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         if (y1 < y0) {double a = y0; y0 = y1; y1 = a;}
         if (z1 < z0) {double a = z0; z0 = z1; z1 = a;}
         List<Entity> list = world.getEntitiesWithinAABBExcludingEntity(player, new AxisAlignedBB(x0, y0, z0, x1, y1, z1));
-        MovingObjectPosition obj1;
+        RayTraceResult obj1;
         for (Entity e : list) {
         	obj1 = e.getEntityBoundingBox().calculateIntercept(pos, pos1);
         	if (obj1 != null && (obj == null || obj1.hitVec.squareDistanceTo(pos) < obj.hitVec.squareDistanceTo(pos))) 
-        		obj = new MovingObjectPosition(e);
+        		obj = new RayTraceResult(e);
         }
         if (obj == null) return item;
-        else if (obj.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) this.onItemUse(item, player, world, obj.getBlockPos(), obj.sideHit, (float)obj.hitVec.xCoord, (float)obj.hitVec.yCoord, (float)obj.hitVec.zCoord);
-        else if (obj.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) this.useOnEntity(item, player, obj.entityHit);
+        else if (obj.typeOfHit == RayTraceResult.MovingObjectType.BLOCK) this.onItemUse(item, player, world, obj.getBlockPos(), obj.sideHit, (float)obj.hitVec.xCoord, (float)obj.hitVec.yCoord, (float)obj.hitVec.zCoord);
+        else if (obj.typeOfHit == RayTraceResult.MovingObjectType.ENTITY) this.useOnEntity(item, player, obj.entityHit);
         return item;
     }
     
@@ -135,7 +135,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     	if (!(entity instanceof EntityItem || entity instanceof EntityXPOrb)) {
     		EnergyItem energy = new EnergyItem(item, this);
     		if (energy.getStorageI() < EnergyUsage) {
-        		player.addChatMessage(new ChatComponentText("Out of Energy!"));
+        		player.addChatMessage(new TextComponentString("Out of Energy!"));
                 return;
         	}
     		float dmg = BaseDamage;
@@ -173,7 +173,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         if (mode < 0) return true;
         else if (mode < 5) {
         	if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - mode, pos.getX() + mode + 1, pos.getZ() - mode, pos.getZ() + mode + 1)) {
-                player.addChatMessage(new ChatComponentText("Block is Protected"));
+                player.addChatMessage(new TextComponentString("Block is Protected"));
                 return true;
             }
         	byte ax = (byte)(s.getIndex() / 2);
@@ -183,7 +183,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         				return true;
         } else if (mode == 5) {
         	if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
-                player.addChatMessage(new ChatComponentText("Block is Protected"));
+                player.addChatMessage(new TextComponentString("Block is Protected"));
                 return true;
             }
         	IBlockState state = world.getBlockState(pos);
@@ -202,7 +202,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     	Enchantments ench = new Enchantments(item);
     	EnergyItem energy = new EnergyItem(item, this);
     	if (energy.getStorageI() < ench.Euse) {
-    		player.addChatMessage(new ChatComponentText("Out of Energy!"));
+    		player.addChatMessage(new TextComponentString("Out of Energy!"));
             return false;
     	}
     	IBlockState state = world.getBlockState(pos);
@@ -210,7 +210,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         float r = state.getBlock().getExplosionResistance(world, pos, player, null) * ench.amMult;
         float am = AntimatterItemHandler.getAntimatter(item) + item.getTagCompound().getFloat("buff");
         if (am < r) {
-            player.addChatMessage(new ChatComponentText("Not enough Antimatter, Needed: " + r + " pg"));
+            player.addChatMessage(new TextComponentString("Not enough Antimatter, Needed: " + r + " pg"));
             return false;
         }
         ItemStack[] drop;
@@ -221,7 +221,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
             drop = list == null ? null : list.toArray(new ItemStack[list.size()]);
         }
         if (!MatterOrbItemHandler.canInsert(item, drop)) {
-            player.addChatMessage(new ChatComponentText("Matter Orb is full!"));
+            player.addChatMessage(new TextComponentString("Matter Orb is full!"));
             return false;
         }
         energy.addEnergyI(-ench.Euse, -1);
@@ -337,7 +337,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
 	@Override
 	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
-		ItemStack item = player.getCurrentEquippedItem();
+		ItemStack item = player.getHeldItemMainhand();
 		byte cmd = dis.readByte();
 		if (cmd == 0) {
 			item.getTagCompound().setByte("mode", (byte)((item.getTagCompound().getByte("mode") - 1 + modes.length) % modes.length));

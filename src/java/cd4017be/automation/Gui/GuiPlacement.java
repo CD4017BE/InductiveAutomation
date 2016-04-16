@@ -7,9 +7,9 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 
@@ -63,7 +63,7 @@ public class GuiPlacement extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft + 79, this.guiTop + 36, 176, 18 + 16 * axis[6 + (this.container.inventory.placement[sel] & 7) % 6], 16, 12);
         for (GuiTextField tf : Vxy) tf.drawTextBox();
         this.drawStringCentered(this.container.type.getDisplayName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 54, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 54, 0x404040);
     }
     
     @Override

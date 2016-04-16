@@ -10,9 +10,9 @@ import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.templates.GuiMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 public class GuiPortableFurnace extends GuiMachine {
 	
@@ -32,7 +32,7 @@ public class GuiPortableFurnace extends GuiMachine {
         this.xSize = 176;
         this.ySize = 132;
         super.initGui();
-        ItemStack item = this.furnace.player.getCurrentEquippedItem();
+        ItemStack item = this.furnace.player.getHeldItemMainhand();
         if (item.getItem() instanceof IEnergyItem) {
         	capacity = ((IEnergyItem)item.getItem()).getEnergyCap(item);
         }
@@ -41,7 +41,7 @@ public class GuiPortableFurnace extends GuiMachine {
     @Override
 	public void updateScreen() 
     {
-		energy = (int)(EnergyAPI.get(this.furnace.player.getCurrentEquippedItem()).getStorage(0) / 1000D);
+		energy = (int)(EnergyAPI.get(this.furnace.player.getHeldItemMainhand()).getStorage(0) / 1000D);
 		super.updateScreen();
 	}
 
@@ -62,7 +62,7 @@ public class GuiPortableFurnace extends GuiMachine {
         this.drawTexturedModalRect(this.guiLeft + 116, this.guiTop + 16, 176, 0, energy * 34 / capacity, 16);
         if (this.furnace.isFilterOn(0)) this.drawTexturedModalRect(this.guiLeft + 61, this.guiTop + 19, 176, 16, 18, 10);
         this.drawStringCentered(this.furnace.inventory.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
     }
 
 	@Override

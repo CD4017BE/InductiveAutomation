@@ -9,7 +9,7 @@ import org.lwjgl.opengl.GL11;
 import cd4017be.automation.TileEntity.Tank;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -77,7 +77,7 @@ public class TileEntityTankRenderer extends TileEntitySpecialRenderer<Tank>
 	}
 	
 	public void renderCube(double X0, double Y0, double Z0, double X1, double Y1, double Z1, TextureAtlasSprite tex, int c, int l) {
-		WorldRenderer t = Tessellator.getInstance().getWorldRenderer();
+		VertexBuffer t = Tessellator.getInstance().getBuffer();
         t.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_LMAP_COLOR);
 		double U0 = tex.getMinU(), U1 = tex.getMaxU(), V0 = tex.getMinV(), V1 = tex.getMaxV();
         int R = c >> 16 & 0xff, G = c >> 8 & 0xff, B = c & 0xff, A = c >> 24 & 0xff;

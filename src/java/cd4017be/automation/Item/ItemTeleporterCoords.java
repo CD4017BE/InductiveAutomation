@@ -11,8 +11,8 @@ import cd4017be.lib.DefaultItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
@@ -64,12 +64,12 @@ public class ItemTeleporterCoords extends DefaultItem
             item.getTagCompound().setInteger("pos.getX()", pos.getX());
             item.getTagCompound().setInteger("pos.getY()", pos.getY());
             item.getTagCompound().setInteger("pos.getZ()", pos.getZ());
-            player.addChatMessage(new ChatComponentText("Target set to: pX=" + pos.getX() + " pY=" + pos.getY() + " pZ=" + pos.getZ()));
+            player.addChatMessage(new TextComponentString("Target set to: pX=" + pos.getX() + " pY=" + pos.getY() + " pZ=" + pos.getZ()));
         } else {
             item.getTagCompound().setInteger("pos.getX()", pos.getX() - item.getTagCompound().getInteger("x"));
             item.getTagCompound().setInteger("pos.getY()", pos.getY() - item.getTagCompound().getInteger("y"));
             item.getTagCompound().setInteger("pos.getZ()", pos.getZ() - item.getTagCompound().getInteger("z"));
-            player.addChatMessage(new ChatComponentText("Translation set to: dX=" + pos.getX() + " dY=" + pos.getY() + " dZ=" + pos.getZ()));
+            player.addChatMessage(new TextComponentString("Translation set to: dX=" + pos.getX() + " dY=" + pos.getY() + " dZ=" + pos.getZ()));
         }
         return true;
     }

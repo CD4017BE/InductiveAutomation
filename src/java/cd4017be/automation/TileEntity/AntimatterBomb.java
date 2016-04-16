@@ -22,7 +22,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 
 /**
  *
@@ -59,10 +59,10 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
     
     private boolean isProtected()
     {
-        int x1 = pos.getX() + EntityAntimatterExplosion1.maxSize + 1;
-        int z1 = pos.getZ() + EntityAntimatterExplosion1.maxSize + 1;
-        int x0 = pos.getX() - EntityAntimatterExplosion1.maxSize;
-        int z0 = pos.getZ() - EntityAntimatterExplosion1.maxSize;
+        int x1 = pos.getX() + maxSize + 1;
+        int z1 = pos.getZ() + maxSize + 1;
+        int x0 = pos.getX() - maxSize;
+        int z0 = pos.getZ() - maxSize;
         return !AreaProtect.operationAllowed(new GameProfile(new UUID(0, 0), "#antimatterBomb"), worldObj, x0, x1, z0, z1);
     }
     
@@ -73,7 +73,7 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
     }
 
     @Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
     	timer = pkt.getNbtCompound().getShort("timer");
 	}
 
@@ -82,7 +82,7 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
     {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setShort("timer", (short)timer);
-        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
+        return new SPacketUpdateTileEntity(getPos(), -1, nbt);
     }
 
     @Override

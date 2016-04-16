@@ -11,7 +11,7 @@ import java.io.IOException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 import org.lwjgl.opengl.GL11;
 
@@ -79,7 +79,7 @@ public class GuiDetector extends GuiMachine
         	else this.fontRendererObj.drawString("" + tileEntity.netData.ints[i], x, y, b ? 0xff0000 : 0x0000ff);
         }
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 126, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 126, 0x404040);
     }
 
 	@Override

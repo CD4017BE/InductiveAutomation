@@ -8,7 +8,7 @@ import cd4017be.automation.TileEntity.VertexShematicGen.Polygon;
 import cd4017be.lib.util.Vec3;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
@@ -32,7 +32,7 @@ public class Render3DVertexShem extends TileEntitySpecialRenderer<VertexShematic
         GL11.glDepthMask(false);
         GL11.glColor4f(1, 1, 1, 1);
         int density = 0x30;
-        WorldRenderer t = Tessellator.getInstance().getWorldRenderer();
+        VertexBuffer t = Tessellator.getInstance().getBuffer();
         t.setTranslation(x, y, z);
         t.begin(GL11.GL_TRIANGLES, DefaultVertexFormats.POSITION_COLOR);
         Polygon p;

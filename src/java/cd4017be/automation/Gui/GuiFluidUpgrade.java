@@ -9,9 +9,9 @@ package cd4017be.automation.Gui;
 import java.io.IOException;
 
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 import org.lwjgl.opengl.GL11;
 
@@ -61,7 +61,7 @@ public class GuiFluidUpgrade extends GuiMachine
         if ((this.container.inventory.upgrade.mode & 4) != 0) this.drawTexturedModalRect(this.guiLeft + 161, this.guiTop + 15, (this.container.inventory.upgrade.mode & 8) != 0 ? 202 : 194, 0, 8, 18);
         this.drawStringCentered("" + this.container.inventory.upgrade.maxAmount, this.guiLeft + 129, this.guiTop + 20, 0x404040);
         this.drawStringCentered(this.container.inventory.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
     }
     
     @Override

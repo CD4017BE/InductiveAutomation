@@ -11,7 +11,7 @@ import cd4017be.automation.Item.ItemOre;
 import cd4017be.lib.DefaultBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -61,8 +61,8 @@ public class BlockOre extends DefaultBlock
 	}
 
     @Override
-	protected BlockState createBlockState() {
-		return new BlockState(this, prop);
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, prop);
 	}
 
 	@Override

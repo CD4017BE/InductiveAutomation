@@ -28,7 +28,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 
@@ -264,7 +264,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     public boolean onActivated(EntityPlayer player, EnumFacing dir, float X, float Y, float Z) 
     {
         int s = dir.getIndex();
-    	ItemStack item = player.getCurrentEquippedItem();
+    	ItemStack item = player.getHeldItemMainhand();
         int type = this.getBlockMetadata();
         boolean canF = type == BlockItemPipe.ID_Extraction || type == BlockItemPipe.ID_Injection;
         if (player.isSneaking() && item == null) {
@@ -353,7 +353,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) 
     {
         flow = pkt.getNbtCompound().getShort("flow");
         cover = Cover.read(pkt.getNbtCompound(), "cover");
@@ -366,7 +366,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setShort("flow", flow);
         if (cover != null) cover.write(nbt, "cover");
-        return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
+        return new SPacketUpdateTileEntity(getPos(), -1, nbt);
     }
     
     @Override

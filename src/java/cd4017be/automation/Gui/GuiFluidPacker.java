@@ -6,7 +6,7 @@ package cd4017be.automation.Gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 import org.lwjgl.opengl.GL11;
 
@@ -43,7 +43,7 @@ public class GuiFluidPacker extends GuiMachine
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/fluidPacker.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         super.drawGuiContainerBackgroundLayer(var1, x, y);
     }
     

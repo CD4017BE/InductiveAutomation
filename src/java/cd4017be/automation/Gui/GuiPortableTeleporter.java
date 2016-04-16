@@ -15,10 +15,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.I18n;
 
 public class GuiPortableTeleporter extends GuiMachine 
 {
@@ -57,7 +57,7 @@ public class GuiPortableTeleporter extends GuiMachine
     {
         super.updateScreen();
         int l = list.length;
-        ItemStack item = container.player.getCurrentEquippedItem();
+        ItemStack item = container.player.getHeldItemMainhand();
         if (item == null || item.getTagCompound() == null) {
         	list = new Entry[0];
         } else {
@@ -106,7 +106,7 @@ public class GuiPortableTeleporter extends GuiMachine
         tfZ.drawTextBox();
         name.drawTextBox();
         this.drawStringCentered("Waypoints", this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 120, 0x404040);
+        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 120, 0x404040);
     }
     
     @Override
