@@ -48,7 +48,7 @@ public class WarpPipe extends AutomatedTile implements IPipe, IItemPipeCon, IFlu
 			if (player.isSneaking() && item == null) {
 				this.dropStack(cover.item);
 				cover = null;
-				worldObj.markBlockForUpdate(getPos());
+				this.markUpdate();
 				return true;
 			}
 			return false;
