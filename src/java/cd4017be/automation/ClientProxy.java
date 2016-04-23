@@ -9,6 +9,7 @@ import cd4017be.automation.TileEntity.Builder;
 import cd4017be.automation.TileEntity.Farm;
 import cd4017be.automation.TileEntity.Miner;
 import cd4017be.automation.TileEntity.Pump;
+import cd4017be.automation.TileEntity.Shaft;
 import cd4017be.automation.TileEntity.Tank;
 import cd4017be.automation.TileEntity.Teleporter;
 import cd4017be.automation.TileEntity.VertexShematicGen;
@@ -16,6 +17,7 @@ import cd4017be.automation.jetpack.TickHandler;
 import cd4017be.automation.render.FluidTextures;
 import cd4017be.automation.render.MaterialTextures;
 import cd4017be.automation.render.Render3DVertexShem;
+import cd4017be.automation.render.ShaftRenderer;
 import cd4017be.automation.render.TileEntityAntimatterBombRenderer;
 import cd4017be.automation.render.TileEntityTankRenderer;
 import cd4017be.lib.BlockItemRegistry;
@@ -132,6 +134,7 @@ public class ClientProxy extends CommonProxy
 		BlockItemRegistry.registerBlockRender("quantumTank:0");
 		BlockItemRegistry.registerBlockRender("vertShemGen:0");
 		BlockItemRegistry.registerBlockRender("heatRadiator:0");
+		BlockItemRegistry.registerBlockRender("shaft:0");
 		//Items
         BlockItemRegistry.registerItemRender(material, new MaterialTextures("automation:"));
         BlockItemRegistry.registerItemRender("fluidDummy");
@@ -183,6 +186,8 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(AntimatterBomb.class, new TileEntityAntimatterBombRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(VertexShematicGen.class, new Render3DVertexShem());
         SpecialModelLoader.registerTESRModel(TileEntityTankRenderer.model);
+        ClientRegistry.bindTileEntitySpecialRenderer(Shaft.class, new ShaftRenderer());
+        SpecialModelLoader.registerTESRModel("automation:models/tesr/shaft");
     }
     
     private void registerAdditionalModels()
@@ -280,6 +285,7 @@ public class ClientProxy extends CommonProxy
         SpecialModelLoader.registerBlockModel(Objects.wireH, new ModelPipe("automation:wireH", 1, 1));
         SpecialModelLoader.registerBlockModel(Objects.warpPipe, new ModelPipe("automation:warpPipe", 1, 5));
         SpecialModelLoader.registerItemModel(Objects.fluidDummy, new FluidTextures());
+        SpecialModelLoader.registerBlockModel(Objects.shaft, new ModelPipe("automation:shaft", 0, 1));
     }
     
 }
