@@ -252,6 +252,7 @@ public class Automation implements IWorldGenerator
         (teslaTransmitterLV = TileBlock.create("teslaTransmitterLV", Material.iron, DefaultItemBlock.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F).setStepSound(Block.soundTypeMetal).setBlockBounds(0.1875F, 0F, 0.1875F, 0.8125F, 1F, 0.8125F);
         (teslaTransmitter = TileBlock.create("teslaTransmitter", Material.iron, DefaultItemBlock.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeMetal).setBlockBounds(0.25F, 0F, 0.25F, 0.75F, 1F, 0.75F);
         (wormhole = TileBlock.create("wormhole", Material.portal, ItemInterdimHole.class, 0x60)).setCreativeTab(tabAutomation).setHardness(3.0F).setResistance(100F).setStepSound(Block.soundTypeGlass).setBlockBounds(0.0625F, 0.0625F, 0.0625F, 0.9375F, 0.9375F, 0.9375F);
+        (shaft = new BlockShaft("shaft", Material.iron, 0x20)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
         proxy.registerBlocks();
     }
     

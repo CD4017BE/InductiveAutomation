@@ -120,6 +120,7 @@ public class CommonProxy implements IFuelHandler
     	TileBlockRegistry.register(teslaTransmitterLV, TeslaTransmitterLV.class, TileContainer.class);
     	TileBlockRegistry.register(teslaTransmitter, TeslaTransmitter.class, TileContainer.class);
     	TileBlockRegistry.register(wormhole, InterdimHole.class, null);
+    	TileBlockRegistry.register(shaft, Shaft.class, null);
     }
     
     public void registerRenderers() {

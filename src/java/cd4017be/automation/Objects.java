@@ -134,6 +134,7 @@ public class Objects {
 	public static TileBlock itemBuffer;
 	public static TileBlock quantumTank;
 	public static TileBlock vertShemGen;
+	public static BlockShaft shaft;
     
     //OreGen
     public static WorldGenerator copperGen;

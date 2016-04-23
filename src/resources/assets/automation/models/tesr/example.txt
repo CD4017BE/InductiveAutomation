@@ -1,0 +1,42 @@
+# this is a comment
+
+#builtin variables
+format = "x y z u v r g b a";
+
+#text
+text = "this is a text";
+#number
+num = 5.3;
+#vector
+vec = [0, num, 0];
+#combine vectors
+vec2 = [vec, 3, 2, vec, num];
+#access vector component
+val = vec2:4;
+#quads containing 4 vertices
+quad = quad(vec2, vec2, [0, 3, 7, 8, 9, 0, val, 0], vec2);
+#run other models
+mod = model("filename"){
+	par0 = [5, 5, 5];
+	par1 = vec2;
+};
+vec3 = mod:par0;
+
+#for loop
+for(val < i < 35){
+	var = [i, 5];
+}
+
+#commands for vertex transformation
+push;
+pop;
+rotate([0, 0, 0, 0]);
+translate([0, 0, 0]);
+scale([0, 0, 0]);
+offsetUV([0, 0]);
+scaleUV([0, 0]);
+color([0, 0, 0, 0]);
+#add quad with current transformation
+draw(quad);
+
+#functions
