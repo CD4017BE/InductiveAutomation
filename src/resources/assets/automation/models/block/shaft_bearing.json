@@ -1,0 +1,19 @@
+{
+    "textures": {
+        "particle": "automation:blocks/pipes/shaftB",
+		"tex": "automation:blocks/pipes/shaftB"
+    },
+    "elements": [
+        {   "from": [ 1, 1, 0 ],
+            "to": [ 15, 15, 2 ],
+            "faces": {
+                "down":  { "uv": [ 1, 14, 15, 16 ], "texture": "#tex", "cullface": "down" },
+                "up":    { "uv": [ 1, 14, 15, 16 ], "texture": "#tex", "cullface": "up" },
+                "north": { "uv": [ 1, 0, 15, 14 ], "texture": "#tex", "cullface": "north" },
+				"south": { "uv": [ 1, 0, 15, 14 ], "texture": "#tex", "cullface": "south" },
+                "west":  { "uv": [ 1, 14, 15, 16 ], "rotation": 90, "texture": "#tex", "cullface": "west" },
+                "east":  { "uv": [ 1, 14, 15, 16 ], "rotation": 90, "texture": "#tex", "cullface": "east" }
+            }
+        }
+    ]
+}

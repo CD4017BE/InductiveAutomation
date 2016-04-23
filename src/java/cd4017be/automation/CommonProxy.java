@@ -99,6 +99,7 @@ public class CommonProxy
     	TileBlockRegistry.register(teslaTransmitter, TeslaTransmitter.class, TileContainer.class);
     	TileBlockRegistry.register(wormhole, InterdimHole.class, null);
     	TileBlockRegistry.register(heatRadiator, HeatRadiator.class, TileContainer.class);
+    	TileBlockRegistry.register(shaft, Shaft.class, null);
     }
     
     public void registerRenderers() {
