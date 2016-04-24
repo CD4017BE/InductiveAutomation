@@ -4,10 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import cd4017be.automation.shaft.ShaftPhysics.IKineticComp;
+import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.ModTileEntity;
 import cd4017be.lib.templates.IComponent;
 import cd4017be.lib.templates.SharedNetwork;
@@ -21,6 +23,7 @@ public class ShaftComponent implements IComponent<ShaftComponent, ShaftPhysics> 
 	public byte con = 0;
 	public float m;
 	public boolean updateCon;
+	public byte type = 0;
 	
 	public ShaftComponent(ModTileEntity shaft, float m) {
 		this.shaft = shaft;
@@ -69,6 +72,7 @@ public class ShaftComponent implements IComponent<ShaftComponent, ShaftPhysics> 
 	
 	public static ShaftComponent readFromNBT(ModTileEntity tile, NBTTagCompound nbt) {
 		ShaftComponent pipe = new ShaftComponent(tile, nbt.getFloat("mass"));
+		pipe.type = nbt.getByte("type");
 		ShaftPhysics physics = new ShaftPhysics(pipe);
 		physics.v = nbt.getFloat("rotVel");
 		physics.s = nbt.getFloat("rotPos");
@@ -77,6 +81,7 @@ public class ShaftComponent implements IComponent<ShaftComponent, ShaftPhysics> 
 	
 	public void writeToNBT(NBTTagCompound nbt) {
 		nbt.setFloat("mass", m);
+		nbt.setByte("type", type);
 		if (network != null) {
 			nbt.setFloat("rotVel", network.v);
 			nbt.setFloat("rotPos", network.s);
@@ -94,9 +99,17 @@ public class ShaftComponent implements IComponent<ShaftComponent, ShaftPhysics> 
 	public boolean onClicked(EntityPlayer player, ItemStack item) {
 		if (item == null && !player.isSneaking()) {
 			network.v += 0.1F / network.m;//TODO remove later?
-			return true;
-		}
-		return false;
+		} else if (item != null && item.getItem() == Items.redstone) {
+			this.type = 1;
+		} else if (item != null && item.isItemEqual(BlockItemRegistry.stack("CoilCp", 1))) {
+			this.type = 2;
+		} else if (item != null && item.isItemEqual(BlockItemRegistry.stack("CoilC", 1))) {
+			this.type = 3;
+		} else if (item != null && item.isItemEqual(BlockItemRegistry.stack("CoilSC", 1))) {
+			this.type = 4;
+		} else return false;
+		shaft.markUpdate();
+		return true;
 	}
 
 }
