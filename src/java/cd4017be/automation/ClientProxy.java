@@ -191,7 +191,11 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(AntimatterBomb.class, new TileEntityAntimatterBombRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(VertexShematicGen.class, new Render3DVertexShem());
         ClientRegistry.bindTileEntitySpecialRenderer(Shaft.class, new ShaftRenderer());
-        SpecialModelLoader.registerTESRModel("automation:models/tesr/shaft");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaft");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftPermMag");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilC");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilA");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilH");
     }
     
     @SubscribeEvent

@@ -1,0 +1,22 @@
+#uses 40x8 texture area and requires r0, r1, h, d, N from master call.
+#init variables
+Q = [r0, s(-0.5, [h, d])]; 
+Q = [Q, +(Q, [r1, h, d])];
+Ta = [0, 0, 16, 8];
+Tb = [16, 0, 32, 8];
+Tc = [32, 0, 40, 8];
+#create quads
+magT = rect(Q, Tb, "+uv");
+magF = rect(Q, Tc, "V-U");
+magB = rect(Q, Tc, "V+u");
+magL = rect(Q, Ta, "VU-");
+magR = rect(Q, Ta, "Vu+");
+#render
+for(0 < i < N){
+	rotate([0, 1, 0, /(360, N)]);
+	draw(magT); 
+	draw(magF);
+	draw(magB);
+	draw(magL);
+	draw(magR);
+}
