@@ -185,9 +185,13 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(Tank.class, new TileEntityTankRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(AntimatterBomb.class, new TileEntityAntimatterBombRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(VertexShematicGen.class, new Render3DVertexShem());
-        SpecialModelLoader.registerTESRModel(TileEntityTankRenderer.model);
         ClientRegistry.bindTileEntitySpecialRenderer(Shaft.class, new ShaftRenderer());
-        SpecialModelLoader.registerTESRModel("automation:models/tesr/shaft");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaft");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftPermMag");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilC");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilA");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilH");
+        SpecialModelLoader.registerTESRModel(TileEntityTankRenderer.model);
     }
     
     private void registerAdditionalModels()
@@ -284,8 +288,8 @@ public class ClientProxy extends CommonProxy
         SpecialModelLoader.registerBlockModel(Objects.wireA, new ModelPipe("automation:wireA", 1, 1));
         SpecialModelLoader.registerBlockModel(Objects.wireH, new ModelPipe("automation:wireH", 1, 1));
         SpecialModelLoader.registerBlockModel(Objects.warpPipe, new ModelPipe("automation:warpPipe", 1, 5));
-        SpecialModelLoader.registerItemModel(Objects.fluidDummy, new FluidTextures());
         SpecialModelLoader.registerBlockModel(Objects.shaft, new ModelPipe("automation:shaft", 0, 1));
+        SpecialModelLoader.registerItemModel(Objects.fluidDummy, new FluidTextures());
     }
     
 }

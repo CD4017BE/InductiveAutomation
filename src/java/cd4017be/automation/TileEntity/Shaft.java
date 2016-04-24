@@ -88,8 +88,9 @@ public class Shaft extends ModTileEntity implements IPipe, IShaft, ITickable {
 			shaft.network.s = nbt.getFloat("RotPos");
 		}
 		if (nbt.hasKey("con")) {
-			cover = Cover.read(pkt.getNbtCompound(), "cover");
-			shaft.con = pkt.getNbtCompound().getByte("con");
+			cover = Cover.read(nbt, "cover");
+			shaft.con = nbt.getByte("con");
+			shaft.type = nbt.getByte("type");
 			this.markUpdate();
 		}
 	}
@@ -99,6 +100,7 @@ public class Shaft extends ModTileEntity implements IPipe, IShaft, ITickable {
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 		if (cover != null) cover.write(nbt, "cover");
+		nbt.setByte("type", shaft.type);
 		nbt.setByte("con", shaft.con);
 		return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
 	}
