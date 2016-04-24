@@ -93,6 +93,7 @@ tile.cd4017be.itemBuffer.name=Item Flow Regulator
 tile.cd4017be.quantumTank.name=Quantum Tank
 tile.cd4017be.vertShemGen.name=3D-Vertex Schematic Printer
 tile.cd4017be.heatRadiator.name=Fluid Heat Radiator
+tile.cd4017be.shaft.name=Kinetic Shaft
 # tooltips
 tile.cd4017be.ore.tip=spawns in the world
 tile.cd4017be.placementHelper.tip=You shouldn't be able to get this.\nJust throw it away it's useless for you.\nPlacement controllers will temporary place\nthese blocks to click items against them.
@@ -165,6 +166,7 @@ tile.cd4017be.itemBuffer.tip=Distributes incoming items over two\noutputs at a s
 tile.cd4017be.quantumTank.tip=Another even bigger tank with 2.097.152 m³ capacity.
 tile.cd4017be.vertShemGen.tip=Used to print 3D-Vertex schematics\nto let a Builder build them automated.\n(A Vertex Selection Tool can be used\ninstead of typing in coordinates manually)
 tile.cd4017be.heatRadiator.tip=Cools or heats fluids to environment temperature.\nUsed to turn Water Vapor into liquid Water.
+tile.cd4017be.shaft.tip=Work in progress!\nCurrently useless and buggy.\nCould possibly freeze your server!
 
 # Fluid names
 fluid.steam.name=Steam

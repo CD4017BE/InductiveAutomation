@@ -1,0 +1,10 @@
+shaft = model("automation:models/tileEntity/shaft"){};
+scaleUV(/([64, 64]));
+offsetUV([24, 16]);
+mag = model("automation:models/tileEntity/magnets"){
+	N = 8;
+	r0 = shaft:r;
+	r1 = 0.25;
+	d = *(shaft:d, 2);
+	h = 0.5;
+};
