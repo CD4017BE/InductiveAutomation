@@ -73,8 +73,10 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 		if (this.components.containsKey(comp.getUID())) {
 			this.m -= comp.m;
 			for (int i = 0; i < 6; i++)
-				if ((comp.con >> i & 1) != 0)
-					this.connectors.remove(SharedNetwork.SidedPosUID(comp.getUID(), i));
+				if ((comp.con >> i & 1) != 0) {
+					IKineticComp con = this.connectors.remove(SharedNetwork.SidedPosUID(comp.getUID(), i));
+					if (con != null) con.setShaft(null);
+				}	
 		}
 		super.remove(comp);
 	}
@@ -85,7 +87,7 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 	 */
 	public void addCon(ShaftComponent comp, IKineticComp con) {
 		byte side = con.getConSide();
-		
+		con.setShaft(comp);
 		connectors.put(SharedNetwork.SidedPosUID(comp.getUID(), side), con);
 		comp.con |= 1 << side;
 	}
@@ -119,7 +121,7 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 			IKineticComp comp = it.next();
 			if (!comp.valid()) {
 				it.remove();
-				comp.getShaft().con &= ~(1 << comp.getConSide());
+				if (comp.getShaft() != null) comp.getShaft().con &= ~(1 << comp.getConSide());
 			}
 			else F += comp.estimatedForce(s, ds);
 		}

@@ -151,7 +151,7 @@ public class Wire extends AutomatedTile implements IEnergy, IPipe
         if (s < 0) return 0;
     	TileEntity p = Utils.getTileOnSide(this, s);
         PipeEnergy e;
-        return (energy.isConnected(s) && p instanceof IEnergy && (e = ((IEnergy)p).getEnergy(s)) != null && e.isConnected(s^1)) ? 0 : -1;
+        return (energy.isConnected(s) && p instanceof IEnergy && (e = ((IEnergy)p).getEnergy((byte)(s^1))) != null && e.isConnected(s^1)) ? 0 : -1;
     }
     
     @Override
