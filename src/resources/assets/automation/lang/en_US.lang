@@ -402,6 +402,9 @@ gui.cd4017be.amLaser.name=Enchantment upgrades
 gui.cd4017be.selectionTool.name=Machine Area Configurations
 gui.cd4017be.portableTesla.name=Portable Tesla Transmitter
 gui.cd4017be.heatRadiator.name=Fluid Heat Radiator
+gui.cd4017be.electricCoilC.name=Electric Coil
+gui.cd4017be.electricCoilA.name=Electric Coil
+gui.cd4017be.electricCoilH.name=Electric Coil
 # Gui tooltips
 gui.cd4017be.recipe.euse=Used Energy:\n%.0f kJ
 gui.cd4017be.recipe.algae=Algae:\n%d mB

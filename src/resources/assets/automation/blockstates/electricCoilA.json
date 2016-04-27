@@ -1,0 +1,10 @@
+{
+	"variants": {
+		"orient=n": { "model": "automation:electricCoilA" },
+		"orient=e": { "model": "automation:electricCoilA" , "y": 90 },
+		"orient=s": { "model": "automation:electricCoilA" , "y": 180 },
+		"orient=w": { "model": "automation:electricCoilA" , "y": 270 },
+		"orient=b": { "model": "automation:electricCoilA" , "x": 90 },
+		"orient=t": { "model": "automation:electricCoilA" , "x": 270 }
+	}
+}
