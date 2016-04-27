@@ -141,6 +141,9 @@ public class ClientProxy extends CommonProxy
 		BlockItemRegistry.registerBlockRender("vertShemGen:0");
 		BlockItemRegistry.registerBlockRender("heatRadiator:0");
 		BlockItemRegistry.registerBlockRender("shaft:0");
+		BlockItemRegistry.registerBlockRender("electricCoilC:0");
+		BlockItemRegistry.registerBlockRender("electricCoilA:0");
+		BlockItemRegistry.registerBlockRender("electricCoilH:0");
 		//Items
         BlockItemRegistry.registerItemRender(material, new MaterialTextures("automation:"));
         BlockItemRegistry.registerItemRender("fluidDummy");
@@ -271,6 +274,9 @@ public class ClientProxy extends CommonProxy
         TileBlockRegistry.registerGui(quantumTank, GuiQuantumTank.class);
         TileBlockRegistry.registerGui(vertShemGen, GuiVertexShematicGen.class);
         TileBlockRegistry.registerGui(heatRadiator, GuiHeatRadiator.class);
+        TileBlockRegistry.registerGui(electricCoilC, GuiElectricCoil.class);
+        TileBlockRegistry.registerGui(electricCoilA, GuiElectricCoil.class);
+        TileBlockRegistry.registerGui(electricCoilH, GuiElectricCoil.class);
         //set block transparencies
         Objects.itemPipe.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
         Objects.liquidPipe.setBlockLayer(EnumWorldBlockLayer.CUTOUT);

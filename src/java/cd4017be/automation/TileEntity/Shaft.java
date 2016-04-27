@@ -24,7 +24,7 @@ public class Shaft extends ModTileEntity implements IPipe, IShaft, ITickable {
 	public ShaftComponent shaft;
 	
 	public Shaft() {
-		this.shaft = new ShaftComponent(this, 1);
+		this.shaft = new ShaftComponent(this, 1000F);
 	}
 	
 	@Override
@@ -85,7 +85,7 @@ public class Shaft extends ModTileEntity implements IPipe, IShaft, ITickable {
 		NBTTagCompound nbt = pkt.getNbtCompound();
 		if (nbt.hasKey("RotVel")) {
 			shaft.network.v = nbt.getFloat("RotVel");
-			shaft.network.s = nbt.getFloat("RotPos");
+			//shaft.network.s = nbt.getFloat("RotPos");
 		}
 		if (nbt.hasKey("con")) {
 			cover = Cover.read(nbt, "cover");
