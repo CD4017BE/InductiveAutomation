@@ -10,15 +10,17 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.ITickable;
+import cd4017be.api.automation.IEnergy;
+import cd4017be.api.automation.PipeEnergy;
+import cd4017be.automation.Config;
 import cd4017be.automation.shaft.ShaftComponent;
 import cd4017be.automation.shaft.ShaftPhysics.IShaft;
-import cd4017be.lib.ModTileEntity;
+import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IPipe;
 import cd4017be.lib.templates.SharedNetwork;
 import cd4017be.lib.util.Utils;
 
-public class Shaft extends ModTileEntity implements IPipe, IShaft, ITickable {
+public class Shaft extends AutomatedTile implements IPipe, IShaft, IEnergy {
 
 	private Cover cover;
 	public ShaftComponent shaft;
@@ -30,6 +32,7 @@ public class Shaft extends ModTileEntity implements IPipe, IShaft, ITickable {
 	@Override
 	public void update() 
 	{
+		super.update();
 		if (shaft.updateCon) shaft.network.updateLink(shaft);
 		shaft.network.updateTick(shaft);
 	}
@@ -74,9 +77,9 @@ public class Shaft extends ModTileEntity implements IPipe, IShaft, ITickable {
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) 
 	{
+		shaft = ShaftComponent.readFromNBT(this, nbt);
 		super.readFromNBT(nbt);
 		cover = Cover.read(nbt, "cover");
-		shaft = ShaftComponent.readFromNBT(this, nbt);
 	}
 
 	@Override
@@ -91,6 +94,8 @@ public class Shaft extends ModTileEntity implements IPipe, IShaft, ITickable {
 			cover = Cover.read(nbt, "cover");
 			shaft.con = nbt.getByte("con");
 			shaft.type = nbt.getByte("type");
+			if (shaft.type >= 2 && shaft.type < 5 && energy == null) energy = new PipeEnergy(Config.Umax[shaft.type - 2], Config.Rcond[shaft.type - 2]);
+			else if (shaft.type == 0 && energy != null) energy = null;
 			this.markUpdate();
 		}
 	}
@@ -115,6 +120,7 @@ public class Shaft extends ModTileEntity implements IPipe, IShaft, ITickable {
 	{
 		super.breakBlock();
 		if (cover != null) this.dropStack(cover.item);
+		shaft.onClicked(null, null);
 	}
 
 	@Override

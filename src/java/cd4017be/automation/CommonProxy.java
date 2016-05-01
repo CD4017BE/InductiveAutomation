@@ -344,6 +344,8 @@ public class CommonProxy implements IFuelHandler
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.paper), " 0 ", '0', new ItemStack(Items.paper)));
         GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Items.book), " 0 ", '0', new ItemStack(Items.book)));
         
+        GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.shaft", 3), "000", '0', "ingotIron"));
+        
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.wireC", 8), "000", '0', "ingotCopper"));
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.wireA", 8), "000", '0', "ingotConductiveAlloy"));
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.wireH", 8), "010", "222", "010", '0', "ingotElectrum", '1', stack("SiliconI", 1), '2', stack("HydrogenI", 1)));
@@ -357,6 +359,11 @@ public class CommonProxy implements IFuelHandler
         GameRegistry.addRecipe(new NBTRecipe(stack("tile.SCSU", 1), "+energy", "0", "1", '0', stack("item.energyCell", 1, OreDictionary.WILDCARD_VALUE), '1', stack("tile.wireC", 1)));
         GameRegistry.addRecipe(new NBTRecipe(stack("tile.OCSU", 1), "+energy", "000", "010", "000", '0', stack("item.energyCell", 1, OreDictionary.WILDCARD_VALUE), '1', stack("tile.wireA", 1)));
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.CCSU", 1), "010", "232", "010", '0', stack("SiliconI", 1), '1', "AIcasingGraphite", '2', stack("CoilSC", 1), '3', stack("LCHelium", 1)));
+        
+        GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.electricCoilC", 1), "000", "010", "000", '0', stack("tile.wireC", 1), '1', "ingotIron"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.electricCoilA", 1), "000", "010", "000", '0', stack("tile.wireA", 1), '1', "ingotIron"));
+        GameRegistry.addRecipe(new ShapedOreRecipe(stack("tile.electricCoilH", 1), "000", "010", "000", '0', stack("tile.wireH", 1), '1', "ingotIron"));
+        
         configurableRecipe("tile.steamEngine", new ShapedOreRecipe(stack("tile.steamEngine", 1), "010", " 2 ", '0', "AIcasingGlass", '1', new ItemStack(Blocks.piston), '2', stack("CoilCp", 1)));
         configurableRecipe("tile.steamGenerator", new ShapedOreRecipe(stack("tile.steamGenerator", 1), "000", "121", "000", '0', new ItemStack(Blocks.piston), '1', "AIcasingGlass", '2', stack("Motor", 1)));
         configurableRecipe("tile.steamTurbine", new ShapedOreRecipe(stack("tile.steamTurbine", 1), "001", "222", "100", '0', "AIcasingSteel", '1', "AIcasingGlass", '2', stack("Turbine", 1)));
