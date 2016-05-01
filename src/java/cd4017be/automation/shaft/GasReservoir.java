@@ -1,9 +1,9 @@
-package cd4017be.api.automation.therm;
+package cd4017be.automation.shaft;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
-import cd4017be.lib.util.INetwork;
+import cd4017be.lib.templates.IComponent;
 import cd4017be.lib.util.Obj2;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -16,7 +16,7 @@ import net.minecraft.world.World;
  */
 public class GasReservoir extends HeatReservoir {
 
-	public static interface IGasComp extends IHeatComp, INetwork {
+	public static interface IGasComp extends IHeatComp, IComponent {
 		public boolean canConnect(IGasComp comp, EnumFacing side);
 		public GasReservoir getGas();
 		public void setGas(GasReservoir G);
@@ -62,10 +62,10 @@ public class GasReservoir extends HeatReservoir {
 		this.T *= x0;
 		this.T += T * x1;
 		this.N += N;
-		if (!content.equals(gas)) {
+		/*if (!content.equals(gas)) {
 			content.replaceAll((g, c) -> c * x0);
 			gas.forEach((g, c) -> content.merge(g, c * x1, (c0, c1) -> c0 + c1));
-		}
+		}*/
 	}
 	
 	public void register(IGasComp comp) {
@@ -73,13 +73,13 @@ public class GasReservoir extends HeatReservoir {
 		if (G == this) return;
 		this.V += G.V;
 		this.addGas(G.content, G.N, G.T);
-		G.comps.forEach((i, obj) -> obj.objA.setGas(this));
+		//G.comps.forEach((i, obj) -> obj.objA.setGas(this));
 		comps.putAll(G.comps);
 	}
 	
 	public void remove(IGasComp comp) {
-		Obj2<IGasComp, Float> obj = comps.remove(comp.posHash());
-		if (obj != null) this.onDisconnect();
+		//Obj2<IGasComp, Float> obj = comps.remove(comp.posHash());
+		//if (obj != null) this.onDisconnect();
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -95,12 +95,12 @@ public class GasReservoir extends HeatReservoir {
 				set1 = new HashSet<Obj2<IGasComp, Float>>();
 				for (Obj2<IGasComp, Float> obj1 : set) {
 					G.V += obj1.objB;
-					G.comps.put(obj1.objA.posHash(), obj1);
+					//G.comps.put(obj1.objA.posHash(), obj1);
 					obj1.objA.setGas(G);
 					for (EnumFacing side : EnumFacing.VALUES) {
-						Obj2<IGasComp, Float> obj2 = comps.get(obj1.objA.getPos().offset(side).hashCode());
-						if (obj2 != null && obj2.objA.getGas() != G && obj1.objA.canConnect(obj2.objA, side) && obj2.objA.canConnect(obj1.objA, side.getOpposite()))
-							set1.add(obj2);
+						//Obj2<IGasComp, Float> obj2 = comps.get(obj1.objA.getPos().offset(side).hashCode());
+						//if (obj2 != null && obj2.objA.getGas() != G && obj1.objA.canConnect(obj2.objA, side) && obj2.objA.canConnect(obj1.objA, side.getOpposite()))
+						//	set1.add(obj2);
 					}
 				}
 				set = set1;

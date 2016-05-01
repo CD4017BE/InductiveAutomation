@@ -86,7 +86,7 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 	 * @param comp
 	 */
 	public void addCon(ShaftComponent comp, IKineticComp con) {
-		byte side = con.getConSide();
+		byte side = (byte)(con.getConSide()^1);
 		con.setShaft(comp);
 		connectors.put(SharedNetwork.SidedPosUID(comp.getUID(), side), con);
 		comp.con |= 1 << side;
@@ -107,10 +107,17 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 		}
 	}
 	
+	public void changeMass(ShaftComponent shaft, float mass) {
+		mass -= shaft.m;
+		if (mass > 0) v *= m / (m + mass);
+		shaft.m += mass;
+		m += mass;
+	}
+	
 	@Override
 	protected void updatePhysics() {
 		float dt = 0.05F;
-		float ds = v * dt, F = 0, a, E;
+		float ds = v * dt, F = 0, a, E, v1;
 		if (core.shaft.getWorld().isRemote) {
 			s += ds;//just simulate constant rotation speed
 			if (s > 1F) s -= Math.floor(s);
@@ -121,18 +128,17 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 			IKineticComp comp = it.next();
 			if (!comp.valid()) {
 				it.remove();
-				if (comp.getShaft() != null) comp.getShaft().con &= ~(1 << comp.getConSide());
+				if (comp.getShaft() != null) comp.getShaft().con &= ~(1 << (comp.getConSide() ^ 1));
 			}
-			else F += comp.estimatedForce(s, ds);
+			else F += comp.estimatedForce(ds);
 		}
 		a = F / m; //convert to acceleration
 		if (v == 0 && a <= 0) return;
-		if (-a * dt > v) dt = -v / a; //if rotation would stop, only calculate till that point
+		v1 = (v + a * dt) * dt;
+		if (v1 < 0) {dt = -v / a; v1 = 0;} //if rotation would stop, only calculate till that point
 		ds = 0.5F * a * dt * dt + v * dt; //now use the real distance moved
 		E = 0.5F * m * v * v; //get the kinetic Energy of the shaft and add the work of all components to it
-		for (IKineticComp comp : connectors.values()) {
-			E += comp.work(s, ds);
-		}
+		for (IKineticComp comp : connectors.values()) E += comp.work(ds, v1);
 		v = (float)Math.sqrt(2F * E / m); //convert back to speed
 		if (Float.isNaN(v)) v = 0;
 		s += ds; //move the shaft forward
@@ -182,18 +188,17 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 		 * calculate the estimated force of this part on the shaft. 
 		 * This value doesn't need to be exact, but it shouldn't be greater than the actual force added during work().
 		 * Otherwise the shaft could probably get negative kinetic energy.
-		 * @param s [m] the current shaft position
 		 * @param ds [m] the distance the shaft will move during this calculation tick
 		 * @return [kg*m/s²] the force on the shaft (positive values accelerate, negative slow down)
 		 */
-		public float estimatedForce(float s, float ds);
+		public float estimatedForce(float ds);
 		/**
 		 * update the mechanical physics of this connected part
-		 * @param s [m] the current shaft position
 		 * @param ds [m] the distance the shaft will move during this calculation tick
+		 * @param v [20m/s] the speed that would result from force
 		 * @return [J] the amount of work added to the shaft
 		 */
-		public float work(float s, float ds);
+		public float work(float ds, float v);
 	}
 	
 	public interface IShaft {

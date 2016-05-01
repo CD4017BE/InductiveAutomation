@@ -48,15 +48,15 @@ public class ElectricCoil extends AutomatedTile implements IKineticComp, IEnergy
         if (worldObj.isRemote) return;
         netData.floats[1] = (float)energy.Ucap;
         if (link != null) return;
-        else if ((netData.ints[1] & 1) == 0 ^ ((netData.ints[1] & 2) != 0 && worldObj.getStrongPower(pos) > 0)) {
+        if ((netData.ints[1] & 1) == 0 ^ ((netData.ints[1] & 2) != 0 && worldObj.getStrongPower(pos) > 0)) {
         	netData.floats[0] = 0;
         	return;
-        }
+        } 
         byte o = getOrientation();
         TileEntity te = Utils.getTileOnSide(this, o);
-        if (te != null && te instanceof ElectricCoil && ((ElectricCoil)te).getOrientation() == (o^1)) {
-        	ElectricCoil ec = (ElectricCoil)te;
-        	if (o % 2 != 0 || ec.energy.Umax == 0 || (ec.netData.ints[1] & 1) == 0 ^ ((ec.netData.ints[1] & 2) != 0 && ec.worldObj.getStrongPower(ec.pos) > 0)) return;
+        ElectricCoil ec;
+        if (te != null && te instanceof ElectricCoil && (ec = (ElectricCoil)te).getOrientation() == (o^1) && ec.energy.Umax != 0 && ((ec.netData.ints[1] & 1) != 0 ^ ((ec.netData.ints[1] & 2) != 0 && ec.worldObj.getStrongPower(ec.pos) > 0))) {
+        	if (o % 2 != 0) return;
         	double x = (double)netData.ints[0], y = (double)ec.netData.ints[0];
         	x *= x; y *= y;
             double Ex = energy.Ucap * energy.Ucap;
@@ -117,36 +117,44 @@ public class ElectricCoil extends AutomatedTile implements IKineticComp, IEnergy
 		return s * (netData.ints[0] - Nmin[type]) / (Nmax[type] - Nmin[type]);
 	}
 
-	private static final float[] C = {20F, 20F, 20F};
+	private static final float[] C = {20F, 10F, 4F};
 	private static final float[] R = {0.1F, 0.2F, 0.5F};
 	public static final int[] Nmax = {200, 400, 1000};
 	public static final int[] Nmin = {5, 10, 25};
+	public static final float Mag = 0.01F;
 	
-	private float F;
+	private float F, v0;
 	
 	@Override
-	public float estimatedForce(float s, float ds) {
+	public float estimatedForce(float ds) {
 		if ((netData.ints[1] & 1) == 0 ^ ((netData.ints[1] & 2) != 0 && worldObj.getStrongPower(pos) > 0)) return F = 0;
 		float B = this.getMagStr();
 		if (B == 0) return F = 0;
+		v0 = ds;
 		float Ca = (float)netData.ints[0] * C[type];
-		float Ra = (float)netData.ints[0] * R[type];
 		float Uind = Ca * ds * B;
-		float Ia = ((float)energy.Ucap - Uind) / Ra;
+		float Ia = ((float)energy.Ucap - Uind) / (float)netData.ints[0] / R[type];
 		return F = Ca * Ia * B;
 	}
 
 	@Override
-	public float work(float s, float ds) {
-		if (F == 0) return 0;
-		netData.floats[0] = Math.min(F * ds, (float)(energy.Ucap * energy.Ucap));
-		energy.addEnergy(-netData.floats[0]);
-		return netData.floats[0];
+	public float work(float ds, float v) {
+		if (F == 0) return netData.floats[0] = 0;
+		v -= v0;
+		if (v * F > 0) {
+			float Ca = (float)netData.ints[0] * C[type] * this.getMagStr();
+			float x = ((float)energy.Ucap / Ca - v0) / v;
+			if (x > 0 && x < 1) F *= x;
+		}
+		float W = Math.min(F * ds, (float)(energy.Ucap * energy.Ucap));
+		energy.addEnergy(netData.floats[0] = -W);
+		return W;
 	}
 	
 	private float getMagStr() {
-		//return Ie * Le / Ne;
-		return link == null ? 0 : link.type == 1 ? 1F : 0F;
+		if (link == null || link.type <= 0 || link.type > 4) return 0F;
+		if (link.shaft.energy == null) return 1F;
+		return (float)link.shaft.energy.Ucap * Mag;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package cd4017be.api.automation.therm;
+package cd4017be.automation.shaft;
 
 import java.util.HashMap;
 
@@ -39,7 +39,7 @@ public class HeatReservoir {
 		H.T -= dQ / Ca;
 		T += dQ / Cb;
 	}
-	
+	/*
 	public static Obj2<HeatReservoir, Float> getHeat(World world, BlockPos pos, byte side) {
 		TileEntity te = world.getTileEntity(pos);
 		if (te instanceof IHeatComp) {
@@ -51,6 +51,7 @@ public class HeatReservoir {
 			return new Obj2<HeatReservoir, Float>(H, R);
 		}
 	}
+	*/
 	
 	public static float getEnvironmentTemp(World world, BlockPos pos) {
 		if (world.provider.getDimensionName() == "Nether") return 380F; //107°C

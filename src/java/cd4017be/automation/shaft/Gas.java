@@ -1,4 +1,4 @@
-package cd4017be.api.automation.therm;
+package cd4017be.automation.shaft;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
