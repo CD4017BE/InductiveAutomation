@@ -194,6 +194,7 @@ public class ClientProxy extends CommonProxy
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilC");
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilA");
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilH");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftMass");
         SpecialModelLoader.registerTESRModel(TileEntityTankRenderer.model);
     }
     

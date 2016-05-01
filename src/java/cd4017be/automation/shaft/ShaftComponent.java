@@ -4,13 +4,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import cd4017be.api.automation.PipeEnergy;
+import cd4017be.automation.Config;
+import cd4017be.automation.Objects;
 import cd4017be.automation.shaft.ShaftPhysics.IKineticComp;
-import cd4017be.lib.BlockItemRegistry;
-import cd4017be.lib.ModTileEntity;
+import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IComponent;
 import cd4017be.lib.templates.SharedNetwork;
 import cd4017be.lib.util.Obj2;
@@ -18,14 +22,14 @@ import cd4017be.lib.util.Obj2;
 public class ShaftComponent implements IComponent<ShaftComponent, ShaftPhysics> {
 
 	public ShaftPhysics network;
-	public final ModTileEntity shaft;
+	public final AutomatedTile shaft;
 	protected long Uid;
 	public byte con = 0;
 	public float m;
 	public boolean updateCon;
 	public byte type = 0;
 	
-	public ShaftComponent(ModTileEntity shaft, float m) {
+	public ShaftComponent(AutomatedTile shaft, float m) {
 		this.shaft = shaft;
 		this.Uid = 0;
 		this.m = m;
@@ -70,9 +74,10 @@ public class ShaftComponent implements IComponent<ShaftComponent, ShaftPhysics> 
 				new Obj2<Long, Byte>(SharedNetwork.ExtPosUID(shaft.getPos().offset(dir, -1), 0), (byte)(n + 1)));
 	}
 	
-	public static ShaftComponent readFromNBT(ModTileEntity tile, NBTTagCompound nbt) {
+	public static ShaftComponent readFromNBT(AutomatedTile tile, NBTTagCompound nbt) {
 		ShaftComponent pipe = new ShaftComponent(tile, nbt.getFloat("mass"));
 		pipe.type = nbt.getByte("type");
+		if (pipe.type >= 2 && pipe.type < 5) tile.energy = new PipeEnergy(Config.Umax[pipe.type - 2], Config.Rcond[pipe.type - 2]);
 		ShaftPhysics physics = new ShaftPhysics(pipe);
 		physics.v = nbt.getFloat("rotVel");
 		physics.s = nbt.getFloat("rotPos");
@@ -97,17 +102,31 @@ public class ShaftComponent implements IComponent<ShaftComponent, ShaftPhysics> 
 	}
 
 	public boolean onClicked(EntityPlayer player, ItemStack item) {
-		if (item == null && !player.isSneaking()) {
-			network.v += 0.1F / network.m;//TODO remove later?
-		} else if (item != null && item.getItem() == Items.redstone) {
-			this.type = 1;
-		} else if (item != null && item.isItemEqual(BlockItemRegistry.stack("CoilCp", 1))) {
-			this.type = 2;
-		} else if (item != null && item.isItemEqual(BlockItemRegistry.stack("CoilC", 1))) {
-			this.type = 3;
-		} else if (item != null && item.isItemEqual(BlockItemRegistry.stack("CoilSC", 1))) {
-			this.type = 4;
+		float mass = m;
+		if (player == null || (player.isSneaking() && item == null)) {
+			switch (type) {
+			case 1: shaft.dropStack(new ItemStack(Items.redstone)); break;
+			case 2: shaft.dropStack(new ItemStack(Objects.electricCoilC)); break;
+			case 3: shaft.dropStack(new ItemStack(Objects.electricCoilA)); break;
+			case 4: shaft.dropStack(new ItemStack(Objects.electricCoilH)); break;
+			case 5: shaft.dropStack(new ItemStack(Blocks.iron_block)); break;
+			default: return false;
+			}
+			type = 0;
+			mass = 1000F;
+		} else if (type == 0 && !player.isSneaking() && item != null) {
+			Item i = item.getItem();
+			if (i == Items.redstone) {type = 1; mass = 2000F;}
+			else if (i == Item.getItemFromBlock(Objects.electricCoilC)) {type = 2; mass = 2000F;}
+			else if (i == Item.getItemFromBlock(Objects.electricCoilA)) {type = 3; mass = 2000F;}
+			else if (i == Item.getItemFromBlock(Objects.electricCoilH)) {type = 4; mass = 2000F;}
+			else if (i == Item.getItemFromBlock(Blocks.iron_block)) {type = 5; mass = 16000F;}
+			else return false;
+			player.setCurrentItemOrArmor(0, --item.stackSize <= 0 ? null : item);
 		} else return false;
+		if (type >= 2 && type < 5 && shaft.energy == null) shaft.energy = new PipeEnergy(Config.Umax[type - 2], Config.Rcond[type - 2]);
+		else if (type == 0 && shaft.energy != null) shaft.energy = null;
+		if (mass != m) network.changeMass(this, mass);
 		shaft.markUpdate();
 		return true;
 	}
