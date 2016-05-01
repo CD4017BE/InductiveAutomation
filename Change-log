@@ -14,9 +14,26 @@ add other mod's energy types
 - item/fluid warp pipe interface (AE/LP?)
 - mob interacting machine
 
-- warp extraction pipe filter priority -> limit destination priority
-- pipe-filter tooltip
 ---THERMODYNAMIC-PHYSICS!!!!
+
+- balance recipes via mine_tweaker scripts.
+
+---THERMODYNAMIC-PHYSICS:
+done:
+- shaft
+- coils, motor/dynamo, transformer -> replaces old voltage transformer
+todo:
+- adjust recipes -> replace coil items with blocks
+- gas, heat, pressure
+- fluid (de-)pressurizer
+- fluid heat exchanger
+- fluid condenser/evaporator
+- liquifier/solidifier -> replaces lava cooler??
+- pneumatic piston -> replaces steam engine
+- gas heat exchanger
+- gas tank + pipe
+- solid fuel oven -> replaces steam boiler
+- ...
 
 ################################# VERSIONS 1.8.9 #################################
 

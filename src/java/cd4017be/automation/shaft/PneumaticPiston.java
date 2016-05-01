@@ -1,6 +1,6 @@
-package cd4017be.api.automation.therm;
+package cd4017be.automation.shaft;
 
-import cd4017be.api.automation.therm.Shaft.IKineticComp;
+import cd4017be.automation.shaft.ShaftPhysics.IKineticComp;
 
 public class PneumaticPiston implements IKineticComp {
 
@@ -13,7 +13,7 @@ public class PneumaticPiston implements IKineticComp {
 	}
 
 	@Override
-	public float estimatedForce(float s, float ds) {
+	public float estimatedForce(float ds) {
 		if (input == null || output == null) return 0;
 		float x0;
 		if (ds <= 0) {
@@ -32,7 +32,7 @@ public class PneumaticPiston implements IKineticComp {
 	}
 
 	@Override
-	public float work(float s, float ds) {
+	public float work(float ds, float v) {
 		if (input == null || output == null) return 0;
 		float x, n, T, W;
 		//adiabatic expansion of input reservoir
@@ -55,6 +55,24 @@ public class PneumaticPiston implements IKineticComp {
 		W -= output.T * output.N * x;
 		output.T *= 1F + x;
 		return W;
+	}
+
+	@Override
+	public byte getConSide() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public ShaftComponent getShaft() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setShaft(ShaftComponent shaft) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
