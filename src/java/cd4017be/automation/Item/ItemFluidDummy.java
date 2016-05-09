@@ -7,8 +7,8 @@
 package cd4017be.automation.Item;
 
 import java.util.List;
-
 import cd4017be.automation.Automation;
+import cd4017be.automation.Objects;
 import cd4017be.lib.DefaultItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -17,9 +17,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.RayTraceResult;
-import net.minecraft.util.RayTraceResult.MovingObjectType;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.RayTraceResult.Type;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
@@ -32,59 +36,46 @@ import net.minecraftforge.fluids.IFluidContainerItem;
  */
 public class ItemFluidDummy extends DefaultItem implements IFluidContainerItem
 {
-    public static ItemFluidDummy instance;
 	
     public ItemFluidDummy(String id)
     {
         super(id);
-        this.setHasSubtypes(true);
         this.setCreativeTab(Automation.tabFluids);
-        instance = this;
-    }
-
-    @Override
-    public String getItemStackDisplayName(ItemStack item) 
-    {
-        int id = item.getItemDamage();
-        Fluid fluid = FluidRegistry.getFluid(id);
-        return fluid != null ? fluid.getLocalizedName(new FluidStack(fluid, 0)) : "Invalid Fluid";
     }
 
     @Override
 	public String getUnlocalizedName(ItemStack item) {
-    	int id = item.getItemDamage();
-        Fluid fluid = FluidRegistry.getFluid(id);
-        return fluid != null ? "fluid." + fluid.getName() : super.getUnlocalizedName(item);
+        FluidStack fluid = this.getFluid(item);
+        return fluid != null ? fluid.getUnlocalizedName() : super.getUnlocalizedName(item);
 	}
 
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) 
     {
 		if (tab == Automation.tabFluids)
-			for (int i = 1; i <= FluidRegistry.getMaxID(); i++)
-				list.add(new ItemStack(item, 1, i));
+			for (Fluid fluid : FluidRegistry.getRegisteredFluids().values()) 
+				list.add(item(fluid, 1));
 	}
     
     @Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player)
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand)
     {
         RayTraceResult movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, false);
 
-        if (movingobjectposition == null) return item;
-        else if (movingobjectposition.typeOfHit == MovingObjectType.BLOCK)
+        if (movingobjectposition == null) return new ActionResult<ItemStack>(EnumActionResult.PASS, item);
+        else if (movingobjectposition.typeOfHit == Type.BLOCK)
         {
             BlockPos pos = movingobjectposition.getBlockPos();
-            if (!world.canMineBlockBody(player, pos)) return item;
+            if (!world.canMineBlockBody(player, pos)) return new ActionResult<ItemStack>(EnumActionResult.FAIL, item);
             
             pos = pos.offset(movingobjectposition.sideHit);
             
-            if (!player.canPlayerEdit(pos, movingobjectposition.sideHit, item)) return item;
-            Fluid fluid = FluidRegistry.getFluid(item.getItemDamage());
-            if (fluid == null) {
-                item.stackSize--;
-            } else if (this.tryPlaceContainedLiquid(world, pos, fluid) && !player.capabilities.isCreativeMode) item.stackSize--;
+            if (!player.canPlayerEdit(pos, movingobjectposition.sideHit, item)) return new ActionResult<ItemStack>(EnumActionResult.FAIL, item);
+            Fluid fluid = fluid(item);
+            if (fluid == null) item.stackSize--;
+            else if (this.tryPlaceContainedLiquid(world, pos, fluid) && !player.capabilities.isCreativeMode) item.stackSize--;
         }
-        return item;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
     
     public boolean tryPlaceContainedLiquid(World world, BlockPos pos, Fluid fluid)
@@ -92,7 +83,7 @@ public class ItemFluidDummy extends DefaultItem implements IFluidContainerItem
     	Block block = fluid.getBlock();
     	if (block == null) return false;
     	IBlockState state = world.getBlockState(pos);
-    	Material material = state.getBlock().getMaterial();
+    	Material material = state.getBlock().getMaterial(state);
         if (!world.isAirBlock(pos) && material.isSolid()) return false;
         world.setBlockState(pos, block.getDefaultState(), 3);
         return true;
@@ -101,13 +92,8 @@ public class ItemFluidDummy extends DefaultItem implements IFluidContainerItem
     @Override
     public FluidStack getFluid(ItemStack item)
     {
-    	Fluid fluid = FluidRegistry.getFluid(item.getItemDamage());
+    	Fluid fluid = fluid(item);
     	return fluid == null ? null : new FluidStack(fluid, 1000);
-    }
-    
-    public static ItemStack getFluidContainer(int id, int am)
-    {
-    	return new ItemStack(instance, am, id);
     }
 
 	@Override
@@ -124,8 +110,24 @@ public class ItemFluidDummy extends DefaultItem implements IFluidContainerItem
 	@Override
 	public FluidStack drain(ItemStack item, int maxDrain, boolean doDrain) {
 		if (maxDrain < 1000) return null;
-		if (doDrain) item.stackSize = 0;
-		return this.getFluid(item);
+		FluidStack fluid = this.getFluid(item);
+		if (doDrain) {
+			item.stackSize = 0;
+			item.setItem(null);
+		}
+		return fluid;
+	}
+	
+	public static Fluid fluid(ItemStack item) {
+		return item.getItem() == Objects.fluidDummy && item.getTagCompound() != null ? FluidRegistry.getFluid(item.getTagCompound().getString("i")) : null;
+	}
+	
+	public static ItemStack item(Fluid fluid, int am) {
+		ItemStack item = new ItemStack(Objects.fluidDummy, am);
+		NBTTagCompound nbt = new NBTTagCompound();
+		nbt.setString("i", fluid.getName());
+		item.setTagCompound(nbt);
+		return item;
 	}
     
 }

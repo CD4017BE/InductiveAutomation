@@ -1,0 +1,8 @@
+c = [0, 0, 0, 1, 1, 1];
+t = [0, 0, 16, 16];
+draw(rect(c, t, "-uv"));
+draw(rect(c, t, "+uv"));
+draw(rect(c, t, "u-v"));
+draw(rect(c, t, "u+v"));
+draw(rect(c, t, "vu-"));
+draw(rect(c, t, "vu+"));

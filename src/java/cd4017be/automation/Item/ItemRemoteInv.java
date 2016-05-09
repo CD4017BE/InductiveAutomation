@@ -25,7 +25,10 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -65,13 +68,13 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 	}
 
 	@Override
-	public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
+	public EnumActionResult onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing s, float X, float Y, float Z) 
 	{
 		if (!world.isRemote && player.isSneaking()) {
 			TileEntity te = world.getTileEntity(pos);
 			if (te == null || !(te instanceof IInventory)) {
 				player.addChatMessage(new TextComponentString("Block has no inventory!"));
-				return true;
+				return EnumActionResult.SUCCESS;
 			}
 			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 			item.getTagCompound().setInteger("x", pos.getX());
@@ -81,16 +84,16 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem
 			item.getTagCompound().setInteger("d", player.dimension);
 			item.getTagCompound().setInteger("size", Utils.accessibleSlots((IInventory)te, s.getIndex()).length);
 			player.addChatMessage(new TextComponentString("Block inventory linked"));
-			return true;
+			return EnumActionResult.SUCCESS;
 		}
-		return false;
+		return EnumActionResult.PASS;
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
 	{
 		if (!player.isSneaking()) BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
-        return item;
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
 	}
 
 	@Override

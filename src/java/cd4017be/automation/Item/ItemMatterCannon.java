@@ -29,10 +29,13 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.RayTraceResult;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
@@ -94,13 +97,13 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
-        Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-        Vec3 dir = player.getLookVec();
+        Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+        Vec3d dir = player.getLookVec();
         RayTraceResult obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 128, dir.yCoord * 128, dir.zCoord * 128), false);
-        if (obj != null) this.onItemUse(item, player, world, obj.getBlockPos(), obj.sideHit, (float)obj.hitVec.xCoord, (float)obj.hitVec.yCoord, (float)obj.hitVec.zCoord);
-        return item;
+        if (obj != null) new ActionResult<ItemStack>(this.onItemUse(item, player, world, obj.getBlockPos(), hand, obj.sideHit, (float)obj.hitVec.xCoord, (float)obj.hitVec.yCoord, (float)obj.hitVec.zCoord), item);
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
     
     private class Position {
@@ -114,7 +117,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     	
     	public boolean place(ItemStack item, EntityPlayer player, World world, float X, float Y, float Z, int ax, ArrayList<Position> list) {
     		BlockPos npos = pos.offset(s);
-    		if (!ItemMatterCannon.this.placeItem(item, player, world, npos, s, X, Y, Z)) return false;
+    		if (!ItemMatterCannon.this.placeItem(item, player, world, npos, null, s, X, Y, Z)) return false;
     		if (!world.getBlockState(npos).getBlock().isReplaceable(world, npos))
     			for (int i = 0; i < 6; i++)
     				if (i != ax && i != (ax^1) && i != (s.getIndex()^1))
@@ -125,21 +128,21 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     
 
     @Override
-    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
+    public EnumActionResult onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing s, float X, float Y, float Z) 
     {
-        if (world.isRemote) return true;
+        if (world.isRemote) return EnumActionResult.SUCCESS;
         int mode = item.getTagCompound() == null ? 0 : item.getTagCompound().getByte("mode");
-    	if (mode < 0) return true;
+    	if (mode < 0) return EnumActionResult.SUCCESS;
     	if (mode == 0) {
     		if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() >> 4, pos.getZ() >> 4)) {
                 player.addChatMessage(new TextComponentString("Block is Protected"));
-                return true;
+                return EnumActionResult.SUCCESS;
             }
-    		this.placeItem(item, player, world, pos, s, X, Y, Z);
+    		this.placeItem(item, player, world, pos, hand, s, X, Y, Z);
     	} else if (mode == 1) {
     		if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - 15, pos.getX() + 16, pos.getZ() - 15, pos.getZ() + 16)) {
                 player.addChatMessage(new TextComponentString("Block is Protected"));
-                return true;
+                return EnumActionResult.SUCCESS;
             }
     		ArrayList<Position> curList = new ArrayList<Position>();
     		curList.add(new Position(pos, s));
@@ -150,13 +153,13 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     			newList = new ArrayList<Position>();
     			for (Position p : curList)
     				if (p.place(item, player, world, X, Y, Z, s.getIndex(), newList)) n++;
-    				else return true;
+    				else return EnumActionResult.SUCCESS;
     			curList = newList;
     		}
     	} else if (mode == 2) {
     		if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
                 player.addChatMessage(new TextComponentString("Block is Protected"));
-                return true;
+                return EnumActionResult.SUCCESS;
             }
     		byte ax = (byte)(s.getIndex() / 2);
     		BlockPos p;
@@ -164,13 +167,13 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
         		for (int j = -7; j <= 7; j++) {
         			p = pos.add(ax==2?0:i, ax==0?0:j, ax==1?0: ax==2?i:j);
         			if (!world.getBlockState(p).getBlock().isReplaceable(world, p) && 
-        					!this.placeItem(item, player, world, p, s, X, Y, Z))
-        				return true;
+        					!this.placeItem(item, player, world, p, hand, s, X, Y, Z))
+        				return EnumActionResult.SUCCESS;
         		}
     	} else if (mode == 3) {
     		if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
                 player.addChatMessage(new TextComponentString("Block is Protected"));
-                return true;
+                return EnumActionResult.SUCCESS;
             }
     		IBlockState state = world.getBlockState(pos);
     		byte ax = (byte)(s.getIndex() / 2);
@@ -179,14 +182,14 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
         		for (int j = -7; j <= 7; j++) {
         			p = pos.add(ax==2?0:i, ax==0?0:j, ax==1?0: ax==2?i:j);
         			if (world.getBlockState(p) == state && 
-        					!this.placeItem(item, player, world, p, s, X, Y, Z))
-        				return true;
+        					!this.placeItem(item, player, world, p, hand, s, X, Y, Z))
+        				return EnumActionResult.SUCCESS;
         		}
     	}
-        return true;
+        return EnumActionResult.SUCCESS;
     }
     
-    private boolean placeItem(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z)
+    private boolean placeItem(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing s, float X, float Y, float Z)
     {
     	EnergyItem energy = new EnergyItem(item, this);
     	if (energy.getStorageI() < EnergyUsage){
@@ -200,8 +203,8 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
         ItemStack stack = MatterOrbItemHandler.decrStackSize(item, sel, 1);
         ItemStack refStack = MatterOrbItemHandler.getItem(item, sel);
         boolean empty = refStack == null || !refStack.isItemEqual(stack);
-        player.setCurrentItemOrArmor(0, stack);
-        if (state.getBlock().onBlockActivated(world, pos, state, player, s, X, Y, Z) || (stack != null && stack.getItem() != null && stack.getItem().onItemUse(stack, player, world, pos, s, X, Y, Z))) {
+        player.setHeldItem(hand, stack);
+        if (state.getBlock().onBlockActivated(world, pos, state, player, hand, refStack, s, X, Y, Z) || (stack != null && stack.getItem() != null && stack.getItem().onItemUse(stack, player, world, pos, hand, s, X, Y, Z) == EnumActionResult.SUCCESS)) {
             energy.addEnergy(-EnergyUsage, -1);
         }
         stack = player.getHeldItemMainhand();
@@ -215,7 +218,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
                 }
             }
         }
-        player.setCurrentItemOrArmor(0, item);
+        player.setHeldItem(hand, item);
         return !empty;
     }
 

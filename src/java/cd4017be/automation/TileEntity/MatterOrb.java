@@ -40,8 +40,8 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
     public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) 
     {
         ArrayList<ItemStack> list = new ArrayList<ItemStack>();
-        ItemStack item = new ItemStack(this.getBlockType(), 1, 0);
-        if (MatterOrbItemHandler.isMatterOrb(item)) MatterOrbItemHandler.addItemStacks(item, storage.toArray(new ItemStack[storage.size()]));
+        ItemStack item = new ItemStack(state.getBlock(), 1, 0);
+        MatterOrbItemHandler.addItemStacks(item, storage.toArray(new ItemStack[storage.size()]));
         list.add(item);
         return list;
     }
@@ -101,17 +101,7 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
     public void writeToNBT(NBTTagCompound nbt) 
     {
         super.writeToNBT(nbt);
-        NBTTagList list = new NBTTagList();
-        for (ItemStack item : storage) {
-            NBTTagCompound tag = new NBTTagCompound();
-            if (item.getItem() == null) continue;
-            tag.setShort("i", (short)Item.getIdFromItem(item.getItem()));
-            tag.setShort("d", (short)item.getItemDamage());
-            tag.setInteger("n", item.stackSize);
-            if (item.getTagCompound() != null) tag.setTag("t", item.getTagCompound());
-            list.appendTag(tag);
-        }
-        nbt.setTag("Items", list);
+        nbt.setTag("Items", this.writeItems());
         if (in != null) {
             NBTTagCompound tag = new NBTTagCompound();
             in.writeToNBT(tag);
@@ -123,17 +113,34 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
     public void readFromNBT(NBTTagCompound nbt) 
     {
         super.readFromNBT(nbt);
-        NBTTagList list = nbt.getTagList("Items", 10);
-        storage.clear();
+        this.readItems(nbt.getTagList("Items", 10));
+        if (nbt.hasKey("In")) {
+            in = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("In"));
+        } else in = null;
+    }
+    
+    public void readItems(NBTTagList list) {
+    	storage.clear();
         for (int i = 0; i < list.tagCount(); i++) {
             NBTTagCompound tag = list.getCompoundTagAt(i);
             ItemStack item = new ItemStack(Item.getItemById(tag.getShort("i")), tag.getInteger("n"), tag.getShort("d"));
             if (tag.hasKey("t")) item.setTagCompound(tag.getCompoundTag("t"));
             storage.add(item);
         }
-        if (nbt.hasKey("In")) {
-            in = ItemStack.loadItemStackFromNBT(nbt.getCompoundTag("In"));
-        } else in = null;
+    }
+    
+    public NBTTagList writeItems() {
+    	NBTTagList list = new NBTTagList();
+        for (ItemStack item : storage) {
+            NBTTagCompound tag = new NBTTagCompound();
+            if (item.getItem() == null) continue;
+            tag.setShort("i", (short)Item.getIdFromItem(item.getItem()));
+            tag.setShort("d", (short)item.getItemDamage());
+            tag.setInteger("n", item.stackSize);
+            if (item.getTagCompound() != null) tag.setTag("t", item.getTagCompound());
+            list.appendTag(tag);
+        }
+        return list;
     }
 
     @Override

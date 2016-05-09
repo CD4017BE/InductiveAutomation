@@ -11,6 +11,7 @@ import cd4017be.lib.templates.SlotItemType;
 import cd4017be.lib.templates.SlotRemote;
 import cd4017be.lib.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -204,7 +205,7 @@ public class ContainerRemoteInventory extends ItemContainer
 	}
 
 	@Override
-	public ItemStack func_184996_a(int s, int b, int m, EntityPlayer player) 
+	public ItemStack func_184996_a(int s, int b, ClickType m, EntityPlayer player) 
 	{
 		ItemStack ret = super.func_184996_a(s, b, m, player);
 		if (!player.worldObj.isRemote) {

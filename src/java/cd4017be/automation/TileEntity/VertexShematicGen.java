@@ -227,7 +227,7 @@ public class VertexShematicGen extends AutomatedTile
 				}
 			}
 		}
-		worldObj.markBlockForUpdate(pos);
+		this.markUpdate();
 	}
 		
 	public void triangulate(NBTTagCompound nbt)

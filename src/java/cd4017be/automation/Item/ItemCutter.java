@@ -9,16 +9,16 @@ package cd4017be.automation.Item;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
@@ -43,26 +43,26 @@ public class ItemCutter extends ItemEnergyCell
     @Override
     public void onCreated(ItemStack item, World world, EntityPlayer player) 
     {
-        item.addEnchantment(Enchantment.silkTouch, 1);
+        item.addEnchantment(Enchantments.silkTouch, 1);
     }
     
     @Override
-    public boolean canHarvestBlock(Block block, ItemStack item) 
+    public boolean canHarvestBlock(IBlockState state, ItemStack item) 
     {
-        return block.getMaterial().isToolNotRequired() && new EnergyItem(item, this).getStorageI() >= this.energyUsage;
+        return state.getMaterial().isToolNotRequired() && new EnergyItem(item, this).getStorageI() >= this.energyUsage;
     }
     
     @Override
-    public boolean onBlockDestroyed(ItemStack item, World world, Block b, BlockPos pos, EntityLivingBase entityLiving) 
+    public boolean onBlockDestroyed(ItemStack item, World world, IBlockState b, BlockPos pos, EntityLivingBase entityLiving) 
     {
     	new EnergyItem(item, this).addEnergyI(-this.energyUsage, -1);
         return true;
     }
 
     @Override
-    public float getDigSpeed(ItemStack item, IBlockState state) 
+    public float getStrVsBlock(ItemStack item, IBlockState state) 
     {
-        float str = this.canHarvestBlock(state.getBlock(), item) ? 16F : 1F;
+        float str = this.canHarvestBlock(state, item) ? 16F : 1F;
         return str;
     }
     
@@ -80,20 +80,14 @@ public class ItemCutter extends ItemEnergyCell
     }
     
     @Override
-    public boolean itemInteractionForEntity(ItemStack item, EntityPlayer player, EntityLivingBase entity)
+    public boolean itemInteractionForEntity(ItemStack item, EntityPlayer player, EntityLivingBase entity, EnumHand hand)
     {
         EnergyItem energy = new EnergyItem(item, this);
-    	if (entity.worldObj.isRemote || energy.getStorageI() < this.energyUsage)
-        {
-            return false;
-        }
-        if (entity instanceof IShearable)
-        {
+    	if (entity.worldObj.isRemote || energy.getStorageI() < this.energyUsage) return false;
+        if (entity instanceof IShearable) {
             IShearable target = (IShearable)entity;
-            if (target.isShearable(item, entity.worldObj, new BlockPos(entity.posX, entity.posY, entity.posZ)))
-            {
-                List<ItemStack> drops = target.onSheared(item, entity.worldObj, new BlockPos(entity.posX, entity.posY, entity.posZ), EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, item));
-
+            if (target.isShearable(item, entity.worldObj, new BlockPos(entity.posX, entity.posY, entity.posZ))) {
+                List<ItemStack> drops = target.onSheared(item, entity.worldObj, new BlockPos(entity.posX, entity.posY, entity.posZ), EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, item));
                 Random rand = new Random();
                 for(ItemStack stack : drops)
                 {
@@ -112,21 +106,14 @@ public class ItemCutter extends ItemEnergyCell
     @Override
     public boolean onBlockStartBreak(ItemStack item, BlockPos pos, EntityPlayer player)
     {
-        if (player.worldObj.isRemote)
-        {
-            return false;
-        }
+        if (player.worldObj.isRemote) return false;
         IBlockState state = player.worldObj.getBlockState(pos);
-        if (state.getBlock() instanceof IShearable && !state.getBlock().canSilkHarvest(player.worldObj, pos, state, player))
-        {
+        if (state.getBlock() instanceof IShearable && !state.getBlock().canSilkHarvest(player.worldObj, pos, state, player)) {
             IShearable target = (IShearable)state.getBlock();
-            if (target.isShearable(item, player.worldObj, pos))
-            {
-                List<ItemStack> drops = target.onSheared(item, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, item));
+            if (target.isShearable(item, player.worldObj, pos)) {
+                List<ItemStack> drops = target.onSheared(item, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, item));
                 Random rand = new Random();
-
-                for(ItemStack stack : drops)
-                {
+                for(ItemStack stack : drops) {
                     float f = 0.7F;
                     double d  = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
                     double d1 = (double)(rand.nextFloat() * f) + (double)(1.0F - f) * 0.5D;
@@ -135,7 +122,6 @@ public class ItemCutter extends ItemEnergyCell
                     entityitem.setNoPickupDelay();
                     player.worldObj.spawnEntityInWorld(entityitem);
                 }
-
                 new EnergyItem(item, this).addEnergyI(-this.energyUsage, -1);
             }
         }

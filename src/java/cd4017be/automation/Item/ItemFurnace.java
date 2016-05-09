@@ -19,6 +19,9 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.FurnaceRecipes;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ItemFurnace extends ItemFilteredSubInventory implements IEnergyItem, IItemStorage, IGuiItem
@@ -54,10 +57,10 @@ public class ItemFurnace extends ItemFilteredSubInventory implements IEnergyItem
 	}
 
 	@Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
         BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
-        return item;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
 	
 	@Override

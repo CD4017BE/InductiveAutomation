@@ -6,6 +6,7 @@ package cd4017be.automation.Item;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -25,6 +26,7 @@ import cd4017be.lib.IGuiItem;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
@@ -33,16 +35,17 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.RayTraceResult;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
@@ -97,17 +100,17 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
     	int mode = item.getTagCompound().getByte("mode");
-        Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-        Vec3 dir = player.getLookVec();
-        Vec3 pos1 = pos.addVector(dir.xCoord * 128, dir.yCoord * 128, dir.zCoord * 128);
+        Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+        Vec3d dir = player.getLookVec();
+        Vec3d pos1 = pos.addVector(dir.xCoord * 128, dir.yCoord * 128, dir.zCoord * 128);
         double x0 = pos.xCoord, y0 = pos.yCoord, z0 = pos.zCoord, 
         		x1 = pos1.xCoord, y1 = pos1.yCoord, z1 = pos1.zCoord;
         RayTraceResult obj = mode == 6 || player.isSneaking() ? null : world.rayTraceBlocks(pos, pos1, false);
-        pos = new Vec3(x0, y0, z0);
-        pos1 = new Vec3(x1, y1, z1);
+        pos = new Vec3d(x0, y0, z0);
+        pos1 = new Vec3d(x1, y1, z1);
         if (obj != null) {
         	x1 = obj.hitVec.xCoord;
         	y1 = obj.hitVec.yCoord;
@@ -123,10 +126,10 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         	if (obj1 != null && (obj == null || obj1.hitVec.squareDistanceTo(pos) < obj.hitVec.squareDistanceTo(pos))) 
         		obj = new RayTraceResult(e);
         }
-        if (obj == null) return item;
-        else if (obj.typeOfHit == RayTraceResult.MovingObjectType.BLOCK) this.onItemUse(item, player, world, obj.getBlockPos(), obj.sideHit, (float)obj.hitVec.xCoord, (float)obj.hitVec.yCoord, (float)obj.hitVec.zCoord);
-        else if (obj.typeOfHit == RayTraceResult.MovingObjectType.ENTITY) this.useOnEntity(item, player, obj.entityHit);
-        return item;
+        if (obj == null) return new ActionResult<ItemStack>(EnumActionResult.PASS, item);
+        else if (obj.typeOfHit == RayTraceResult.Type.BLOCK) return new ActionResult<ItemStack>(this.onItemUse(item, player, world, obj.getBlockPos(), hand, obj.sideHit, (float)obj.hitVec.xCoord, (float)obj.hitVec.yCoord, (float)obj.hitVec.zCoord), item);
+        else if (obj.typeOfHit == RayTraceResult.Type.ENTITY) this.useOnEntity(item, player, obj.entityHit);
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
     
     private void useOnEntity(ItemStack item, EntityPlayer player, Entity entity)
@@ -151,7 +154,6 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
             if (n != 0) item.getTagCompound().setInteger("antimatter", item.getTagCompound().getInteger("antimatter") - n);
             item.getTagCompound().setFloat("buff", n - r);
     		entity.attackEntityFrom(DamageSource.causePlayerDamage(player), dmg);
-    		player.worldObj.playSoundEffect(entity.posX, entity.posY, entity.posZ, "random.explosion", 2.0F, 2.7F);
     	}
     	for (EntityItem ei : (List<EntityItem>)player.worldObj.getEntitiesWithinAABB(EntityItem.class, new AxisAlignedBB(entity.posX - 2.5D, entity.posY - 2.5D, entity.posZ - 2.5D, entity.posX + 2.5D, entity.posY + 2.5D, entity.posZ + 2.5D))) {
 			if (!ei.isDead && MatterOrbItemHandler.canInsert(item, ei.getEntityItem())) {
@@ -165,26 +167,26 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     }
     
     @Override
-    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
+    public EnumActionResult onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing s, float X, float Y, float Z) 
     {
     	int mode = item.getTagCompound().getByte("mode");
-    	if (player.isSneaking()) return false;
-        if (world.isRemote) return true;
-        if (mode < 0) return true;
+    	if (player.isSneaking()) return EnumActionResult.FAIL;
+        if (world.isRemote) return EnumActionResult.FAIL;
+        if (mode < 0) return EnumActionResult.FAIL;
         else if (mode < 5) {
         	if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - mode, pos.getX() + mode + 1, pos.getZ() - mode, pos.getZ() + mode + 1)) {
                 player.addChatMessage(new TextComponentString("Block is Protected"));
-                return true;
+                return EnumActionResult.SUCCESS;
             }
         	byte ax = (byte)(s.getIndex() / 2);
         	for (int i = -mode; i <= mode; i++)
         		for (int j = -mode; j <= mode; j++)
         			if (!this.breakBlock(item, player, world, pos.add(ax==2?0:i, ax==0?0:j, ax==1?0: ax==2?i:j)))
-        				return true;
+        				return EnumActionResult.SUCCESS;;
         } else if (mode == 5) {
         	if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
                 player.addChatMessage(new TextComponentString("Block is Protected"));
-                return true;
+                return EnumActionResult.SUCCESS;
             }
         	IBlockState state = world.getBlockState(pos);
         	for (int i = -7; i <= 7; i++)
@@ -192,9 +194,9 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         			for (int k = -7; k <= 7; k++)
         				if (world.getBlockState(pos.add(i, j, k)) == state)
         					if (!this.breakBlock(item, player, world, pos.add(i, j, k)))
-        						return true;
+        						return EnumActionResult.SUCCESS;;
         }
-        return true;
+        return EnumActionResult.SUCCESS;
     }
     
     private boolean breakBlock(ItemStack item, EntityPlayer player, World world, BlockPos pos)
@@ -206,7 +208,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
             return false;
     	}
     	IBlockState state = world.getBlockState(pos);
-        if (state.getBlock().isAir(world, pos)) return true;
+        if (state.getBlock().isAir(state, world, pos)) return true;
         float r = state.getBlock().getExplosionResistance(world, pos, player, null) * ench.amMult;
         float am = AntimatterItemHandler.getAntimatter(item) + item.getTagCompound().getFloat("buff");
         if (am < r) {
@@ -215,7 +217,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         }
         ItemStack[] drop;
         if (ench.silktouch && state.getBlock().canSilkHarvest(world, pos, state, player)) {
-        	drop = new ItemStack[]{new ItemStack(state.getBlock(), 1, state.getBlock().getDamageValue(world, pos))};
+        	drop = new ItemStack[]{new ItemStack(state.getBlock(), 1, state.getBlock().damageDropped(state))};
         } else {
             List<ItemStack> list = state.getBlock().getDrops(world, pos, state, ench.fortune);
             drop = list == null ? null : list.toArray(new ItemStack[list.size()]);
@@ -243,17 +245,14 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     	public int Euse;
     	public Enchantments(ItemStack item)
     	{
-    		NBTTagList list = item.getEnchantmentTagList();
-    		if (list != null)
-    			for (int i = 0; i < list.tagCount(); i++) {
-    				NBTTagCompound nbt = list.getCompoundTagAt(i);
-    				short id = nbt.getShort("id");
-    				short lvl = nbt.getShort("lvl");
-    				silktouch |= id == Enchantment.silkTouch.effectId;
-    				if (id == Enchantment.fortune.effectId) fortune = lvl;
-    				else if (id == Enchantment.efficiency.effectId) efficiency = lvl;
-    				else if (id == Enchantment.unbreaking.effectId) unbreaking = lvl;
-    			}
+    		Map<Enchantment, Integer> list = EnchantmentHelper.getEnchantments(item);
+    		this.silktouch = list.containsKey(net.minecraft.init.Enchantments.silkTouch);
+    		Integer lvl = list.get(net.minecraft.init.Enchantments.fortune);
+    		if (lvl != null) fortune = lvl.shortValue();
+    		lvl = list.get(net.minecraft.init.Enchantments.efficiency);
+    		if (lvl != null) efficiency = lvl.shortValue();
+    		lvl = list.get(net.minecraft.init.Enchantments.unbreaking);
+    		if (lvl != null) unbreaking = lvl.shortValue();
     		Euse = EnergyUsage * 3 / (3 + unbreaking);
     		amMult = AmUsage * 0.5F / (float)(4 + efficiency) * (silktouch ? 2.0F : 1F + 0.5F * (float)fortune);
     	}

@@ -2,6 +2,7 @@ package cd4017be.automation.Gui;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import cd4017be.api.automation.IOperatingArea;
@@ -37,7 +38,7 @@ public class ContainerAreaUpgrade extends ItemContainer
 	}
 
 	@Override
-	public ItemStack func_184996_a(int s, int b, int m, EntityPlayer par4EntityPlayer) {
+	public ItemStack func_184996_a(int s, int b, ClickType m, EntityPlayer par4EntityPlayer) {
 		ItemStack item = super.func_184996_a(s, b, m, par4EntityPlayer);
 		if (s >= 36) this.machine.onUpgradeChange(s - 36);
 		return item;

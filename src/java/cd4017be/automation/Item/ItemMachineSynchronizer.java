@@ -8,7 +8,10 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.automation.Automation;
@@ -32,12 +35,12 @@ public class ItemMachineSynchronizer extends DefaultItem
 	}
 	
 	@Override
-	 public boolean onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
+	public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing s, float X, float Y, float Z) 
 	{
         if (player.isSneaking()) {
         	TileEntity te = world.getTileEntity(pos);
-        	if (te == null || !(te instanceof IOperatingArea)) return false;
-        	if (world.isRemote) return true;
+        	if (te == null || !(te instanceof IOperatingArea)) return EnumActionResult.SUCCESS;
+        	if (world.isRemote) return EnumActionResult.SUCCESS;
         	int m;
         	if (te instanceof Pump) m = 2;
         	else if (te instanceof Miner) m = 3;
@@ -48,19 +51,19 @@ public class ItemMachineSynchronizer extends DefaultItem
         	stack.getTagCompound().setInteger("lx", pos.getX());
         	stack.getTagCompound().setInteger("ly", pos.getY());
         	stack.getTagCompound().setInteger("lz", pos.getZ());
-        	player.setCurrentItemOrArmor(0, stack);
+        	player.setHeldItem(hand, stack);
         	player.addChatMessage(new TextComponentString("Linked to machine"));
-        	return true;
+        	return EnumActionResult.SUCCESS;
         }
-        return false;
+        return EnumActionResult.PASS;
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
-        if (!player.isSneaking() || item.getItemDamage() == 0) return item;
+        if (!player.isSneaking() || item.getItemDamage() == 0) return new ActionResult<ItemStack>(EnumActionResult.FAIL, item);
         if (!world.isRemote) player.addChatMessage(new TextComponentString("Link cleared"));
-        return new ItemStack(this, item.stackSize, 0);
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, new ItemStack(this, item.stackSize, 0));
     }
     
     @Override

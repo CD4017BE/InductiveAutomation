@@ -13,7 +13,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 /**
@@ -49,16 +52,16 @@ public class ItemTeleporterCoords extends DefaultItem
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
-        this.onItemUse(item, player, world, new BlockPos(player.posX, player.posY, player.posZ), EnumFacing.DOWN, 0, 0, 0);
-        return item;
+        this.onItemUse(item, player, world, new BlockPos(player.posX, player.posY, player.posZ), hand, EnumFacing.DOWN, 0, 0, 0);
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
 
     @Override
-    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
+    public EnumActionResult onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float X, float Y, float Z) 
     {
-        if (world.isRemote) return true;
+        if (world.isRemote) return EnumActionResult.SUCCESS;
         if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
         if (!player.isSneaking()) {
             item.getTagCompound().setInteger("pos.getX()", pos.getX());
@@ -71,7 +74,7 @@ public class ItemTeleporterCoords extends DefaultItem
             item.getTagCompound().setInteger("pos.getZ()", pos.getZ() - item.getTagCompound().getInteger("z"));
             player.addChatMessage(new TextComponentString("Translation set to: dX=" + pos.getX() + " dY=" + pos.getY() + " dZ=" + pos.getZ()));
         }
-        return true;
+        return EnumActionResult.SUCCESS;
     }
     
 }

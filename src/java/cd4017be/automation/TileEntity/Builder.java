@@ -57,6 +57,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidStack;
@@ -335,11 +336,15 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     }
     
     @Override
-    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
     {
         lastUser = player.getGameProfile();
+<<<<<<< Upstream, based on master-1.8.9
         prot = null;
         return super.onActivated(player, s, X, Y, Z);
+=======
+        return super.onActivated(player, hand, item, s, X, Y, Z);
+>>>>>>> 3f907e1 fix render problems
     }
     
     @Override
@@ -537,7 +542,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         	}
         	if (storage >= Energy && (stack = remove(inv.inventory[comp], inv.useDamage(comp))) != null) {
         		EntityPlayer player = FakePlayerFactory.get((WorldServer)worldObj, lastUser);
-            	stack = ItemPlacement.doPlacement(worldObj, player, stack, pos, inv.getDir(comp), inv.Vxy[comp], inv.Vxy[comp + 8], inv.sneak(comp), inv.useBlock);
+            	stack = ItemPlacement.doPlacement(worldObj, player, stack, pos, EnumHand.MAIN_HAND, inv.getDir(comp), inv.Vxy[comp], inv.Vxy[comp + 8], inv.sneak(comp), inv.useBlock);
                 storage -= Energy;
             	if (stack != null) {
                 	this.putItemStack(stack, inventory, -1, inventory.componets[0].slots());
@@ -673,7 +678,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
             this.area = area;
             netData.ints[8] = 0;
         }
-        this.worldObj.markBlockForUpdate(getPos());
+        this.markUpdate();
     }
 
     @Override
@@ -771,7 +776,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 	public void onUpgradeChange(int s) 
 	{
 		if (s == 0) {
-			this.worldObj.markBlockForUpdate(getPos());
+			this.markUpdate();
 			return;
 		}
 		if (s == 3) {
