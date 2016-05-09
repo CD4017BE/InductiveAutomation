@@ -22,6 +22,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ICrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -206,7 +207,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 	 * @return 
 	 */
 	@Override
-	public ItemStack func_184996_a(TileContainer container, int s, int mb, int fk, EntityPlayer player) 
+	public ItemStack slotClick(TileContainer container, int s, int mb, ClickType fk, EntityPlayer player) 
 	{
 		try {
 			clientInvEdit = true;
@@ -214,7 +215,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 				Slot slot = container.getSlot(s);
 				ItemStack item0 = slot.getStack();
 				ItemStack item1 = player.inventory.getItemStack();
-				if (fk == 0) {
+				if (fk == ClickType.PICKUP_ALL) {
 					if (item1 == null && item0 == null) return null;
 					else if (item0 == null) {
 						int n = mb == 0 ? item1.stackSize : 1;
@@ -240,7 +241,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 							slot.putStack(item0);
 						}
 					} 
-				} else if (fk == 1 && item0 != null) {
+				} else if (fk == ClickType.PICKUP && item0 != null) {
 					int[] t = this.stackTransferTarget(item0, s, container);
 					if (t == null) return null;
 					else if (mb == 0) {

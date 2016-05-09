@@ -11,6 +11,9 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ItemInventory extends ItemFilteredSubInventory implements IItemStorage, IGuiItem
@@ -41,10 +44,10 @@ public class ItemInventory extends ItemFilteredSubInventory implements IItemStor
 	}
 	
 	@Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
         BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
-        return item;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
 
 }

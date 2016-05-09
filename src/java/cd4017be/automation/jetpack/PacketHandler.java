@@ -10,10 +10,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLEventChannel;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-
 import cd4017be.automation.Item.ItemJetpack;
 import cd4017be.lib.util.Vec3;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.PacketBuffer;
@@ -38,10 +38,10 @@ public class PacketHandler
     @SubscribeEvent
     public void onPacketData(FMLNetworkEvent.ServerCustomPacketEvent event) 
     {
-        if (event.packet.channel().equals(channel) && event.handler instanceof NetHandlerPlayServer) {
-                EntityPlayer player = ((NetHandlerPlayServer)event.handler).playerEntity;
-                PacketBuffer dis = (PacketBuffer)event.packet.payload();
-                ItemStack item = player.getCurrentArmor(ItemJetpack.slotPos);
+        if (event.getPacket().channel().equals(channel) && event.getHandler() instanceof NetHandlerPlayServer) {
+                EntityPlayer player = ((NetHandlerPlayServer)event.getHandler()).playerEntity;
+                PacketBuffer dis = (PacketBuffer)event.getPacket().payload();
+                ItemStack item = player.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
                 if (item == null || !(item.getItem() instanceof ItemJetpack) || item.getTagCompound() == null) return;
                 byte cmd = dis.readByte();
                 if (cmd == 0) {

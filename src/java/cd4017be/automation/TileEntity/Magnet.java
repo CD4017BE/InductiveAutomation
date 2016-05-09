@@ -21,8 +21,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.EnumFacing;
-import net.minecraft.util.Vec3;
 
 /**
  *
@@ -44,12 +44,12 @@ public class Magnet extends ModTileEntity implements IEnergy, ITickable
         double e = energy.Ucap * energy.Ucap;
         float rad = (float)energy.Ucap / 64F;
         Iterator<Entity> list = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos.getX() + 0.5D - rad, pos.getY() + 0.5D - rad, pos.getZ() + 0.5D - rad, pos.getX() + 0.5D + rad, pos.getY() + 0.5D + rad, pos.getZ() + 0.5D + rad)).iterator();
-        Vec3 vec0 = new Vec3(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
+        Vec3d vec0 = new Vec3d(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D);
         while (list.hasNext())
         {
             Entity entity = list.next();
             if (entity instanceof EntityPlayer) continue;
-            Vec3 vec1 = vec0.addVector(-entity.posX, -entity.posY, -entity.posZ);
+            Vec3d vec1 = vec0.addVector(-entity.posX, -entity.posY, -entity.posZ);
             double d = vec1.xCoord * vec1.xCoord + vec1.yCoord * vec1.yCoord + vec1.zCoord * vec1.zCoord;
             if (e < Energy) continue;
             e -= Energy;

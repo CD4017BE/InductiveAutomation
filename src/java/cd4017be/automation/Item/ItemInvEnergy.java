@@ -11,6 +11,9 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 
@@ -57,9 +60,9 @@ public class ItemInvEnergy extends ItemEnergyCell
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
-        if (world.isRemote) return item;
+        if (world.isRemote) return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
         if (item.getTagCompound() == null || !item.getTagCompound().getBoolean("ON"))
         {
             item.getTagCompound().setBoolean("ON", true);
@@ -70,7 +73,7 @@ public class ItemInvEnergy extends ItemEnergyCell
             item.getTagCompound().setBoolean("ON", false);
             player.addChatMessage(new TextComponentString("Inventory power supply disabled"));
         }
-        return item;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
 
     @Override

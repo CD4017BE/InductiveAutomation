@@ -25,10 +25,10 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.WorldServer;
 
 /**
@@ -136,7 +136,7 @@ public class SecuritySys extends AutomatedTile implements IEnergy
     }
 
     @Override
-    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
     {
         if (!prot.isPlayerOwner(player.getName())){
             if (!worldObj.isRemote) player.addChatMessage(new TextComponentString("You are not given the necessary rights to use this!"));
@@ -148,7 +148,7 @@ public class SecuritySys extends AutomatedTile implements IEnergy
         	this.getBlockType().dropBlockAsItem(worldObj, getPos(), worldObj.getBlockState(pos), 0);
             worldObj.setBlockToAir(getPos());
             return true;
-        } else return super.onActivated(player, s, X, Y, Z);
+        } else return super.onActivated(player, hand, item, s, X, Y, Z);
     }
 
     @Override
@@ -210,7 +210,7 @@ public class SecuritySys extends AutomatedTile implements IEnergy
             }
             update = true;
         }
-        if (update) worldObj.markBlockForUpdate(getPos());
+        if (update) this.markUpdate();
     }
     
     @Override
@@ -219,7 +219,7 @@ public class SecuritySys extends AutomatedTile implements IEnergy
         this.mainOwner = entity.getName();
         prot.addPlayer(mainOwner, 0);
         if ((AreaProtect.permissions > 0 && AreaProtect.chunkloadPerm > 0) || !(worldObj instanceof WorldServer)) return;
-        ServerConfigurationManager manager = MinecraftServer.getServer().getConfigurationManager();
+        PlayerList manager = ((WorldServer)worldObj).getMinecraftServer().getPlayerList();
         boolean admin = entity instanceof EntityPlayer && manager.canSendCommands(((EntityPlayer)entity).getGameProfile());
         if (AreaProtect.permissions < 0 || (!admin && AreaProtect.permissions == 0)) perm |= 1;
         if (AreaProtect.chunkloadPerm < 0 || (!admin && AreaProtect.chunkloadPerm == 0)) perm |= 2;

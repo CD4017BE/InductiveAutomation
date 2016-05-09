@@ -9,6 +9,7 @@ import java.util.List;
 
 import cd4017be.automation.Item.ItemLiquidPipe;
 import cd4017be.lib.templates.BlockPipe;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyInteger;
@@ -28,9 +29,9 @@ public class BlockLiquidPipe extends BlockPipe
     public static final byte ID_Extraction = 2;
     public static final byte ID_Injection = 1;
     
-    public BlockLiquidPipe(String id, Material m, int type)
+    public BlockLiquidPipe(String id, SoundType sound, Material m, int type)
     {
-        super(id, m, ItemLiquidPipe.class, type);
+        super(id, m, sound, ItemLiquidPipe.class, type);
     }
     
     @Override

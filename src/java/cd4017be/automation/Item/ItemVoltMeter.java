@@ -17,7 +17,9 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 /**
@@ -86,9 +88,9 @@ public class ItemVoltMeter extends DefaultItem
     }
     
     @Override
-    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
+    public EnumActionResult onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing s, float X, float Y, float Z) 
     {
-        if (world.isRemote) return true;
+        if (world.isRemote) return EnumActionResult.SUCCESS;
         if (item.getTagCompound() == null) createNBT(item);
         TileEntity te = world.getTileEntity(pos);
         PipeEnergy energy = te != null && te instanceof IEnergy ? ((IEnergy)te).getEnergy((byte)s.getIndex()) : null;
@@ -106,7 +108,7 @@ public class ItemVoltMeter extends DefaultItem
             item.getTagCompound().setInteger("ly", -1);
             player.addChatMessage(new TextComponentString("Unlinked"));
         }
-        return true;
+        return EnumActionResult.SUCCESS;
     }
     
 }

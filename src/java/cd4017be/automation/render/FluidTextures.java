@@ -1,91 +1,108 @@
 package cd4017be.automation.render;
 
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import com.google.common.base.Function;
+
+import cd4017be.automation.Item.ItemFluidDummy;
+import cd4017be.lib.render.SpecialModelLoader;
+import cd4017be.lib.render.TESRBlockModel;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.ModelRotation;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.client.renderer.vertex.VertexFormat;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.model.ISmartItemModel;
+import net.minecraft.world.World;
+import net.minecraftforge.client.model.IModel;
+import net.minecraftforge.common.model.IModelState;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
 
-@SuppressWarnings("deprecation")
-public class FluidTextures implements ISmartItemModel {
-	
-	private final IBakedModel model;
-	private final BakedQuad quad;
-	public FluidTextures(IBakedModel model) {
-		this.model = model;
-		this.quad = model.getGeneralQuads().get(0);
-	}
-	
-	private FluidTextures(IBakedModel model, BakedQuad quad) {
-		this.model = model;
-		this.quad = quad;
-	}
-	
+public class FluidTextures implements IModel, IBakedModel {
+
 	@Override
-	public List<BakedQuad> getFaceQuads(EnumFacing p_177551_1_) {
+	public Collection<ResourceLocation> getDependencies() {
 		return Collections.emptyList();
 	}
 
 	@Override
-	public List<BakedQuad> getGeneralQuads() {
-		return Arrays.asList(quad);
+	public Collection<ResourceLocation> getTextures() {
+		return Collections.emptyList();
 	}
 
 	@Override
+	public IBakedModel bake(IModelState state, VertexFormat format, Function<ResourceLocation, TextureAtlasSprite> bakedTextureGetter) {
+		return this;
+	}
+
+	@Override
+	public IModelState getDefaultState() {
+		return ModelRotation.X0_Y0;
+	}
+	
+	@Override
 	public boolean isAmbientOcclusion() {
-		return model.isAmbientOcclusion();
+		return false;
 	}
 
 	@Override
 	public boolean isGui3d() {
-		return model.isGui3d();
+		return false;
 	}
 
 	@Override
 	public boolean isBuiltInRenderer() {
-		return model.isBuiltInRenderer();
+		return false;
 	}
 
 	@Override
 	public TextureAtlasSprite getParticleTexture() {
-		return model.getParticleTexture();
+		return null;
 	}
 
 	@Override
 	public ItemCameraTransforms getItemCameraTransforms() {
-		return model.getItemCameraTransforms();
+		return ItemCameraTransforms.DEFAULT;
 	}
 
 	@Override
-	public IBakedModel handleItemState(ItemStack stack) {
-		Fluid fluid = FluidRegistry.getFluid(stack.getItemDamage());
-		if (fluid == null) return this;
-		ResourceLocation res = fluid.getStill();
-		if (res == null) return this;
-		TextureAtlasSprite tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(res.toString());
-		if (tex == null) return this;
-		int[] data = new int[28];
-		data[0] = data[21] = Float.floatToIntBits(0F);
-		data[1] = data[8] = Float.floatToIntBits(0F);
-		data[7] = data[14] = Float.floatToIntBits(1F);
-		data[15] = data[22] = Float.floatToIntBits(1F);
-		data[2] = data[9] = data[16] = data[23] = Float.floatToIntBits(0F);
-		data[3] = data[10] = data[17] = data[24] = fluid.getColor();
-		data[4] = data[25] = Float.floatToIntBits(tex.getMinU());
-		data[5] = data[12] = Float.floatToIntBits(tex.getMinV());
-		data[11] = data[18] = Float.floatToIntBits(tex.getMaxU());
-		data[19] = data[26] = Float.floatToIntBits(tex.getMaxV());
-		return new FluidTextures(model, new BakedQuad(data, quad.getTintIndex(), quad.getFace()));
+	public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+		return Collections.emptyList();
+	}
+
+	@Override
+	public ItemOverrideList getOverrides() {
+		return itemList;
 	}
 	
+	private static final ItemOverride itemList = new ItemOverride();
+
+	static class ItemOverride extends ItemOverrideList {
+
+		public ItemOverride() {
+			super(Collections.<net.minecraft.client.renderer.block.model.ItemOverride> emptyList());
+		}
+
+		@Override
+		public IBakedModel handleItemState(IBakedModel model, ItemStack stack, World world, EntityLivingBase entity) {
+			Fluid fluid = ItemFluidDummy.fluid(stack);
+			if (fluid == null) return model;
+			ResourceLocation res = fluid.getStill();
+			if (res == null) return model;
+			TextureAtlasSprite tex = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(res.toString());
+			if (tex == null) return model;
+			return new TESRBlockModel(tex, true, fluid.getColor(), SpecialModelLoader.instance.tesrModelData.get(TileEntityTankRenderer.model));
+		}
+
+	}
+
 }

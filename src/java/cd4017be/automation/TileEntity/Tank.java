@@ -51,7 +51,7 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
         int d = tanks.getAmount(0) - lastAmount;
         if ((d != 0 && (tanks.getAmount(0) == 0 || lastAmount == 0)) || d * d > 250000){
             lastAmount = tanks.getAmount(0);
-            worldObj.markBlockForUpdate(getPos());
+            this.markUpdate();
         } 
     }
 

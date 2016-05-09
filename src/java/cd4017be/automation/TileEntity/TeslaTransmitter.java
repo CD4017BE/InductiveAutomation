@@ -5,6 +5,7 @@
 package cd4017be.automation.TileEntity;
 
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 
 import java.io.IOException;
@@ -104,9 +105,8 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
     }
 
     @Override
-    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
     {
-        ItemStack item = player.getHeldItemMainhand();
         if (!interdim && item != null)
         {
             if (item.isItemEqual(BlockItemRegistry.stack("EMatrix", 1)))
@@ -115,7 +115,7 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
             } else return false;
             item.stackSize--;
             if (item.stackSize <= 0) item = null;
-            player.setCurrentItemOrArmor(0, item);
+            player.setHeldItem(hand, item);
             return true;
         } else
         if (interdim && item == null && player.isSneaking())
@@ -124,7 +124,7 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
             interdim = false;
             return true;
         } else
-        return super.onActivated(player, s, X, Y, Z);
+        return super.onActivated(player, hand, item, s, X, Y, Z);
     }
     
     @Override

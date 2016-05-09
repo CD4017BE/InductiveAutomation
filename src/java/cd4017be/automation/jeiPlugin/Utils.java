@@ -8,6 +8,7 @@ import cd4017be.lib.util.OreDictStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -47,15 +48,15 @@ public class Utils
     		n += stack.stackSize;
     		if (s == trans.dest) continue;
     		if (max || n <= trans.reqAm) {
-    			contr.windowClick(cont.windowId, s, 0, 0, player);
-    			contr.windowClick(cont.windowId, trans.dest, 0, 0, player);
-    			contr.windowClick(cont.windowId, s, 0, 0, player);
+    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP_ALL, player);
+    			contr.func_187098_a(cont.windowId, trans.dest, 0, ClickType.PICKUP_ALL, player);
+    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP_ALL, player);
     		} else {
     			if ((stack1 = stackInSlot(cont, trans.dest)) != null && !cd4017be.lib.util.Utils.itemsEqual(stack, stack1) && !clearSlot(cont, player, trans.dest)) return false;
-    			contr.windowClick(cont.windowId, s, 0, 0, player);
+    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP_ALL, player);
     			for (int i = trans.reqAm - n + stack.stackSize; i > 0; i--)
-    				contr.windowClick(cont.windowId, trans.dest, 1, 0, player);
-    			contr.windowClick(cont.windowId, s, 0, 0, player);
+    				contr.func_187098_a(cont.windowId, trans.dest, 0, ClickType.PICKUP, player);
+    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP_ALL, player);
     			return true;
     		}
     	}
@@ -64,7 +65,7 @@ public class Utils
     
     @SideOnly(Side.CLIENT)
     public static boolean clearSlot(Container cont, EntityPlayer player, int slot) {
-    	Minecraft.getMinecraft().playerController.windowClick(cont.windowId, slot, 0, 1, player);
+    	Minecraft.getMinecraft().playerController.func_187098_a(cont.windowId, slot, 0, ClickType.PICKUP_ALL, player);
     	return !cont.getSlot(slot).getHasStack();
     }
     

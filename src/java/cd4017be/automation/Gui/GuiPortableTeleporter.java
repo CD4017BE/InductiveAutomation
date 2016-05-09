@@ -18,7 +18,7 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.I18n;
+import net.minecraft.util.text.translation.I18n;
 
 public class GuiPortableTeleporter extends GuiMachine 
 {

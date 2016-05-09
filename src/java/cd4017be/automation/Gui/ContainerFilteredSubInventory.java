@@ -7,6 +7,7 @@ import cd4017be.api.automation.InventoryItemHandler.ItemInventory;
 import cd4017be.automation.Objects;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
@@ -213,7 +214,7 @@ public class ContainerFilteredSubInventory extends Container
 	}
 
 	@Override
-    public ItemStack func_184996_a(int s, int b, int m, EntityPlayer par4EntityPlayer)
+    public ItemStack func_184996_a(int s, int b, ClickType m, EntityPlayer par4EntityPlayer)
     {   
 		Slot slot;
 		if (s >= 0 && s < this.inventorySlots.size() && (slot = (Slot)this.inventorySlots.get(s)) != null && slot.inventory instanceof InventoryPlayer && slot.getSlotIndex() == par4EntityPlayer.inventory.currentItem) return null;

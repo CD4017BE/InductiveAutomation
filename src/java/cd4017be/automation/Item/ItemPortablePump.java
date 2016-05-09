@@ -11,8 +11,11 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.RayTraceResult;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
@@ -107,17 +110,17 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
     }
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
 	{
-		if (world.isRemote) return item;
+		if (world.isRemote) return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
 		EnergyItem energy = new EnergyItem(item, this);
-		if (energy.getStorageI() < energyUse) return item;
-		Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-        Vec3 dir = player.getLookVec();
+		if (energy.getStorageI() < energyUse) return new ActionResult<ItemStack>(EnumActionResult.FAIL, item);
+		Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+        Vec3d dir = player.getLookVec();
         boolean sneak = player.isSneaking();
         RayTraceResult obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * reachDist, dir.yCoord * reachDist, dir.zCoord * reachDist), true, false, sneak);
         if (obj == null) {
-        	return this.fillFluid(item, player.inventory);
+        	return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, this.fillFluid(item, player.inventory));
         }
         FluidStack fluid = Utils.getFluid(world, obj.getBlockPos(), !sneak);
         if (fluid != null && this.fill(item, fluid, false) == fluid.amount) {
@@ -126,7 +129,7 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
         	if (sneak) world.setBlockState(obj.getBlockPos(), Blocks.air.getDefaultState(), 2);
         	else world.setBlockToAir(obj.getBlockPos());
         }
-        return this.fillFluid(item, player.inventory);
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, this.fillFluid(item, player.inventory));
 	}
 	
 	private ItemStack fillFluid(ItemStack item, InventoryPlayer inv)

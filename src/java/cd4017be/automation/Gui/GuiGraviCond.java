@@ -6,7 +6,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.I18n;
+import net.minecraft.util.text.translation.I18n;
 import cd4017be.automation.TileEntity.GraviCond;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TooltipInfo;

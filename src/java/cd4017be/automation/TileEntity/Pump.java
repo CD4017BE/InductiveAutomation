@@ -32,6 +32,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -62,10 +63,10 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
     }
     
     @Override
-    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
     {
         lastUser = player.getName();
-        return super.onActivated(player, s, X, Y, Z);
+        return super.onActivated(player, hand, item, s, X, Y, Z);
     }
     
     public Pump()
@@ -306,7 +307,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
             px = area[0];
             pz = area[2];
         }
-        this.worldObj.markBlockForUpdate(getPos());
+        this.markUpdate();
     }
     
     @Override
@@ -333,7 +334,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
 	public void onUpgradeChange(int s) 
 	{
 		if (s == 0) {
-			this.worldObj.markBlockForUpdate(getPos());
+			this.markUpdate();
 			return;
 		}
 		if (s == 3) {

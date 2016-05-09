@@ -37,7 +37,7 @@ public class InventoryFluidUpgrade implements IInventory
         upgrade = PipeUpgradeFluid.load(item.getTagCompound());
         for (int i = 0; i < upgrade.list.length && i < inventory.length; i++)
         {
-            if (upgrade.list[i] != null) inventory[i] = ItemFluidDummy.getFluidContainer(upgrade.list[i].getFluid().getID(), 1);
+            if (upgrade.list[i] != null) inventory[i] = ItemFluidDummy.item(upgrade.list[i].getFluid(), 1);
         }
     }
     

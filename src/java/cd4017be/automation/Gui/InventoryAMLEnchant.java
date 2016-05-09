@@ -23,7 +23,7 @@ public class InventoryAMLEnchant extends BasicInventory
             NBTTagCompound nbt = list.getCompoundTagAt(i);
             int id = nbt.getShort("id");
             int lvl = nbt.getShort("lvl");
-            items[i] = Items.enchanted_book.getEnchantedItemStack(new EnchantmentData(Enchantment.getEnchantmentById(id), lvl));
+            items[i] = Items.enchanted_book.getEnchantedItemStack(new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
         }
 	}
 	

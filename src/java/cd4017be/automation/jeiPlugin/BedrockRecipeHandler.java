@@ -6,7 +6,7 @@
 
 package cd4017be.automation.jeiPlugin;
 
-import cd4017be.automation.Entity.EntityAntimatterExplosion1;
+import cd4017be.automation.TileEntity.AntimatterBomb;
 import net.minecraft.init.Blocks;
 
 /**
@@ -17,8 +17,8 @@ public class BedrockRecipeHandler
 {
     public static final float neededAm;
     static {
-        float i = (2 * EntityAntimatterExplosion1.Density + 1) / EntityAntimatterExplosion1.Density;
-        neededAm = Blocks.bedrock.getExplosionResistance(null) / EntityAntimatterExplosion1.PowerFactor / EntityAntimatterExplosion1.explMult * i * i * 9.375F;
+        float i = (2 * AntimatterBomb.Density + 1) / AntimatterBomb.Density;
+        neededAm = Blocks.bedrock.getExplosionResistance(null) / AntimatterBomb.PowerFactor / AntimatterBomb.explMult * i * i * 9.375F;
     }
     
 }

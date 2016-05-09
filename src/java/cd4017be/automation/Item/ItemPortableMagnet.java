@@ -15,8 +15,11 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.I18n;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
@@ -54,12 +57,12 @@ public class ItemPortableMagnet extends ItemEnergyCell
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
         if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
         if (player.isSneaking()) item.getTagCompound().setBoolean("auto", !item.getTagCompound().getBoolean("auto"));
         else item.getTagCompound().setBoolean("active", !item.getTagCompound().getBoolean("active"));
-        return item;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
 
     @Override
