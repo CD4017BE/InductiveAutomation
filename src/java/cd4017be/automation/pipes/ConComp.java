@@ -8,6 +8,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumHand;
 
 public class ConComp {
 
@@ -65,7 +66,7 @@ public class ConComp {
 		return nbt;
 	}
 	
-	public boolean onClicked(EntityPlayer player, long uid) {
+	public boolean onClicked(EntityPlayer player, EnumHand hand, ItemStack item, long uid) {
 		return false;
 	}
 	

@@ -5,6 +5,7 @@
 package cd4017be.automation.TileEntity;
 
 import cd4017be.automation.Config;
+import net.minecraft.world.DimensionType;
 import net.minecraft.world.EnumSkyBlock;
 
 /**
@@ -28,7 +29,7 @@ public class HPSolarpanel extends Solarpanel
         int bl = 45;
         sl -= this.worldObj.getSkylightSubtracted();
         if (sl < 0) sl = 0;
-        if (worldObj.provider.getDimensionName().equals("The End")) sl = 5;
+        if (worldObj.provider.getDimensionType().equals(DimensionType.THE_END)) sl = 5;
         float power = (float)(sl * sl * sl + bl) / 3.375F; //Skylight = 15 -> power = 1
         energy.addEnergy(power * Config.Psolar[1]);
         energy.update(this);

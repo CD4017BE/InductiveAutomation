@@ -18,8 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.ServerConfigurationManager;
+import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.ChunkCoordIntPair;
 import net.minecraft.world.WorldServer;
@@ -89,11 +88,11 @@ public class AreaConfig implements IAreaConfig
     	if (timer++ < 5) return;
         timer = 0;
         if (tile.getWorld() instanceof WorldServer) {
-            ServerConfigurationManager manager = MinecraftServer.getServer().getConfigurationManager();
+        	WorldServer world = (WorldServer)tile.getWorld();
+        	PlayerList manager = world.getMinecraftServer().getPlayerList();
             String[] rem = new String[tile.itemStorage.size()];
             int n = 0;
-            for (Object obj : manager.playerEntityList) {
-                EntityPlayerMP player = (EntityPlayerMP)obj;
+            for (EntityPlayerMP player : manager.getPlayerList()) {
                 ItemStack[] stor = tile.itemStorage.get(player.getName());
                 if (player.worldObj.provider.getDimension() == this.tile.getWorld().provider.getDimension() && this.getProtectLvlFor(player.getName(), player.chunkCoordX, player.chunkCoordZ) == 3) continue;
                 if (stor != null) {

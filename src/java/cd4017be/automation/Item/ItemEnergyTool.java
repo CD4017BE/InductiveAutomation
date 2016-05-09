@@ -4,7 +4,6 @@
  */
 package cd4017be.automation.Item;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -40,32 +39,32 @@ public class ItemEnergyTool extends ItemEnergyCell
     }
 
 	@Override
-    public boolean canHarvestBlock(Block block, ItemStack item) 
+    public boolean canHarvestBlock(IBlockState state, ItemStack item) 
     {
     	if (new EnergyItem(item, this).getStorageI() < this.energyUsage) return false;
-    	if (block.getMaterial().isToolNotRequired()) return true;
-        String tool = block.getHarvestTool(block.getDefaultState());
-        int hl = block.getHarvestLevel(block.getDefaultState());
+    	if (state.getMaterial().isToolNotRequired()) return true;
+        String tool = state.getBlock().getHarvestTool(state);
+        int hl = state.getBlock().getHarvestLevel(state);
         if (tool == null) return true;
     	if (hl > this.getHarvestLevel(item, tool)) return false;
     	else if (hl >= 0) return true;
-    	if ("pickaxe".equals(tool) && (block.getMaterial() == Material.rock || block.getMaterial() == Material.iron)) return true;
-        else if ("axe".equals(tool) && (block.getMaterial() == Material.wood || block.getMaterial() == Material.leaves)) return true;
-        else if ("shovel".equals(tool) && (block.getMaterial() == Material.clay || block.getMaterial() == Material.sand || block.getMaterial() == Material.snow || block.getMaterial() == Material.craftedSnow)) return true;
+    	if ("pickaxe".equals(tool) && (state.getMaterial() == Material.rock || state.getMaterial() == Material.iron)) return true;
+        else if ("axe".equals(tool) && (state.getMaterial() == Material.wood || state.getMaterial() == Material.leaves)) return true;
+        else if ("shovel".equals(tool) && (state.getMaterial() == Material.clay || state.getMaterial() == Material.sand || state.getMaterial() == Material.snow || state.getMaterial() == Material.craftedSnow)) return true;
         else return false;
     }
     
     @Override
-    public boolean onBlockDestroyed(ItemStack item, World world, Block b, BlockPos pos, EntityLivingBase entityLiving) 
+    public boolean onBlockDestroyed(ItemStack item, World world, IBlockState b, BlockPos pos, EntityLivingBase entityLiving) 
     {
     	new EnergyItem(item, this).addEnergyI(-this.energyUsage, -1);
         return true;
     }
 
     @Override
-    public float getDigSpeed(ItemStack item, IBlockState state) 
+    public float getStrVsBlock(ItemStack item, IBlockState state) 
     {
-    	float str = this.canHarvestBlock(state.getBlock(), item) ? this.digSpeed : 1F;
+    	float str = this.canHarvestBlock(state, item) ? this.digSpeed : 1F;
         return str;
     }
     

@@ -6,21 +6,20 @@ package cd4017be.automation.Gui;
 
 import java.io.IOException;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.BlockModelShapes;
 import net.minecraft.client.renderer.OpenGlHelper;
+import net.minecraft.client.renderer.block.model.IBakedModel;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidRegistry;
-
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -143,11 +142,12 @@ public class GuiTextureMaker extends GuiMachine
         		ItemStack item = tileEntity.inventory[i];
         		if (item.getItem() instanceof ItemBlock) {
         			ItemBlock ib = (ItemBlock)item.getItem();
-        			model = bms.getModelForState(ib.block.getStateFromMeta(ib.getMetadata(item.getItemDamage())));
+        			IBlockState state = ib.block.getStateFromMeta(ib.getMetadata(item.getItemDamage()));
+        			model = bms.getModelForState(state);
         			if (model != null) icons[i] = model.getParticleTexture();
-        			opaque[i] = icons[i] != null && ib.block.isOpaqueCube();
+        			opaque[i] = icons[i] != null && ib.block.isOpaqueCube(state);
         		} else if (item.getItem() instanceof ItemFluidDummy) {
-        			Fluid fluid = FluidRegistry.getFluid(item.getItemDamage());
+        			Fluid fluid = ItemFluidDummy.fluid(item);
         			if (fluid != null) {
         				ResourceLocation res = fluid.getStill();
         				if (res != null) icons[i] = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(res.toString());

@@ -7,6 +7,7 @@ package cd4017be.automation.TileEntity;
 
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
+import cd4017be.automation.Item.ItemFluidDummy;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
@@ -43,7 +44,7 @@ public class FluidPacker extends AutomatedTile implements ISidedInventory, IFlui
         for (int i = 0; i < 3; i++) {
             int n = Math.min(tanks.getAmount(3), tanks.getAmount(i) / 1000);
             if (n <= 0) continue;
-            ItemStack item = new ItemStack(Objects.fluidDummy, n, tanks.getFluid(i).getFluid().getID());
+            ItemStack item = ItemFluidDummy.item(tanks.getFluid(i).getFluid(), n);
             if (inventory.items[i] == null) {
                 inventory.items[i] = item;
             } else if (inventory.items[i].isItemEqual(item)){
@@ -53,7 +54,7 @@ public class FluidPacker extends AutomatedTile implements ISidedInventory, IFlui
                     n = 64 - inventory.items[i].stackSize;
                     inventory.items[i].stackSize = 64;
                 }
-            }
+            } else n = 0;
             tanks.drain(3, n, true);
             tanks.drain(i, n * 1000, true);
         }

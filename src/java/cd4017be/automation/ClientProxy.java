@@ -25,13 +25,8 @@ import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.render.ModelPipe;
 import cd4017be.lib.render.SpecialModelLoader;
 import cd4017be.lib.render.SelectionRenderer;
-import net.minecraft.client.resources.model.IBakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.util.BlockRenderLayer;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import cd4017be.automation.Gui.*;
 import static cd4017be.automation.Objects.*;
 
@@ -48,7 +43,6 @@ public class ClientProxy extends CommonProxy
     	TickHandler.init();
         ClientInputHandler.init();
         TooltipInfo.addConfigReference(Config.data);
-        MinecraftForge.EVENT_BUS.register(this);
     	this.registerAdditionalModels();
     	//BlockItems
     	BlockItemRegistry.registerBlockRender("ore:0");
@@ -188,14 +182,7 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(Tank.class, new TileEntityTankRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(AntimatterBomb.class, new TileEntityAntimatterBombRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(VertexShematicGen.class, new Render3DVertexShem());
-    }
-    
-    @SubscribeEvent
-    public void loadModels(ModelBakeEvent event) {
-    	ModelResourceLocation res = new ModelResourceLocation("automation:fluidDummy", "inventory");
-    	IBakedModel model = event.modelRegistry.getObject(res);
-    	if (model != null) event.modelRegistry.putObject(res, new FluidTextures(model));
-    	else System.out.println("fluid Model missing!");
+        SpecialModelLoader.registerTESRModel(TileEntityTankRenderer.model);
     }
     
     private void registerAdditionalModels()
@@ -292,6 +279,7 @@ public class ClientProxy extends CommonProxy
         SpecialModelLoader.registerBlockModel(Objects.wireA, new ModelPipe("automation:wireA", 1, 1));
         SpecialModelLoader.registerBlockModel(Objects.wireH, new ModelPipe("automation:wireH", 1, 1));
         SpecialModelLoader.registerBlockModel(Objects.warpPipe, new ModelPipe("automation:warpPipe", 1, 5));
+        SpecialModelLoader.registerItemModel(Objects.fluidDummy, new FluidTextures());
     }
     
 }

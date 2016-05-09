@@ -12,8 +12,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
+import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 /**
@@ -33,7 +35,7 @@ public class BlockSkyLight extends DefaultBlock
     }
 
     @Override
-    public boolean isOpaqueCube() 
+    public boolean isOpaqueCube(IBlockState state) 
     {
         return false;
     }
@@ -45,8 +47,8 @@ public class BlockSkyLight extends DefaultBlock
     }
 
     @Override
-	public int getRenderType() {
-		return -1;
+	public EnumBlockRenderType getRenderType(IBlockState state) {
+		return EnumBlockRenderType.INVISIBLE;
 	}
 
 	@Override
@@ -61,12 +63,7 @@ public class BlockSkyLight extends DefaultBlock
     }
 
     @Override
-    public AxisAlignedBB getCollisionBoundingBox(World world, BlockPos pos, IBlockState state) {
-        return null;
-    }
-
-    @Override
-    public AxisAlignedBB getSelectedBoundingBox(World world, BlockPos pos) {
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
         return null;
     }
 

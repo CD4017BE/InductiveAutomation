@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import cd4017be.api.computers.ComputerAPI;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.api.recipes.RecipeAPI;
 import cd4017be.automation.Block.BlockOre.Ore;
-import cd4017be.automation.Entity.EntityAntimatterExplosion1;
 import cd4017be.automation.jetpack.JetPackConfig;
 import cd4017be.automation.jetpack.PacketHandler;
 import cd4017be.lib.BlockGuiHandler;
@@ -33,11 +31,15 @@ import cd4017be.lib.TileBlock;
 import cd4017be.lib.templates.BlockPipe;
 import cd4017be.lib.templates.BlockSuperfluid;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.IChunkGenerator;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.feature.WorldGenMinable;
 import net.minecraft.world.gen.feature.WorldGenerator;
@@ -56,7 +58,7 @@ import static cd4017be.lib.BlockItemRegistry.stack;
  *
  * @author CD4017BE
  */
-@Mod(modid="Automation", name="Inductive Automation", version="4.1.0")
+@Mod(modid="Automation", name="Inductive Automation", version="5.0.0")
 public class Automation implements IWorldGenerator
 {
     
@@ -103,7 +105,6 @@ public class Automation implements IWorldGenerator
         FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_heliumL, 100), stack("LCHelium", 1), FluidContainerRegistry.EMPTY_BOTTLE));
         FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_oxygenL, 100), stack("LCOxygen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
         
-        EntityRegistry.registerModEntity(EntityAntimatterExplosion1.class, "AntimatterExplosion", 0, this, 32, 1, false);
         System.out.println("Automation: Set Explosion-Resistance of Bedrock to: " + Block.getBlockFromName("bedrock").setResistance(2000000.0F).getExplosionResistance(null));
         
         proxy.registerRenderers();
@@ -243,12 +244,74 @@ public class Automation implements IWorldGenerator
         (pool = TileBlock.create("pool", Material.glass, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone).setLightOpacity(5);
         (unbrStone = new BlockUnbreakable("unbrStone")).setStepSound(Block.soundTypeStone);
         (unbrGlass = new GlassUnbreakable("unbrGlass")).setStepSound(Block.soundTypeGlass);
+    	(lightShaft = TileBlock.create("lightShaft", Material.glass, SoundType.GLASS, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F);
+    	(wireC = new BlockPipe("wireC", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F);
+    	(wireA = new BlockPipe("wireA", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F);
+    	(wireH = new BlockPipe("wireH", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F);
+    	(liquidPipe = new BlockLiquidPipe("liquidPipe", SoundType.GLASS, Material.glass, 0x20)).setHardness(0.5F).setCreativeTab(tabAutomation).setResistance(10F);
+    	(itemPipe = new BlockItemPipe("itemPipe", Material.wood, SoundType.WOOD, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F);
+    	(warpPipe = new BlockPipe("warpPipe", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F);
+    	(voltageTransformer = TileBlock.create("voltageTransformer", Material.iron, SoundType.METAL, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(SCSU = TileBlock.create("SCSU", Material.iron, SoundType.METAL, ItemESU.class, 0x40)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(OCSU = TileBlock.create("OCSU", Material.iron, SoundType.METAL, ItemESU.class, 0x40)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(CCSU = TileBlock.create("CCSU", Material.iron, SoundType.METAL, ItemESU.class, 0x40)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(steamEngine = TileBlock.create("steamEngine", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(steamTurbine = TileBlock.create("steamTurbine", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(10F);
+    	(steamGenerator = TileBlock.create("steamGenerator", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F);
+    	(steamBoiler = TileBlock.create("steamBoiler", Material.iron, SoundType.STONE, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(lavaCooler = TileBlock.create("lavaCooler", Material.rock, SoundType.STONE, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(energyFurnace = TileBlock.create("energyFurnace", Material.iron, SoundType.STONE, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(farm = TileBlock.create("farm", Material.iron, SoundType.STONE, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(miner = TileBlock.create("miner", Material.iron, SoundType.STONE, DefaultItemBlock.class, 0x10)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(magnet = TileBlock.create("magnet", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(link = TileBlock.create("link", Material.iron, SoundType.METAL, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(linkHV = TileBlock.create("linkHV", Material.iron, SoundType.METAL, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F);
+    	(texMaker = TileBlock.create("texMaker", Material.wood, SoundType.WOOD, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(builder = TileBlock.create("builder", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(algaePool = TileBlock.create("algaePool", Material.glass, SoundType.GLASS, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(teleporter = TileBlock.create("teleporter", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(advancedFurnace = TileBlock.create("advancedFurnace", Material.iron, SoundType.METAL, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(pump = TileBlock.create("pump", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(massstorageChest = TileBlock.create("massstorageChest", Material.wood, SoundType.WOOD, DefaultItemBlock.class, 0x41)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(50F);
+    	(matterOrb = TileBlock.create("matterOrb", Material.iron, SoundType.STONE, ItemMatterOrb.class, 0x40)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F);
+    	(antimatterBombE = TileBlock.create("antimatterBombE", Material.tnt, SoundType.STONE, ItemMatterOrb.class, 0x40)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F);
+    	(antimatterBombF = TileBlock.create("antimatterBombF", Material.tnt, SoundType.STONE, ItemAntimatterTank.class, 0x41)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F);
+    	(antimatterTank = TileBlock.create("antimatterTank", Material.iron, SoundType.METAL, ItemAntimatterTank.class, 0x40)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(40F);
+    	(antimatterFabricator = TileBlock.create("antimatterFabricator", Material.iron, SoundType.METAL, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(40F);
+    	(antimatterAnihilator = TileBlock.create("antimatterAnihilator", Material.iron, SoundType.METAL, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(40F);
+    	(hpSolarpanel = TileBlock.create("hpSolarpanel", Material.glass, SoundType.GLASS, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(autoCrafting = TileBlock.create("autoCrafting", Material.wood, SoundType.WOOD, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(geothermalFurnace = TileBlock.create("geothermalFurnace", Material.rock, SoundType.STONE, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(steamCompressor = TileBlock.create("steamCompressor", Material.iron, SoundType.METAL, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(electricCompressor = TileBlock.create("electricCompressor", Material.iron, SoundType.METAL, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(tank = TileBlock.create("tank", Material.glass, SoundType.GLASS, ItemTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(security = TileBlock.create("security", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0x1)).setCreativeTab(tabAutomation).setBlockUnbreakable().setResistance(1000000F);
+    	(decompCooler = TileBlock.create("decompCooler", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F);
+    	(collector = TileBlock.create("collector", Material.iron, SoundType.METAL, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(trash = TileBlock.create("trash", Material.rock, SoundType.STONE, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(electrolyser = TileBlock.create("electrolyser", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(fuelCell = TileBlock.create("fuelCell", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(detector = TileBlock.create("detector", Material.rock, SoundType.STONE, DefaultItemBlock.class, 0x12)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F);
+    	(itemSorter = TileBlock.create("itemSorter", Material.wood, SoundType.WOOD, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F);
+    	(matterInterfaceB = TileBlock.create("matterInterfaceB", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F);
+    	(fluidPacker = TileBlock.create("fluidPacker", Material.iron, SoundType.METAL, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F);
+    	(hugeTank = TileBlock.create("hugeTank", Material.glass, SoundType.GLASS, ItemHugeTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F);
+    	(fluidVent = TileBlock.create("fluidVent", Material.iron, SoundType.METAL, DefaultItemBlock.class, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(gravCond = TileBlock.create("gravCond", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0x10)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F);
+    	(itemBuffer = TileBlock.create("itemBuffer", Material.wood, SoundType.WOOD, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F);
+    	(quantumTank = TileBlock.create("quantumTank", Material.glass, SoundType.GLASS, ItemQuantumTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F);
+    	(vertShemGen = TileBlock.create("vertShemGen", Material.rock, SoundType.WOOD, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(heatRadiator = TileBlock.create("heatRadiator", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+    	(ore = new BlockOre("ore")).setHardness(2.0F).setResistance(10F) ;
+        (pool = TileBlock.create("pool", Material.glass, SoundType.STONE, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setLightOpacity(5);
+        unbrStone = new BlockUnbreakable("unbrStone");
+        unbrGlass = new GlassUnbreakable("unbrGlass");
         light = new BlockSkyLight("light");
         placementHelper = new GhostBlock("placementHelper");
-        (solarpanel = TileBlock.create("solarpanel", Material.glass, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeGlass).setBlockBounds(0F, 0F, 0F, 1F, 0.125F, 1F);
-        (teslaTransmitterLV = TileBlock.create("teslaTransmitterLV", Material.iron, DefaultItemBlock.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F).setStepSound(Block.soundTypeMetal).setBlockBounds(0.1875F, 0F, 0.1875F, 0.8125F, 1F, 0.8125F);
-        (teslaTransmitter = TileBlock.create("teslaTransmitter", Material.iron, DefaultItemBlock.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeMetal).setBlockBounds(0.25F, 0F, 0.25F, 0.75F, 1F, 0.75F);
-        (wormhole = TileBlock.create("wormhole", Material.portal, ItemInterdimHole.class, 0x60)).setCreativeTab(tabAutomation).setHardness(3.0F).setResistance(100F).setStepSound(Block.soundTypeGlass).setBlockBounds(0.0625F, 0.0625F, 0.0625F, 0.9375F, 0.9375F, 0.9375F);
+        (solarpanel = TileBlock.create("solarpanel", Material.glass, SoundType.GLASS, DefaultItemBlock.class, 0x20)).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 0.125, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+        (teslaTransmitterLV = TileBlock.create("teslaTransmitterLV", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0x60)).setBlockBounds(new AxisAlignedBB(0.1875, 0, 0.1875, 0.8125, 1, 0.8125)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F);
+        (teslaTransmitter = TileBlock.create("teslaTransmitter", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0x60)).setBlockBounds(new AxisAlignedBB(0.25, 0, 0.25, 0.75, 1, 0.75)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F);
+        (wormhole = TileBlock.create("wormhole", Material.portal, SoundType.GLASS, ItemInterdimHole.class, 0x60)).setBlockBounds(new AxisAlignedBB(0.0625F, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375)).setCreativeTab(tabAutomation).setHardness(3.0F).setResistance(100F);
         proxy.registerBlocks();
     }
     
@@ -312,7 +375,7 @@ public class Automation implements IWorldGenerator
     }
     
     @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkProvider chunkGenerator, IChunkProvider chunkProvider) 
+    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) 
     {
         int x = chunkX << 4;
         int z = chunkZ << 4;

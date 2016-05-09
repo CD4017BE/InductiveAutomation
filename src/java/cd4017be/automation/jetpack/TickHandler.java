@@ -19,6 +19,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -69,7 +70,7 @@ public class TickHandler
     
     private void checkJetpack()
     {
-    	ItemStack item = mc.thePlayer.getCurrentArmor(ItemJetpack.slotPos);
+    	ItemStack item = mc.thePlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
     	if (item == null || !(item.getItem() instanceof ItemJetpack)) return;
     	this.updateKeyStates(item);
         NBTTagCompound nbt = item.getTagCompound();
@@ -162,7 +163,7 @@ public class TickHandler
     public void renderTick(TickEvent.RenderTickEvent event) 
     {
         if (mc.currentScreen == null && event.phase == TickEvent.Phase.END) {
-        	ItemStack item = mc.thePlayer.getCurrentArmor(ItemJetpack.slotPos);
+        	ItemStack item = mc.thePlayer.getItemStackFromSlot(EntityEquipmentSlot.CHEST);
             if (item == null || !(item.getItem() instanceof ItemJetpack) || item.getTagCompound() == null) return;
             NBTTagCompound nbt = item.getTagCompound();
             if (!nbt.getBoolean("On")) return;

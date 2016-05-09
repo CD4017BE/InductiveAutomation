@@ -98,7 +98,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
             			for (int x = x0; x < x1; x++)
             				drawing[x + y * width] = 0;
             	}
-            	worldObj.markBlockForUpdate(getPos());
+            	this.markUpdate();
             } 
         } else if (cmd == GuiTextureMaker.CMD_Draw) {
             byte x = dis.readByte();
@@ -125,7 +125,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
                 else if (t == 2) replace(x, y, b, x0, y0, x1, y1);
                 else if (t == 4) move(x, y, true, x0, y0, x1, y1);
                 else if (t == 5) move(x, y, false, x0, y0, x1, y1);
-                worldObj.markBlockForUpdate(getPos());
+                this.markUpdate();
             }
         } else if (cmd == GuiTextureMaker.CMD_Value) {
         	byte i = dis.readByte();
@@ -157,7 +157,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         	netData.ints[1] = 0;
         	netData.ints[2] = 0;
         	for (int i = 1; i < inventory.length; i++) inventory[i] = null;
-        	worldObj.markBlockForUpdate(getPos());
+        	this.markUpdate();
         } else if (validItem && inventory[0].getTagCompound() != null) {
         	NBTTagCompound nbt = inventory[0].getTagCompound();
         	drawing = nbt.getByteArray("data");
@@ -170,7 +170,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
             ItemStack item = inventory[0];
             inventory = this.readItemsFromNBT(nbt, "def", inventory.length);
             inventory[0] = item;
-            worldObj.markBlockForUpdate(getPos());
+            this.markUpdate();
         }
     }
     
@@ -208,7 +208,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         drawing = newDraw;
         width = (byte)x;
         height = (byte)y;
-        worldObj.markBlockForUpdate(getPos());
+        this.markUpdate();
     }
     
     private static enum Transformation {
@@ -391,7 +391,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
         inventory[id] = item;
         if (id > 0 && item != null) {
         	FluidStack fluid = Utils.getFluid(item);
-        	if (fluid != null) inventory[id] = ItemFluidDummy.getFluidContainer(fluid.getFluid().getID(), 1);
+        	if (fluid != null) inventory[id] = ItemFluidDummy.item(fluid.getFluid(), 1);
         }
     }
 

@@ -17,7 +17,6 @@ import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.ProtectLvl;
 import cd4017be.api.energy.EnergyAPI;
 import cd4017be.api.recipes.AutomationRecipes;
-import cd4017be.automation.Entity.EntityAntimatterExplosion1;
 import cd4017be.automation.Item.ItemAntimatterLaser;
 import cd4017be.automation.Item.ItemAntimatterTank;
 import cd4017be.automation.Item.ItemFurnace;
@@ -25,6 +24,7 @@ import cd4017be.automation.Item.ItemJetpackFuel;
 import cd4017be.automation.Item.ItemMatterCannon;
 import cd4017be.automation.Item.ItemPortablePump;
 import cd4017be.automation.Item.ItemPortableTeleporter;
+import cd4017be.automation.TileEntity.AntimatterBomb;
 import cd4017be.automation.TileEntity.Builder;
 import cd4017be.automation.TileEntity.ElectricCompressor;
 import cd4017be.automation.TileEntity.EnergyFurnace;
@@ -145,8 +145,8 @@ public class Config
     	ItemPortablePump.energyUse = data.getInt("Tool.Pump.Euse", ItemPortablePump.energyUse);
     	ItemPortableTeleporter.energyUse = data.getFloat("Tool.Teleport.Emult", ItemPortableTeleporter.energyUse);
     	//Antimatter Bomb
-    	EntityAntimatterExplosion1.maxSize = data.getInt("AmBomb.MaxRad", EntityAntimatterExplosion1.maxSize);
-    	EntityAntimatterExplosion1.explMult = data.getFloat("AmBomb.ExplMult", EntityAntimatterExplosion1.explMult);
+    	AntimatterBomb.maxSize = data.getInt("AmBomb.MaxRad", AntimatterBomb.maxSize);
+    	AntimatterBomb.explMult = data.getFloat("AmBomb.ExplMult", AntimatterBomb.explMult);
     	ItemAntimatterLaser.AmUsage = data.getFloat("Tool.AmLaser.AMmult", ItemAntimatterLaser.AmUsage);
     	ItemAntimatterLaser.AMDamage = data.getFloat("Tool.AmLaser.AMDmgMult", ItemAntimatterLaser.AMDamage);
     	ItemAntimatterLaser.AMDmgExp = data.getFloat("Tool.AmLaser.AMDmgExp", ItemAntimatterLaser.AMDmgExp);
@@ -154,7 +154,7 @@ public class Config
     	ItemAntimatterLaser.MaxDamage = data.getFloat("Tool.AmLaser.MaxDmg", ItemAntimatterLaser.MaxDamage);
     	ItemAntimatterLaser.DamageMult = data.getFloat("Tool.AmLaser.AMmult", ItemAntimatterLaser.DamageMult);
     	ItemAntimatterTank.BombMaxCap = data.getInt("AmBomb.MaxAM", ItemAntimatterTank.BombMaxCap);
-    	ItemAntimatterTank.explFaktor = EntityAntimatterExplosion1.PowerFactor * EntityAntimatterExplosion1.explMult / Blocks.stone.getExplosionResistance(null) * 0.125D;
+    	ItemAntimatterTank.explFaktor = AntimatterBomb.PowerFactor * AntimatterBomb.explMult / Blocks.stone.getExplosionResistance(null) * 0.125D;
     	ItemJetpackFuel.H2Mult = data.getFloat("Jetpack.H2.val", ItemJetpackFuel.H2Mult * 1000F) / 1000F;
     	ItemJetpackFuel.O2Mult = ItemJetpackFuel.H2Mult * 2F;
     	ItemJetpackFuel.electricEmult = data.getFloat("Jetpack.el.val", ItemJetpackFuel.electricEmult * 1000F) / 1000F;

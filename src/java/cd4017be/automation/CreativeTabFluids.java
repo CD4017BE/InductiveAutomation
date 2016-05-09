@@ -1,5 +1,6 @@
 package cd4017be.automation;
 
+import cd4017be.automation.Item.ItemFluidDummy;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -16,7 +17,7 @@ public class CreativeTabFluids extends CreativeTabs
     @Override
     public ItemStack getIconItemStack() 
     {
-        return new ItemStack(Objects.fluidDummy, 1, FluidRegistry.WATER.getID());
+        return ItemFluidDummy.item(FluidRegistry.WATER, 1);
     }
 
     @Override
