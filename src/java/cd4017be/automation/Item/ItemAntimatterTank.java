@@ -10,7 +10,7 @@ import cd4017be.api.automation.AntimatterItemHandler;
 import cd4017be.api.automation.AntimatterItemHandler.IAntimatterItem;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
-import cd4017be.automation.Entity.EntityAntimatterExplosion1;
+import cd4017be.automation.TileEntity.AntimatterBomb;
 import cd4017be.lib.DefaultItemBlock;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
@@ -54,7 +54,7 @@ public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterI
         {
             int d = (int)Math.cbrt((double)item.getTagCompound().getInteger(getAntimatterTag(item)) * explFaktor);
             list.add("Crater radius (Stone) ~ " + d + " m");
-            if (d > EntityAntimatterExplosion1.maxSize) list.add(String.format("Explosion will stop at %d m !", EntityAntimatterExplosion1.maxSize));
+            if (d > AntimatterBomb.maxSize) list.add(String.format("Explosion will stop at %d m !", AntimatterBomb.maxSize));
         }
         super.addInformation(item, player, list, par4);
     }

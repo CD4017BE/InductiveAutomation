@@ -18,6 +18,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.Enchantments;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,10 +37,10 @@ public class ItemMinerDrill extends DefaultItem
     public static AnvilHandler anvilHandler = new AnvilHandler();
     
     static {
-    	anvilHandler.enchantments.add(Enchantment.unbreaking.effectId);
-    	anvilHandler.enchantments.add(Enchantment.efficiency.effectId);
-    	anvilHandler.enchantments.add(Enchantment.fortune.effectId);
-    	anvilHandler.enchantments.add(Enchantment.silkTouch.effectId);
+    	anvilHandler.enchantments.add(Enchantments.unbreaking);
+    	anvilHandler.enchantments.add(Enchantments.efficiency);
+    	anvilHandler.enchantments.add(Enchantments.fortune);
+    	anvilHandler.enchantments.add(Enchantments.silkTouch);
     	anvilHandler.repairMaterials.put(Objects.stoneDrill, new ItemStack(Blocks.stone, 20));
     	anvilHandler.repairMaterials.put(Objects.ironDrill, new ItemStack(Items.iron_ingot, 16));
     	anvilHandler.repairMaterials.put(Objects.diamondDrill, new ItemStack(Items.diamond, 12));
@@ -48,16 +49,16 @@ public class ItemMinerDrill extends DefaultItem
     
     public static class AnvilHandler {
     	public HashMap<Item, ItemStack> repairMaterials = new HashMap<Item, ItemStack>();
-    	public ArrayList<Integer> enchantments = new ArrayList<Integer>();
+    	public ArrayList<Enchantment> enchantments = new ArrayList<Enchantment>();
     	@SubscribeEvent
     	public void onAnvilUpdate(AnvilUpdateEvent e) {
-    		if (!(e.left.getItem() instanceof ItemMinerDrill)) return;
-    		Map<Integer, Integer> enchantL = EnchantmentHelper.getEnchantments(e.left);
-    		Map<Integer, Integer> enchantR = EnchantmentHelper.getEnchantments(e.right);
-    		ItemStack out = new ItemStack(e.left.getItem(), 1, e.left.getItemDamage());
-    		e.materialCost = 0;
+    		if (!(e.getLeft().getItem() instanceof ItemMinerDrill)) return;
+    		Map<Enchantment, Integer> enchantL = EnchantmentHelper.getEnchantments(e.getLeft());
+    		Map<Enchantment, Integer> enchantR = EnchantmentHelper.getEnchantments(e.getRight());
+    		ItemStack out = new ItemStack(e.getLeft().getItem(), 1, e.getLeft().getItemDamage());
+    		e.setMaterialCost(0);
     		int n, m, cost = 0;
-    		for (int id : enchantR.keySet()) {
+    		for (Enchantment id : enchantR.keySet()) {
     			if (!enchantments.contains(id)) {
     				e.setCanceled(true);
     				return;
@@ -77,19 +78,19 @@ public class ItemMinerDrill extends DefaultItem
     				e.setCanceled(true);
     				return;
     			}
-    			e.materialCost = 1;
+    			e.setMaterialCost(1);
     		}
     		EnchantmentHelper.setEnchantments(enchantL, out);
     		n = out.getItemDamage();
     		if (n > 0) {
-    			if (e.right.getItem() == e.left.getItem()) {
-    				m = n - e.right.getMaxDamage() + e.right.getItemDamage();
-    				e.materialCost = 1;
+    			if (e.getRight().getItem() == e.getLeft().getItem()) {
+    				m = n - e.getRight().getMaxDamage() + e.getRight().getItemDamage();
+    				e.setMaterialCost(1);
     			} else {
     				ItemStack rm = repairMaterials.get(out.getItem());
-    				if (rm != null && rm.isItemEqual(e.right)) {
-    					m = Math.min(e.right.stackSize, (int)Math.ceil((float)n * (float)rm.stackSize / (float)out.getMaxDamage()));
-    					e.materialCost = m;
+    				if (rm != null && rm.isItemEqual(e.getRight())) {
+    					m = Math.min(e.getRight().stackSize, (int)Math.ceil((float)n * (float)rm.stackSize / (float)out.getMaxDamage()));
+    					e.setMaterialCost(m);
     					m = n - out.getMaxDamage() * m / rm.stackSize;
     				} else m = n;
     			}
@@ -101,9 +102,9 @@ public class ItemMinerDrill extends DefaultItem
 				out.setItemDamage(m);
 				cost += Math.ceil((float)n / (float)out.getMaxDamage() * (float)(30 + 10 * enchantL.size()));
     		}
-    		if (e.materialCost > 0) {
-    			e.output = out;
-    			e.cost = cost;
+    		if (e.getMaterialCost() > 0) {
+    			e.setOutput(out);
+    			e.setCost(cost);
     		} else {
     			e.setCanceled(true);
     		}
@@ -129,7 +130,7 @@ public class ItemMinerDrill extends DefaultItem
             if (l != -1 && l <= this.miningLevel) return true;
             register &= l == -1;
         }
-        return register && (state.getBlock().getMaterial() == Material.rock || state.getBlock().getMaterial() == Material.iron || state.getBlock().getMaterial() == Material.anvil);
+        return register && (state.getMaterial() == Material.rock || state.getMaterial() == Material.iron || state.getMaterial() == Material.anvil);
     }
     
 }

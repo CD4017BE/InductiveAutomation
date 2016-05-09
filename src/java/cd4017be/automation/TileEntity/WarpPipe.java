@@ -10,6 +10,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import cd4017be.api.automation.IFluidPipeCon;
 import cd4017be.api.automation.IItemPipeCon;
 import cd4017be.automation.pipes.BasicWarpPipe;
@@ -40,15 +41,14 @@ public class WarpPipe extends AutomatedTile implements IPipe, IItemPipeCon, IFlu
 	}
 	
 	@Override
-	public boolean onActivated(EntityPlayer player, EnumFacing dir, float X, float Y, float Z) 
+	public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing dir, float X, float Y, float Z) 
 	{
 		if (worldObj.isRemote) return true;
-		ItemStack item = player.getHeldItemMainhand();
 		if (cover != null) {
 			if (player.isSneaking() && item == null) {
 				this.dropStack(cover.item);
 				cover = null;
-				worldObj.markBlockForUpdate(getPos());
+				this.markUpdate();
 				return true;
 			}
 			return false;
@@ -59,7 +59,7 @@ public class WarpPipe extends AutomatedTile implements IPipe, IItemPipeCon, IFlu
 		if (t >= 2) {
 			long uid = WarpPipePhysics.SidedPosUID(pipe.getUID(), s);
 			ConComp con = pipe.network.connectors.get(uid);
-			if (con != null && con.onClicked(player, uid)) return true;
+			if (con != null && con.onClicked(player, hand, item, uid)) return true;
 		} else if (player.isSneaking() && item == null) {
 			pipe.con[s] = (byte)(1 - t);
 			pipe.updateCon = true;
@@ -81,12 +81,12 @@ public class WarpPipe extends AutomatedTile implements IPipe, IItemPipeCon, IFlu
 			pipe.updateCon = true;
 			if (t == 0) pipe.network.onDisconnect(pipe, (byte)(s^1), WarpPipePhysics.ExtPosUID(pos.offset(dir), dimensionId));
 			if (--item.stackSize <= 0) item = null;
-			player.setCurrentItemOrArmor(0, item);
+			player.setHeldItem(hand, item);
 			this.markUpdate();
 			return true;
 		} else if (item != null && (cover = Cover.create(item)) != null) {
 			if (--item.stackSize <= 0) item = null;
-			player.setCurrentItemOrArmor(0, item);
+			player.setHeldItem(hand, item);
 			this.markUpdate();
 			return true;
 		} else return false;
@@ -156,7 +156,7 @@ public class WarpPipe extends AutomatedTile implements IPipe, IItemPipeCon, IFlu
 		super.breakBlock();
 		for (int i = 0; i < 6; i++) {
 			ConComp con = pipe.network.remConnector(pipe, (byte)i);
-			if (con != null) con.onClicked(null, 0);
+			if (con != null) con.onClicked(null, null, null, 0);
 		}
 		if (cover != null) this.dropStack(cover.item);
 	}

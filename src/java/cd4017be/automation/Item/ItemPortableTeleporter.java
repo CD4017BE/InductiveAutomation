@@ -23,11 +23,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.RayTraceResult;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
@@ -65,7 +68,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 	@Override
 	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
 	{
-		ItemStack item = player.getHeldItemMainhand();
+		ItemStack item = player.getHeldItem(player.getActiveHand());
 		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 		NBTTagList points = item.getTagCompound().getTagList("points", 10);
 		NBTTagCompound tag;
@@ -80,12 +83,12 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 			if (y < 0 || y > 256) {
 				player.addChatMessage(new TextComponentString("Destination outside the world!"));
 				return;
-			} else if (world.getBlockState(new BlockPos(x, y, z)).getBlock().getMaterial().blocksMovement() || world.getBlockState(new BlockPos(x, y + 1, z)).getBlock().getMaterial().blocksMovement()) {
+			} else if (world.getBlockState(new BlockPos(x, y, z)).getMaterial().blocksMovement() || world.getBlockState(new BlockPos(x, y + 1, z)).getMaterial().blocksMovement()) {
 				player.addChatMessage(new TextComponentString("Destination obscured!"));
 				return;
 			}
 			this.teleportTo(item, world, x, y, z, player);
-			player.setCurrentItemOrArmor(0, item);
+			player.setHeldItem(player.getActiveHand(), item);
 			return;
 		} else if (cmd == 1) {//add Point
 			if (points.tagCount() >= 64) {
@@ -111,7 +114,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 			if (i >= 0 && i < points.tagCount()) points.removeTag(i);
 		}
 		item.getTagCompound().setTag("points", points);
-		player.setCurrentItemOrArmor(0, item);
+		player.setHeldItem(player.getActiveHand(), item);
 	}
 
 	@Override
@@ -121,14 +124,14 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 	}
 
 	@Override
-	public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
 	{
 		if (player.isSneaking()) {
-			if (world.isRemote) return item;
-			Vec3 pos = new Vec3(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-	        Vec3 dir = player.getLookVec();
+			if (world.isRemote) return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
+			Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
+	        Vec3d dir = player.getLookVec();
 	        RayTraceResult obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 256, dir.yCoord * 256, dir.zCoord * 256), false, true, false);
-	        if (obj == null) return item;
+	        if (obj == null) return new ActionResult<ItemStack>(EnumActionResult.PASS, item);
 	        int[] t = this.findTarget(obj, world);
 	        if (t != null) {
 	        	this.teleportTo(item, world, t[0], t[1], t[2], player);
@@ -138,23 +141,23 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 		} else {
 			BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
 		}
-		return item;
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
 	}
 	
 	private int[] findTarget(RayTraceResult pos, World world)
 	{
-		if (!world.getBlockState(pos.getBlockPos().up()).getBlock().getMaterial().blocksMovement() && !world.getBlockState(pos.getBlockPos().up(2)).getBlock().getMaterial().blocksMovement())
+		if (!world.getBlockState(pos.getBlockPos().up()).getMaterial().blocksMovement() && !world.getBlockState(pos.getBlockPos().up(2)).getMaterial().blocksMovement())
 			return new int[]{pos.getBlockPos().getX(), pos.getBlockPos().getY() + 1, pos.getBlockPos().getZ()};
 		if (pos.sideHit == EnumFacing.UP) return null;
 		if (pos.sideHit == EnumFacing.DOWN) {
-			if (!world.getBlockState(pos.getBlockPos().down()).getBlock().getMaterial().blocksMovement() && !world.getBlockState(pos.getBlockPos().down(2)).getBlock().getMaterial().blocksMovement())
+			if (!world.getBlockState(pos.getBlockPos().down()).getMaterial().blocksMovement() && !world.getBlockState(pos.getBlockPos().down(2)).getMaterial().blocksMovement())
 				return new int[]{pos.getBlockPos().getX(), pos.getBlockPos().getY() - 2, pos.getBlockPos().getZ()};
 			else return null;
 		}
 		BlockPos p = pos.getBlockPos().offset(pos.sideHit);
-		if (world.getBlockState(p).getBlock().getMaterial().blocksMovement()) return null;
-		else if (!world.getBlockState(p.down()).getBlock().getMaterial().blocksMovement()) return new int[]{p.getX(), p.getY() - 1, p.getZ()};
-		else if (!world.getBlockState(p.up()).getBlock().getMaterial().blocksMovement()) return new int[]{p.getX(), p.getY(), p.getZ()};
+		if (world.getBlockState(p).getMaterial().blocksMovement()) return null;
+		else if (!world.getBlockState(p.down()).getMaterial().blocksMovement()) return new int[]{p.getX(), p.getY() - 1, p.getZ()};
+		else if (!world.getBlockState(p.up()).getMaterial().blocksMovement()) return new int[]{p.getX(), p.getY(), p.getZ()};
 		else return null;
 	}
 	

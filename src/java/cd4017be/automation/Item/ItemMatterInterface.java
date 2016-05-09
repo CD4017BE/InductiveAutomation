@@ -23,7 +23,10 @@ import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 /**
@@ -40,17 +43,17 @@ public class ItemMatterInterface extends DefaultItem implements IGuiItem
     }
 
     @Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
         BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
-        return item;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
 
     @Override
-    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
+    public EnumActionResult onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float X, float Y, float Z) 
     {
         BlockGuiHandler.openItemGui(player, world, pos.getX(), pos.getY(), pos.getZ());
-        return true;
+        return EnumActionResult.SUCCESS;
     }
     
     @Override

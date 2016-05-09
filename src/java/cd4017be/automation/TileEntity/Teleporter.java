@@ -7,7 +7,6 @@ package cd4017be.automation.TileEntity;
 import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -48,6 +47,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 import net.minecraftforge.common.DimensionManager;
 
@@ -83,9 +83,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     }
     
     @Override
-    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
     {
-        return super.onActivated(player, s, X, Y, Z);
+        return super.onActivated(player, hand, item, s, X, Y, Z);
     }
     
     @Override
@@ -185,28 +185,26 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
             area[4] = area[1] + pos[4];
             area[5] = area[2] + pos[5];
         }
-        worldObj.markBlockForUpdate(this.pos);
-        for (int cx = target[0] >> 4; cx <= (target[0] + pos[3]) >> 4; cx++)
-        	for (int cz = target[2] >> 4; cz <= (target[2] + pos[5]) >> 4; cz++)
-        		if (!world.getChunkProvider().chunkExists(cx, cz)) 
+        this.markUpdate();
+        BlockPos size = new BlockPos(pos[3], pos[4], pos[5]);
+        BlockPos pos0 = new BlockPos(pos[0], pos[1], pos[2]);
+        BlockPos pos1 = new BlockPos(target[0], target[1], target[2]);
+        if (!worldObj.isAreaLoaded(pos0, pos0.add(size)))
+        	for (int cx = pos[0] >> 4; cx <= (pos[0] + pos[3]) >> 4; cx++)
+        		for (int cz = pos[2] >> 4; cz <= (pos[2] + pos[5]) >> 4; cz++)
+        			worldObj.getChunkProvider().provideChunk(cx, cz);
+        if (!world.isAreaLoaded(pos1, pos1.add(size)))
+        	for (int cx = target[0] >> 4; cx <= (target[0] + pos[3]) >> 4; cx++)
+        		for (int cz = target[2] >> 4; cz <= (target[2] + pos[5]) >> 4; cz++)
         			world.getChunkProvider().provideChunk(cx, cz);
         List<Entity> e0 = worldObj.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(pos[0], pos[1], pos[2], pos[0] + pos[3], pos[1] + pos[4], pos[2] + pos[5]));
         List<Entity> e1 = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(target[0], target[1], target[2], target[0] + pos[3], target[1] + pos[4], target[2] + pos[5]));
         int dx = target[0] - pos[0];
         int dy = target[1] - pos[1];
         int dz = target[2] - pos[2];
-        for (Iterator<Entity> i = e0.iterator(); i.hasNext();)
-        {
-            Entity e = i.next();
-            MovedBlock.moveEntity(e, world.provider.getDimension(), e.posX + dx, e.posY + dy, e.posZ + dz);
-        }
-        for (Iterator<Entity> i = e1.iterator(); i.hasNext();)
-        {
-            Entity e = i.next();
-            MovedBlock.moveEntity(e, worldObj.provider.getDimension(), e.posX - dx, e.posY - dy, e.posZ - dz);
-        }
+        for (Entity e : e0) MovedBlock.moveEntity(e, world.provider.getDimension(), e.posX + dx, e.posY + dy, e.posZ + dz);
+        for (Entity e : e1) MovedBlock.moveEntity(e, worldObj.provider.getDimension(), e.posX - dx, e.posY - dy, e.posZ - dz);
         boolean ox = dx < 0, oy = dy < 0, oz = dz < 0;
-        BlockPos pos0, pos1;
         for (int x = ox ? 0 : pos[3] - 1; ox ? x < pos[3] : x >= 0; x += ox ? 1 : -1)
         	for (int y = oy ? 0 : pos[4] - 1; oy ? y < pos[4] : y >= 0; y += oy ? 1 : -1)
         		for (int z = oz ? 0 : pos[5] - 1; oz ? z < pos[5] : z >= 0; z += oz ? 1 : -1) {
@@ -362,7 +360,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
             this.area = area;
             netData.ints[3] &= ~8;
         }
-        this.worldObj.markBlockForUpdate(pos);
+        this.markUpdate();
     }
 
     @Override
@@ -431,7 +429,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 	public void onUpgradeChange(int s) 
 	{
 		if (s == 0) {
-			this.worldObj.markBlockForUpdate(pos);
+			this.markUpdate();
 			return;
 		}
 		if (s == 3) {

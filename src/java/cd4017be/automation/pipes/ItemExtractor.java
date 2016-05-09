@@ -7,6 +7,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 
 public class ItemExtractor extends ItemComp implements ITickable {
@@ -51,9 +52,9 @@ public class ItemExtractor extends ItemComp implements ITickable {
 	}
 	
 	@Override
-	public boolean onClicked(EntityPlayer player, long uid) {
+	public boolean onClicked(EntityPlayer player, EnumHand hand, ItemStack item, long uid) {
 		if (player == null) pipe.pipe.dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Extraction));
-		if (super.onClicked(player, uid) || player == null) return true;
+		if (super.onClicked(player, hand, item, uid) || player == null) return true;
 		if (player.isSneaking() && player.getHeldItemMainhand() == null) {
 			pipe.pipe.dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Extraction));
 			pipe.con[side] = 0;

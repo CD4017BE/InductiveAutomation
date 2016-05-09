@@ -5,6 +5,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidHandler;
@@ -55,8 +56,7 @@ public class FluidComp extends ConComp implements IObjLink
 	}
 	
 	@Override
-	public boolean onClicked(EntityPlayer player, long uid) {
-		ItemStack item = player == null ? null : player.getHeldItemMainhand();
+	public boolean onClicked(EntityPlayer player, EnumHand hand, ItemStack item, long uid) {
 		if (item == null && filter != null) {
 			item = new ItemStack(Objects.fluidUpgrade);
 			item.setTagCompound(PipeUpgradeFluid.save(filter));
@@ -68,7 +68,7 @@ public class FluidComp extends ConComp implements IObjLink
 			filter = PipeUpgradeFluid.load(item.getTagCompound());
 			item.stackSize--;
 			if (item.stackSize <= 0) item = null;
-			player.setCurrentItemOrArmor(0, item);
+			player.setHeldItem(hand, item);
 			pipe.network.reorder(this);
 			return true;
 		}

@@ -22,6 +22,7 @@ import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 
 /**
  *
@@ -56,15 +57,14 @@ public class Wire extends AutomatedTile implements IEnergy, IPipe
     }
 
 	@Override
-    public boolean onActivated(EntityPlayer player, EnumFacing dir, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing dir, float X, float Y, float Z) 
     {
 		int s = dir.getIndex();
-        ItemStack item = player.getHeldItemMainhand();
         if (player.isSneaking() && item == null && cover != null) {
             if (worldObj.isRemote) return true;
-            player.setCurrentItemOrArmor(0, cover.item);
+            player.setHeldItem(hand, cover.item);
             cover = null;
-            worldObj.markBlockForUpdate(pos);
+            this.markUpdate();
             return true;
         } else if (player.isSneaking() && item == null) {
         	if (worldObj.isRemote) return true;
@@ -79,14 +79,14 @@ public class Wire extends AutomatedTile implements IEnergy, IPipe
             else s = X < 0 ? 4 : 5;
             boolean con = energy.isConnected(s);
             energy.con ^= 1 << s;
-            worldObj.markBlockForUpdate(pos);
+           this.markUpdate();
             TileEntity te = Utils.getTileOnSide(this, (byte)s);
             if (te != null && te instanceof Wire) {
                 PipeEnergy pipe = ((IEnergy)te).getEnergy((byte)(s^1));
                 if (pipe != null) {
                 	if (con) pipe.con |= 1 << (s^1);
                 	else pipe.con &= ~(1 << (s^1));
-                	worldObj.markBlockForUpdate(te.getPos());
+                	((Wire)te).markUpdate();
                 }
             }
             return true;
@@ -94,8 +94,8 @@ public class Wire extends AutomatedTile implements IEnergy, IPipe
             if (worldObj.isRemote) return true;
             item.stackSize--;
             if (item.stackSize <= 0) item = null;
-            player.setCurrentItemOrArmor(0, item);
-            worldObj.markBlockForUpdate(pos);
+            player.setHeldItem(hand, item);
+            this.markUpdate();
             return true;
         } else return false;
     }
@@ -131,7 +131,7 @@ public class Wire extends AutomatedTile implements IEnergy, IPipe
     {
         cover = Cover.read(pkt.getNbtCompound(), "cover");
         energy.con = pkt.getNbtCompound().getByte("con");
-        worldObj.markBlockForUpdate(pos);
+        this.markUpdate();
     }
 
     @Override

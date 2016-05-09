@@ -6,6 +6,7 @@
 
 package cd4017be.automation.TileEntity;
 
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 
 import java.util.ArrayList;
@@ -104,10 +105,10 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack stack, EnumFacing s, float X, float Y, float Z) 
     {
         if (worldObj.isRemote) return true;
-        if (player.isSneaking() && player.getHeldItemMainhand() == null && linkTile != null && !linkTile.isInvalid() && linkTile.linkTile == this) {
+        if (player.isSneaking() && stack == null && linkTile != null && !linkTile.isInvalid() && linkTile.linkTile == this) {
             ItemStack item = new ItemStack(this.getBlockType(), 1, 0);
             linkTile.worldObj.setBlockToAir(linkTile.pos);
             worldObj.setBlockToAir(getPos());
@@ -115,13 +116,13 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
             worldObj.spawnEntityInWorld(eitem);
             player.addChatMessage(new TextComponentString("Both linked Wormholes removed"));
             return true;
-        } else if (player.getHeldItemMainhand() != null && player.getHeldItemMainhand().getItem() == Items.paper) {
+        } else if (stack != null && stack.getItem() == Items.paper) {
             ItemStack item = new ItemStack(Objects.teleporterCoords, player.getHeldItemMainhand().stackSize);
             item.setTagCompound(new NBTTagCompound());
             item.getTagCompound().setInteger("x", pos.getX());
             item.getTagCompound().setInteger("y", pos.getY());
             item.getTagCompound().setInteger("z", pos.getZ());
-            player.setCurrentItemOrArmor(0, item);
+            player.setHeldItem(hand, item);
         }
         return false;
     }
@@ -346,7 +347,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         link(true);
         if (linkTile == null) return;
         Vec3 pos = Vec3.Def(entity.posX, entity.posY, entity.posZ);
-        AxisAlignedBB block = this.getBlockType().getCollisionBoundingBox(worldObj, getPos(), worldObj.getBlockState(this.pos));
+        AxisAlignedBB block = this.getBlockType().getCollisionBoundingBox(worldObj.getBlockState(this.pos), worldObj, getPos());
         AxisAlignedBB box = entity.getEntityBoundingBox();
         pos = pos.add(-0.5D - (double)this.pos.getX(), -0.5D - (double)this.pos.getY(), -0.5D - (double)this.pos.getZ());
         if (box.minY >= block.maxY || box.maxY <= block.minY) return;
@@ -379,7 +380,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
                     for (int y = y0 - 1; y < y1; ++y) {
                         pos = new BlockPos(x, y, z);
                     	IBlockState block = worldObj.getBlockState(pos);
-                        block.getBlock().addCollisionBoxesToList(worldObj, pos, block, area, list, (Entity)null);
+                        block.getBlock().addCollisionBoxToList(block, worldObj, pos, area, list, (Entity)null);
                         if (!list.isEmpty()) return false;
                     }
         return true;

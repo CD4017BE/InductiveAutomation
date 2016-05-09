@@ -138,7 +138,7 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
         if (worldObj.isAirBlock(pos)) return true;
         IBlockState state = worldObj.getBlockState(pos);
         if (state.getBlock() == blockId) return state != state.getBlock().getDefaultState();
-        Material material = state.getBlock().getMaterial();
+        Material material = state.getMaterial();
         return material.isReplaceable() && !material.isLiquid();
     }
     

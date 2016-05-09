@@ -23,6 +23,9 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
 public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
@@ -84,10 +87,10 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 	}
 	
 	@Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
         BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
-        return item;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
 
 	@Override

@@ -15,12 +15,13 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.I18n;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ISpecialArmor;
 
@@ -50,7 +51,7 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
     
     public ItemJetpack(String id, int armor)
     {
-        super(defaultType, 0, 1);
+        super(defaultType, 0, EntityEquipmentSlot.CHEST);
         this.armor = armor;
         this.setUnlocalizedName(id);
         this.setMaxDamage(durability[armor]);
@@ -59,7 +60,7 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, int slot, String type) 
+    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) 
     {
         return "automation:textures/armor/" + textures[this.armor] + ".png";
     }
@@ -96,7 +97,7 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
         if (d >= stack.getMaxDamage()) {
             ItemStack item = new ItemStack(Objects.jetpack);
             item.setTagCompound((NBTTagCompound)stack.getTagCompound().copy());
-            entity.setCurrentItemOrArmor(slot + 1, item);
+            entity.setItemStackToSlot(EntityEquipmentSlot.CHEST, item);
         } else {
             stack.setItemDamage(d);
         }

@@ -44,6 +44,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.IPlantable;
@@ -86,11 +87,15 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     }
     
     @Override
-    public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
+    public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
     {
         lastUser = player.getGameProfile();
+<<<<<<< Upstream, based on master-1.8.9
         prot = null;
         return super.onActivated(player, s, X, Y, Z);
+=======
+        return super.onActivated(player, hand, item, s, X, Y, Z);
+>>>>>>> 3f907e1 fix render problems
     }
     
     @Override
@@ -145,7 +150,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     /** @return -1 = nothing, 0 = block, 1 = next */
     private byte doHarvest(BlockPos pos, IBlockState state, Block block, int m) {
     	boolean hasSlave = this.checkSlave();
-        if (!(block.getMaterial().isToolNotRequired() || hasSlave) || harvestFilter == null) return -1;
+        if (!(state.getMaterial().isToolNotRequired() || hasSlave) || harvestFilter == null) return -1;
         if (!this.ckeckFilter(harvestFilter, state, block, m)) return -1;
         if (hasSlave) return slave.remoteOperation(pos) ? (byte)1 : 0;
         if (invFull && invFull()) return 0;
@@ -166,7 +171,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         for (int i = 0; i < 8; i++) {
         	if (inventory.items[i] == null) continue;
         	Object plant = inventory.items[i].getItem() instanceof ItemBlock ? ((ItemBlock)inventory.items[i].getItem()).block : inventory.items[i].getItem();
-        	if (air && plant instanceof IPlantable && block.canSustainPlant(worldObj, pos, EnumFacing.UP, (IPlantable)plant)) {
+        	if (air && plant instanceof IPlantable && block.canSustainPlant(state, worldObj, pos, EnumFacing.UP, (IPlantable)plant)) {
         		list.add(new Object[]{i, plant, n, n += inventory.items[i].stackSize});
         	} else if (plant instanceof ItemPlacement) {
         		InventoryPlacement inv = new InventoryPlacement(inventory.items[i]);
@@ -219,7 +224,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         		storage -= Energy;
         		EntityPlayer player = FakePlayerFactory.get((WorldServer)worldObj, lastUser);
             	for (int i = 0; i < n; i++)
-            		items[i] = ItemPlacement.doPlacement(worldObj, player, items[i], pos, inv.getDir(i + 1), inv.Vxy[i + 1], inv.Vxy[i + 9], inv.sneak(i + 1), inv.useBlock);
+            		items[i] = ItemPlacement.doPlacement(worldObj, player, items[i], pos, EnumHand.MAIN_HAND, inv.getDir(i + 1), inv.Vxy[i + 1], inv.Vxy[i + 9], inv.sneak(i + 1), inv.useBlock);
         	}
         	int[] slots = inventory.componets[1].slots();
         	for (int i = 0; i < n; i++) 
@@ -335,7 +340,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         if (b) {
             this.area = area;
         }
-        this.worldObj.markBlockForUpdate(getPos());
+        this.markUpdate();
     }
 
     @Override
@@ -444,7 +449,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
 	public void onUpgradeChange(int s) 
 	{
 		if (s == 0) {
-			this.worldObj.markBlockForUpdate(getPos());
+			this.markUpdate();
 			return;
 		}
 		if (s == 3) {

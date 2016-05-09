@@ -15,8 +15,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityWitherSkull;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.BlockRenderLayer;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -39,7 +41,7 @@ public class GlassUnbreakable extends DefaultBlock
     }
 
     @Override
-    public boolean isOpaqueCube() 
+    public boolean isOpaqueCube(IBlockState state) 
     {
         return false;
     }
@@ -56,13 +58,13 @@ public class GlassUnbreakable extends DefaultBlock
     }
 
     @Override
-	public boolean shouldSideBeRendered(IBlockAccess world, BlockPos pos, EnumFacing side) {
+	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
     	if (world.getBlockState(pos) == this) return false;
-        else return super.shouldSideBeRendered(world, pos, side);
+        else return super.shouldSideBeRendered(state, world, pos, side);
 	}
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
     {
         ProtectLvl pr = AreaProtect.playerAccess(player.getGameProfile(), world, pos.getX() >> 4, pos.getZ() >> 4);
         if (pr == ProtectLvl.Free && !world.isRemote && player.isSneaking()) {
@@ -73,7 +75,7 @@ public class GlassUnbreakable extends DefaultBlock
     }
     
     @Override
-	public boolean canEntityDestroy(IBlockAccess world, BlockPos pos, Entity entity) 
+	public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity) 
 	{
 		return false;
 	}

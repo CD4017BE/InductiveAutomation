@@ -6,6 +6,7 @@ import cd4017be.automation.Item.PipeUpgradeFluid;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTankInfo;
@@ -45,9 +46,9 @@ public class FluidExtractor extends FluidComp implements ITickable {
 	}
 	
 	@Override
-	public boolean onClicked(EntityPlayer player, long uid) {
+	public boolean onClicked(EntityPlayer player, EnumHand hand, ItemStack item, long uid) {
 		if (player == null) pipe.pipe.dropStack(new ItemStack(Objects.liquidPipe, 1, BlockLiquidPipe.ID_Extraction));
-		if (super.onClicked(player, uid) || player == null) return true;
+		if (super.onClicked(player, hand, item, uid) || player == null) return true;
 		if (player.isSneaking() && player.getHeldItemMainhand() == null) {
 			pipe.pipe.dropStack(new ItemStack(Objects.liquidPipe, 1, BlockLiquidPipe.ID_Extraction));
 			pipe.con[side] = 0;

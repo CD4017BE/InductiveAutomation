@@ -28,6 +28,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -65,16 +68,10 @@ public class ItemFluidUpgrade extends DefaultItem implements IGuiItem
 	}
 
 	@Override
-    public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
+    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
     {
         BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
-        return item;
-    }
-
-    @Override
-    public boolean onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumFacing s, float X, float Y, float Z) 
-    {
-        return false;
+        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
     }
     
     @Override

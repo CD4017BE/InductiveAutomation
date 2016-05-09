@@ -3,7 +3,7 @@ package cd4017be.automation.Gui;
 import org.lwjgl.opengl.GL11;
 
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.I18n;
+import net.minecraft.util.text.translation.I18n;
 import cd4017be.automation.Item.ItemAntimatterLaser;
 import cd4017be.automation.Item.ItemAntimatterLaser.Enchantments;
 import cd4017be.lib.TooltipInfo;

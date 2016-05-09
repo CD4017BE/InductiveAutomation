@@ -5,6 +5,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumHand;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Item.PipeUpgradeItem;
 import cd4017be.automation.pipes.WarpPipePhysics.IObjLink;
@@ -52,8 +53,7 @@ public class ItemComp extends ConComp implements IObjLink{
 	}
 	
 	@Override
-	public boolean onClicked(EntityPlayer player, long uid) {
-		ItemStack item = player == null ? null : player.getHeldItemMainhand();
+	public boolean onClicked(EntityPlayer player, EnumHand hand, ItemStack item, long uid) {
 		if (item == null && filter != null) {
 			item = new ItemStack(Objects.itemUpgrade);
 			item.setTagCompound(PipeUpgradeItem.save(filter));
@@ -65,7 +65,7 @@ public class ItemComp extends ConComp implements IObjLink{
 			filter = PipeUpgradeItem.load(item.getTagCompound());
 			item.stackSize--;
 			if (item.stackSize <= 0) item = null;
-			player.setCurrentItemOrArmor(0, item);
+			player.setHeldItem(hand, item);
 			pipe.network.reorder(this);
 			return true;
 		}
