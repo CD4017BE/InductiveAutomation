@@ -73,8 +73,9 @@ public class GuiPortableGenerator extends GuiMachine
 			cmd = 0;
 		}
 		if (cmd >= 0) {
-	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
-	            BlockGuiHandler.sendPacketToServer(dos);
+			PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
+	        dos.writeByte(cmd);
+			BlockGuiHandler.sendPacketToServer(dos);
 		}
 	}
 
