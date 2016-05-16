@@ -215,7 +215,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 				Slot slot = container.getSlot(s);
 				ItemStack item0 = slot.getStack();
 				ItemStack item1 = player.inventory.getItemStack();
-				if (fk == ClickType.PICKUP_ALL) {
+				if (fk == ClickType.PICKUP) {
 					if (item1 == null && item0 == null) return null;
 					else if (item0 == null) {
 						int n = mb == 0 ? item1.stackSize : 1;
@@ -241,7 +241,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 							slot.putStack(item0);
 						}
 					} 
-				} else if (fk == ClickType.PICKUP && item0 != null) {
+				} else if (fk == ClickType.QUICK_MOVE && item0 != null) {
 					int[] t = this.stackTransferTarget(item0, s, container);
 					if (t == null) return null;
 					else if (mb == 0) {
