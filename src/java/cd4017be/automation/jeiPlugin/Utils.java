@@ -48,15 +48,15 @@ public class Utils
     		n += stack.stackSize;
     		if (s == trans.dest) continue;
     		if (max || n <= trans.reqAm) {
-    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP_ALL, player);
-    			contr.func_187098_a(cont.windowId, trans.dest, 0, ClickType.PICKUP_ALL, player);
-    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP_ALL, player);
+    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP, player);
+    			contr.func_187098_a(cont.windowId, trans.dest, 0, ClickType.PICKUP, player);
+    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP, player);
     		} else {
     			if ((stack1 = stackInSlot(cont, trans.dest)) != null && !cd4017be.lib.util.Utils.itemsEqual(stack, stack1) && !clearSlot(cont, player, trans.dest)) return false;
-    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP_ALL, player);
+    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP, player);
     			for (int i = trans.reqAm - n + stack.stackSize; i > 0; i--)
-    				contr.func_187098_a(cont.windowId, trans.dest, 0, ClickType.PICKUP, player);
-    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP_ALL, player);
+    				contr.func_187098_a(cont.windowId, trans.dest, 1, ClickType.PICKUP, player);
+    			contr.func_187098_a(cont.windowId, s, 0, ClickType.PICKUP, player);
     			return true;
     		}
     	}
@@ -65,7 +65,7 @@ public class Utils
     
     @SideOnly(Side.CLIENT)
     public static boolean clearSlot(Container cont, EntityPlayer player, int slot) {
-    	Minecraft.getMinecraft().playerController.func_187098_a(cont.windowId, slot, 0, ClickType.PICKUP_ALL, player);
+    	Minecraft.getMinecraft().playerController.func_187098_a(cont.windowId, slot, 0, ClickType.QUICK_MOVE, player);
     	return !cont.getSlot(slot).getHasStack();
     }
     
