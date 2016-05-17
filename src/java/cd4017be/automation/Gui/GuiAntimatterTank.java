@@ -4,8 +4,6 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -51,22 +49,13 @@ public class GuiAntimatterTank extends GuiMachine
         int n1 = n % 50;
         this.drawTexturedModalRect(this.guiLeft + 8, this.guiTop + 16, 0, 206, n0, 50);
         this.drawTexturedModalRect(this.guiLeft + 8 + n0, this.guiTop + 16, n0, 206, 1, n1);
-        this.drawLiquidConfig(tileEntity, -18, 7);
-        this.drawItemConfig(tileEntity, -45, 7);
         int m = tileEntity.tanks.getAmount(0);
         double e = m * 90000.0;
         this.drawStringCentered(m + "ng", this.guiLeft + this.xSize / 2 - 8, this.guiTop + 28, 0x404040);
         this.drawStringCentered(Utils.formatNumber(e, 6, 0) + "J", this.guiLeft + this.xSize / 2 - 8, this.guiTop + 46, 0x404040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 71, 0x404040);
-    }
-
-    @Override
-    protected void mouseClicked(int x, int y, int b) throws IOException 
-    {
-        super.mouseClicked(x, y, b);
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 45, y - this.guiTop - 7);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
 }

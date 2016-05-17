@@ -4,8 +4,6 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -57,20 +55,9 @@ public class GuiAlgaePool extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft + 62, this.guiTop + 68 - n, 210, 104 - n, 16, n);
         n = this.tileEntity.getAlgaeScaled(52);
         this.drawTexturedModalRect(this.guiLeft + 80, this.guiTop + 68 - n, 176, 104 - n, 34, n);
-        this.drawLiquidTank(tileEntity.tanks, 0, 8, 16, true);
-        this.drawLiquidTank(tileEntity.tanks, 1, 134, 16, true);
-        this.drawLiquidConfig(tileEntity, -27, 7);
-        this.drawItemConfig(tileEntity, -45, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
-    }
-
-    @Override
-    protected void mouseClicked(int x, int y, int b) throws IOException 
-    {
-        super.mouseClicked(x, y, b);
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 27, y - this.guiTop - 7);
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 45, y - this.guiTop - 7);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
 }

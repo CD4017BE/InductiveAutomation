@@ -66,20 +66,15 @@ public class GuiSteamBoiler extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft + 27, this.guiTop + 49 - n, 184, 48 - n, 14, n);
         n = this.tileEntity.netData.ints[4] * 2;
         this.drawTexturedModalRect(this.guiLeft + 26, this.guiTop + 68 - n, 176, 68 - n, 8, n);
-        this.drawLiquidTank(tileEntity.tanks, 0, 62, 16, true);
-        this.drawLiquidTank(tileEntity.tanks, 1, 134, 16, true);
-        this.drawLiquidConfig(tileEntity, -27, 7);
-        this.drawItemConfig(tileEntity, -45, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 
     @Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 27, y - this.guiTop - 7);
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 45, y - this.guiTop - 7);
         byte cmd = -1;
         if (this.isPointInRegion(34, 60, 8, 8, x, y)) {
         	cmd = 0;

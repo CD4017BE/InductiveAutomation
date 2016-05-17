@@ -58,13 +58,12 @@ public class GuiFluidVent extends GuiMachine
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/fluidVent.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         if ((tileEntity.netData.ints[0] & 0x100) != 0) this.drawTexturedModalRect(this.guiLeft + 183, this.guiTop + 73, 226, 0, 18, 18);
-        this.drawLiquidTank(tileEntity.tanks, 0, 184, 16, true);
-        this.drawLiquidConfig(tileEntity, -18, 7);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + 88, this.guiTop + 4, 0x404040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + 201, this.guiTop + 4, 0x404040);
         int n = tileEntity.netData.ints[0] & 0xff;
         this.drawStringCentered(n == 0 ? "off" : "" + n, this.guiLeft + 210, this.guiTop + 78, 0x404040);
         this.drawStringCentered(String.format("X= %d , Y= %d , Z= %d", (byte)tileEntity.netData.ints[1], (byte)(tileEntity.netData.ints[1] >> 8), (byte)(tileEntity.netData.ints[1] >> 16)), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize, 0xffffff);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 
     @Override
@@ -72,7 +71,6 @@ public class GuiFluidVent extends GuiMachine
     {
         super.mouseClicked(x, y, b);
         int i = -1, n = 0;
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
         if (this.isPointInRegion(183, 73, 18, 18, x, y)) {
             i = 0;
         } else if (this.isPointInRegion(201, 73, 18, 8, x, y)) {

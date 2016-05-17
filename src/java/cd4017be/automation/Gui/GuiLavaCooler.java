@@ -58,20 +58,14 @@ public class GuiLavaCooler extends GuiMachine
         int n = this.tileEntity.getCoolScaled(52);
         this.drawTexturedModalRect(this.guiLeft + 80, this.guiTop + 16, 176, n, 16, 52);
         this.drawTexturedModalRect(this.guiLeft + ((tileEntity.netData.ints[0] & 0x10) == 0 ? 8 : 26), this.guiTop + ((tileEntity.netData.ints[0] & 0x20) == 0 ? 16 : 34), 176, 104, 16, 16);
-        this.drawLiquidTank(tileEntity.tanks, 0, 98, 16, true);
-        this.drawLiquidTank(tileEntity.tanks, 1, 44, 16, true);
-        this.drawLiquidTank(tileEntity.tanks, 2, 134, 16, true);
-        this.drawLiquidConfig(tileEntity, -36, 7);
-        this.drawItemConfig(tileEntity, -54, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
     @Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 54, y - this.guiTop - 7);
         int cmd = -1;
         if (this.isPointInRegion(8, 16, 16, 16, x, y)) cmd = 0;
         else if (this.isPointInRegion(26, 16, 16, 16, x, y)) cmd = 1;

@@ -66,7 +66,6 @@ public class GuiELink extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft + 8, this.guiTop + 24, 0, 248, n, 8);
         this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 51, tileEntity.isRedstoneEnabled() ? 194 : 176, 18, 18, 18);
         this.drawTexturedModalRect(this.guiLeft + 25, this.guiTop + 51, 176 + tileEntity.netData.ints[2] * 18, 0, 18, 18);
-        this.drawEnergyConfig(tileEntity, -18, 7);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 133, this.guiTop + 56, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[1] + "V", this.guiLeft + 133, this.guiTop + 38, 0x404040);
         this.drawStringCentered(String.format("%+.1f %s", tileEntity.netData.floats[3] / 1000F, TooltipInfo.getPowerUnit()), this.guiLeft + 34, this.guiTop + 38, 0x404040);
@@ -76,12 +75,12 @@ public class GuiELink extends GuiMachine
         this.drawStringCentered("Umax=", this.guiLeft + 79, this.guiTop + 38, 0x404040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 74, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
     @Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
-    	this.clickEnergyConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
         byte cmd = -1;
         if (this.isPointInRegion(7, 51, 18, 18, x, y))
         {

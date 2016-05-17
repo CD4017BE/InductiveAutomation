@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import cd4017be.automation.Config;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
@@ -76,6 +77,8 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
         container.addEntitySlot(new SlotTank(this, 1, 202, 74));
         
         container.addPlayerInventory(8, 16);
+        
+        container.addTankSlot(new TankSlot(tanks, 0, 184, 16, true));
     }
 
     @Override

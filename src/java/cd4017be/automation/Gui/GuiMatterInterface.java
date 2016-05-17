@@ -76,13 +76,13 @@ public class GuiMatterInterface extends GuiMachine
         int n = list.length <= 6 ? 0 : scroll * 40 / (list.length - 6);
         this.drawTexturedModalRect(this.guiLeft + 160, this.guiTop + 16 + n, 176, 0, 8, 12);
         this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 15, (tileEntity.netData.ints[0] & 2) == 0 ? 184 : 202, 0, 18, 18);
-        this.drawItemConfig(tileEntity, -36, 7);
         for (int i = scroll; i < scroll + 6 && i < list.length; i++) {
             fontRendererObj.drawString(String.format("%d %s", list[i].stackSize, list[i].getDisplayName()), this.guiLeft + 70, this.guiTop + 17 + (i - scroll) * 8, 0x7fffff);
         }
         this.drawStringCentered(amount > 0 ? "" + amount : "ALL", this.guiLeft + 16, this.guiTop + 52, 0x808040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
     @Override
@@ -98,7 +98,6 @@ public class GuiMatterInterface extends GuiMachine
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         byte a = -1;
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
         if (this.isPointInRegion(26, 34, 16, 16, x, y)) {
             a = 0;
         } else

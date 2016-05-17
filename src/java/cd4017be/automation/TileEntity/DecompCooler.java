@@ -14,6 +14,7 @@ import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
@@ -126,6 +127,11 @@ public class DecompCooler extends AutomatedTile implements IEnergy, IFluidHandle
         container.addEntitySlot(new Slot(this, 3, 152, 34));
         
         container.addPlayerInventory(8, 86);
+        
+        container.addTankSlot(new TankSlot(tanks, 0, 44, 16, false));
+        container.addTankSlot(new TankSlot(tanks, 2, 80, 16, false));
+        container.addTankSlot(new TankSlot(tanks, 1, 116, 16, false));
+        container.addTankSlot(new TankSlot(tanks, 3, 152, 16, false));
     }
     
 }

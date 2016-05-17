@@ -44,8 +44,8 @@ public class GuiFluidUpgrade extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(7, 15, 9, 18, "\\i", "filter.try");
-        this.drawInfo(16, 15, 9, 18, "\\i", "filter.invert");
+        this.drawInfo(7, 15, 9, 18, "\\i", "filter.tryF" + (this.container.inventory.upgrade.mode >> 1 & 1));
+        this.drawInfo(16, 15, 9, 18, "\\i", "filter.invertF" + (this.container.inventory.upgrade.mode & 1));
         this.drawInfo(113, 16, 32, 16, "\\i", "filter.targetF");
         this.drawInfo(161, 15, 8, 18, "\\i", "rstCtr");
     }

@@ -4,8 +4,6 @@
  */
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -62,19 +60,9 @@ public class GuiGeothermalFurnace extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft + 63, this.guiTop + 49 - n, 192, 24 - n, 14, n);
         n = this.tileEntity.getProgressScaled(32);
         this.drawTexturedModalRect(this.guiLeft + 117, this.guiTop + 37, 192, 0, n, 10);
-        this.drawLiquidTank(tileEntity.tanks, 0, 8, 16, true);
-        this.drawLiquidConfig(tileEntity, -18, 7);
-        this.drawItemConfig(tileEntity, -63, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
-    }
-    
-    @Override
-    protected void mouseClicked(int x, int y, int b) throws IOException 
-    {
-        super.mouseClicked(x, y, b);
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 63, y - this.guiTop - 7);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
 }

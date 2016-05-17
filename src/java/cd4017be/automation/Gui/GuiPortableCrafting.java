@@ -36,7 +36,7 @@ public class GuiPortableCrafting extends GuiMachine
     {
         super.drawGuiContainerForegroundLayer(mx, my);
         this.drawInfo(124, 33, 18, 18, "\\i", "startCraft");
-        this.drawInfo(142, 33, 18, 18, "\\i", "autoCraft");
+        this.drawInfo(142, 33, 18, 18, "\\i", "autoCraft" + (this.container.isAuto()?"1":"0"));
         this.drawInfo(92, 55, 10, 10, "\\i", "directCraft");
         this.drawInfo(74, 55, 10, 10, "\\i", "clearRecipe");
     }

@@ -46,7 +46,7 @@ public class GuiAutoCrafting extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(152, 16, 16, 16, "\\i", "rstCtr");
+        this.drawInfo(152, 16, 16, 16, "\\i", "autoCrafting.mode" + tileEntity.getRef(9));
         this.drawInfo(67, 31, 7, 8, "\\i", "autoCrafting");
     }
     
@@ -57,12 +57,12 @@ public class GuiAutoCrafting extends GuiMachine
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/autoCraft.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         this.drawTexturedModalRect(this.guiLeft + 151, this.guiTop + 15, 176 + tileEntity.getRef(9) * 18, 0, 18, 18);
-        this.drawItemConfig(tileEntity, -54, 7);
         for (int j = 0; j < 3; j++)
             for (int i = 0; i < 3; i++)
                 this.drawStringCentered(getSlotRef(i + j * 3), this.guiLeft + 88 + i * 18, this.guiTop + 20 + j * 18, 0x404040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
     private String getSlotRef(int i)
@@ -75,7 +75,6 @@ public class GuiAutoCrafting extends GuiMachine
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         int cmd = -1;
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 54, y - this.guiTop - 7);
         if (this.isPointInRegion(151, 15, 18, 18, x, y))
         {
             tileEntity.setRef(9, (byte)((tileEntity.getRef(9) + 1) % 3));

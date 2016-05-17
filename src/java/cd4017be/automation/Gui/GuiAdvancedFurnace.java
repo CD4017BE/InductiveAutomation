@@ -62,14 +62,10 @@ public class GuiAdvancedFurnace extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft + 97, this.guiTop + 37, 184, 0, n, 10);
         n = tileEntity.getPowerScaled(52);
         this.drawTexturedModalRect(this.guiLeft + 26, this.guiTop + 68 - n, 176, 52 - n, 8, n);
-        this.drawLiquidTank(tileEntity.tanks, 0, 44, 16, true);
-        this.drawLiquidTank(tileEntity.tanks, 1, 134, 16, true);
-        this.drawLiquidConfig(tileEntity, -27, 7);
-        this.drawItemConfig(tileEntity, -54, 7);
-        this.drawEnergyConfig(tileEntity, -72, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered("" + tileEntity.netData.ints[0], this.guiLeft + 16, this.guiTop + 38, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, x, y);
     }
     
     @Override
@@ -77,9 +73,6 @@ public class GuiAdvancedFurnace extends GuiMachine
     {
         boolean a = false;
         int cmd = 0;
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 27, y - this.guiTop - 7);
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 54, y - this.guiTop - 7);
-        this.clickEnergyConfig(tileEntity, x - this.guiLeft + 72, y - this.guiTop - 7);
         if (this.isPointInRegion(100, 18, 12, 12, x, y))
         {
             cmd = 1;

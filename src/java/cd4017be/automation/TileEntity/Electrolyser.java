@@ -10,6 +10,7 @@ import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory.Component;
@@ -124,6 +125,10 @@ public class Electrolyser extends AutomatedTile implements ISidedInventory, IEne
 		container.addEntitySlot(new Slot(this, 2, 152, 34));
 		
 		container.addPlayerInventory(8, 86);
+		
+		container.addTankSlot(new TankSlot(tanks, 0, 98, 16, false));
+		container.addTankSlot(new TankSlot(tanks, 1, 44, 16, false));
+		container.addTankSlot(new TankSlot(tanks, 2, 152, 16, false));
 	}
 
 	@Override

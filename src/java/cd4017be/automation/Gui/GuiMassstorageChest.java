@@ -56,16 +56,15 @@ public class GuiMassstorageChest extends GuiMachine
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/massstorage.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        this.drawItemConfig(tileEntity, -27, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 162, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 
     @Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 27, y - this.guiTop - 7);
         if (this.isPointInRegion(182, 210, 16, 16, x, y)) {
         	PacketBuffer dis = tileEntity.getPacketTargetData();
         	dis.writeByte(AutomatedTile.CmdOffset);

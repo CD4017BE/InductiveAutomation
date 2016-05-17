@@ -15,6 +15,7 @@ import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
 import cd4017be.automation.Item.ItemMachineSynchronizer;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
@@ -315,6 +316,8 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
         container.addEntitySlot(new SlotTank(this, 0, 202, 34));
         
         container.addPlayerInventory(8, 16);
+        
+        container.addTankSlot(new TankSlot(tanks, 0, 184, 16, true));
     }
     
     @Override

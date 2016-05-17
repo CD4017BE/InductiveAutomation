@@ -91,7 +91,6 @@ public class GuiSecuritySys extends GuiMachine
         for (int i = 0; i < n; i++) this.drawTexturedModalRect(this.guiLeft + 18, this.guiTop + 145 + i * 8, 187, 52, 8, 8);
         drawArea(this.guiLeft + 8, this.guiTop + 16);
         this.drawTexturedModalRect(this.guiLeft + 62 + ((tileEntity.getPos().getX() + 8) & 15), this.guiTop + 70 + ((tileEntity.getPos().getZ() + 8) & 15), 179, 64, 4, 4);
-        this.drawEnergyConfig(tileEntity, -18, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 163, this.guiTop + 38, 0x404040);
         this.drawStringCentered("Power:", this.guiLeft + 154, this.guiTop + 89, 0x404040);
@@ -110,6 +109,7 @@ public class GuiSecuritySys extends GuiMachine
             this.fontRendererObj.drawString(s, this.guiLeft + 27, this.guiTop + 146 + i * 8, 0x404040);
         }
         name.drawTextBox();
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
     private void drawArea(int x, int y)
@@ -143,7 +143,6 @@ public class GuiSecuritySys extends GuiMachine
     {
         super.mouseClicked(x, y, b);
         name.mouseClicked(x, y, b);
-        this.clickEnergyConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
         if (this.isPointInRegion(155, 16, 16, 10, x, y)) this.sendButtonClick(b==0 ? 5 : 7);//+10
         else if (this.isPointInRegion(155, 26, 16, 10, x, y)) this.sendButtonClick(b==0 ? 4 : 6);//++
         else if (this.isPointInRegion(155, 48, 16, 10, x, y)) this.sendButtonClick(b==0 ? 0 : 2);//--

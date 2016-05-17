@@ -60,8 +60,6 @@ public class GuiBuilder extends GuiMachine
         GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/builder.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        this.drawItemConfig(tileEntity, -18, 7);
-        this.drawEnergyConfig(tileEntity, -36, 7);
         for (int i = 0; i < 8; i++)
 	        this.drawStringCentered("" + tileEntity.netData.ints[i], this.guiLeft + 16 + 18 * i, this.guiTop + 74, 0x404040);
         this.drawStringCentered(dirs[tileEntity.netData.ints[9]], this.guiLeft + 160, this.guiTop + 74, 0x404040);
@@ -70,13 +68,12 @@ public class GuiBuilder extends GuiMachine
         this.drawStringCentered("< Walls", this.guiLeft + 142, this.guiTop + 38, 0x404040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 6, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 145, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 
     @Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
-        this.clickEnergyConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
         if (this.isPointInRegion(7, 69, 144, 5, x, y))
         {
             sendClick((((x - this.guiLeft - 7) / 18) << 1) | 1);

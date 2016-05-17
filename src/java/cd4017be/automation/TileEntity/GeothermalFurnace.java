@@ -8,6 +8,7 @@ package cd4017be.automation.TileEntity;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IAutomatedInv;
@@ -200,6 +201,8 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
         container.addEntitySlot(new SlotOutput(this, 5, 152, 34));
         
         container.addPlayerInventory(8, 86);
+        
+        container.addTankSlot(new TankSlot(tanks, 0, 8, 16, true));
     }
     
     @Override

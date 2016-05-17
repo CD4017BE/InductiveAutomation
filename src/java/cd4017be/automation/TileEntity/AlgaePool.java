@@ -12,6 +12,7 @@ import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
@@ -179,6 +180,9 @@ public class AlgaePool extends AutomatedTile implements ISidedInventory, IFluidH
         container.addEntitySlot(new Slot(this, 4, 44, 34));
         
         container.addPlayerInventory(8, 86);
+        
+        container.addTankSlot(new TankSlot(tanks, 0, 8, 16, true));
+        container.addTankSlot(new TankSlot(tanks, 1, 134, 16, true));
     }
 
     @Override

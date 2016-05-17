@@ -63,24 +63,18 @@ public class GuiAntimatterAnihilator extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft + 98, this.guiTop + 52, 184, 0, n, 16);
         n = tileEntity.getHeatScaled(52);
         this.drawTexturedModalRect(this.guiLeft + 48, this.guiTop + 68 - n, 176, 52 - n, 8, n);
-        this.drawLiquidTank(tileEntity.tanks, 0, 8, 16, false);
-        this.drawLiquidTank(tileEntity.tanks, 1, 26, 16, false);
-        this.drawLiquidTank(tileEntity.tanks, 2, 62, 16, true);
-        this.drawLiquidConfig(tileEntity, -36, 7);
-        this.drawEnergyConfig(tileEntity, -54, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 133, this.guiTop + 20, 0x404040);
         this.drawStringCentered("P = " + tileEntity.netData.ints[1] + " ng/t", this.guiLeft + 133, this.guiTop + 38, 0x804040);
         this.drawStringCentered((int)(tileEntity.netData.floats[0] / 1000F) + " " + TooltipInfo.getEnergyUnit(), this.guiLeft + 133, this.guiTop + 56, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
     @Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         byte a = -1;
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
-        this.clickEnergyConfig(tileEntity, x - this.guiLeft + 54, y - this.guiTop - 7);
         if (this.isPointInRegion(98, 16, 10, 16, x, y))
         {
             tileEntity.netData.ints[0] -= b == 0 ? 10 : 1000;

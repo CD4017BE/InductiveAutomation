@@ -90,8 +90,6 @@ public class GuiTeleporter extends GuiMachine
         int n = tileEntity.getStorageScaled(88);
         this.drawTexturedModalRect(this.guiLeft + 8, this.guiTop + 34, 0, 240, n, 16);
         if ((tileEntity.netData.ints[3] & 1) == 0) this.drawTexturedModalRect(this.guiLeft + 98, this.guiTop + 34, 176, 0, 16, 16);
-        this.drawItemConfig(tileEntity, -18, 7);
-        this.drawEnergyConfig(tileEntity, -36, 7);
         this.drawStringCentered((tileEntity.netData.ints[3] & 2) == 0 ? "abs" : "rel", this.guiLeft + 124, this.guiTop + 38, 0x404040);
         this.drawLocString(this.guiLeft + 9, this.guiTop + 38, 0, 0x404040, "teleport." + ((tileEntity.netData.ints[3] & 4) == 0 ? "teleport" : "charge"));
         tfX.drawTextBox();
@@ -102,6 +100,7 @@ public class GuiTeleporter extends GuiMachine
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("gui.cd4017be.teleport." + ((tileEntity.netData.ints[3] & 16) != 0 ?"copy":"move")), this.guiLeft + this.xSize * 3 / 4, this.guiTop + 4, 0xff4040);
         showWarning();
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
     private void showWarning() {
@@ -121,8 +120,6 @@ public class GuiTeleporter extends GuiMachine
         tfZ.mouseClicked(x, y, b);
         name.mouseClicked(x, y, b);
         int kb = -1;
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
-        this.clickEnergyConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
         if (this.isPointInRegion(7, 33, 90, 18, x, y)) {
             if (warned == 1 && (tileEntity.netData.ints[3] & 4) == 0) warned = 2;
             else kb = 0;

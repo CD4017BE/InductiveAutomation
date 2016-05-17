@@ -60,15 +60,11 @@ public class GuiAntimatterFabricator extends GuiMachine
         int n = tileEntity.getPowerScaled(70);
         this.drawTexturedModalRect(this.guiLeft + 53, this.guiTop + 38, 184, 0, n, 8);
         this.drawTexturedModalRect(this.guiLeft + 52, this.guiTop + 51, 184 + tileEntity.netData.ints[2] * 18, 16, 18, 18);
-        this.drawLiquidTank(tileEntity.tanks, 0, 8, 16, false);
-        this.drawLiquidTank(tileEntity.tanks, 1, 26, 16, false);
-        this.drawLiquidTank(tileEntity.tanks, 2, 134, 16, true);
-        this.drawLiquidConfig(tileEntity, -36, 7);
-        this.drawEnergyConfig(tileEntity, -54, 7);
         this.drawStringCentered(String.format("%." + (tileEntity.netData.floats[1] >= 100 ? "0" : "1") + "f %s", tileEntity.netData.floats[1], TooltipInfo.getPowerUnit()), this.guiLeft + 97, this.guiTop + 56, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 88, this.guiTop + 20, 0x404040);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 
     @Override
@@ -76,8 +72,6 @@ public class GuiAntimatterFabricator extends GuiMachine
     {
         super.mouseClicked(x, y, b);
         byte cmd = -1;
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
-        this.clickEnergyConfig(tileEntity, x - this.guiLeft + 54, y - this.guiTop - 7);
         if (this.isPointInRegion(113, 16, 10, 16, x, y))
         {
             tileEntity.netData.ints[0] += b == 0 ? 10 : 1000;

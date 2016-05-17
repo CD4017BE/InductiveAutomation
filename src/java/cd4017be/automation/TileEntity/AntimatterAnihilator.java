@@ -14,6 +14,7 @@ import cd4017be.api.energy.EnergyAPI.IEnergyAccess;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
@@ -132,6 +133,10 @@ public class AntimatterAnihilator extends AutomatedTile implements ISidedInvento
         container.addEntitySlot(new SlotTank(this, 2, 69, 34));
         
         container.addPlayerInventory(8, 86);
+        
+        container.addTankSlot(new TankSlot(tanks, 0, 8, 16, false));
+        container.addTankSlot(new TankSlot(tanks, 1, 26, 16, false));
+        container.addTankSlot(new TankSlot(tanks, 2, 62, 16, true));
     }
 
     @Override

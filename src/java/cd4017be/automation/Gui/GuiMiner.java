@@ -57,25 +57,23 @@ public class GuiMiner extends GuiMachine
         this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/miner.png"));
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         if (tileEntity.active()) this.drawTexturedModalRect(this.guiLeft + 115, this.guiTop + 15, 176, 0, 18, 18);
-        this.drawItemConfig(tileEntity, -27, 7);
-        this.drawEnergyConfig(tileEntity, -45, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 
     @Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 27, y - this.guiTop - 7);
-        this.clickEnergyConfig(tileEntity, x - this.guiLeft + 45, y - this.guiTop - 7);
         byte cmd = -1;
         if (this.isPointInRegion(115, 15, 18, 18, x, y)) {
             cmd = 0;
-        }
             PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(AutomatedTile.CmdOffset + cmd);
             BlockGuiHandler.sendPacketToServer(dos);
+        }
+            
     }
     
 }

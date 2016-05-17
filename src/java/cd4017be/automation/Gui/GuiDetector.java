@@ -50,7 +50,7 @@ public class GuiDetector extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(7, 15, 18, 108, "\\i", "detector.obj");
+        this.drawInfo(7, 15, 18, 108, "\\i", "detector.obj" + tileEntity.getConfig((my - guiTop - 15) / 18));
         this.drawInfo(25, 15, 18, 108, "\\i", "detector.dir");
         this.drawInfo(43, 15, 18, 108, "\\i", "detector.filter");
         this.drawInfo(71, 16, 61, 8, "\\i", "detector.refH");

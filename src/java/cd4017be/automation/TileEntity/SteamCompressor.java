@@ -10,6 +10,7 @@ import cd4017be.api.automation.AutomationRecipes.CmpRecipe;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
@@ -138,6 +139,8 @@ public class SteamCompressor extends AutomatedTile implements ISidedInventory, I
         container.addEntitySlot(new SlotTank(this, 6, 17, 34));
         
         container.addPlayerInventory(8, 86);
+        
+        container.addTankSlot(new TankSlot(tanks, 0, 8, 16, true));
     }
     
     @Override

@@ -66,20 +66,17 @@ public class GuiESU extends GuiMachine
         } else {
             this.drawTexturedModalRect(this.guiLeft + 88 + n, this.guiTop + 46, 80 + n, 236, -n, 4);
         }
-        this.drawItemConfig(tileEntity, -27, 7);
-        this.drawEnergyConfig(tileEntity, -45, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered(tileEntity.netData.ints[0] + "V", this.guiLeft + 43, this.guiTop + 20, 0x404040);
         this.drawStringCentered((int)(tileEntity.netData.floats[0] / 1000F) + "/" + tileEntity.getMaxStorage() + " " + TooltipInfo.getEnergyUnit(), this.guiLeft + 88, this.guiTop + 56, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
     
     @Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         byte a = -1;
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 27, y - this.guiTop - 7);
-        this.clickEnergyConfig(tileEntity, x - this.guiLeft + 45, y - this.guiTop - 7);
         if (this.isPointInRegion(8, 16, 10, 16, x, y))
         {
             tileEntity.netData.ints[0] -= b == 0 ? 10 : 1000;

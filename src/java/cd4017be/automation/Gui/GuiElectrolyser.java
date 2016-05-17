@@ -55,24 +55,16 @@ private final Electrolyser tileEntity;
         this.drawTexturedModalRect(this.guiLeft + 117, this.guiTop + 55, 184, 10, n, 10);
         n = tileEntity.getPowerScaled(52);
         this.drawTexturedModalRect(this.guiLeft + 26, this.guiTop + 68 - n, 176, 52 - n, 8, n);
-        this.drawLiquidTank(tileEntity.tanks, 0, 98, 16, false);
-        this.drawLiquidTank(tileEntity.tanks, 1, 44, 16, false);
-        this.drawLiquidTank(tileEntity.tanks, 2, 152, 16, false);
-        this.drawLiquidConfig(tileEntity, -36, 7);
-        this.drawItemConfig(tileEntity, -72, 7);
-        this.drawEnergyConfig(tileEntity, -90, 7);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
         this.drawStringCentered("" + tileEntity.netData.ints[0], this.guiLeft + 16, this.guiTop + 38, 0x404040);
+        super.drawGuiContainerBackgroundLayer(f, i, j);
     }
     
     @Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         boolean a = false;
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 36, y - this.guiTop - 7);
-        this.clickItemConfig(tileEntity, x - this.guiLeft + 72, y - this.guiTop -7);
-        this.clickEnergyConfig(tileEntity, x - this.guiLeft + 90, y - this.guiTop - 7);
         if (this.isPointInRegion(8, 16, 16, 10, x, y))
         {
             tileEntity.netData.ints[0] += 10;

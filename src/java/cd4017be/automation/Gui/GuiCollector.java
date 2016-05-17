@@ -49,17 +49,15 @@ public class GuiCollector extends GuiMachine
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
         int n = tileEntity.netData.ints[0];
         if (n > 0) this.drawTexturedModalRect(this.guiLeft + 183, this.guiTop + 73, 238, n * 18 - 18, 18, 18);
-        this.drawLiquidTank(tileEntity.tanks, 0, 184, 16, true);
-        this.drawLiquidConfig(tileEntity, -18, 7);
         fontRendererObj.drawString(tileEntity.getName(), this.guiLeft + this.xSize - 8 - fontRendererObj.getStringWidth(tileEntity.getName()), this.guiTop + 4, 0x404040);
         fontRendererObj.drawString(StatCollector.translateToLocal("container.inventory"), this.guiLeft + 8, this.guiTop + 4, 0x404040);
+        super.drawGuiContainerBackgroundLayer(f, i, j);
     }
     
     @Override
     protected void mouseClicked(int x, int y, int b) throws IOException 
     {
         super.mouseClicked(x, y, b);
-        this.clickLiquidConfig(tileEntity, x - this.guiLeft + 18, y - this.guiTop - 7);
         if (this.isPointInRegion(183, 73, 18, 18, x, y))
         {
             PacketBuffer dos = tileEntity.getPacketTargetData();

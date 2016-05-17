@@ -44,12 +44,12 @@ public class GuiItemUpgrade extends GuiMachine
     protected void drawGuiContainerForegroundLayer(int mx, int my) 
     {
         super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(43, 15, 9, 18, "\\i", "filter.try");
-        this.drawInfo(52, 15, 9, 18, "\\i", "filter.invert");
-        this.drawInfo(61, 15, 18, 18, "\\i", "filter.ore");
-        this.drawInfo(79, 15, 18, 9, "\\i", "filter.nbt");
-        this.drawInfo(79, 24, 18, 9, "\\i", "filter.meta");
-        this.drawInfo(97, 15, 18, 18, "\\i", "filter.targetI");
+        this.drawInfo(43, 15, 9, 18, "\\i", "filter.try" + (this.container.inventory.upgrade.mode >> 1 & 1));
+        this.drawInfo(52, 15, 9, 18, "\\i", "filter.invert" + (this.container.inventory.upgrade.mode & 1));
+        this.drawInfo(61, 15, 18, 18, "\\i", "filter.ore" + (this.container.inventory.upgrade.mode >> 4 & 1));
+        this.drawInfo(79, 15, 18, 9, "\\i", "filter.nbt" + (this.container.inventory.upgrade.mode >> 3 & 1));
+        this.drawInfo(79, 24, 18, 9, "\\i", "filter.meta" + (this.container.inventory.upgrade.mode >> 2 & 1));
+        this.drawInfo(97, 15, 18, 18, "\\i", "filter.targetI" + (this.container.inventory.upgrade.mode >> 5 & 1));
         this.drawInfo(115, 15, 18, 18, "\\i", "rstCtr");
         this.drawInfo(133, 20, 18, 8, "\\i", "filter.priority");
     }

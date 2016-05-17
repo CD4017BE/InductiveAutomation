@@ -11,6 +11,7 @@ import java.io.IOException;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
@@ -199,6 +200,10 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
         container.addEntitySlot(new SlotHolo(this, 8, 26, 34, true, false));
         
         container.addPlayerInventory(8, 86);
+        
+        container.addTankSlot(new TankSlot(tanks, 0, 98, 16, true));
+        container.addTankSlot(new TankSlot(tanks, 1, 44, 16, true));
+        container.addTankSlot(new TankSlot(tanks, 2, 134, 16, true));
     }
     
     @Override

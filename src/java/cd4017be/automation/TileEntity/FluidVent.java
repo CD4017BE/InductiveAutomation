@@ -13,6 +13,7 @@ import java.io.IOException;
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.automation.Config;
 import cd4017be.lib.TileContainer;
+import cd4017be.lib.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
@@ -203,6 +204,8 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
         container.addEntitySlot(new SlotTank(this, 0, 202, 34));
         
         container.addPlayerInventory(8, 16);
+        
+        container.addTankSlot(new TankSlot(tanks, 0, 184, 16, true));
     }
     
 }
