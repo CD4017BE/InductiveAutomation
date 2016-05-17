@@ -14,6 +14,7 @@ import net.minecraft.init.Blocks;
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.AutomationRecipes;
 import cd4017be.api.automation.ProtectLvl;
+import cd4017be.api.energy.EnergyAPI;
 import cd4017be.automation.Entity.EntityAntimatterExplosion1;
 import cd4017be.automation.Item.ItemAntimatterLaser;
 import cd4017be.automation.Item.ItemAntimatterTank;
@@ -138,8 +139,9 @@ public class Config
     	algaeDecaying *= data.getFloat("Mach.bioReact.decay", 1F);
     	//Energy conversions
     	E_Steam = data.getFloat("EnergyConv.Steam", E_Steam);
-    	//EnergyThermalExpansion.E_Factor = data.getFloat("EnergyConv.RF", EnergyThermalExpansion.E_Factor) * 1000F; //TODO reimplement
-    	//EnergyIndustrialCraft.E_Factor = data.getFloat("EnergyConv.EU", EnergyIndustrialCraft.E_Factor) * 1000F; //TODO reimplement
+    	EnergyAPI.RF_value = data.getFloat("EnergyConv.RF", (float)EnergyAPI.RF_value / 1000F) * 1000F;
+    	EnergyAPI.EU_value = data.getFloat("EnergyConv.EU", (float)EnergyAPI.EU_value / 1000F) * 1000F;
+    	EnergyAPI.OC_value = data.getFloat("EnergyConv.OC", (float)EnergyAPI.OC_value / 1000F) * 1000F;
     	//Energy usage
     	float f = 1000F;
     	Builder.Energy = f * data.getFloat("Mach.Builder.Euse", Builder.Energy / f);

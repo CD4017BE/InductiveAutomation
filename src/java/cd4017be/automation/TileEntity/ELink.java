@@ -8,6 +8,8 @@ import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
+import cofh.api.energy.IEnergyProvider;
+import cofh.api.energy.IEnergyReceiver;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.energy.EnergyAPI;
@@ -21,17 +23,17 @@ import cd4017be.lib.util.Utils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import static cd4017be.api.energy.EnergyAPI.RF_value;
 
 /**
  *
  * @author CD4017BE
  */
-public class ELink extends AutomatedTile implements IEnergy //, IEnergyHandler //TODO reimplement
+public class ELink extends AutomatedTile implements IEnergy, IEnergyReceiver, IEnergyProvider
 {
     
-    public ELink()
-    {
-        //energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+    public ELink() {
         netData = new TileEntityData(0, 3, 4, 0);
     }
     
@@ -141,17 +143,16 @@ public class ELink extends AutomatedTile implements IEnergy //, IEnergyHandler /
         else return this.energy;
     }
 
-	/* TODO reimplement
+    //RedstoneFlux
+    
     @Override
-    public int receiveEnergy(EnumFacing dir, int e, boolean sim) 
-    {
-        if (energy == null) return 0;
-    	if (energyDemand <= 0) return 0;
+    public int receiveEnergy(EnumFacing dir, int e, boolean sim) {
+        if (energy == null || energyDemand <= 0) return 0;
         double x = energy.getEnergy(energy.Umax, 1);
         if (energyDemand + x > 0) energyDemand = x;
-        if ((double)e * EnergyThermalExpansion.E_Factor > energyDemand) e = (int)Math.floor(energyDemand / EnergyThermalExpansion.E_Factor);
+        if ((double)e * RF_value > energyDemand) e = (int)Math.floor(energyDemand / RF_value);
         if (!sim) {
-        	x = (double)e * EnergyThermalExpansion.E_Factor;
+        	x = (double)e * RF_value;
         	energy.addEnergy(x);
         	netData.floats[3] -= x;
         }
@@ -159,15 +160,13 @@ public class ELink extends AutomatedTile implements IEnergy //, IEnergyHandler /
     }
 
     @Override
-    public int extractEnergy(EnumFacing dir, int e, boolean sim) 
-    {
-    	if (energy == null) return 0;
-        if (energyDemand >= 0) return 0;
+    public int extractEnergy(EnumFacing dir, int e, boolean sim) {
+    	if (energy == null || energyDemand >= 0) return 0;
         double x = energy.getEnergy(0, 1);
         if (energyDemand + x < 0) energyDemand = -x;
-        if ((double)e * EnergyThermalExpansion.E_Factor > -energyDemand) e = (int)Math.floor(-energyDemand / EnergyThermalExpansion.E_Factor);
+        if ((double)e * RF_value > -energyDemand) e = (int)Math.floor(-energyDemand / RF_value);
         if (!sim) {
-        	x = (double)e * EnergyThermalExpansion.E_Factor;
+        	x = (double)e * RF_value;
         	energy.addEnergy(-x);
         	netData.floats[3] += x;
         }
@@ -175,22 +174,17 @@ public class ELink extends AutomatedTile implements IEnergy //, IEnergyHandler /
     }
 
     @Override
-    public int getEnergyStored(EnumFacing dir) 
-    {
-    	if (energy == null) return 0;
-        return (int)(energy.getEnergy(0, 1) / EnergyThermalExpansion.E_Factor);
+    public int getEnergyStored(EnumFacing dir) {
+        return energy == null ? 0 : (int)(energy.getEnergy(0, 1) / RF_value);
     }
 
     @Override
-    public int getMaxEnergyStored(EnumFacing dir) 
-    {
-    	if (energy == null) return 0;
-        return (int)((float)energy.Umax * (float)energy.Umax / EnergyThermalExpansion.E_Factor);
+    public int getMaxEnergyStored(EnumFacing dir) {
+        return energy == null ? 0 : (int)Math.floor(energy.Umax * energy.Umax / RF_value);
     }
     
 	@Override
 	public boolean canConnectEnergy(EnumFacing dir) {
 		return dir.getIndex() == this.getOrientation();
 	}
-    */
 }
