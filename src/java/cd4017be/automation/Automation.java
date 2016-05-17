@@ -93,7 +93,6 @@ public class Automation implements IWorldGenerator
     	BlockGuiHandler.registerMod(this);
     	PacketHandler.register();
         AreaProtect.register(this);
-        ComputerAPI.register();
     	GameRegistry.registerWorldGenerator(this, 0);
         GameRegistry.registerFuelHandler(proxy);
         
@@ -121,6 +120,7 @@ public class Automation implements IWorldGenerator
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
+    	ComputerAPI.register();
     	for (String s : Config.data.getStringArray("rcp.Pulverize.oreIn")) AutomationRecipes.addItemCrushingRecipes(s);
     	this.cleanConfig();
     	
