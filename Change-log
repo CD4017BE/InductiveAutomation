@@ -20,6 +20,12 @@ add other mod's energy types
 
 ################################# VERSIONS 1.8.9 #################################
 
+4.1.1 Changes:
+- reimplemented RedstoneFlux
+- added EnergyAPI for OpenComputers
+- improved side-config
+- improved some tool tips and fixed spelling mistakes
+
 4.1.0 Changes:
 - combined fluid & item warp pipes
 - interdimensional wormhole now also connects warp pipes
