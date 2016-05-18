@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
 
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -73,7 +76,8 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     private float neededE;
     private IOperatingArea slave = null;
     
-    private String lastUser = "";
+    private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "#Miner");
+    private GameProfile lastUser = defaultUser;
 	private CachedChunkProtection prot;
     
     public Miner()
@@ -86,14 +90,14 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
-        lastUser = entity.getName();
+        if (entity instanceof EntityPlayer)lastUser = ((EntityPlayer)entity).getGameProfile();
         prot = null;
     }
     
     @Override
     public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
-        lastUser = player.getName();
+        lastUser = player.getGameProfile();
         prot = null;
         return super.onActivated(player, s, X, Y, Z);
     }
@@ -297,7 +301,8 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         py = nbt.getInteger("py");
         pz = nbt.getInteger("pz");
         storage = nbt.getFloat("storage");
-        lastUser = nbt.getString("lastUser");
+        try {lastUser = new GameProfile(new UUID(nbt.getLong("lastUserID0"), nbt.getLong("lastUserID1")), nbt.getString("lastUser"));
+        } catch (Exception e) {lastUser = defaultUser;}
         prot = null;
         netData.ints[0] = nbt.getBoolean("run") ? -1 : 0;
         this.onUpgradeChange(3);
@@ -312,7 +317,9 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         nbt.setInteger("py", py);
         nbt.setInteger("pz", pz);
         nbt.setFloat("storage", storage);
-        nbt.setString("lastUser", lastUser);
+        nbt.setString("lastUser", lastUser.getName());
+        nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
+        nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
         nbt.setBoolean("run", netData.ints[0] != 0);
     }
         

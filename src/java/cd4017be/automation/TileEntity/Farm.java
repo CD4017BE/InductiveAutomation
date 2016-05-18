@@ -58,7 +58,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     public static float Energy = 25000F;
     private static final float resistor = 20F;
     private static final float eScale = (float)Math.sqrt(1D - 1D / resistor);
-    private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "Automation-Farm");
+    private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "#Farm");
     private int[] area = new int[6];
     private int px;
     private int py;
@@ -130,7 +130,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
             if (py <= area[1]) return true;
             py--;
         }
-    	if (prot == null || !prot.equalPos(pos)) prot = CachedChunkProtection.get(lastUser.getName(), worldObj, pos);
+    	if (prot == null || !prot.equalPos(pos)) prot = CachedChunkProtection.get(lastUser, worldObj, pos);
     	if (!prot.allow) return true;
         IBlockState state = worldObj.getBlockState(pos);
         Block block = state.getBlock();

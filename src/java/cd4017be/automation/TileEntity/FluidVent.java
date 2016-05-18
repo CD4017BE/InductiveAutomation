@@ -9,6 +9,9 @@ package cd4017be.automation.TileEntity;
 import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
 
 import cd4017be.automation.Config;
 import cd4017be.lib.TileContainer;
@@ -36,7 +39,8 @@ import net.minecraftforge.fluids.IFluidHandler;
  */
 public class FluidVent extends AutomatedTile implements IFluidHandler
 {
-    private String lastUser = "";
+	private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "#FluidVent");
+    private GameProfile lastUser = defaultUser;
     private int[] blocks = new int[0];
     private int dist = -1;
     private boolean flowDir;
@@ -170,7 +174,7 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
     @Override
     protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
-        lastUser = player.getName();
+        lastUser = player.getGameProfile();
         prot = null;
         if (cmd == 0) {
             blockNotify = !blockNotify;
@@ -190,14 +194,17 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
     {
         super.writeToNBT(nbt);
         nbt.setInteger("mode", netData.ints[0]);
-        nbt.setString("user", lastUser);
+        nbt.setString("lastUser", lastUser.getName());
+        nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
+        nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) 
     {
         super.readFromNBT(nbt);
-        lastUser = nbt.getString("user");
+        try {lastUser = new GameProfile(new UUID(nbt.getLong("lastUserID0"), nbt.getLong("lastUserID1")), nbt.getString("lastUser"));
+        } catch (Exception e) {lastUser = defaultUser;}
         prot = null;
         netData.ints[0] = nbt.getInteger("mode");
         blocks = new int[(netData.ints[0] & 0x7f) * 3];

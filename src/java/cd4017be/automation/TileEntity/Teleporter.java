@@ -9,6 +9,9 @@ import net.minecraft.network.PacketBuffer;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
 
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.Optional.Interface;
@@ -62,7 +65,8 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     private int[] area = new int[6];
     private int[] target = new int[4];
     
-    private String lastUser = "";
+    private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "#Teleporter");
+    private GameProfile lastUser = defaultUser;
     
     public Teleporter()
     {
@@ -75,7 +79,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
-        lastUser = entity.getName();
+    	if (entity instanceof EntityPlayer) lastUser = ((EntityPlayer)entity).getGameProfile();
     }
     
     @Override
@@ -223,7 +227,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     @Override
     protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
-        lastUser = player.getName();
+        lastUser = player.getGameProfile();
         if (cmd == 0)
         {
             byte b = dis.readByte();
@@ -316,8 +320,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         nbt.setInteger("pz", netData.ints[2]);
         nbt.setIntArray("area", area);
         nbt.setFloat("storage", netData.floats[0]);
-        nbt.setString("lastUser", lastUser);
-    }
+        nbt.setString("lastUser", lastUser.getName());
+        nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
+        nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());    }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) 
@@ -331,7 +336,8 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         if (area == null || area.length != 6) area = new int[6];
         netData.floats[0] = nbt.getFloat("storage");
         netData.ints[3] &= ~8;
-        lastUser = nbt.getString("lastUser");
+        try {lastUser = new GameProfile(new UUID(nbt.getLong("lastUserID0"), nbt.getLong("lastUserID1")), nbt.getString("lastUser"));
+        } catch (Exception e) {lastUser = defaultUser;}
         this.onUpgradeChange(3);
     }
 

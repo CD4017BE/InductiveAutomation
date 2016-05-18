@@ -7,9 +7,11 @@ package cd4017be.automation.TileEntity;
 import net.minecraft.util.ITickable;
 
 import java.util.ArrayList;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
 
 import cd4017be.api.automation.AreaProtect;
-import cd4017be.api.automation.IAreaConfig;
 import cd4017be.automation.Entity.EntityAntimatterExplosion1;
 import cd4017be.lib.ModTileEntity;
 import net.minecraft.block.Block;
@@ -57,11 +59,11 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
     
     private boolean isProtected()
     {
-        int x1 = (pos.getX() + EntityAntimatterExplosion1.maxSize + 1) >> 4;
-        int z1 = (pos.getZ() + EntityAntimatterExplosion1.maxSize + 1) >> 4;
-        int x0 = (pos.getX() - EntityAntimatterExplosion1.maxSize) >> 4;
-        int z0 = (pos.getZ() - EntityAntimatterExplosion1.maxSize) >> 4;
-        return !AreaProtect.operationAllowed("#antimatterBomb", worldObj, x0, x1, z0, z1);
+        int x1 = pos.getX() + EntityAntimatterExplosion1.maxSize + 1;
+        int z1 = pos.getZ() + EntityAntimatterExplosion1.maxSize + 1;
+        int x0 = pos.getX() - EntityAntimatterExplosion1.maxSize;
+        int z0 = pos.getZ() - EntityAntimatterExplosion1.maxSize;
+        return !AreaProtect.operationAllowed(new GameProfile(new UUID(0, 0), "#antimatterBomb"), worldObj, x0, x1, z0, z1);
     }
     
     @Override

@@ -172,7 +172,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         if (world.isRemote) return true;
         if (mode < 0) return true;
         else if (mode < 5) {
-        	if (!AreaProtect.operationAllowed(player.getName(), world, pos.getX() - mode, pos.getX() + mode + 1, pos.getZ() - mode, pos.getZ() + mode + 1)) {
+        	if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - mode, pos.getX() + mode + 1, pos.getZ() - mode, pos.getZ() + mode + 1)) {
                 player.addChatMessage(new ChatComponentText("Block is Protected"));
                 return true;
             }
@@ -182,7 +182,7 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
         			if (!this.breakBlock(item, player, world, pos.add(ax==2?0:i, ax==0?0:j, ax==1?0: ax==2?i:j)))
         				return true;
         } else if (mode == 5) {
-        	if (!AreaProtect.operationAllowed(player.getName(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
+        	if (!AreaProtect.operationAllowed(player.getGameProfile(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
                 player.addChatMessage(new ChatComponentText("Block is Protected"));
                 return true;
             }

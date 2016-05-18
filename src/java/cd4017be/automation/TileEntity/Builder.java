@@ -288,7 +288,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 	
 	public static float Energy = 25000F;
     public static final float resistor = 25F;
-    private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "Automation-Builder");
+    private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "#Builder");
     private static final float eScale = (float)Math.sqrt(1D - 1D / resistor);
     private static final short S_Offline = 0;
     private static final short S_FrameY = 1;
@@ -508,7 +508,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     private boolean setBlock(BlockPos pos, ItemStack item)
     {
     	if (item == null) return true;
-    	if (prot == null || !prot.equalPos(pos)) prot = CachedChunkProtection.get(lastUser.getName(), worldObj, pos);
+    	if (prot == null || !prot.equalPos(pos)) prot = CachedChunkProtection.get(lastUser, worldObj, pos);
     	if (!prot.allow) return true;
     	if (slave != null && comp == 0 && !((TileEntity)slave).isInvalid() && (slave instanceof Miner || slave instanceof Pump) && 
         		(slave.getSlave() == null || !(slave.getSlave() instanceof Builder || slave.getSlave().getSlave() != null))) {

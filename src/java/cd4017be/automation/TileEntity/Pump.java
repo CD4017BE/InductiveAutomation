@@ -7,6 +7,9 @@ package cd4017be.automation.TileEntity;
 import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
 
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.IOperatingArea;
@@ -53,21 +56,22 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
     private float storage;
     public boolean blockNotify;
     private IOperatingArea slave = null;
-    private String lastUser = "";
+    private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "#Pump");
+    private GameProfile lastUser = defaultUser;
     private boolean disabled = false;
 	private CachedChunkProtection prot;
 
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
-        lastUser = entity.getName();
+    	if (entity instanceof EntityPlayer)lastUser = ((EntityPlayer)entity).getGameProfile();
         prot = null;
     }
     
     @Override
     public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
-        lastUser = player.getName();
+        lastUser = player.getGameProfile();
         prot = null;
         return super.onActivated(player, s, X, Y, Z);
     }
@@ -278,7 +282,8 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
         blockNotify = (netData.ints[0] & 0x100) != 0;
         blocks = new int[(netData.ints[0] & 0x7f) * 3];
         dist = -1;
-        lastUser = nbt.getString("lastUser");
+        try {lastUser = new GameProfile(new UUID(nbt.getLong("lastUserID0"), nbt.getLong("lastUserID1")), nbt.getString("lastUser"));
+        } catch (Exception e) {lastUser = defaultUser;}
         prot = null;
         this.onUpgradeChange(3);
     }
@@ -293,7 +298,9 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
         nbt.setInteger("pz", pz);
         nbt.setFloat("storage", storage);
         nbt.setInteger("mode", netData.ints[0]);
-        nbt.setString("lastUser", lastUser);
+        nbt.setString("lastUser", lastUser.getName());
+        nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
+        nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
     }
 
     @Override
