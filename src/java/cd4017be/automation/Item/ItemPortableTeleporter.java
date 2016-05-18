@@ -170,7 +170,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 			player.addChatMessage(new ChatComponentText("Not enough Energy: " + e + " kJ needed!"));
 			return;
 		}
-		if (!AreaProtect.instance.isInteractingAllowed(player.getName(), world, x >> 4, z >> 4)) {
+		if (!AreaProtect.interactingAllowed(player.getName(), world, x >> 4, z >> 4)) {
 			player.addChatMessage(new ChatComponentText("Destination protected!"));
 			return;
 		}

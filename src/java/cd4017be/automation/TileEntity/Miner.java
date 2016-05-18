@@ -20,7 +20,6 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
-import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
@@ -33,6 +32,7 @@ import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.util.CachedChunkProtection;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.material.Material;
@@ -74,6 +74,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     private IOperatingArea slave = null;
     
     private String lastUser = "";
+	private CachedChunkProtection prot;
     
     public Miner()
     {
@@ -86,12 +87,14 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
         lastUser = entity.getName();
+        prot = null;
     }
     
     @Override
     public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         lastUser = player.getName();
+        prot = null;
         return super.onActivated(player, s, X, Y, Z);
     }
     
@@ -157,9 +160,9 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     
     private boolean breakBlock(BlockPos pos)
     {
-        if (!worldObj.isBlockLoaded(pos)) {
-            return false;
-        }
+        if (!worldObj.isBlockLoaded(pos)) return false;
+        if (prot == null || !prot.equalPos(pos)) prot = CachedChunkProtection.get(lastUser, worldObj, pos);
+    	if (!prot.allow) return true;
         IBlockState state = worldObj.getBlockState(pos);
         Block block = state.getBlock();
         int m = block.getMetaFromState(state);
@@ -180,7 +183,6 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
             }
         }
         if (eff == 0) return true;
-        if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, px >> 4, pz >> 4)) return true;
         Map<Integer, Integer> enchant = tool < 0 ? new LinkedHashMap<Integer, Integer>() : EnchantmentHelper.getEnchantments(inventory.items[tool]);
         Integer n = enchant.get(Enchantment.efficiency.effectId);
         if (n != null) eff *= 1F + 0.3F * (float)n;
@@ -296,6 +298,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         pz = nbt.getInteger("pz");
         storage = nbt.getFloat("storage");
         lastUser = nbt.getString("lastUser");
+        prot = null;
         netData.ints[0] = nbt.getBoolean("run") ? -1 : 0;
         this.onUpgradeChange(3);
     }

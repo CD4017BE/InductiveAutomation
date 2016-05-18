@@ -21,7 +21,6 @@ import li.cil.oc.api.network.Node;
 
 import com.mojang.authlib.GameProfile;
 
-import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
@@ -39,6 +38,7 @@ import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.Inventory.Component;
 import cd4017be.lib.templates.SlotItemType;
+import cd4017be.lib.util.CachedChunkProtection;
 import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.Utils;
 import cd4017be.lib.util.Vec2;
@@ -316,6 +316,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     private IOperatingArea slave = null;
     private TextureData tmpData;
     private VectorConstruction Vconst;
+    private CachedChunkProtection prot;
     
     private GameProfile lastUser = defaultUser;
 
@@ -330,12 +331,14 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
         lastUser = entity instanceof EntityPlayer ? ((EntityPlayer)entity).getGameProfile() : new GameProfile(new UUID(0, 0), entity.getName());
+        prot = null;
     }
     
     @Override
     public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         lastUser = player.getGameProfile();
+        prot = null;
         return super.onActivated(player, s, X, Y, Z);
     }
     
@@ -505,6 +508,8 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     private boolean setBlock(BlockPos pos, ItemStack item)
     {
     	if (item == null) return true;
+    	if (prot == null || !prot.equalPos(pos)) prot = CachedChunkProtection.get(lastUser.getName(), worldObj, pos);
+    	if (!prot.allow) return true;
     	if (slave != null && comp == 0 && !((TileEntity)slave).isInvalid() && (slave instanceof Miner || slave instanceof Pump) && 
         		(slave.getSlave() == null || !(slave.getSlave() instanceof Builder || slave.getSlave().getSlave() != null))) {
         	if (!slave.remoteOperation(pos)) return false;
@@ -548,7 +553,6 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         if (id == null) return true;
         Block b = worldObj.getBlockState(pos).getBlock();
         if (!b.isReplaceable(worldObj, pos)) return true;
-        if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, pos.getX() >> 4, pos.getZ() >> 4)) return true;
         if (storage >= Energy && remove(item, true) != null)
         {
             worldObj.setBlockState(pos, id.getStateFromMeta(m), 0x3);
@@ -693,6 +697,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         setupData();
         try {lastUser = new GameProfile(new UUID(nbt.getLong("lastUserID0"), nbt.getLong("lastUserID1")), nbt.getString("lastUser"));
         } catch (Exception e) {lastUser = defaultUser;}
+        prot = null;
         this.onUpgradeChange(3);
     }
 

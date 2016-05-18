@@ -157,12 +157,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
                 }
             }
         } else return;
-        for (int cx = area[0] >> 4; cx <= area[3] >> 4; cx++)
-        for (int cz = area[2] >> 4; cz <= area[5] >> 4; cz++)
-        if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, cx, cz)) netData.ints[3] &= ~8;
-        for (int cx = (area[0] + dx) >> 4; cx <= (area[3] + dx) >> 4; cx++)
-        for (int cz = (area[2] + dz) >> 4; cz <= (area[5] + dz) >> 4; cz++)
-        if (!AreaProtect.instance.isOperationAllowed(lastUser, world, cx, cz)) netData.ints[3] &= ~8;
+        if (!AreaProtect.operationAllowed(lastUser, worldObj, area[0] >> 4, (area[3] + 15) >> 4, area[2] >> 4, (area[5] + 15) >> 4) ||
+        	!AreaProtect.operationAllowed(lastUser, world, (area[0] + dx) >> 4, (area[3] + dx + 15) >> 4, (area[2]+ dz) >> 4, (area[5] + dz + 15) >> 4)) 
+        	netData.ints[3] &= ~8;
         target = new int[]{area[0] + dx, area[1] + dy, area[2] + dz, world.provider.getDimensionId()};
     }
     

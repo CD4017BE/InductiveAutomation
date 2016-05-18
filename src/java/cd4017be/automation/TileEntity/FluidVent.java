@@ -10,7 +10,6 @@ import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
-import cd4017be.api.automation.AreaProtect;
 import cd4017be.automation.Config;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileContainer.TankSlot;
@@ -20,6 +19,7 @@ import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.SlotTank;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
+import cd4017be.lib.util.CachedChunkProtection;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -44,6 +44,7 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
     private final EnumFacing[] lastDir = new EnumFacing[2];
     private Block blockId;
     public boolean blockNotify;
+	private CachedChunkProtection prot;
     
     public FluidVent()
     {
@@ -75,13 +76,15 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
         int target = blocks[dist];
         netData.ints[1] = target;
         byte dx = (byte)target, dy = (byte)(target >> 8), dz = (byte)(target >> 16);
-        if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, (pos.getX() + dx) >> 4, (pos.getZ() + dz) >> 4)) return;
+        BlockPos np = pos.add(dx, dy, dz);
+        if (prot == null || !prot.equalPos(np)) prot = CachedChunkProtection.get(lastUser, worldObj, np);
+    	if (!prot.allow) return;
         if (dist >= blocks.length - 1) {
-            this.moveBack(pos.add(dx, dy, dz));
+            this.moveBack(np);
             return;
         }
-        dir = this.findNextDir(pos.add(dx, dy, dz));
-        if (dir == null) this.moveBack(pos.add(dx, dy, dz));
+        dir = this.findNextDir(np);
+        if (dir == null) this.moveBack(np);
         else {
             if (dir == EnumFacing.UP || dir == EnumFacing.DOWN) lastDir[0] = lastDir[1] = null;
             else if (dir != lastDir[0]) {
@@ -168,6 +171,7 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
     protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
     {
         lastUser = player.getName();
+        prot = null;
         if (cmd == 0) {
             blockNotify = !blockNotify;
             netData.ints[0] = (netData.ints[0] & 0xff) | (blockNotify ? 0x100 : 0);
@@ -186,12 +190,15 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
     {
         super.writeToNBT(nbt);
         nbt.setInteger("mode", netData.ints[0]);
+        nbt.setString("user", lastUser);
     }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) 
     {
         super.readFromNBT(nbt);
+        lastUser = nbt.getString("user");
+        prot = null;
         netData.ints[0] = nbt.getInteger("mode");
         blocks = new int[(netData.ints[0] & 0x7f) * 3];
         blockNotify = (netData.ints[0] & 0x100) != 0;

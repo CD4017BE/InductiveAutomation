@@ -131,13 +131,13 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
         int mode = item.getTagCompound() == null ? 0 : item.getTagCompound().getByte("mode");
     	if (mode < 0) return true;
     	if (mode == 0) {
-    		if (!AreaProtect.instance.isOperationAllowed(player.getName(), world, pos.getX() >> 4, pos.getZ() >> 4)) {
+    		if (!AreaProtect.operationAllowed(player.getName(), world, pos.getX() >> 4, pos.getZ() >> 4)) {
                 player.addChatMessage(new ChatComponentText("Block is Protected"));
                 return true;
             }
     		this.placeItem(item, player, world, pos, s, X, Y, Z);
     	} else if (mode == 1) {
-    		if (!AreaProtect.instance.isOperationAllowed(player.getName(), world, pos.getX() - 15, pos.getX() + 16, pos.getZ() - 15, pos.getZ() + 16)) {
+    		if (!AreaProtect.operationAllowed(player.getName(), world, pos.getX() - 15, pos.getX() + 16, pos.getZ() - 15, pos.getZ() + 16)) {
                 player.addChatMessage(new ChatComponentText("Block is Protected"));
                 return true;
             }
@@ -154,7 +154,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     			curList = newList;
     		}
     	} else if (mode == 2) {
-    		if (!AreaProtect.instance.isOperationAllowed(player.getName(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
+    		if (!AreaProtect.operationAllowed(player.getName(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
                 player.addChatMessage(new ChatComponentText("Block is Protected"));
                 return true;
             }
@@ -168,7 +168,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
         				return true;
         		}
     	} else if (mode == 3) {
-    		if (!AreaProtect.instance.isOperationAllowed(player.getName(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
+    		if (!AreaProtect.operationAllowed(player.getName(), world, pos.getX() - 7, pos.getX() + 8, pos.getZ() - 7, pos.getZ() + 8)) {
                 player.addChatMessage(new ChatComponentText("Block is Protected"));
                 return true;
             }

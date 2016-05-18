@@ -57,18 +57,11 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
     
     private boolean isProtected()
     {
-        int x = pos.getX() >> 4;
-        int z = pos.getZ() >> 4;
-        int dx, dz;
-        ArrayList<IAreaConfig> list = AreaProtect.instance.loadedSS.get(this.worldObj.provider.getDimensionId());
-        if (list == null) return false;
-        for (IAreaConfig area : list) {
-            for (int[] e : area.getProtectedChunks("#antimatterBomb")) {
-            	dx = e[0] - x; dz = e[1] - z;
-                if (dx * dx + dz * dz < 70000) return true;
-            }
-        }
-        return false;
+        int x1 = (pos.getX() + EntityAntimatterExplosion1.maxSize + 1) >> 4;
+        int z1 = (pos.getZ() + EntityAntimatterExplosion1.maxSize + 1) >> 4;
+        int x0 = (pos.getX() - EntityAntimatterExplosion1.maxSize) >> 4;
+        int z0 = (pos.getZ() - EntityAntimatterExplosion1.maxSize) >> 4;
+        return !AreaProtect.operationAllowed("#antimatterBomb", worldObj, x0, x1, z0, z1);
     }
     
     @Override

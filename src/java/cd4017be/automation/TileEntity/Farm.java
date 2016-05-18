@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
 
-import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
@@ -29,6 +28,7 @@ import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory.Component;
 import cd4017be.lib.templates.SlotHolo;
 import cd4017be.lib.templates.SlotItemType;
+import cd4017be.lib.util.CachedChunkProtection;
 import cd4017be.lib.util.Utils;
 import cd4017be.lib.util.Utils.ItemType;
 import cd4017be.lib.templates.Inventory;
@@ -69,6 +69,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     private PipeUpgradeItem harvestFilter;
     private IOperatingArea slave = null;
     private GameProfile lastUser = defaultUser;
+	private CachedChunkProtection prot;
 
     public Farm()
     {
@@ -81,12 +82,14 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
         lastUser = entity instanceof EntityPlayer ? ((EntityPlayer)entity).getGameProfile() : new GameProfile(new UUID(0, 0), entity.getName());
+        prot = null;
     }
     
     @Override
     public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         lastUser = player.getGameProfile();
+        prot = null;
         return super.onActivated(player, s, X, Y, Z);
     }
     
@@ -127,6 +130,8 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
             if (py <= area[1]) return true;
             py--;
         }
+    	if (prot == null || !prot.equalPos(pos)) prot = CachedChunkProtection.get(lastUser.getName(), worldObj, pos);
+    	if (!prot.allow) return true;
         IBlockState state = worldObj.getBlockState(pos);
         Block block = state.getBlock();
         int m = block.getMetaFromState(state);
@@ -146,7 +151,6 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         if (invFull && invFull()) return 0;
         invFull = false;
         if (storage < Energy) return 0;
-        if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, px >> 4, pz >> 4)) return 1;
         storage -= Energy;
         worldObj.setBlockToAir(pos);
         List<ItemStack> list = block.getDrops(worldObj, pos, state, 0);
@@ -173,7 +177,6 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         }
         if (n == 0) return -1;
         if (storage < Energy) return 0;
-        if (!AreaProtect.instance.isOperationAllowed(lastUser.getName(), worldObj, px >> 4, pz >> 4)) return 1;
         int o = random.nextInt(n);
         for (Object[] obj : list) {
         	if (o >= (Integer)obj[2] && o < (Integer)obj[3]) {
@@ -345,6 +348,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         invFull = invFull();
         try {lastUser = new GameProfile(new UUID(nbt.getLong("lastUserID0"), nbt.getLong("lastUserID1")), nbt.getString("lastUser"));
         } catch (Exception e) {lastUser = defaultUser;}
+        prot = null;
         this.setInventorySlotContents(36, inventory.items[36]);
         this.onUpgradeChange(3);
     }

@@ -8,7 +8,6 @@ import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
-import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
@@ -21,6 +20,7 @@ import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.SlotTank;
 import cd4017be.lib.templates.TankContainer;
+import cd4017be.lib.util.CachedChunkProtection;
 import cd4017be.lib.util.Utils;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.entity.EntityLivingBase;
@@ -55,17 +55,20 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
     private IOperatingArea slave = null;
     private String lastUser = "";
     private boolean disabled = false;
+	private CachedChunkProtection prot;
 
     @Override
     public void onPlaced(EntityLivingBase entity, ItemStack item)  
     {
         lastUser = entity.getName();
+        prot = null;
     }
     
     @Override
     public boolean onActivated(EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
         lastUser = player.getName();
+        prot = null;
         return super.onActivated(player, s, X, Y, Z);
     }
     
@@ -119,10 +122,10 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
     
     private boolean checkBlock(BlockPos pos)
     {
-    	
+    	if (prot == null || !prot.equalPos(pos)) prot = CachedChunkProtection.get(lastUser, worldObj, pos);
+    	if (!prot.allow) return true;
     	FluidStack fluid = Utils.getFluid(worldObj, pos, this.blockNotify);
         if (fluid == null || (tanks.isLocked(0) && !fluid.isFluidEqual(tanks.getFluid(0)))) return slaveOP(pos);
-        else if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, pos.getX() >> 4, pos.getZ() >> 4)) return true;
         else if (storage < Energy) return false;
         else return this.drain(pos, fluid);
     }
@@ -152,13 +155,15 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
         int target = blocks[dist];
         netData.ints[1] = target;
         byte dx = (byte)target, dy = (byte)(target >> 8), dz = (byte)(target >> 16);
-        if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, (pos.getX() + dx) >> 4, (pos.getZ() + dz) >> 4)) return true;
+        BlockPos np = pos.add(dx, dy, dz);
+        if (prot == null || !prot.equalPos(np)) prot = CachedChunkProtection.get(lastUser, worldObj, np);
+    	if (!prot.allow) return true;
         if (dist >= blocks.length - 1) {
-            this.moveBack(pos.add(dx, dy, dz));
+            this.moveBack(np);
             return false;
         }
-        EnumFacing dir = this.findNextDir(pos.add(dx, dy, dz));
-        if (dir == null) this.moveBack(pos.add(dx, dy, dz));
+        EnumFacing dir = this.findNextDir(np);
+        if (dir == null) this.moveBack(np);
         else {
             if (dir == EnumFacing.UP || dir == EnumFacing.DOWN) lastDir[0] = lastDir[1] = null;
             else if (dir != lastDir[0]) {
@@ -274,6 +279,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
         blocks = new int[(netData.ints[0] & 0x7f) * 3];
         dist = -1;
         lastUser = nbt.getString("lastUser");
+        prot = null;
         this.onUpgradeChange(3);
     }
 

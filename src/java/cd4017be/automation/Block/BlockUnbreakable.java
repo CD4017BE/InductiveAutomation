@@ -73,7 +73,7 @@ public class BlockUnbreakable extends DefaultBlock
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing s, float X, float Y, float Z) 
     {
-        ProtectLvl pr = AreaProtect.instance.getPlayerAccess(player.getName(), world, pos.getX() >> 4, pos.getZ() >> 4);
+        ProtectLvl pr = AreaProtect.playerAccess(player.getName(), world, pos.getX() >> 4, pos.getZ() >> 4);
         if (pr == ProtectLvl.Free && !world.isRemote && player.isSneaking()) {
             dropBlockAsItem(world, pos, state, 0);
             world.setBlockToAir(pos);
