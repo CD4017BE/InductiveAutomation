@@ -1,4 +1,5 @@
 {
+	"parent": "block/block",
     "textures": {
 		"up": "automation:blocks/teslaTransmitterLV0",
 		"down": "automation:blocks/teslaTransmitterLV1",
