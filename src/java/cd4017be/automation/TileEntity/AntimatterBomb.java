@@ -19,9 +19,6 @@ import java.util.BitSet;
 import java.util.List;
 
 import cd4017be.api.automation.AreaProtect;
-import cd4017be.api.automation.IAreaConfig;
-import cd4017be.automation.Entity.EntityAntimatterExplosion1;
-import cd4017be.api.automation.IAreaConfig;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Item.ItemFluidDummy;
 import cd4017be.lib.ModTileEntity;

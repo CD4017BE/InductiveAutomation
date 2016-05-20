@@ -339,12 +339,8 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
     {
         lastUser = player.getGameProfile();
-<<<<<<< Upstream, based on master-1.8.9
         prot = null;
-        return super.onActivated(player, s, X, Y, Z);
-=======
         return super.onActivated(player, hand, item, s, X, Y, Z);
->>>>>>> 3f907e1 fix render problems
     }
     
     @Override
