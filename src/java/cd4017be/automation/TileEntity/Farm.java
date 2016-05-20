@@ -196,7 +196,10 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     {
     	if (plant instanceof IPlantable) {
         	if (!remove(item, 1)) return true;
-            worldObj.setBlockState(pos.up(), ((IPlantable)plant).getPlant(worldObj, pos.up()), 0x3);
+        	BlockPos pos1 = pos.up();
+        	IBlockState state = ((IPlantable)plant).getPlant(worldObj, pos1);
+        	state = state.getBlock().onBlockPlaced(worldObj, pos1, EnumFacing.DOWN, 0.5F, 0F, 0.5F, item.getItem().getMetadata(item.getItemDamage()), FakePlayerFactory.get((WorldServer)worldObj, lastUser));
+        	worldObj.setBlockState(pos.up(), state, 0x3);
             storage -= Energy;
             return true;
         } else {

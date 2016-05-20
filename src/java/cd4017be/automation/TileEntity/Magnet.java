@@ -12,6 +12,7 @@ import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
 import cd4017be.lib.ModTileEntity;
+import cd4017be.lib.util.Utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -76,15 +77,8 @@ public class Magnet extends ModTileEntity implements IEnergy, ITickable
             TileEntity te = getLoadedTile(pos.offset(dir));
             if (te != null && te instanceof IInventory)
             {
-                int[] s;
-                if (te instanceof ISidedInventory)
-                {
-                    s = ((ISidedInventory)te).getSlotsForFace(dir);
-                } else {
-                    s = new int[((IInventory)te).getSizeInventory()];
-                    for (int j = 0; j < s.length; j++) s[j] = j;
-                }
-                item = this.putItemStack(item, (IInventory)te, i, s);
+                int[] s = Utils.accessibleSlots((IInventory)te, i^1);
+                item = this.putItemStack(item, (IInventory)te, i^1, s);
             }
         }
         return item;
