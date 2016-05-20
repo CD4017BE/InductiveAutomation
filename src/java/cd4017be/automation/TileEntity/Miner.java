@@ -99,14 +99,9 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     @Override
     public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
     {
-<<<<<<< Upstream, based on master-1.8.9
         lastUser = player.getGameProfile();
         prot = null;
-        return super.onActivated(player, s, X, Y, Z);
-=======
-        lastUser = player.getName();
         return super.onActivated(player, hand, item, s, X, Y, Z);
->>>>>>> 3f907e1 fix render problems
     }
     
     @Override
@@ -194,14 +189,8 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
             }
         }
         if (eff == 0) return true;
-<<<<<<< Upstream, based on master-1.8.9
-        Map<Integer, Integer> enchant = tool < 0 ? new LinkedHashMap<Integer, Integer>() : EnchantmentHelper.getEnchantments(inventory.items[tool]);
-        Integer n = enchant.get(Enchantment.efficiency.effectId);
-=======
-        if (!AreaProtect.instance.isOperationAllowed(lastUser, worldObj, px >> 4, pz >> 4)) return true;
         Map<Enchantment, Integer> enchant = tool < 0 ? Collections.<Enchantment, Integer>emptyMap() : EnchantmentHelper.getEnchantments(inventory.items[tool]);
         Integer n = enchant.get(Enchantments.efficiency);
->>>>>>> 3f907e1 fix render problems
         if (n != null) eff *= 1F + 0.3F * (float)n;
         float e = hardness * Energy / eff;
         boolean silk;
