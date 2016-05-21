@@ -17,6 +17,13 @@ add other mod's energy types
 - warp extraction pipe filter priority -> limit destination priority
 - pipe-filter tooltip
 ---THERMODYNAMIC-PHYSICS!!!!
+################################# VERSIONS 1.9 #################################
+
+5.0.1 Changes:
+- fixed wrong oriented block-item rendering
+- fixed issue #5 farm ignoring metadata for saplings (and probably also other things)
+- improved Chunk Protection System performance (1.8.9)
+- included 1.8.9 changes from v4.1.1
 
 ################################# VERSIONS 1.8.9 #################################
 
