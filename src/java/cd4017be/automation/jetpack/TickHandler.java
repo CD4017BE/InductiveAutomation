@@ -13,9 +13,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.network.internal.FMLProxyPacket;
 import io.netty.buffer.Unpooled;
-
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.ItemStack;
@@ -27,7 +28,10 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
+import cd4017be.automation.Config;
+import cd4017be.automation.Item.ItemInvEnergy;
 import cd4017be.automation.Item.ItemJetpack;
+import cd4017be.automation.Item.ItemJetpackFuel;
 import cd4017be.automation.jetpack.JetPackConfig.Mode;
 import cd4017be.lib.util.Vec2;
 import cd4017be.lib.util.Vec3;
@@ -41,6 +45,7 @@ public class TickHandler
     private static final Minecraft mc = Minecraft.getMinecraft();
     private Vec2 dirVec = Vec2.Def(0, 0);
     public int power = 0;
+    private float energy = 0, H2 = 0, O2 = 0;
     public static TickHandler instance = new TickHandler();
     private static final KeyBinding keyOn = new KeyBinding("Jetpack On/Off", Keyboard.KEY_F, "Automation");
     private static final KeyBinding keyMode = new KeyBinding("Jetpack control-mode", Keyboard.KEY_Y, "Automation");
@@ -97,7 +102,20 @@ public class TickHandler
             dir = dir.add(new Vec3(dirVec.rotate(cos, sin), 0));
         }
         dir = dir.norm();
+        O2 = H2 = energy = 0;
         if (nbt.getInteger("power") < 0) return;
+        else for (int i = mc.thePlayer.inventory.mainInventory.length - 1; i >= 0; i--) {
+        	ItemStack stack = mc.thePlayer.inventory.mainInventory[i];
+        	if (stack == null || stack.getItem() == null || !stack.hasTagCompound()) continue;
+        	if (stack.getItem() instanceof ItemInvEnergy) {
+        		energy = (float)stack.getTagCompound().getInteger("energy") / (float)((ItemInvEnergy)stack.getItem()).getEnergyCap(stack);
+        		break;
+        	} else if (stack.getItem() instanceof ItemJetpackFuel) {
+        		O2 = stack.getTagCompound().getFloat("O2") / (float)Config.tankCap[2];
+        		H2 = stack.getTagCompound().getFloat("H2") / (float)Config.tankCap[2] / 2F;
+        		break;
+        	}
+        }
         ItemJetpack.updateMovement(mc.thePlayer, dir, power);
         PacketBuffer dos = new PacketBuffer(Unpooled.buffer());
 		//command-ID
@@ -148,6 +166,8 @@ public class TickHandler
             if (item == null || !(item.getItem() instanceof ItemJetpack) || item.getTagCompound() == null) return;
             NBTTagCompound nbt = item.getTagCompound();
             if (!nbt.getBoolean("On")) return;
+            GlStateManager.disableAlpha();
+            GlStateManager.enableBlend();
             mc.fontRendererObj.drawString("Jetpack Control Mode: " + JetPackConfig.getMode().name, 8, 8, 0x40ff40);
             GL11.glColor4f(1, 1, 1, 1);
             mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/jetpack.png"));
@@ -155,9 +175,25 @@ public class TickHandler
             mc.ingameGUI.drawTexturedModalRect(8, (hgt - 176) / 2, 0, 0, 16, 169);
             int n = power * 160 / ItemJetpack.maxPower;
             mc.ingameGUI.drawTexturedModalRect(9, (hgt - 176) / 2 + 161 - n, 16, 160 - n, 6, n);
+            int y = hgt - 74;
             if (nbt.getInteger("power") < 0)
-                mc.fontRendererObj.drawString("Out of Fuel!", 8, (hgt + 176) / 2 - 8, 0xff7f3f);
+                mc.fontRendererObj.drawString("Out of Fuel!", 8, y, 0xff7f3f);
+            else if (energy > 0) {
+            	mc.ingameGUI.drawTexturedModalRect(4, y, 0, 187, 74, 18);
+            	n = (int)(energy * 1024F);
+            	mc.ingameGUI.drawTexturedModalRect(5, y + 1, 0, 240, n / 16, 16);
+            	mc.ingameGUI.drawTexturedModalRect(5 + n / 16, y + 1, n / 16, 240, 1, n % 16);
+            } else if (O2 > 0 || H2 > 0) {
+            	mc.ingameGUI.drawTexturedModalRect(4, y, 0, 169, 74, 18);
+            	n = (int)(O2 * 320F);
+            	mc.ingameGUI.drawTexturedModalRect(5, y + 1, 0, 225, n / 5, 5);
+            	mc.ingameGUI.drawTexturedModalRect(5 + n / 5, y + 1, n / 5, 225, 1, n % 5);
+            	n = (int)(H2 * 640F);
+            	mc.ingameGUI.drawTexturedModalRect(5, y + 7, 0, 230, n / 10, 10);
+            	mc.ingameGUI.drawTexturedModalRect(5 + n / 10, y + 7, n / 10, 230, 1, n % 10);
+            }
             Vec3 mov = Vec3.Def(mc.thePlayer.posX - mc.thePlayer.lastTickPosX, mc.thePlayer.posY - mc.thePlayer.lastTickPosY, mc.thePlayer.posZ - mc.thePlayer.lastTickPosZ).scale(20D);
+            Gui.drawRect(4, hgt - 52, 110, hgt - 4, 0x80000000);
             mc.fontRendererObj.drawString(String.format("Speed  = %5.1f m/s", mov.l()), 8, hgt - 48, 0xff3f00);
             mc.fontRendererObj.drawString(String.format("Ascent = %+5.1f m/s", mov.y), 8, hgt - 32, 0xff3f00);
             mc.fontRendererObj.drawString(String.format("Height = %5.1f m", mc.thePlayer.posY), 8, hgt - 16, 0xff3f00);

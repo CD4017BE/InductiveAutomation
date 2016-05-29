@@ -291,7 +291,7 @@ public class CommonProxy implements IFuelHandler
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("mAccelerator", 1), "010", "232", "010", '0', stack("tile.wireH", 1), '1', stack("CoilSC", 1), '2', stack("Acelerator", 1), '3', "AIcasingSteel"));
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("amAcelerator", 1), "000", "010", "000", '0', "AIcasingUnbr", '1', stack("mAccelerator", 1)));
         GameRegistry.addRecipe(new ShapedOreRecipe(stack("Fokus", 1), "010", "121", "010", '0', stack("Circut", 1), '1', stack("CoilSC", 1), '2', stack("QAlloyI", 1)));
-        configurableRecipe("item.contJetFuel", new ShapedOreRecipe(stack("item.contJetFuel", 1), "010", '0', stack("LCHydrogen", 1), '1', stack("LCOxygen", 1)));
+        configurableRecipe("item.contJetFuel", new ShapedOreRecipe(stack("item.contJetFuel", 1), "010", "222", '0', stack("liquidPipeT", 1), '1', "ingotSteel", '2', stack("tile.tank", 1)));
         configurableRecipe("item.contLiquidAir", new ShapedOreRecipe(stack("item.contLiquidAir", 1), "00", "01", '0', stack("LCNitrogen", 1), '1', stack("LCOxygen", 1)));
         configurableRecipe("item.contAlgaeFood", new ShapedOreRecipe(stack("item.contAlgaeFood", 1), "00", "12", '0', stack("LCAlgae", 1), '1', new ItemStack(Items.potionitem), '2', new ItemStack(Items.apple)));
         configurableRecipe("item.contInvEnergy", new NBTRecipe(stack("item.contInvEnergy", 1), "+energy", "010", '0', stack("tile.wireH", 1), '1', stack("tile.CCSU", 1)));

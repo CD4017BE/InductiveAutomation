@@ -173,7 +173,9 @@ public class Config
     	ItemAntimatterLaser.DamageMult = data.getFloat("Tool.AmLaser.AMmult", ItemAntimatterLaser.DamageMult);
     	ItemAntimatterTank.BombMaxCap = data.getInt("AmBomb.MaxAM", ItemAntimatterTank.BombMaxCap);
     	ItemAntimatterTank.explFaktor = EntityAntimatterExplosion1.PowerFactor * EntityAntimatterExplosion1.explMult / Blocks.stone.getExplosionResistance(null) * 0.125D;
-    	ItemJetpackFuel.maxFuel = data.getFloat("Tool.JetFuel.dur", ItemJetpackFuel.maxFuel);
+    	ItemJetpackFuel.H2Mult = data.getFloat("Jetpack.H2.val", ItemJetpackFuel.H2Mult * 1000F) / 1000F;
+    	ItemJetpackFuel.O2Mult = ItemJetpackFuel.H2Mult * 2F;
+    	ItemJetpackFuel.electricEmult = data.getFloat("Jetpack.el.val", ItemJetpackFuel.electricEmult * 1000F) / 1000F;
     	GraviCond.energyCost = data.getFloat("Mach.GravCond.Euse", GraviCond.energyCost);
     	GraviCond.forceEnergy = data.getFloat("Mach.GravCond.Eforce", GraviCond.forceEnergy);
     	GraviCond.maxVoltage = data.getInt("Mach.GravCond.Umax", GraviCond.maxVoltage);
