@@ -30,7 +30,7 @@ public class FuelCell extends AutomatedTile implements IFluidHandler, IEnergy, I
         netData = new TileEntityData(1, 2, 1, 3);
         energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
 		inventory = new Inventory(this, 3);
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_hydrogenG).setIn(0), new Tank(Config.tankCap[1], -1, Objects.L_oxygenG).setIn(1), new Tank(Config.tankCap[1], 1, Objects.L_steam).setOut(2));
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_hydrogenG).setIn(0), new Tank(Config.tankCap[1], -1, Objects.L_oxygenG).setIn(1), new Tank(Config.tankCap[1], 1, Objects.L_waterG).setOut(2));
 		/**
 		 * long: tanks
 		 * int: voltage, power, mlHydrogen, mlOxygen
@@ -54,8 +54,8 @@ public class FuelCell extends AutomatedTile implements IFluidHandler, IEnergy, I
     	if (p > 0) {
             tanks.drain(0, p * 2, true);
             tanks.drain(1, p, true);
-            tanks.fill(2, new FluidStack(Objects.L_steam, p), true);
-            netData.floats[0] += p * 1800F;
+            tanks.fill(2, new FluidStack(Objects.L_waterG, p * 3), true);
+            netData.floats[0] += p * 2000F;
     	} else p = 0;
     	netData.ints[1] = p * 2;
     }

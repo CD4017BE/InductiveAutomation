@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/heatRadiator1",
+		"bot": "automation:blocks/heatRadiator1",
+		"front": "automation:blocks/heatRadiator0",
+		"back": "automation:blocks/heatRadiator0",
+		"left": "automation:blocks/heatRadiator0",
+		"right": "automation:blocks/heatRadiator0"
+	}
+}

@@ -92,6 +92,7 @@ tile.cd4017be.gravCond.name=Gravitational Condenser
 tile.cd4017be.itemBuffer.name=Item Flow Regulator
 tile.cd4017be.quantumTank.name=Quantum Tank
 tile.cd4017be.vertShemGen.name=3D-Vertex Schematic Printer
+tile.cd4017be.heatRadiator.name=Fluid Heat Radiator
 # tooltips
 tile.cd4017be.ore.tip=spawns in the world
 tile.cd4017be.placementHelper.tip=You shouldn't be able to get this.\nJust throw it away it's useless for you.\nPlacement controllers will temporary place\nthese blocks to click items against them.
@@ -163,9 +164,11 @@ tile.cd4017be.gravCond.tip=Compacts huge amounts of matter with\nmaterials to cr
 tile.cd4017be.itemBuffer.tip=Distributes incoming items over two\noutputs at a specific ratio and/or\ncombines them to higher stack sizes to\nuse slow pipes more efficiently. 
 tile.cd4017be.quantumTank.tip=Another even bigger tank with 2.097.152 m³ capacity.
 tile.cd4017be.vertShemGen.tip=Used to print 3D-Vertex schematics\nto let a Builder build them automated.\n(A Vertex Selection Tool can be used\ninstead of typing in coordinates manually)
+tile.cd4017be.heatRadiator.tip=Cools or heats fluids to environment temperature.\nUsed to turn Water Vapor into liquid Water.
 
 # Fluid names
 fluid.steam.name=Steam
+fluid.waterG.name=Water Vapor
 fluid.biomass.name=Biomass
 fluid.antimatter.name=Antimatter
 fluid.nitrogenG.name=Gaseous Nitrogen
@@ -180,6 +183,7 @@ fluid.oxygenL.name=Liquid Oxygen
 fluid.water.tip=It's wet!
 fluid.lava.tip=It's hot!
 fluid.steam.tip=Hot pressurized water vapor
+fluid.waterG.tip=Unpressurized water vapor
 fluid.biomass.tip=Discomposed organic material
 fluid.antimatter.tip=Contains a lot of energy.\nWarranty void if exposed to ... anything!
 fluid.nitrogeng.tip=Main compound of air.\nProduced for free in a Collector (N2-mode)
@@ -395,6 +399,7 @@ gui.cd4017be.vertShemGen.name=3D-Vertex Schematic Printer
 gui.cd4017be.amLaser.name=Enchantment upgrades
 gui.cd4017be.selectionTool.name=Machine Area Configurations
 gui.cd4017be.portableTesla.name=Portable Tesla Transmitter
+gui.cd4017be.heatRadiator.name=Fluid Heat Radiator
 # Gui tooltips
 gui.cd4017be.recipe.euse=Used Energy:\n%.0f kJ
 gui.cd4017be.recipe.algae=Algae:\n%d mB

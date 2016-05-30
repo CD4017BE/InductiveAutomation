@@ -55,8 +55,7 @@ public class Config
     public static int PfuelCell = 160;
     public static float[] Psolar = {0.5F, 4.0F};
     //steamBoiler, LavaCooler
-    public static int steam_waterIn = 100;
-    public static int steam_waterOut = 200;
+    public static int steam_water = 200;
     public static int steam_biomassIn = 125;
     public static int Lsteam_25T_lavaCooler = 500;
     public static int Lwater_25T_lavaCooler = 20;
@@ -84,7 +83,7 @@ public class Config
     
     public static int get_LWater_Cooking()
     {
-        return get_LSteam_Cooking() / steam_waterIn;
+        return get_LSteam_Cooking() / steam_water;
     }
     
     public static int get_LBiomass_Cooking()

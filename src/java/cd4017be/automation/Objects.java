@@ -12,7 +12,8 @@ public class Objects {
 	//Fluids
 	public static Fluid L_water; //1000g/l
 	public static Fluid L_lava; //??
-	public static Fluid L_steam; //5g/l (8.3xComp) :x200
+	public static Fluid L_steam; //5g/l (8xComp) :x200
+	public static Fluid L_waterG; //0.625g/l :x1600
 	public static Fluid L_biomass;
 	public static Fluid L_antimatter;
 	public static Fluid L_nitrogenG; //1.25g/l, 273K :x640
@@ -22,7 +23,7 @@ public class Objects {
 	public static Fluid L_heliumG; //.18g/l, 273K :x800
 	public static Fluid L_heliumL; //144g/l, 4K
 	public static Fluid L_oxygenG; //1.62g/l, 273K :x800
-	public static Fluid L_oxygenL; //1296g/l, 90K bläulich
+	public static Fluid L_oxygenL; //1296g/l, 90K
 	
 	//Items
 	public static ItemMaterial material;
@@ -134,6 +135,7 @@ public class Objects {
 	public static TileBlock itemBuffer;
 	public static TileBlock quantumTank;
 	public static TileBlock vertShemGen;
+	public static TileBlock heatRadiator;
     
     //OreGen
     public static WorldGenerator copperGen;

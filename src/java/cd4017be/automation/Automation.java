@@ -242,6 +242,7 @@ public class Automation implements IWorldGenerator
     	(itemBuffer = TileBlock.create("itemBuffer", Material.wood, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
     	(quantumTank = TileBlock.create("quantumTank", Material.glass, ItemQuantumTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F).setStepSound(Block.soundTypeGlass);
     	(vertShemGen = TileBlock.create("vertShemGen", Material.rock, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
+    	(heatRadiator = TileBlock.create("heatRadiator", Material.iron, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(ore = new BlockOre("ore")).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeStone);
         (pool = TileBlock.create("pool", Material.glass, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone).setLightOpacity(5);
         (unbrStone = new BlockUnbreakable("unbrStone")).setStepSound(Block.soundTypeStone);
@@ -259,6 +260,7 @@ public class Automation implements IWorldGenerator
     {
     	String p = "automation:blocks/fluids/";
         L_steam = registerFluid(new ModFluid("steam", p+"steam").setDensity(0).setGaseous(true).setTemperature(523).setViscosity(10));
+        L_waterG = registerFluid(new ModFluid("waterG", p+"waterG").setDensity(-1).setGaseous(true).setTemperature(373).setViscosity(10));
         L_biomass = registerFluid(new ModFluid("biomass", p+"biomass").setTemperature(310).setViscosity(1500));
         L_antimatter = registerFluid(new ModFluid("antimatter", p+"antimatter").setDensity(-1000).setGaseous(true).setTemperature(10000000).setViscosity(1));
         L_nitrogenG = registerFluid(new ModFluid("nitrogenG", p+"nitrogenG").setDensity(0).setGaseous(true).setTemperature(273).setViscosity(10));

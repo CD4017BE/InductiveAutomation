@@ -19,7 +19,6 @@ import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 
@@ -29,7 +28,6 @@ import net.minecraftforge.fluids.IFluidHandler;
  */
 public class SteamEngine extends AutomatedTile implements ISidedInventory, IEnergy, IFluidHandler
 {
-    protected short aWater;
     
     protected int getTier() {return 0;}
     public float getPower() {return Config.PsteamGen[0];}
@@ -40,7 +38,7 @@ public class SteamEngine extends AutomatedTile implements ISidedInventory, IEner
         netData = new TileEntityData(2, 0, 1, 2);
         energy = new PipeEnergy(Config.Umax[this.getTier()], Config.Rcond[this.getTier()]);
         inventory = new Inventory(this, 2);
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_steam).setIn(1), new Tank(Config.tankCap[1], 1, Objects.L_water).setOut(0)).setNetLong(1);
+        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_steam).setIn(1), new Tank(Config.tankCap[1], 1, Objects.L_waterG).setOut(0)).setNetLong(1);
         
     }
     
@@ -58,14 +56,9 @@ public class SteamEngine extends AutomatedTile implements ISidedInventory, IEner
         if (p > tanks.getAmount(0)) p = tanks.getAmount(0);
         if (p > 0)
         {
-            aWater += p * 1000 / Config.steam_waterOut;
             tanks.drain(0, p, true);
+            tanks.fill(1, new FluidStack(Objects.L_waterG, p * 8), true);
             netData.floats[0] += (float)p * (float)Config.E_Steam;
-            if (aWater >= 1000)
-            {
-                tanks.fill(1, new FluidStack(Objects.L_water, aWater / 1000), true);
-                aWater %= 1000;
-            }
         }
     }
     
@@ -82,20 +75,6 @@ public class SteamEngine extends AutomatedTile implements ISidedInventory, IEner
     public int getEnergy()
     {
         return netData.ints[0];
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound nbt) 
-    {
-        super.writeToNBT(nbt);
-        nbt.setByte("drop", (byte)aWater);
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) 
-    {
-        super.readFromNBT(nbt);
-        aWater = nbt.getByte("drop");
     }
     
     @Override
