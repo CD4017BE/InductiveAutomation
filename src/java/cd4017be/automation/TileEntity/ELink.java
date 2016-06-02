@@ -38,7 +38,7 @@ public class ELink extends AutomatedTile implements IEnergy, IEnergyReceiver, IE
     }
     
     public int type = 0;
-    public double energyDemand = 0;
+    public double energyDemand = 0, energyMoved = 0;
     
     protected void setWireType()
     {
@@ -64,18 +64,15 @@ public class ELink extends AutomatedTile implements IEnergy, IEnergyReceiver, IE
         netData.floats[2] = (float)storage.getCapacity(s^1);
         double Uref = netData.floats[2] > 0 ? netData.ints[0] + (netData.ints[1] - netData.ints[0]) * (netData.floats[1] / netData.floats[2]) : (netData.ints[0] + netData.ints[1]) / 2F;
         if (active) {
-        	float e = (float)energy.getEnergy(Uref, 1);
-        	energyDemand = -e;
-            e = (float)storage.addEnergy(e, s^1);
-        	if (e != 0) {
-        		energy.addEnergy(-e);
-        		energyDemand += e;
-        	}
-        	netData.floats[3] = e;
+        	double e = energy.getEnergy(Uref, 1);
+        	energyMoved = storage.addEnergy(e, s^1);
+        	energyDemand = energyMoved - e;
+        	if (energyDemand == 0) energy.Ucap = Uref;
+        	else if (energyMoved != 0) energy.addEnergy(-energyMoved);
         } else {
-        	energyDemand = 0;
-        	netData.floats[3] = 0;
+        	energyDemand = energyMoved = 0;
         }
+        netData.floats[3] = (float)energyMoved; energyMoved = 0;
     }
     
     public boolean isRedstoneEnabled()
@@ -149,12 +146,12 @@ public class ELink extends AutomatedTile implements IEnergy, IEnergyReceiver, IE
     public int receiveEnergy(EnumFacing dir, int e, boolean sim) {
         if (energy == null || energyDemand <= 0) return 0;
         double x = energy.getEnergy(energy.Umax, 1);
-        if (energyDemand + x > 0) energyDemand = x;
-        if ((double)e * RF_value > energyDemand) e = (int)Math.floor(energyDemand / RF_value);
+        if (energyDemand + x > 0) energyDemand = -x;
+        if ((x = (double)e * RF_value) > energyDemand) e = (int)Math.floor((x = energyDemand) / RF_value);
         if (!sim) {
-        	x = (double)e * RF_value;
         	energy.addEnergy(x);
-        	netData.floats[3] -= x;
+        	energyDemand -= x;
+        	energyMoved += x;
         }
         return e;
     }
@@ -164,11 +161,11 @@ public class ELink extends AutomatedTile implements IEnergy, IEnergyReceiver, IE
     	if (energy == null || energyDemand >= 0) return 0;
         double x = energy.getEnergy(0, 1);
         if (energyDemand + x < 0) energyDemand = -x;
-        if ((double)e * RF_value > -energyDemand) e = (int)Math.floor(-energyDemand / RF_value);
+        if ((x = -(double)e * RF_value) < energyDemand) e = (int)Math.floor(-(x = energyDemand) / RF_value);
         if (!sim) {
-        	x = (double)e * RF_value;
-        	energy.addEnergy(-x);
-        	netData.floats[3] += x;
+        	energy.addEnergy(x);
+        	energyDemand -= x;
+        	energyMoved += x;
         }
         return e;
     }
