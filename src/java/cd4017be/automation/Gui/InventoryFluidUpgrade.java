@@ -48,7 +48,7 @@ public class InventoryFluidUpgrade implements IInventory
         else if (cmd == 1) {
             upgrade.maxAmount = dis.readInt();
             if (upgrade.maxAmount < 0) upgrade.maxAmount = 0;
-        }
+        } else if (cmd == 2) upgrade.priority = dis.readByte();
     }
     
     @Override

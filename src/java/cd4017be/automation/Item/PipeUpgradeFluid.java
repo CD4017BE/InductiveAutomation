@@ -79,6 +79,7 @@ public class PipeUpgradeFluid
         PipeUpgradeFluid upgrade = new PipeUpgradeFluid();
         upgrade.mode = nbt.getByte("mode");
         upgrade.maxAmount = nbt.getInteger("maxAm");
+        upgrade.priority = nbt.getByte("prior");
         if (upgrade.maxAmount < 0) upgrade.maxAmount = 0;
         if (nbt.hasKey("list")) {
             NBTTagList list = nbt.getTagList("list", 10);
@@ -93,6 +94,7 @@ public class PipeUpgradeFluid
     public void save(NBTTagCompound nbt) {
     	nbt.setByte("mode", mode);
         nbt.setInteger("maxAm", maxAmount);
+        nbt.setByte("prior", priority);
         if (list.length > 0) {
             NBTTagList list = new NBTTagList();
             for (FluidStack fluid : this.list) {
@@ -112,7 +114,7 @@ public class PipeUpgradeFluid
     }
     
     public static boolean isNullEq(PipeUpgradeFluid filter) {
-    	return filter == null || (filter.list.length == 0 && (filter.mode & 1) != 0);
+    	return filter == null || (filter.list.length == 0 && (filter.mode & 1) != 0 && filter.maxAmount == 0);
     }
     
 }
