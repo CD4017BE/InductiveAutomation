@@ -11,17 +11,20 @@ import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IShearable;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
+import cd4017be.lib.BlockItemRegistry;
 
 /**
  *
@@ -38,15 +41,17 @@ public class ItemCutter extends ItemEnergyCell
         this.energyUsage = eu;
         this.damageVsEntity = ed;
         this.setMaxStackSize(1);
+        ItemStack item = new ItemStack(this);
+        item.addEnchantment(Enchantment.silkTouch, 1);
+        BlockItemRegistry.registerItemStack(item, getUnlocalizedName());
     }
 
     @Override
-    public void onCreated(ItemStack item, World world, EntityPlayer player) 
-    {
-        item.addEnchantment(Enchantment.silkTouch, 1);
-    }
-    
-    @Override
+	public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> list) {
+		list.add(BlockItemRegistry.stack(getUnlocalizedName(), 1));
+	}
+
+	@Override
     public boolean canHarvestBlock(Block block, ItemStack item) 
     {
         return block.getMaterial().isToolNotRequired() && new EnergyItem(item, this).getStorageI() >= this.energyUsage;

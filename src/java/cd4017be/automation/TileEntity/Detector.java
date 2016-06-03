@@ -262,7 +262,7 @@ public class Detector extends AutomatedTile implements IAutomatedInv, IRedstone8
     
 	@Override
 	public byte getBitValue(int s) {
-		return (byte)(this.getState(s) >> 4);
+		return (byte)(this.getState(s) >> 4 & 0xf);
 	}
 
 	@Override

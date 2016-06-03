@@ -420,7 +420,7 @@ public class CommonProxy implements IFuelHandler
         for (int i = 0; i < 16; i++)
         {
             GameRegistry.addRecipe(new ShapedOreRecipe(stack("unbrStone" + Integer.toHexString(i), 32), "010", "121", "010", '0', "AIcasingStone", '1', new ItemStack(Blocks.wool, 1, i), '2', "AIcasingUnbr"));
-            GameRegistry.addRecipe(new ShapedOreRecipe(stack("unbrStone" + Integer.toHexString(i), 8), "000", "010", "000", '0', "blockUnbrStone", '1', dyes[~i & 15]));
+            GameRegistry.addRecipe(new ShapedOreRecipe(stack("unbrStone" + Integer.toHexString(i), 8), "000", "010", "000", '0', "blockUnbrStone", '1', dyes[i]));
         }
     }
     
