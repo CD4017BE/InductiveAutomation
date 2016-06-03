@@ -20,6 +20,18 @@ add other mod's energy types
 
 ################################# VERSIONS 1.8.9 #################################
 
+4.2.0 Changes: <-
+- fixed Whither Skull explosions destroying unbreakable blocks.
+- fixed Electric Cutter not getting silk touch in certain crafting devices.
+- fixed Detector output incorrect redstone signal to 1-bit Solid Wires.
+- fixed power sometimes not displayed in Energy Link when connected to RF.
+- added Water Vapor and changed some fluid recipes.
+- changed Jetpack Fuel recipe and function.
+
+4.1.2 Changes:
+- fixed farm ignoring metadata for saplings
+- improved performance of chunk protection
+
 4.1.1 Changes:
 - reimplemented RedstoneFlux
 - added EnergyAPI for OpenComputers
@@ -31,7 +43,7 @@ add other mod's energy types
 - interdimensional wormhole now also connects warp pipes
 - improved pipe rendering performance
 
-4.0.3 Changes: <-
+4.0.3 Changes:
 - improved functionality of Detector (it now emits analog redstone signals)
 - item pipe filters can be used in placement controllers for automatic farm plant configuration
 - added function to portable magnets to auto disable when players nearby
