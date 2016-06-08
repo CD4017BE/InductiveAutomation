@@ -199,12 +199,12 @@ public class Detector extends AutomatedTile implements IAutomatedInv, IRedstone8
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setIntArray("data", netData.ints);
         nbt.setLong("state", netData.longs[0]);
         nbt.setLong("cfg", netData.longs[1]);
+        return super.writeToNBT(nbt);
     }
 
     @Override

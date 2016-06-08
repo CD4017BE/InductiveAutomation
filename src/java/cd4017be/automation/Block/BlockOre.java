@@ -39,7 +39,7 @@ public class BlockOre extends DefaultBlock
     
     public BlockOre(String id)
     {
-        super(id, Material.rock, ItemOre.class);
+        super(id, Material.ROCK, ItemOre.class);
         this.setCreativeTab(Automation.tabAutomation);
     }
 

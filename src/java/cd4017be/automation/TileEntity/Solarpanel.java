@@ -51,10 +51,10 @@ public class Solarpanel extends ModTileEntity implements IEnergy, ITickable
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         energy.writeToNBT(nbt, "wire");
+        return super.writeToNBT(nbt);
     }
     
 }

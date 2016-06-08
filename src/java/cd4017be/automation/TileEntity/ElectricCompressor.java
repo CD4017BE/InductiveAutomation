@@ -108,12 +108,12 @@ public class ElectricCompressor extends AutomatedTile implements ISidedInventory
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setFloat("progress", netData.floats[0]);
         nbt.setShort("resistor", (short)netData.ints[0]);
         nbt.setFloat("pScale", powerScale);
+        return super.writeToNBT(nbt);
     }
 
     @Override

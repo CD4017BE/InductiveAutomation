@@ -17,7 +17,7 @@ public class ContainerAMLEnchant extends ItemContainer
 		inv = new InventoryAMLEnchant(player.getHeldItemMainhand(), this);
 		this.addPlayerInventory(8, 50);
 		for (int i = 0; i < inv.items.length; i++)
-			this.addSlotToContainer(new SlotItemType(inv, i, 8 + i * 18, 16, new ItemStack(Items.enchanted_book)));
+			this.addSlotToContainer(new SlotItemType(inv, i, 8 + i * 18, 16, new ItemStack(Items.ENCHANTED_BOOK)));
 	}
 
 	@Override

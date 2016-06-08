@@ -246,12 +246,12 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
     	public Enchantments(ItemStack item)
     	{
     		Map<Enchantment, Integer> list = EnchantmentHelper.getEnchantments(item);
-    		this.silktouch = list.containsKey(net.minecraft.init.Enchantments.silkTouch);
-    		Integer lvl = list.get(net.minecraft.init.Enchantments.fortune);
+    		this.silktouch = list.containsKey(net.minecraft.init.Enchantments.SILK_TOUCH);
+    		Integer lvl = list.get(net.minecraft.init.Enchantments.FORTUNE);
     		if (lvl != null) fortune = lvl.shortValue();
-    		lvl = list.get(net.minecraft.init.Enchantments.efficiency);
+    		lvl = list.get(net.minecraft.init.Enchantments.EFFICIENCY);
     		if (lvl != null) efficiency = lvl.shortValue();
-    		lvl = list.get(net.minecraft.init.Enchantments.unbreaking);
+    		lvl = list.get(net.minecraft.init.Enchantments.UNBREAKING);
     		if (lvl != null) unbreaking = lvl.shortValue();
     		Euse = EnergyUsage * 3 / (3 + unbreaking);
     		amMult = AmUsage * 0.5F / (float)(4 + efficiency) * (silktouch ? 2.0F : 1F + 0.5F * (float)fortune);

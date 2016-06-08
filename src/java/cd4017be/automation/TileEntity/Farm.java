@@ -358,9 +358,8 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setIntArray("area", area);
         nbt.setInteger("px", px);
         nbt.setInteger("py", py);
@@ -369,6 +368,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
         nbt.setString("lastUser", lastUser.getName());
         nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
         nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
+        return super.writeToNBT(nbt);
     }
         
     @Override

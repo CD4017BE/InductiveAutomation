@@ -703,9 +703,8 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setIntArray("area", area);
         nbt.setInteger("px", px);
         nbt.setInteger("py", py);
@@ -719,6 +718,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
         nbt.setString("lastUser", lastUser.getName());
         nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
         nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
+        return super.writeToNBT(nbt);
     }
     
     @Override
@@ -744,7 +744,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
                 container.addEntitySlot(new Slot(this, 17 + i * 9 + j, 8 + j * 18, 88 + i * 18));
             }
         }
-        container.addEntitySlot(new SlotItemType(this, 49, 152, 52, new ItemStack(Items.paper)));
+        container.addEntitySlot(new SlotItemType(this, 49, 152, 52, new ItemStack(Items.PAPER)));
         container.addPlayerInventory(8, 158);
     }
 

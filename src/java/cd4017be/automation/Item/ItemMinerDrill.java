@@ -37,10 +37,10 @@ public class ItemMinerDrill extends DefaultItem
     public static AnvilHandler anvilHandler = new AnvilHandler();
     
     static {
-    	anvilHandler.enchantments.add(Enchantments.unbreaking);
-    	anvilHandler.enchantments.add(Enchantments.efficiency);
-    	anvilHandler.enchantments.add(Enchantments.fortune);
-    	anvilHandler.enchantments.add(Enchantments.silkTouch);
+    	anvilHandler.enchantments.add(Enchantments.UNBREAKING);
+    	anvilHandler.enchantments.add(Enchantments.EFFICIENCY);
+    	anvilHandler.enchantments.add(Enchantments.FORTUNE);
+    	anvilHandler.enchantments.add(Enchantments.SILK_TOUCH);
     	anvilHandler.repairMaterials.put(Objects.stoneDrill, new ItemStack(Blocks.stone, 20));
     	anvilHandler.repairMaterials.put(Objects.ironDrill, new ItemStack(Items.iron_ingot, 16));
     	anvilHandler.repairMaterials.put(Objects.diamondDrill, new ItemStack(Items.diamond, 12));
@@ -130,7 +130,7 @@ public class ItemMinerDrill extends DefaultItem
             if (l != -1 && l <= this.miningLevel) return true;
             register &= l == -1;
         }
-        return register && (state.getMaterial() == Material.rock || state.getMaterial() == Material.iron || state.getMaterial() == Material.anvil);
+        return register && (state.getMaterial() == Material.ROCK || state.getMaterial() == Material.IRON || state.getMaterial() == Material.ANVIL);
     }
     
 }

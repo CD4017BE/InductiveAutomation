@@ -27,7 +27,6 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraftforge.fluids.FluidStack;
@@ -49,7 +48,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     }
 
     @Override
-    public Packet getDescriptionPacket() 
+    public SPacketUpdateTileEntity getUpdatePacket() 
     {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setByteArray("tex", drawing);
@@ -149,7 +148,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     {
         if (inventory[0] == null) return;
         boolean validItem = inventory[0].getItem() instanceof ItemBuilderTexture;
-        if (inventory[0].getItem() == Items.paper || (validItem && inventory[0].getTagCompound() == null)) {
+        if (inventory[0].getItem() == Items.PAPER || (validItem && inventory[0].getTagCompound() == null)) {
         	drawing = new byte[0];
         	width = 0;
         	height = 0;
@@ -176,7 +175,7 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     
     private void save()
     {
-    	if (inventory[0] == null || !(inventory[0].getItem() instanceof ItemBuilderTexture || inventory[0].getItem() == Items.paper)) return;
+    	if (inventory[0] == null || !(inventory[0].getItem() instanceof ItemBuilderTexture || inventory[0].getItem() == Items.PAPER)) return;
     	String name = inventory[0].getTagCompound() != null ? inventory[0].getTagCompound().getString("name") : "";
     	int n = inventory[0].stackSize;
     	inventory[0] = null;
@@ -316,15 +315,15 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         this.writeItemsToNBT(nbt, "Items", inventory);
         nbt.setByteArray("drawing", drawing);
         nbt.setByte("width", width);
         nbt.setByte("mode", (byte)netData.ints[0]);
         nbt.setShort("ofsX", (short)netData.ints[1]);
         nbt.setShort("ofsY", (short)netData.ints[2]);
+        return super.writeToNBT(nbt);
     }
     
     @Override

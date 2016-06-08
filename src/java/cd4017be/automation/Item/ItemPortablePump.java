@@ -126,7 +126,7 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
         if (fluid != null && this.fill(item, fluid, false) == fluid.amount) {
         	this.fill(item, fluid, true);
         	energy.addEnergyI(fluid.amount == 0 ? energyUse / -4 : -energyUse, -1);
-        	if (sneak) world.setBlockState(obj.getBlockPos(), Blocks.air.getDefaultState(), 2);
+        	if (sneak) world.setBlockState(obj.getBlockPos(), Blocks.AIR.getDefaultState(), 2);
         	else world.setBlockToAir(obj.getBlockPos());
         }
         return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, this.fillFluid(item, player.inventory));

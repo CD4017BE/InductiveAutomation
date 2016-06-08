@@ -145,7 +145,7 @@ public class LiquidPipe extends AutomatedTile implements IFluidHandler, IPipe
         if (flow != lFlow) {
             this.markUpdate();
             for (LiquidPipe pipe : updateList) {
-                pipe.onNeighborBlockChange(Blocks.air);
+                pipe.onNeighborBlockChange(Blocks.AIR);
             }
         }
         updateCon = false;
@@ -266,14 +266,14 @@ public class LiquidPipe extends AutomatedTile implements IFluidHandler, IPipe
             boolean lock = !(this.getFlowBit(s) && this.getFlowBit(s | 8));
             this.setFlowBit(s, lock);
             this.setFlowBit(s | 8, lock);
-            this.onNeighborBlockChange(Blocks.air);
+            this.onNeighborBlockChange(Blocks.AIR);
             this.markUpdate();
             TileEntity te = Utils.getTileOnSide(this, (byte)s);
             if (te != null && te instanceof LiquidPipe) {
                 LiquidPipe pipe = (LiquidPipe)te;
                 pipe.setFlowBit(s^1, lock);
                 pipe.setFlowBit(s^1 | 8, lock);
-                pipe.onNeighborBlockChange(Blocks.air);
+                pipe.onNeighborBlockChange(Blocks.AIR);
                 pipe.markUpdate();
             }
             return true;
@@ -313,12 +313,12 @@ public class LiquidPipe extends AutomatedTile implements IFluidHandler, IPipe
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setShort("flow", flow);
         if (filter != null) nbt.setTag("filter", PipeUpgradeFluid.save(filter));
         if (cover != null) cover.write(nbt, "cover");
+        return super.writeToNBT(nbt);
     }
 
     @Override
@@ -340,7 +340,7 @@ public class LiquidPipe extends AutomatedTile implements IFluidHandler, IPipe
     }
 
     @Override
-    public Packet getDescriptionPacket() 
+    public SPacketUpdateTileEntity getUpdatePacket() 
     {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setShort("flow", flow);

@@ -42,7 +42,7 @@ public class TileEntityTankRenderer extends TileEntitySpecialRenderer<Tank>
         double n = (double)te.tanks.getAmount(0) / (double)te.tanks.tanks[0].cap;
         int l = te.getWorld().getCombinedLight(te.getPos(), fluid.getFluid().getLuminosity(fluid));
         int c = fluid.getFluid().getColor(fluid);
-        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         GL11.glPushMatrix();
         GL11.glTranslated(x + 0.5D, y, z + 0.5D);
         GL11.glScaled(0.875D, n, 0.875D);

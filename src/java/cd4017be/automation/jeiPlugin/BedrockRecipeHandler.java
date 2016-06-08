@@ -18,7 +18,7 @@ public class BedrockRecipeHandler
     public static final float neededAm;
     static {
         float i = (2 * AntimatterBomb.Density + 1) / AntimatterBomb.Density;
-        neededAm = Blocks.bedrock.getExplosionResistance(null) / AntimatterBomb.PowerFactor / AntimatterBomb.explMult * i * i * 9.375F;
+        neededAm = Blocks.BEDROCK.getExplosionResistance(null) / AntimatterBomb.PowerFactor / AntimatterBomb.explMult * i * i * 9.375F;
     }
     
 }

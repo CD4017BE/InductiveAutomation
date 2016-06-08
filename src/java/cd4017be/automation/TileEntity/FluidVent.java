@@ -190,13 +190,13 @@ public class FluidVent extends AutomatedTile implements IFluidHandler
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setInteger("mode", netData.ints[0]);
         nbt.setString("lastUser", lastUser.getName());
         nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
         nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
+        return super.writeToNBT(nbt);
     }
 
     @Override

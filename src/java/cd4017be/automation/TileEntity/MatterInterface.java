@@ -178,10 +178,10 @@ public class MatterInterface extends AutomatedTile implements IAutomatedInv
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setByte("mode", (byte)netData.ints[0]);
+        return super.writeToNBT(nbt);
     }
     
 }

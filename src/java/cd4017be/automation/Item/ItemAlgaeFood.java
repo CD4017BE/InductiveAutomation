@@ -31,7 +31,7 @@ public class ItemAlgaeFood extends DefaultItem
 			player.getFoodStats().addStats(2, 1F);
 		}
 		if (item.getItemDamage() >= item.getMaxDamage())
-			player.inventory.setInventorySlotContents(slot, new ItemStack(Items.glass_bottle, 3));
+			player.inventory.setInventorySlotContents(slot, new ItemStack(Items.GLASS_BOTTLE, 3));
 	}
 
 	@Override

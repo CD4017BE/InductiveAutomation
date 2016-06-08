@@ -133,11 +133,11 @@ public class CommonProxy
     	}
     	
     	this.registerBioFuel(ItemSeeds.class, 80);
-    	this.registerBioFuel(new ItemStack(Blocks.cactus), 75);
-    	this.registerBioFuel(new ItemStack(Items.sugar), 75);
-    	this.registerBioFuel(new ItemStack(Items.egg), 240);
+    	this.registerBioFuel(new ItemStack(Blocks.CACTUS), 75);
+    	this.registerBioFuel(new ItemStack(Items.SUGAR), 75);
+    	this.registerBioFuel(new ItemStack(Items.EGG), 240);
     	this.registerBioFuel(BlockMushroom.class, 40);
-    	this.registerBioFuel(new ItemStack(Blocks.waterlily), 20, 10);
+    	this.registerBioFuel(new ItemStack(Blocks.WATERLILY), 20, 10);
     }
     
     public int[] getLnutrients(ItemStack item)

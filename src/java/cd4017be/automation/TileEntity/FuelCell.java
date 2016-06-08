@@ -79,11 +79,11 @@ public class FuelCell extends AutomatedTile implements IFluidHandler, IEnergy, I
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setFloat("storage", netData.floats[0]);
         nbt.setInteger("voltage", netData.ints[0]);
+        return super.writeToNBT(nbt);
     }
 
     @Override

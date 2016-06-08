@@ -116,7 +116,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
             worldObj.spawnEntityInWorld(eitem);
             player.addChatMessage(new TextComponentString("Both linked Wormholes removed"));
             return true;
-        } else if (stack != null && stack.getItem() == Items.paper) {
+        } else if (stack != null && stack.getItem() == Items.PAPER) {
             ItemStack item = new ItemStack(Objects.teleporterCoords, player.getHeldItemMainhand().stackSize);
             item.setTagCompound(new NBTTagCompound());
             item.getTagCompound().setInteger("x", pos.getX());
@@ -149,13 +149,13 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setInteger("lx", linkX);
         nbt.setInteger("ly", linkY);
         nbt.setInteger("lz", linkZ);
         nbt.setInteger("ld", linkD);
+        return super.writeToNBT(nbt);
     }
 
     @Override

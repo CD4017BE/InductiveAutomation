@@ -23,7 +23,7 @@ public class InventoryAMLEnchant extends BasicInventory
             NBTTagCompound nbt = list.getCompoundTagAt(i);
             int id = nbt.getShort("id");
             int lvl = nbt.getShort("lvl");
-            items[i] = Items.enchanted_book.getEnchantedItemStack(new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
+            items[i] = Items.ENCHANTED_BOOK.getEnchantedItemStack(new EnchantmentData(Enchantment.getEnchantmentByID(id), lvl));
         }
 	}
 	
@@ -35,8 +35,8 @@ public class InventoryAMLEnchant extends BasicInventory
 		NBTTagList list = new NBTTagList();
 		boolean ench = false;
 		for (int i = 0; i < items.length; i++) {
-			if (items[i] != null && items[i].getItem() == Items.enchanted_book) {
-				NBTTagList l = Items.enchanted_book.getEnchantments(items[i]);
+			if (items[i] != null && items[i].getItem() == Items.ENCHANTED_BOOK) {
+				NBTTagList l = Items.ENCHANTED_BOOK.getEnchantments(items[i]);
 				if (l.tagCount() > 0) {
 					list.appendTag(l.getCompoundTagAt(0));
 					ench = true;
@@ -49,7 +49,7 @@ public class InventoryAMLEnchant extends BasicInventory
 	@Override
 	public boolean isItemValidForSlot(int s, ItemStack item) 
 	{
-		return item == null || item.getItem() == Items.enchanted_book;
+		return item == null || item.getItem() == Items.ENCHANTED_BOOK;
 	}
 
 	@Override

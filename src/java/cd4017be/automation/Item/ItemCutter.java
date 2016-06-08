@@ -9,6 +9,7 @@ package cd4017be.automation.Item;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.EnchantmentHelper;
@@ -54,7 +55,7 @@ public class ItemCutter extends ItemEnergyCell
     @Override
     public boolean canHarvestBlock(IBlockState state, ItemStack item) 
     {
-        return state.getMaterial().isToolNotRequired() && new EnergyItem(item, this).getStorageI() >= this.energyUsage;
+        return (state.getMaterial().isToolNotRequired() || state.getMaterial() == Material.WEB) && new EnergyItem(item, this).getStorageI() >= this.energyUsage;
     }
     
     @Override
@@ -92,7 +93,7 @@ public class ItemCutter extends ItemEnergyCell
         if (entity instanceof IShearable) {
             IShearable target = (IShearable)entity;
             if (target.isShearable(item, entity.worldObj, new BlockPos(entity.posX, entity.posY, entity.posZ))) {
-                List<ItemStack> drops = target.onSheared(item, entity.worldObj, new BlockPos(entity.posX, entity.posY, entity.posZ), EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, item));
+                List<ItemStack> drops = target.onSheared(item, entity.worldObj, new BlockPos(entity.posX, entity.posY, entity.posZ), EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, item));
                 Random rand = new Random();
                 for(ItemStack stack : drops)
                 {
@@ -116,7 +117,7 @@ public class ItemCutter extends ItemEnergyCell
         if (state.getBlock() instanceof IShearable && !state.getBlock().canSilkHarvest(player.worldObj, pos, state, player)) {
             IShearable target = (IShearable)state.getBlock();
             if (target.isShearable(item, player.worldObj, pos)) {
-                List<ItemStack> drops = target.onSheared(item, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.fortune, item));
+                List<ItemStack> drops = target.onSheared(item, player.worldObj, pos, EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, item));
                 Random rand = new Random();
                 for(ItemStack stack : drops) {
                     float f = 0.7F;

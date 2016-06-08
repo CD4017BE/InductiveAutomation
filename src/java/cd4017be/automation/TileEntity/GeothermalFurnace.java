@@ -62,7 +62,7 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
         if (netData.ints[1] <= 0 && netData.ints[2] < 640) burnItem();
         //Lava melt/cool 
         dm = 18 - netData.ints[2] / 32;
-        if (!melting && dm < 0 && inventory.items[1] != null && inventory.items[1].getItem() == Item.getItemFromBlock(Blocks.stone))
+        if (!melting && dm < 0 && inventory.items[1] != null && inventory.items[1].getItem() == Item.getItemFromBlock(Blocks.STONE))
         {
             this.decrStackSize(1, 1);
             melting = true;
@@ -84,7 +84,7 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
         if (melting && netData.ints[3] >= 2000 && tanks.fill(0, new FluidStack(Objects.L_lava, 100), false) == 100) {
 	        tanks.fill(0, new FluidStack(Objects.L_lava, 100), true);
 	        melting = false;
-        } else if (melting && netData.ints[3] <= 0 && this.putItemStack(new ItemStack(Blocks.stone), this, -1, 1) == null) {
+        } else if (melting && netData.ints[3] <= 0 && this.putItemStack(new ItemStack(Blocks.STONE), this, -1, 1) == null) {
         	melting = false;
         }
         if (netData.ints[2] > 640) netData.ints[2] = 640;
@@ -150,14 +150,14 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setInteger("progress", netData.ints[4]);
         nbt.setInteger("heat", netData.ints[2]);
         nbt.setInteger("melt", netData.ints[3]);
         nbt.setInteger("burn", netData.ints[1]);
         nbt.setBoolean("melting", melting);
+        return super.writeToNBT(nbt);
     }
 
     @Override
@@ -187,14 +187,14 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
     @Override
     public boolean isValid(ItemStack item, int cmp, int i) 
     {
-        return cmp != 1 || item == null || item.getItem() == Item.getItemFromBlock(Blocks.stone);
+        return cmp != 1 || item == null || item.getItem() == Item.getItemFromBlock(Blocks.STONE);
     }
     
     @Override
     public void initContainer(TileContainer container)
     {
         container.addEntitySlot(new Slot(this, 0, 62, 52));
-        container.addEntitySlot(new SlotItemType(this, 1, 62, 16, new ItemStack[]{new ItemStack(Blocks.stone)}));
+        container.addEntitySlot(new SlotItemType(this, 1, 62, 16, new ItemStack[]{new ItemStack(Blocks.STONE)}));
         container.addEntitySlot(new SlotTank(this, 2, 8, 34));
         container.addEntitySlot(new SlotTank(this, 3, 26, 34));
         container.addEntitySlot(new Slot(this, 4, 98, 34));

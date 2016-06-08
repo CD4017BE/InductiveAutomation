@@ -37,13 +37,13 @@ public class BioFuelRecipeWrapper extends BlankRecipeWrapper {
 			Class<?> c = (Class<?>)recipe.item;
 			if (Block.class.isAssignableFrom(c)) {
 				Item item;
-				for (Block block : Block.blockRegistry)
+				for (Block block : Block.REGISTRY)
 					if (c.isInstance(block)) {
 						item = Item.getItemFromBlock(block);
 						if (item != null) this.inputs.add(new ItemStack(item));
 					}
 			} else if (Item.class.isAssignableFrom(c)) {
-				for (Item item : Item.itemRegistry)
+				for (Item item : Item.REGISTRY)
 					if (c.isInstance(item)) {
 						this.inputs.add(new ItemStack(item));
 					}

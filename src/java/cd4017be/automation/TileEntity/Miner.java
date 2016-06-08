@@ -190,14 +190,14 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         }
         if (eff == 0) return true;
         Map<Enchantment, Integer> enchant = tool < 0 ? Collections.<Enchantment, Integer>emptyMap() : EnchantmentHelper.getEnchantments(inventory.items[tool]);
-        Integer n = enchant.get(Enchantments.efficiency);
+        Integer n = enchant.get(Enchantments.EFFICIENCY);
         if (n != null) eff *= 1F + 0.3F * (float)n;
         float e = hardness * Energy / eff;
         boolean silk;
-        try {silk = enchant.containsKey(Enchantments.silkTouch) && block.canSilkHarvest(worldObj, pos, state, null);} catch (NullPointerException ex) {silk = false;}
+        try {silk = enchant.containsKey(Enchantments.SILK_TOUCH) && block.canSilkHarvest(worldObj, pos, state, null);} catch (NullPointerException ex) {silk = false;}
         if (silk) e *= 2.5F;
         else {
-        	n = enchant.get(Enchantments.fortune);
+        	n = enchant.get(Enchantments.FORTUNE);
         	if (n != null) e *= 1F + (float)n * 0.6F;
         }
         if (storage < e) {
@@ -214,7 +214,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         if (invFull(list.size())) return false;
         storage -= e;
         if (tool >= 0) {
-        	n = enchant.get(Enchantments.unbreaking);
+        	n = enchant.get(Enchantments.UNBREAKING);
         	if (n == null || randomDamage(n, pos)) {
         		int d = inventory.items[tool].getItemDamage() + 1;
                 if (d >= inventory.items[tool].getMaxDamage()) inventory.items[tool] = null;
@@ -222,7 +222,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         	}
         }
         for (ItemStack item : list) add(item);
-        worldObj.setBlockState(pos, Blocks.air.getDefaultState(), 2);
+        worldObj.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
         return this.slaveOp(pos);
     }
     
@@ -241,7 +241,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     private boolean isHarvestable(IBlockState state, BlockPos pos)
     {
         if (state == null || state.getBlock().getBlockHardness(state, worldObj, pos) < 0 || state.getBlock() instanceof BlockLiquid || state.getBlock() instanceof IFluidBlock) return false;
-        else return state.getMaterial().isToolNotRequired() || state.getMaterial() == Material.rock || state.getMaterial() == Material.iron || state.getMaterial() == Material.anvil;
+        else return state.getMaterial().isToolNotRequired() || state.getMaterial() == Material.ROCK || state.getMaterial() == Material.IRON || state.getMaterial() == Material.ANVIL;
     }
     
     public boolean active()
@@ -311,9 +311,8 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setIntArray("area", area);
         nbt.setInteger("px", px);
         nbt.setInteger("py", py);
@@ -323,6 +322,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
         nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
         nbt.setBoolean("run", netData.ints[0] != 0);
+        return super.writeToNBT(nbt);
     }
         
     @Override

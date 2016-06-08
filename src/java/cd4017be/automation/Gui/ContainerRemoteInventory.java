@@ -12,7 +12,7 @@ import cd4017be.lib.templates.SlotRemote;
 import cd4017be.lib.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
@@ -205,18 +205,16 @@ public class ContainerRemoteInventory extends ItemContainer
 	}
 
 	@Override
-	public ItemStack func_184996_a(int s, int b, ClickType m, EntityPlayer player) 
+	public ItemStack slotClick(int s, int b, ClickType m, EntityPlayer player) 
 	{
-		ItemStack ret = super.func_184996_a(s, b, m, player);
+		ItemStack ret = super.slotClick(s, b, m, player);
 		if (!player.worldObj.isRemote) {
 			if (s >= 0 && s < size) {
 				ItemStack item0 = this.getSlot(s).getStack();
 				ItemStack item1 = item0 == null ? null : item0.copy();
 		        this.inventoryItemStacks.set(s, item1);
-		        for (int j = 0; j < this.crafters.size(); ++j)
-		        {
-		            ((ICrafting)this.crafters.get(j)).sendSlotContents(this, s, item1);
-		        }
+		        for (IContainerListener crafter : this.listeners)
+		        	crafter.sendSlotContents(this, s, item1);
 			}
 	        this.detectAndSendChanges();
 		}

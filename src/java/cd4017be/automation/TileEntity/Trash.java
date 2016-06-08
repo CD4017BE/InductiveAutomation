@@ -63,10 +63,10 @@ public class Trash extends AutomatedTile implements ISidedInventory, IFluidHandl
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setByte("active", (byte)netData.ints[0]);
+        return super.writeToNBT(nbt);
     }
 
     @Override

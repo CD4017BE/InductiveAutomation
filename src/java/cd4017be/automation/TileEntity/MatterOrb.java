@@ -98,15 +98,15 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setTag("Items", this.writeItems());
         if (in != null) {
             NBTTagCompound tag = new NBTTagCompound();
             in.writeToNBT(tag);
             nbt.setTag("In", tag);
         }
+        return super.writeToNBT(nbt);
     }
 
     @Override

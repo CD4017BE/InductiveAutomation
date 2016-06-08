@@ -214,11 +214,11 @@ public class ContainerFilteredSubInventory extends Container
 	}
 
 	@Override
-    public ItemStack func_184996_a(int s, int b, ClickType m, EntityPlayer par4EntityPlayer)
+    public ItemStack slotClick(int s, int b, ClickType m, EntityPlayer par4EntityPlayer)
     {   
 		Slot slot;
 		if (s >= 0 && s < this.inventorySlots.size() && (slot = (Slot)this.inventorySlots.get(s)) != null && slot.inventory instanceof InventoryPlayer && slot.getSlotIndex() == par4EntityPlayer.inventory.currentItem) return null;
-		else return super.func_184996_a(s, b, m, par4EntityPlayer);
+		else return super.slotClick(s, b, m, par4EntityPlayer);
     }
     
     @Override //prevents client crash IndexOutOfBoundsException sometimes caused by incorrect netdata

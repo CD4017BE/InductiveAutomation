@@ -23,7 +23,7 @@ public class ContainerAreaUpgrade extends ItemContainer
 		this.machine = machine;
 		this.addPlayerInventory(8, 86);
 		int[] s = machine.getUpgradeSlots();
-		this.addSlotToContainer(new SlotItemType(machine, s[0], 152, 16, new ItemStack(Items.glowstone_dust)));
+		this.addSlotToContainer(new SlotItemType(machine, s[0], 152, 16, new ItemStack(Items.GLOWSTONE_DUST)));
 		this.addSlotToContainer(new SlotItemType(machine, s[1], 8, 16, BlockItemRegistry.stack("AreaFrame", 1)));
 		this.addSlotToContainer(new SlotItemType(machine, s[2], 8, 34, BlockItemRegistry.stack("EMatrix", 1)));
 		this.addSlotToContainer(new SlotItemType(machine, s[3], 8, 52, BlockItemRegistry.stack("CoilSC", 1)));
@@ -38,8 +38,8 @@ public class ContainerAreaUpgrade extends ItemContainer
 	}
 
 	@Override
-	public ItemStack func_184996_a(int s, int b, ClickType m, EntityPlayer par4EntityPlayer) {
-		ItemStack item = super.func_184996_a(s, b, m, par4EntityPlayer);
+	public ItemStack slotClick(int s, int b, ClickType m, EntityPlayer par4EntityPlayer) {
+		ItemStack item = super.slotClick(s, b, m, par4EntityPlayer);
 		if (s >= 36) this.machine.onUpgradeChange(s - 36);
 		return item;
 	}

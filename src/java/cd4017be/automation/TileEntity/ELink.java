@@ -107,13 +107,13 @@ public class ELink extends AutomatedTile implements IEnergy, IEnergyReceiver, IE
 	}
 
 	@Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setByte("type", (byte)type);
         nbt.setByte("mode", (byte)netData.ints[2]);
         nbt.setInteger("Umin", netData.ints[0]);
         nbt.setInteger("Umax", netData.ints[1]);
+        return super.writeToNBT(nbt);
     }
 
     @Override

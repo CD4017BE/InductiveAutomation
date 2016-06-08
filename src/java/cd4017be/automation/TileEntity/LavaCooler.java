@@ -39,9 +39,9 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
 	private static final int SteamOut = 20; 
     public static enum Mode {
     	nothing(null, 10, 10, 50), 
-    	cobblestone(new ItemStack(Blocks.cobblestone), 4, 4, 20), 
-    	stone(new ItemStack(Blocks.stone), 40, 80, 200), 
-    	obsidian(new ItemStack(Blocks.obsidian), 1000, 500, 2500);
+    	cobblestone(new ItemStack(Blocks.COBBLESTONE), 4, 4, 20), 
+    	stone(new ItemStack(Blocks.STONE), 40, 80, 200), 
+    	obsidian(new ItemStack(Blocks.OBSIDIAN), 1000, 500, 2500);
     	public int time;
     	public int lava;
     	public int water;
@@ -161,11 +161,11 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setInteger("mode", netData.ints[0]);
         nbt.setInteger("cool", netData.ints[1]);
+        return super.writeToNBT(nbt);
     }
 
     @Override

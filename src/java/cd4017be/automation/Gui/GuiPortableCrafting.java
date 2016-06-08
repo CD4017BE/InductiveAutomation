@@ -75,7 +75,7 @@ public class GuiPortableCrafting extends GuiMachine
 			cmd = 3;
 		} else if (this.isPointInRegion(74, 55, 10, 10, x, y)) {
 			for (int i = 0; i < 9; i++) 
-				this.mc.playerController.func_187098_a(this.inventorySlots.windowId, i + 36, 0, ClickType.PICKUP, this.mc.thePlayer);
+				this.mc.playerController.windowClick(this.inventorySlots.windowId, i + 36, 0, ClickType.PICKUP, this.mc.thePlayer);
 		}
 		if (cmd >= 0) {
 	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
