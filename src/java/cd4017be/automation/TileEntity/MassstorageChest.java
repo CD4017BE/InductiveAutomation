@@ -23,7 +23,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -110,9 +110,8 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) 
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		super.writeToNBT(nbt);
 		NBTTagList list = new NBTTagList();
 		for (int s = 0; s < this.getSizeInventory(); s++)
 		{
@@ -127,6 +126,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 			}
 		}
 		nbt.setTag("Items", list);
+		return super.writeToNBT(nbt);
 	}
 	
 	@Override
@@ -345,7 +345,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 	}
 
 	@Override
-	public boolean detectAndSendChanges(TileContainer container, List<ICrafting> crafters, PacketBuffer dos) throws IOException 
+	public boolean detectAndSendChanges(TileContainer container, List<IContainerListener> crafters, PacketBuffer dos) throws IOException 
 	{
 		long sc = 0;
 		for (int i = 0; i < 64; i++) {

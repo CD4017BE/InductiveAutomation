@@ -12,7 +12,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -127,12 +126,12 @@ public class VertexShematicGen extends AutomatedTile
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) 
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		super.writeToNBT(nbt);
 		this.save(nbt);
 		nbt.setString("name", name);
 		nbt.setShort("sel", sel);
+		return super.writeToNBT(nbt);
 	}
 
 	@Override
@@ -146,18 +145,18 @@ public class VertexShematicGen extends AutomatedTile
 		} else if (cmd == 1) {//save
 			if (inventory.items[0] == null) return;
 			inventory.items[0].setTagCompound(new NBTTagCompound());
-			if (inventory.items[0].getItem() == Items.book) this.save(inventory.items[0].getTagCompound());
-			else if (inventory.items[0].getItem() == Items.paper) this.triangulate(inventory.items[0].getTagCompound());
+			if (inventory.items[0].getItem() == Items.BOOK) this.save(inventory.items[0].getTagCompound());
+			else if (inventory.items[0].getItem() == Items.PAPER) this.triangulate(inventory.items[0].getTagCompound());
 			inventory.items[0].setStackDisplayName(name);
 			NBTTagCompound tag = inventory.items[0].getTagCompound().getCompoundTag("display");
 			NBTTagList info = new NBTTagList();
-			info.appendTag(new NBTTagString(inventory.items[0].getTagCompound().getTagList("pol", 10).tagCount() + (inventory.items[0].getItem() == Items.book ? " Polygons" : " Triangles")));
+			info.appendTag(new NBTTagString(inventory.items[0].getTagCompound().getTagList("pol", 10).tagCount() + (inventory.items[0].getItem() == Items.BOOK ? " Polygons" : " Triangles")));
 			tag.setTag("Lore", info);
 			inventory.items[0].getTagCompound().setTag("ench", new NBTTagList());
 			return;
 		} else if (cmd == 2) {//save selected
 			int sel = (int)dis.readShort();
-			if (inventory.items[0] == null || inventory.items[0].getTagCompound() == null || inventory.items[0].getItem() != Items.book || sel < 0 || sel >= polygons.size()) return;
+			if (inventory.items[0] == null || inventory.items[0].getTagCompound() == null || inventory.items[0].getItem() != Items.BOOK || sel < 0 || sel >= polygons.size()) return;
 			NBTTagList list = inventory.items[0].getTagCompound().getTagList("pol", 10);
 			list.appendTag(polygons.get(sel).save());
 			return;
@@ -266,7 +265,7 @@ public class VertexShematicGen extends AutomatedTile
 	}
 
 	@Override
-	public Packet getDescriptionPacket() 
+	public SPacketUpdateTileEntity getUpdatePacket() 
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 		this.save(nbt);
@@ -278,7 +277,7 @@ public class VertexShematicGen extends AutomatedTile
 	@Override
 	public void initContainer(TileContainer container) 
 	{
-		container.addEntitySlot(new SlotItemType(this, 0, 152, 51, new ItemStack(Items.paper), new ItemStack(Items.book)));
+		container.addEntitySlot(new SlotItemType(this, 0, 152, 51, new ItemStack(Items.PAPER), new ItemStack(Items.BOOK)));
 		
 		container.addPlayerInventory(8, 97);
 	}

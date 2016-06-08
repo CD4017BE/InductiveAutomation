@@ -97,10 +97,10 @@ public class GraviCond extends AutomatedTile implements IEnergy, ISidedInventory
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) 
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		super.writeToNBT(nbt);
 		nbt.setInteger("matter", netData.ints[0]);
+		return super.writeToNBT(nbt);
 	}
 
 	@Override

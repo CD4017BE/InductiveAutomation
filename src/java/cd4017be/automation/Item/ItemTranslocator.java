@@ -44,7 +44,7 @@ public class ItemTranslocator extends DefaultItem
 	        else if (!player.canPlayerEdit(pos, s, item)) return EnumActionResult.FAIL;
 	        else if (world.isRemote) return EnumActionResult.SUCCESS;
 			MovedBlock pickup = MovedBlock.get(world, pos);
-			if ((new MovedBlock(Blocks.air.getDefaultState(), null)).set(world, pos)) {
+			if ((new MovedBlock(Blocks.AIR.getDefaultState(), null)).set(world, pos)) {
 				//world.playSound((double)((float)pos.getX() + 0.5F), (double)((float)pos.getY() + 0.5F), (double)((float)pos.getZ() + 0.5F), pickup.block.getBlock().getStepSound().getPlaceSound(), null, (pickup.block.getBlock().getStepSound().getVolume() + 1.0F) / 2.0F, pickup.block.getBlock().getStepSound().getPitch() * 0.8F, bFull3D);
 				item.setTagCompound(new NBTTagCompound());
 				item.getTagCompound().setShort("id", (short)Block.getStateId(pickup.block));
@@ -53,11 +53,11 @@ public class ItemTranslocator extends DefaultItem
 			return EnumActionResult.SUCCESS;
 		} else {
 			IBlockState obj = Block.getStateById(item.getTagCompound().getShort("id"));
-	        if (obj == Blocks.air) return EnumActionResult.FAIL;
+	        if (obj == Blocks.AIR) return EnumActionResult.FAIL;
 	        IBlockState state = world.getBlockState(pos);
 	        Block block = state.getBlock();
-	        if (state == Blocks.snow_layer.getDefaultState()) s = EnumFacing.UP;
-	        else if (block != Blocks.vine && block != Blocks.tallgrass && block != Blocks.deadbush && !block.isReplaceable(world, pos)) {
+	        if (state == Blocks.SNOW_LAYER.getDefaultState()) s = EnumFacing.UP;
+	        else if (block != Blocks.VINE && block != Blocks.TALLGRASS && block != Blocks.DEADBUSH && !block.isReplaceable(world, pos)) {
 	            pos = pos.offset(s);
 	        }
 	        if (item.stackSize == 0) return EnumActionResult.FAIL;

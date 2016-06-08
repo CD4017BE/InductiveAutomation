@@ -108,13 +108,13 @@ public class AntimatterAnihilator extends AutomatedTile implements ISidedInvento
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setFloat("storage", netData.floats[0]);
         nbt.setInteger("voltage", netData.ints[0]);
         nbt.setInteger("heat", netData.ints[3]);
         nbt.setInteger("drop", netData.ints[2]);
+        return super.writeToNBT(nbt);
     }
 
     @Override

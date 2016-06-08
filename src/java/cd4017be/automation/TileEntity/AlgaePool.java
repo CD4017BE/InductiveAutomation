@@ -67,9 +67,9 @@ public class AlgaePool extends AutomatedTile implements ISidedInventory, IFluidH
         }
         if (inventory.items[0] != null && inventory.items[0].isItemEqual(BlockItemRegistry.stack("LCAlgae", 1))) {
         	netData.floats[0] += inventory.items[0].stackSize * 1000;
-        	inventory.items[0] = new ItemStack(Items.glass_bottle, inventory.items[0].stackSize);
+        	inventory.items[0] = new ItemStack(Items.GLASS_BOTTLE, inventory.items[0].stackSize);
         }
-        if (inventory.items[1] != null && inventory.items[1].isItemEqual(new ItemStack(Items.glass_bottle)) && netData.floats[0] >= inventory.items[1].stackSize * 1000) {
+        if (inventory.items[1] != null && inventory.items[1].isItemEqual(new ItemStack(Items.GLASS_BOTTLE)) && netData.floats[0] >= inventory.items[1].stackSize * 1000) {
         	netData.floats[0] -= inventory.items[1].stackSize * 1000;
         	inventory.items[1] = BlockItemRegistry.stack("LCAlgae", inventory.items[1].stackSize);
         }
@@ -162,12 +162,12 @@ public class AlgaePool extends AutomatedTile implements ISidedInventory, IFluidH
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setFloat("nutrients", netData.floats[1]);
         nbt.setFloat("algae", netData.floats[0]);
         nbt.setFloat("ofBiomass", amountBiomass);
+        return super.writeToNBT(nbt);
     }
     
     @Override

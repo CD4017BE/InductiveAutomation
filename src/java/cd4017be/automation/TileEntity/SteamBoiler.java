@@ -126,13 +126,13 @@ public class SteamBoiler extends AutomatedTile implements ISidedInventory, IFlui
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setInteger("burn", netData.ints[1]);
         nbt.setInteger("cook", netData.ints[3]);
         nbt.setInteger("temp", netData.ints[2]);
         nbt.setInteger("blow", netData.ints[4]);
+        return super.writeToNBT(nbt);
     }
 
     @Override

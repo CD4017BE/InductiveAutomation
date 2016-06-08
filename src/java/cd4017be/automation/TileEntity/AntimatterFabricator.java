@@ -93,13 +93,13 @@ public class AntimatterFabricator extends AutomatedTile implements IFluidHandler
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setInteger("voltage", netData.ints[0]);
         nbt.setInteger("drop", netData.ints[1]);
         nbt.setByte("mode", (byte)netData.ints[2]);
         nbt.setFloat("storage", netData.floats[0]);
+        return super.writeToNBT(nbt);
     }
 
     @Override

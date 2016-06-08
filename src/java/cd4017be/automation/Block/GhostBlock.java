@@ -15,7 +15,7 @@ public class GhostBlock extends DefaultBlock
 	
 	public GhostBlock(String id) 
 	{
-		super(id, Material.rock, null);
+		super(id, Material.ROCK, null);
 		ID = this;
 	}
 

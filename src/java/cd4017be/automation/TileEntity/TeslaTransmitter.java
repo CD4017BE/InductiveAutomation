@@ -153,14 +153,14 @@ public class TeslaTransmitter extends ModTileEntity implements IEnergy, ITeslaTr
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         if (addEnergy != 0) energy.addEnergy(addEnergy);
         addEnergy = 0;
         energy.writeToNBT(nbt, "wire");
         nbt.setShort("frequency", (short)netData.ints[0]);
         nbt.setBoolean("interdim", interdim);
+        return super.writeToNBT(nbt);
     }
 
     @Override

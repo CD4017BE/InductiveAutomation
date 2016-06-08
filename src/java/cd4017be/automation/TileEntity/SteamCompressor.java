@@ -113,11 +113,11 @@ public class SteamCompressor extends AutomatedTile implements ISidedInventory, I
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setInteger("progress", netData.ints[1]);
         nbt.setInteger("pressure", netData.ints[0]);
+        return super.writeToNBT(nbt);
     }
 
     @Override

@@ -60,7 +60,7 @@ public class ItemFluidDummy extends DefaultItem implements IFluidContainerItem
     @Override
     public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand)
     {
-        RayTraceResult movingobjectposition = this.getMovingObjectPositionFromPlayer(world, player, false);
+        RayTraceResult movingobjectposition = this.rayTrace(world, player, false);
 
         if (movingobjectposition == null) return new ActionResult<ItemStack>(EnumActionResult.PASS, item);
         else if (movingobjectposition.typeOfHit == Type.BLOCK)

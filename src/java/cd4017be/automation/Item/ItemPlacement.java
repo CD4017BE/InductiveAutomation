@@ -135,7 +135,7 @@ public class ItemPlacement extends DefaultItem implements IGuiItem
     	}
     	stack = player.getHeldItemMainhand();
     	if (stack != null && stack.stackSize <= 0) stack = null;
-    	if (useBlock && world.getBlockState(pos) == GhostBlock.ID.getDefaultState()) world.setBlockState(pos, Blocks.air.getDefaultState(), 4);
+    	if (useBlock && world.getBlockState(pos) == GhostBlock.ID.getDefaultState()) world.setBlockState(pos, Blocks.AIR.getDefaultState(), 4);
     	
     	player.setHeldItem(hand, lItem);
     	player.rotationYaw = lYaw; player.rotationPitch = lPitch;

@@ -37,7 +37,7 @@ public class BlockUnbreakable extends DefaultBlock
     
     public BlockUnbreakable(String id)
     {
-        super(id, Material.rock, ItemBlockUnbreakable.class);
+        super(id, Material.ROCK, ItemBlockUnbreakable.class);
         this.setCreativeTab(Automation.tabAutomation);
         this.setBlockUnbreakable();
         this.setResistance(Float.POSITIVE_INFINITY);

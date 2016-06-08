@@ -62,10 +62,10 @@ public class Collector extends AutomatedTile implements IFluidHandler, ISidedInv
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setInteger("type", netData.ints[0]);
+        return super.writeToNBT(nbt);
     }
 
     @Override

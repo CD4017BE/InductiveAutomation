@@ -22,7 +22,6 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.server.management.PlayerList;
@@ -118,9 +117,8 @@ public class SecuritySys extends AutomatedTile implements IEnergy
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         energy.writeToNBT(nbt, "Wire");
         prot.writeToNbt(nbt);
         nbt.setFloat("storage", netData.floats[0]);
@@ -133,6 +131,7 @@ public class SecuritySys extends AutomatedTile implements IEnergy
             this.writeItemsToNBT(stor, e.getKey(), e.getValue());
         }
         nbt.setTag("itemBuff", stor);
+        return super.writeToNBT(nbt);
     }
 
     @Override
@@ -152,7 +151,7 @@ public class SecuritySys extends AutomatedTile implements IEnergy
     }
 
     @Override
-    public Packet getDescriptionPacket() 
+    public SPacketUpdateTileEntity getUpdatePacket() 
     {
         NBTTagCompound nbt = new NBTTagCompound();
         prot.writeToNbt(nbt);

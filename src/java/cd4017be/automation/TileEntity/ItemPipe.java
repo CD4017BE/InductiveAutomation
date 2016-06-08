@@ -334,12 +334,12 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setShort("flow", flow);
         if (filter != null) nbt.setTag("filter", PipeUpgradeItem.save(filter));
         if (cover != null) cover.write(nbt, "cover");
+        return super.writeToNBT(nbt);
     }
 
     @Override
@@ -361,7 +361,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     }
 
     @Override
-    public Packet getDescriptionPacket() 
+    public SPacketUpdateTileEntity getUpdatePacket() 
     {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setShort("flow", flow);

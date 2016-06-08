@@ -247,7 +247,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
         if (this.tanks.fill(0, fluid, false) == fluid.amount) {
             this.tanks.fill(0, fluid, true);
             if (this.blockNotify) worldObj.setBlockToAir(pos);
-            else worldObj.setBlockState(pos, Blocks.air.getDefaultState(), 2);
+            else worldObj.setBlockState(pos, Blocks.AIR.getDefaultState(), 2);
             storage -= fluid.amount > 0 ? Energy : Energy * 0.25F;
             return this.slaveOP(pos);
         } else return false;
@@ -290,9 +290,8 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setIntArray("area", area);
         nbt.setInteger("px", px);
         nbt.setInteger("py", py);
@@ -302,6 +301,7 @@ public class Pump extends AutomatedTile implements IEnergy, IOperatingArea, IFlu
         nbt.setString("lastUser", lastUser.getName());
         nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
         nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
+        return super.writeToNBT(nbt);
     }
 
     @Override

@@ -24,13 +24,13 @@ public class LightShaft extends ModTileEntity implements ITickable
     @Override
     public void onNeighborBlockChange(Block b) 
     {
-        if (worldObj.getBlockState(pos.down()) == Blocks.air.getDefaultState()) worldObj.setBlockState(pos.down(), BlockSkyLight.ID.getDefaultState());
+        if (worldObj.getBlockState(pos.down()) == Blocks.AIR.getDefaultState()) worldObj.setBlockState(pos.down(), BlockSkyLight.ID.getDefaultState());
     }
 
     @Override
     public void update() 
     {
-        if (counter == 0) this.onNeighborBlockChange(Blocks.air);
+        if (counter == 0) this.onNeighborBlockChange(Blocks.AIR);
         if (++counter > 20){
             counter = 1;
             worldObj.setLightFor(EnumSkyBlock.SKY, getPos(), EnumSkyBlock.SKY.defaultLightValue);

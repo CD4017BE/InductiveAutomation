@@ -88,12 +88,12 @@ public class ItemBuffer extends AutomatedTile implements ISidedInventory
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) 
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		super.writeToNBT(nbt);
 		nbt.setInteger("mode", netData.ints[0]);
 		nbt.setInteger("n1", netData.ints[1]);
 		nbt.setInteger("n2", netData.ints[2]);
+		return super.writeToNBT(nbt);
 	}
 
 	@Override

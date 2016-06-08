@@ -10,10 +10,13 @@ import net.minecraft.util.ITickable;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Explosion;
+
 import java.util.ArrayList;
 import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
+
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.List;
@@ -107,7 +110,7 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
 	}
 
     @Override
-    public Packet getDescriptionPacket() 
+    public SPacketUpdateTileEntity getUpdatePacket() 
     {
         NBTTagCompound nbt = new NBTTagCompound();
         nbt.setByte("state", state);
@@ -117,13 +120,13 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setShort("timer", (short)timer);
         nbt.setInteger("antimatter", antimatter);
         nbt.setByte("state", state);
         if (loot != null) nbt.setTag("loot", loot.writeItems());
+        return super.writeToNBT(nbt);
     }
 
     @Override
@@ -323,7 +326,7 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
     				float dx = (float)(entity.posX - posX);
     				float dy = (float)(entity.posY - posY);
     				float dz = (float)(entity.posZ - posZ);
-    				entity.attackEntityFrom(DamageSource.causeExplosionDamage(null), (int)(p * EntityDamage));
+    				entity.attackEntityFrom(DamageSource.causeExplosionDamage((Explosion)null), (int)(p * EntityDamage));
     				p *= EntityAcleration;
     				if (p > 1) p = 1F;
     				dist = Math.sqrt(dist);
@@ -356,12 +359,12 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
     			else {
     				FluidStack fluid = null;
     				if (block instanceof IFluidBlock) fluid = ((IFluidBlock)block).drain(worldObj, pos, false);
-    				else if (state == Blocks.water.getDefaultState() || state == Blocks.flowing_water.getDefaultState()) fluid = new FluidStack(FluidRegistry.WATER, 1000);
-    				else if (state == Blocks.lava.getDefaultState() || state == Blocks.flowing_lava.getDefaultState()) fluid = new FluidStack(FluidRegistry.LAVA, 1000);
+    				else if (state == Blocks.WATER.getDefaultState() || state == Blocks.FLOWING_WATER.getDefaultState()) fluid = new FluidStack(FluidRegistry.WATER, 1000);
+    				else if (state == Blocks.LAVA.getDefaultState() || state == Blocks.FLOWING_LAVA.getDefaultState()) fluid = new FluidStack(FluidRegistry.LAVA, 1000);
     				if (fluid != null && fluid.amount >= 1000) loot.addItems(new ArrayList<ItemStack>(Arrays.asList(ItemFluidDummy.item(fluid.getFluid(), fluid.amount / 1000))));
     			}
     			block.breakBlock(worldObj, pos, state);
-    			MovedBlock.setBlock(worldObj, pos, Blocks.air.getDefaultState(), null);
+    			MovedBlock.setBlock(worldObj, pos, Blocks.AIR.getDefaultState(), null);
     		}
     		destroyedBlocks.clear();
     	}

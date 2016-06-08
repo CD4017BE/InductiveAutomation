@@ -171,7 +171,7 @@ public class GuiTextureMaker extends GuiMachine
         			if (!opaque[p])
         				this.drawTexturedModalRect(x * 16, y * 16, 208, 16 * p, 16, 16);
         		}
-        	this.mc.renderEngine.bindTexture(TextureMap.locationBlocksTexture);
+        	this.mc.renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
         	for (int y = 0; y < dy; y++)
         		for (int x = 0; x < dx; x++) {
         			TextureAtlasSprite icon = icons[tileEntity.getPixel(x, y)];

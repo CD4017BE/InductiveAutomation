@@ -48,9 +48,9 @@ public class ItemEnergyTool extends ItemEnergyCell
         if (tool == null) return true;
     	if (hl > this.getHarvestLevel(item, tool)) return false;
     	else if (hl >= 0) return true;
-    	if ("pickaxe".equals(tool) && (state.getMaterial() == Material.rock || state.getMaterial() == Material.iron)) return true;
-        else if ("axe".equals(tool) && (state.getMaterial() == Material.wood || state.getMaterial() == Material.leaves)) return true;
-        else if ("shovel".equals(tool) && (state.getMaterial() == Material.clay || state.getMaterial() == Material.sand || state.getMaterial() == Material.snow || state.getMaterial() == Material.craftedSnow)) return true;
+    	if ("pickaxe".equals(tool) && (state.getMaterial() == Material.ROCK || state.getMaterial() == Material.IRON)) return true;
+        else if ("axe".equals(tool) && (state.getMaterial() == Material.WOOD || state.getMaterial() == Material.LEAVES)) return true;
+        else if ("shovel".equals(tool) && (state.getMaterial() == Material.CLAY || state.getMaterial() == Material.SAND || state.getMaterial() == Material.SNOW || state.getMaterial() == Material.CRAFTED_SNOW)) return true;
         else return false;
     }
     

@@ -34,7 +34,7 @@ public class GlassUnbreakable extends DefaultBlock
     
     public GlassUnbreakable(String id)
     {
-        super(id, Material.glass, DefaultItemBlock.class);
+        super(id, Material.GLASS, DefaultItemBlock.class);
         this.setCreativeTab(Automation.tabAutomation);
         this.setBlockUnbreakable();
         this.setResistance(Float.POSITIVE_INFINITY);

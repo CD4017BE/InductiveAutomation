@@ -179,7 +179,7 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
             player.moveStrafing = 0;
         }
         if (player instanceof EntityPlayerMP) {
-        	((EntityPlayerMP)player).playerNetServerHandler.floatingTickCount = 0;
+        	((EntityPlayerMP)player).connection.floatingTickCount = 0;
         }
         updateFallDamage(player);
     }

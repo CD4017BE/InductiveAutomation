@@ -276,7 +276,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
                     	netData.ints[2] = 0;
                     }
                 }
-                if (inventory.items[0] != null && (inventory.items[0].getItem() instanceof ItemTeleporterCoords || inventory.items[0].getItem() == Items.paper))
+                if (inventory.items[0] != null && (inventory.items[0].getItem() instanceof ItemTeleporterCoords || inventory.items[0].getItem() == Items.PAPER))
                 {
                     String name = inventory.items[0].getTagCompound() == null ? "" : inventory.items[0].getTagCompound().getString("name");
                     inventory.items[0] = new ItemStack(Objects.teleporterCoords, inventory.items[0].stackSize);
@@ -313,9 +313,8 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         ComputerAPI.saveNode(node, nbt);
         nbt.setByte("mode", (byte)netData.ints[3]);
         nbt.setInteger("px", netData.ints[0]);
@@ -325,7 +324,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
         nbt.setFloat("storage", netData.floats[0]);
         nbt.setString("lastUser", lastUser.getName());
         nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
-        nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());    }
+        nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());    
+        return super.writeToNBT(nbt);
+    }
 
     @Override
     public void readFromNBT(NBTTagCompound nbt) 

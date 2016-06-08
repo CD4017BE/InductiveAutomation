@@ -78,7 +78,7 @@ public class BioFuelRecipeCategory extends BlankRecipeCategory {
 			recipe.setAlgaeDraw(algae, 63, 1);
 			guiItemStacks.set(0, recipe.getInputs());
 			guiItemStacks.set(1, recipe.getOutputs());
-			guiItemStacks.set(2, new ItemStack(Items.glass_bottle));
+			guiItemStacks.set(2, new ItemStack(Items.GLASS_BOTTLE));
 			guiFluidStacks.set(0, recipe.getFluidInputs());
 			guiFluidStacks.set(1, recipe.getFluidOutputs());
 		}

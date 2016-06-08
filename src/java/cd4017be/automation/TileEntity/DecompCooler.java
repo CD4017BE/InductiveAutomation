@@ -98,13 +98,13 @@ public class DecompCooler extends AutomatedTile implements IEnergy, IFluidHandle
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         if (recipe != null) nbt.setTag("recipe", AutomationRecipes.writeCoolRecipeToNBT(recipe));
         nbt.setFloat("progress", netData.floats[0]);
         nbt.setInteger("resistor", netData.ints[0]);
         nbt.setFloat("pScale", powerScale);
+        return super.writeToNBT(nbt);
     }
 
     @Override

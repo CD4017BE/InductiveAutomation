@@ -183,14 +183,14 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
                 if (iout != null) {
                 	iout.stackSize = recipe[i].stackSize * n;
                 	if (!inv.addItemStackToInventory(iout)) {
-            			inv.player.dropPlayerItemWithRandomChoice(iout, true);
+            			inv.player.dropItem(iout, true);
             		}
                 }
             }
 		}
 		recipe[0].stackSize *= n;
 		if (!inv.addItemStackToInventory(recipe[0])) {
-			inv.player.dropPlayerItemWithRandomChoice(recipe[0], true);
+			inv.player.dropItem(recipe[0], true);
 		}
 		if (auto) return 0;
 		else return n;

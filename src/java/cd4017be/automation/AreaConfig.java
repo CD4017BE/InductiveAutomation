@@ -20,7 +20,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.ForgeChunkManager.Ticket;
@@ -287,14 +287,14 @@ public class AreaConfig implements IAreaConfig
 
 	public void updateChunkLoading()
 	{
-		ArrayList<ChunkCoordIntPair> toAdd;
-		ArrayList<ChunkCoordIntPair> toRemove;
+		ArrayList<ChunkPos> toAdd;
+		ArrayList<ChunkPos> toRemove;
 		if (tile.enabledC) {
-			toAdd = new ArrayList<ChunkCoordIntPair>();
-			toRemove = new ArrayList<ChunkCoordIntPair>();
+			toAdd = new ArrayList<ChunkPos>();
+			toRemove = new ArrayList<ChunkPos>();
 			for (int i = 0; i < 64; i++) {
 				if ((loadedChunks >> i & 1) != 0)
-					if (toAdd.size() < AreaProtect.maxChunksPBlock) toAdd.add(new ChunkCoordIntPair(i % 8 + px, i / 8 + pz));
+					if (toAdd.size() < AreaProtect.maxChunksPBlock) toAdd.add(new ChunkPos(i % 8 + px, i / 8 + pz));
 					else loadedChunks &= (~1L) << i;
 			}
 			if (chunkTicket == null) {
@@ -306,16 +306,16 @@ public class AreaConfig implements IAreaConfig
 				}
 			}
 			chunksLoaded = !toAdd.isEmpty();
-			for (ChunkCoordIntPair c : chunkTicket.getChunkList()) {
+			for (ChunkPos c : chunkTicket.getChunkList()) {
 				if (this.isChunkLoaded(c.chunkXPos, c.chunkZPos)) chunksLoaded |= !toAdd.remove(c);
 				else toRemove.add(c);
 			}
-			for (ChunkCoordIntPair c : toRemove) ForgeChunkManager.unforceChunk(chunkTicket, c);
-			for (ChunkCoordIntPair c : toAdd) ForgeChunkManager.forceChunk(chunkTicket, c);
+			for (ChunkPos c : toRemove) ForgeChunkManager.unforceChunk(chunkTicket, c);
+			for (ChunkPos c : toAdd) ForgeChunkManager.forceChunk(chunkTicket, c);
 		} else {
 			if (this.chunkTicket != null) {
-				toRemove = new ArrayList<ChunkCoordIntPair>(this.chunkTicket.getChunkList());
-				for (ChunkCoordIntPair c : toRemove) ForgeChunkManager.unforceChunk(chunkTicket, c);
+				toRemove = new ArrayList<ChunkPos>(this.chunkTicket.getChunkList());
+				for (ChunkPos c : toRemove) ForgeChunkManager.unforceChunk(chunkTicket, c);
 			}
 			chunksLoaded = false;
 		}

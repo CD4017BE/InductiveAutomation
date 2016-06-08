@@ -29,7 +29,7 @@ public class BlockSkyLight extends DefaultBlock
     
     public BlockSkyLight(String id)
     {
-        super(id, Material.air, null);
+        super(id, Material.AIR, null);
         ID = this;
         this.setLightOpacity(0);
     }
@@ -43,7 +43,7 @@ public class BlockSkyLight extends DefaultBlock
     @Override
     public void onBlockAdded(World world, BlockPos pos, IBlockState state) 
     {
-        this.onNeighborBlockChange(world, pos, state, this);
+        this.neighborChanged(state, world, pos, this);
     }
 
     @Override
@@ -52,11 +52,11 @@ public class BlockSkyLight extends DefaultBlock
 	}
 
 	@Override
-    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block b) 
+    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block b) 
     {
         Block id = world.getBlockState(pos.up()).getBlock();
         if (id == this || id == Objects.lightShaft) {
-            if (world.getBlockState(pos.down()) == Blocks.air.getDefaultState()) {
+            if (world.getBlockState(pos.down()) == Blocks.AIR.getDefaultState()) {
                 world.setBlockState(pos.down(), this.getDefaultState());
             }
         } else world.setBlockToAir(pos);

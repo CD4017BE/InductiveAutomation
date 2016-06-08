@@ -31,7 +31,7 @@ public class ItemLiquidAir extends DefaultItem
 			player.setAir(air + 20);
 		}
 		if (item.getItemDamage() >= item.getMaxDamage())
-			player.inventory.setInventorySlotContents(slot, new ItemStack(Items.glass_bottle, 4));
+			player.inventory.setInventorySlotContents(slot, new ItemStack(Items.GLASS_BOTTLE, 4));
 	}
 
 	@Override

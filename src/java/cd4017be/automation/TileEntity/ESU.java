@@ -123,12 +123,12 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     }
     
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setByte("type", (byte)type);
         nbt.setFloat("storage", netData.floats[0]);
         nbt.setInteger("voltage", netData.ints[0]);
+        return super.writeToNBT(nbt);
     }
 
     @Override
