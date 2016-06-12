@@ -14,6 +14,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import cd4017be.lib.ConfigurationFile;
+
 /**
  *
  * @author CD4017BE
@@ -62,12 +64,12 @@ public class JetPackConfig
     
     private static File file;
     
-    public static void loadData(File file)
+    public static void loadData()
     {
-        JetPackConfig.file = new File(file, "AutomationJetpack.dat");
+        file = new File(ConfigurationFile.configDir, "Jetpack.dat");
         allModes.clear();
         try {
-            DataInputStream dis = new DataInputStream(new FileInputStream(JetPackConfig.file));
+            DataInputStream dis = new DataInputStream(new FileInputStream(file));
             int n = dis.readShort();
             for (int i = 0; i < n; i++) {
                 allModes.add(new Mode(dis));

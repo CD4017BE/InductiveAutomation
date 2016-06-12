@@ -10,11 +10,14 @@ import java.util.Map;
 
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import cd4017be.automation.Automation;
+import cd4017be.automation.Objects;
 import cd4017be.lib.DefaultItem;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
@@ -37,6 +40,9 @@ public class ItemMinerDrill extends DefaultItem
     	anvilHandler.enchantments.add(Enchantment.efficiency.effectId);
     	anvilHandler.enchantments.add(Enchantment.fortune.effectId);
     	anvilHandler.enchantments.add(Enchantment.silkTouch.effectId);
+    	anvilHandler.repairMaterials.put(Objects.stoneDrill, new ItemStack(Blocks.stone, 20));
+    	anvilHandler.repairMaterials.put(Objects.ironDrill, new ItemStack(Items.iron_ingot, 16));
+    	anvilHandler.repairMaterials.put(Objects.diamondDrill, new ItemStack(Items.diamond, 12));
     	MinecraftForge.EVENT_BUS.register(anvilHandler);
     }
     

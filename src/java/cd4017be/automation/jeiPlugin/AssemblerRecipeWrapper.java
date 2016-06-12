@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import cd4017be.api.automation.AutomationRecipes.CmpRecipe;
+import cd4017be.api.recipes.AutomationRecipes.CmpRecipe;
 import cd4017be.automation.TileEntity.ElectricCompressor;
 import net.minecraft.item.ItemStack;
 

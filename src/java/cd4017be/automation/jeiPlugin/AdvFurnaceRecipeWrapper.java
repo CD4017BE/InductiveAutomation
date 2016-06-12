@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import cd4017be.api.automation.AutomationRecipes.LFRecipe;
+import cd4017be.api.recipes.AutomationRecipes.LFRecipe;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import mezz.jei.api.recipe.IRecipeWrapper;

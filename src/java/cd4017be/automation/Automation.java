@@ -17,14 +17,16 @@ import java.util.Random;
 import org.apache.logging.log4j.Level;
 
 import cd4017be.api.automation.AreaProtect;
-import cd4017be.api.automation.AutomationRecipes;
 import cd4017be.api.computers.ComputerAPI;
+import cd4017be.api.recipes.AutomationRecipes;
+import cd4017be.api.recipes.RecipeAPI;
 import cd4017be.automation.Block.BlockOre.Ore;
 import cd4017be.automation.Entity.EntityAntimatterExplosion1;
 import cd4017be.automation.jetpack.JetPackConfig;
 import cd4017be.automation.jetpack.PacketHandler;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.BlockItemRegistry;
+import cd4017be.lib.ConfigurationFile;
 import cd4017be.lib.DefaultItemBlock;
 import cd4017be.lib.ModFluid;
 import cd4017be.lib.TileBlock;
@@ -34,7 +36,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkProvider;
@@ -73,7 +74,8 @@ public class Automation implements IWorldGenerator
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) 
     {
-        Config.loadConfig(event.getModConfigurationDirectory());
+    	Config.loadConfig(ConfigurationFile.init(event, "inductiveAutomation.cfg", "/assets/automation/config/preset.cfg"));
+    	ConfigurationFile.init(event, "inductiveAutomation.rcp", "/assets/automation/config/recipes.rcp");
     	BlockItemRegistry.setMod("automation");
         tabAutomation = new CreativeTabAutomation("automation");
         tabFluids = new CreativeTabFluids("fluids");
@@ -81,9 +83,7 @@ public class Automation implements IWorldGenerator
         initItems();
         initBlocks();
         initOres();
-        if (event.getSide().isClient()) {
-            JetPackConfig.loadData(event.getModConfigurationDirectory());
-        }
+        if (event.getSide().isClient()) JetPackConfig.loadData();
     }
     
     @Mod.EventHandler
@@ -94,7 +94,6 @@ public class Automation implements IWorldGenerator
     	PacketHandler.register();
         AreaProtect.register(this);
     	GameRegistry.registerWorldGenerator(this, 0);
-        GameRegistry.registerFuelHandler(proxy);
         
         FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_biomass, FluidContainerRegistry.BUCKET_VOLUME), stack("LCBiomass", 1), FluidContainerRegistry.EMPTY_BOTTLE));
         FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_nitrogenL, 100), stack("LCNitrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
@@ -108,13 +107,8 @@ public class Automation implements IWorldGenerator
         proxy.registerRenderers();
         
         proxy.registerBioFuels();
-        
-        proxy.registerRecipes();
-        proxy.registerLiquidRecipes();
-        proxy.registerCompressorRecipes();
-        proxy.registerCoolerRecipes();
-        proxy.registerElectrolyserRecipes();
-        proxy.registerTrashRecipes();
+        FMLLog.log("Automation", Level.INFO, "loading RECIPE_SCRIPT");
+        RecipeAPI.loadRecipes("inductiveAutomation.rcp");
     }
     
     @Mod.EventHandler
@@ -294,20 +288,6 @@ public class Automation implements IWorldGenerator
         ore.setHarvestLevel("pickaxe", 2, ore.getStateFromMeta(Ore.Silver.ordinal()));
         copperGen = new WorldGenMinable(ore.getStateFromMeta(Ore.Copper.ordinal()), 9);
         silverGen = new WorldGenMinable(ore.getStateFromMeta(Ore.Silver.ordinal()), 6);
-        
-        OreDictionary.registerOre("oreCopper", new ItemStack(ore, 1, Ore.Copper.ordinal()));
-        OreDictionary.registerOre("oreSilver", new ItemStack(ore, 1, Ore.Silver.ordinal()));
-        OreDictionary.registerOre("ingotCopper", stack("CopperI", 1));
-        OreDictionary.registerOre("ingotSilver", stack("SilverI", 1));
-        OreDictionary.registerOre("ingotElectrum", stack("ElectrumI", 1));
-        OreDictionary.registerOre("ingotConductiveAlloy", stack("CondIA", 1));
-        OreDictionary.registerOre("ingotSteel", stack("SteelI", 1));
-        OreDictionary.registerOre("dustIron", stack("IronD", 1));
-        OreDictionary.registerOre("dustGold", stack("GoldD", 1));
-        OreDictionary.registerOre("dustCopper", stack("CopperD", 1));
-        OreDictionary.registerOre("dustSilver", stack("SilverD", 1));
-        OreDictionary.registerOre("dustElectrum", stack("ElectrumR", 1));
-        OreDictionary.registerOre("dustConductiveAlloy", stack("CondRA", 1));
     }
     
     /**

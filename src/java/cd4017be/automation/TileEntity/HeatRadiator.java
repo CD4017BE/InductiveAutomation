@@ -2,7 +2,7 @@ package cd4017be.automation.TileEntity;
 
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
-import cd4017be.api.automation.AutomationRecipes;
+import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.automation.Config;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;

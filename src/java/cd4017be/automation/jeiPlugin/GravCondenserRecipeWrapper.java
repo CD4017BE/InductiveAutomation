@@ -7,7 +7,7 @@ import java.util.List;
 import mezz.jei.api.gui.IDrawableStatic;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
-import cd4017be.api.automation.AutomationRecipes.GCRecipe;
+import cd4017be.api.recipes.AutomationRecipes.GCRecipe;
 import cd4017be.automation.TileEntity.GraviCond;
 import cd4017be.lib.TooltipInfo;
 

@@ -8,10 +8,10 @@ import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
-import cd4017be.api.automation.AutomationRecipes;
-import cd4017be.api.automation.AutomationRecipes.CmpRecipe;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
+import cd4017be.api.recipes.AutomationRecipes;
+import cd4017be.api.recipes.AutomationRecipes.CmpRecipe;
 import cd4017be.automation.Config;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;

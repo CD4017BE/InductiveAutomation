@@ -1,6 +1,6 @@
 package cd4017be.automation.jeiPlugin;
 
-import cd4017be.api.automation.AutomationRecipes.CoolRecipe;
+import cd4017be.api.recipes.AutomationRecipes.CoolRecipe;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 

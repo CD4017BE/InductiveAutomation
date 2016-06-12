@@ -4,7 +4,7 @@
  */
 package cd4017be.automation.jeiPlugin;
 
-import cd4017be.api.automation.AutomationRecipes;
+import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.automation.Automation;
 import cd4017be.automation.Gui.GuiAdvancedFurnace;
 import cd4017be.automation.Gui.GuiAlgaePool;

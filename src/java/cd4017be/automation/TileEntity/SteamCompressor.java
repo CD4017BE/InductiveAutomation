@@ -5,8 +5,8 @@
 package cd4017be.automation.TileEntity;
 
 
-import cd4017be.api.automation.AutomationRecipes;
-import cd4017be.api.automation.AutomationRecipes.CmpRecipe;
+import cd4017be.api.recipes.AutomationRecipes;
+import cd4017be.api.recipes.AutomationRecipes.CmpRecipe;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.TileContainer;

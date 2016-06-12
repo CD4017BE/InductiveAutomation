@@ -9,12 +9,14 @@ import java.io.IOException;
 
 import org.apache.logging.log4j.Level;
 
+import net.minecraftforge.common.ForgeChunkManager;
+import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraft.init.Blocks;
 import cd4017be.api.automation.AreaProtect;
-import cd4017be.api.automation.AutomationRecipes;
 import cd4017be.api.automation.ProtectLvl;
 import cd4017be.api.energy.EnergyAPI;
+import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.automation.Entity.EntityAntimatterExplosion1;
 import cd4017be.automation.Item.ItemAntimatterLaser;
 import cd4017be.automation.Item.ItemAntimatterTank;
@@ -49,7 +51,6 @@ public class Config
     public static int[] tankCap = {1000, 8000, 64000, 4096000, 160000000, 2097152000};//Pipe, Internal, Tank, HugeTank, AntimatterTank, QuantumTank
     //energy
     public static float E_Steam = 0.2F; // kJ/L
-    public static int K_dryBiomass = 6400;
     //Power
     public static float[] PsteamGen = {4.0F, 24.0F, 120.0F};
     public static int PfuelCell = 160;
@@ -57,9 +58,6 @@ public class Config
     //steamBoiler, LavaCooler
     public static int steam_water = 200;
     public static int steam_biomassIn = 125;
-    public static int Lsteam_25T_lavaCooler = 500;
-    public static int Lwater_25T_lavaCooler = 20;
-    public static int Llava_25T_lavaCooler = 5;
     public static int maxK_steamBoiler = 6400;
     public static int K_Cooking_steamBoiler = 50;
     public static int steam_biomass_burning = 25;
@@ -93,29 +91,14 @@ public class Config
     
     public static void loadConfig(File file) 
     {
-    	file = new File(file, "inductiveAutomation.cfg");
-    	boolean useFile = true;
-    	if (!file.exists()) {
-    		FMLLog.log("Automation", Level.INFO, "Config file does not exist: creating a new one using the Preset.");
-    		try {
-    			ConfigurationFile.copyData("/assets/automation/config/preset.cfg", file);
-    		} catch(IOException e) {
-    			FMLLog.log("Automation", Level.WARN, e, "Config file creation failed!");
-    			useFile = false;
-    		}
-    	}	
-    	
-    	if (useFile) {
+    	if (file != null) {
     		FMLLog.log("Automation", Level.INFO, "Loading config from File");
     		try {
         		data.load(file);
         	} catch (IOException e) {
         		FMLLog.log("Automation", Level.WARN, e, "Config file loading failed!");
-        		useFile = false;
         	}
-    	}
-    	
-    	if (!useFile) {
+    	} else {
     		FMLLog.log("Automation", Level.WARN, "No config data loaded!");
     	}
     	
@@ -187,6 +170,12 @@ public class Config
     	AreaProtect.permissions = data.getByte("SecuritySys.permMode", AreaProtect.permissions);
     	AreaProtect.chunkloadPerm = data.getByte("SecuritySys.chunkloadPerm", AreaProtect.chunkloadPerm);
     	AreaProtect.maxChunksPBlock = data.getByte("SecuritySys.maxChunks", AreaProtect.maxChunksPBlock);
+    	if (AreaProtect.maxChunksPBlock < 0) {AreaProtect.maxChunksPBlock = 0; AreaProtect.chunkloadPerm = -1;}
+    	else if (AreaProtect.maxChunksPBlock > 64) AreaProtect.maxChunksPBlock = 64;
+    	if (AreaProtect.maxChunksPBlock > ForgeChunkManager.getMaxTicketLengthFor("Automation")) {
+    		FMLLog.log("Automation", Level.INFO, "set Forge config property \"%s\" to %d", "maximumChunksPerTicket", AreaProtect.maxChunksPBlock);
+    		ForgeChunkManager.addConfigProperty(Automation.instance, "maximumChunksPerTicket", "" + AreaProtect.maxChunksPBlock, Property.Type.INTEGER);
+    	}
     	af = data.getFloatArray("SecuritySys.Euse");
     	ProtectLvl[] lvls = ProtectLvl.values();
     	for (int i = 0; i < lvls.length && i < af.length; i++) lvls[i].energyCost = af[i];

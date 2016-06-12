@@ -5,7 +5,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import cd4017be.api.automation.AutomationRecipes.ElRecipe;
+import cd4017be.api.recipes.AutomationRecipes.ElRecipe;
 
 public class ElectrolyserRecipeWrapper extends EnergyRecipeWrapper {
 	private static float MAXPOWER = 0F;

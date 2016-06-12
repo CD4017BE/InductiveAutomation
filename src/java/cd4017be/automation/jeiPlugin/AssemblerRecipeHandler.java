@@ -4,7 +4,7 @@
  */
 package cd4017be.automation.jeiPlugin;
 
-import cd4017be.api.automation.AutomationRecipes.CmpRecipe;
+import cd4017be.api.recipes.AutomationRecipes.CmpRecipe;
 import mezz.jei.api.recipe.IRecipeHandler;
 import mezz.jei.api.recipe.IRecipeWrapper;
 
