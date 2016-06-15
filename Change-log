@@ -14,11 +14,16 @@ add other mod's energy types
 - item/fluid warp pipe interface (AE/LP?)
 - mob interacting machine
 
+- warp extraction pipe filter priority -> limit destination priority
+- pipe-filter tooltip
 ---THERMODYNAMIC-PHYSICS!!!!
 
-- balance recipes via mine_tweaker scripts.
-
 ################################# VERSIONS 1.8.9 #################################
+
+4.2.1 Changes:
+- moved all config files to ".../config/cd4017be/"
+- moved recipes to config script file "inductiveAutomation.rcp"
+- removed recipe disable options in base config (use the recipe script instead)
 
 4.2.0 Changes: <-
 - fixed Whither Skull explosions destroying unbreakable blocks.
