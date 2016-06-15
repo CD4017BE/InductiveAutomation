@@ -1,3 +1,4 @@
+@PRE_INIT
 #constants
 WILDCARD = 32767;
 dyes = ["dyeBlack", "dyeRed", "dyeGreen", "dyeBrown", "dyeBlue", "dyePurple", "dyeCyan", "dyeLightGray", "dyeGray", "dyePink", "dyeLime", "dyeYellow", "dyeLightBlue", "dyeMagenta", "dyeOrange", "dyeWhite"];
@@ -26,6 +27,7 @@ add("ore", "AIcasingUnbr", it("unbrC"));
 add("ore", "gravel", it("minecraft:gravel"));
 print("added OreDictionary entries");
 
+@INIT
 #Fuel
 add("fuel", it("Biomass"), 6400);
 add("fuel", it("Graphite"), 12800);
@@ -296,6 +298,7 @@ add("trash", it("Neutron"), it("DenseM", 4), 6144000);
 add("trash", it("BlackHole"), it("Neutron"), 24576000);
 print("added Gravitational Condenser recipes");
 
+@POST_INIT
 #Optional Recipes
 if(hasit("ore:oreTin", "ore:ingotTin")) {add("advFurn", [fl("lava", 20), ore("oreTin")], [it("ore:ingotTin", 2), it("minecraft:stone")], 400);}
 if(hasit("ore:oreLead", "ore:ingotLead")) {add("advFurn", [fl("lava", 20), ore("oreLead")], [it("ore:ingotLead", 2), it("minecraft:stone")], 400);}

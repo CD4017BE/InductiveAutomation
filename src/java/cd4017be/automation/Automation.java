@@ -70,12 +70,13 @@ public class Automation implements IWorldGenerator
     
     public static CreativeTabs tabAutomation;
     public static CreativeTabs tabFluids;
+    private static final String recipeFile = "inductiveAutomation.rcp";
     
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) 
     {
     	Config.loadConfig(ConfigurationFile.init(event, "inductiveAutomation.cfg", "/assets/automation/config/preset.cfg"));
-    	ConfigurationFile.init(event, "inductiveAutomation.rcp", "/assets/automation/config/recipes.rcp");
+    	ConfigurationFile.init(event, recipeFile, "/assets/automation/config/recipes.rcp");
     	BlockItemRegistry.setMod("automation");
         tabAutomation = new CreativeTabAutomation("automation");
         tabFluids = new CreativeTabFluids("fluids");
@@ -83,6 +84,7 @@ public class Automation implements IWorldGenerator
         initItems();
         initBlocks();
         initOres();
+        RecipeAPI.loadRecipes(recipeFile, RecipeAPI.PRE_INIT);
         if (event.getSide().isClient()) JetPackConfig.loadData();
     }
     
@@ -107,8 +109,7 @@ public class Automation implements IWorldGenerator
         proxy.registerRenderers();
         
         proxy.registerBioFuels();
-        FMLLog.log("Automation", Level.INFO, "loading RECIPE_SCRIPT");
-        RecipeAPI.loadRecipes("inductiveAutomation.rcp");
+        RecipeAPI.loadRecipes(recipeFile, RecipeAPI.INIT);
     }
     
     @Mod.EventHandler
@@ -128,6 +129,7 @@ public class Automation implements IWorldGenerator
             FMLLog.log("Automation", Level.INFO, "Silver ore world generation disabled. " + (gen == 0 ? "(provided by other mods)" : "(turned off in config)"));
             silverGen = null;
         }
+        RecipeAPI.loadRecipes(recipeFile, RecipeAPI.POST_INIT);
     }
     
     private void initItems()
