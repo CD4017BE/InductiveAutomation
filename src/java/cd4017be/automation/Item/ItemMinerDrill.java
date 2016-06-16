@@ -41,9 +41,9 @@ public class ItemMinerDrill extends DefaultItem
     	anvilHandler.enchantments.add(Enchantments.EFFICIENCY);
     	anvilHandler.enchantments.add(Enchantments.FORTUNE);
     	anvilHandler.enchantments.add(Enchantments.SILK_TOUCH);
-    	anvilHandler.repairMaterials.put(Objects.stoneDrill, new ItemStack(Blocks.stone, 20));
-    	anvilHandler.repairMaterials.put(Objects.ironDrill, new ItemStack(Items.iron_ingot, 16));
-    	anvilHandler.repairMaterials.put(Objects.diamondDrill, new ItemStack(Items.diamond, 12));
+    	anvilHandler.repairMaterials.put(Objects.stoneDrill, new ItemStack(Blocks.STONE, 20));
+    	anvilHandler.repairMaterials.put(Objects.ironDrill, new ItemStack(Items.IRON_INGOT, 16));
+    	anvilHandler.repairMaterials.put(Objects.diamondDrill, new ItemStack(Items.DIAMOND, 12));
     	MinecraftForge.EVENT_BUS.register(anvilHandler);
     }
     

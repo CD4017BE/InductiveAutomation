@@ -154,7 +154,7 @@ public class Config
     	ItemAntimatterLaser.MaxDamage = data.getFloat("Tool.AmLaser.MaxDmg", ItemAntimatterLaser.MaxDamage);
     	ItemAntimatterLaser.DamageMult = data.getFloat("Tool.AmLaser.AMmult", ItemAntimatterLaser.DamageMult);
     	ItemAntimatterTank.BombMaxCap = data.getInt("AmBomb.MaxAM", ItemAntimatterTank.BombMaxCap);
-    	ItemAntimatterTank.explFaktor = AntimatterBomb.PowerFactor * AntimatterBomb.explMult / Blocks.stone.getExplosionResistance(null) * 0.125D;
+    	ItemAntimatterTank.explFaktor = AntimatterBomb.PowerFactor * AntimatterBomb.explMult / Blocks.STONE.getExplosionResistance(null) * 0.125D;
     	ItemJetpackFuel.H2Mult = data.getFloat("Jetpack.H2.val", ItemJetpackFuel.H2Mult * 1000F) / 1000F;
     	ItemJetpackFuel.O2Mult = ItemJetpackFuel.H2Mult * 2F;
     	ItemJetpackFuel.electricEmult = data.getFloat("Jetpack.el.val", ItemJetpackFuel.electricEmult * 1000F) / 1000F;
