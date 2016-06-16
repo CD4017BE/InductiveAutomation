@@ -36,5 +36,10 @@ public class AssemblerRecipeHandler implements IRecipeHandler<CmpRecipe>
 			if (!Utils.valid(o)) return false;
 		return true;
 	}
+
+	@Override
+	public String getRecipeCategoryUid(CmpRecipe arg0) {
+		return this.getRecipeCategoryUid();
+	}
     
 }

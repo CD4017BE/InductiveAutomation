@@ -26,4 +26,9 @@ public class GravCondenserRecipeHandler implements IRecipeHandler<GCRecipe> {
 		return recipe.input != null && recipe.output != null;
 	}
 
+	@Override
+	public String getRecipeCategoryUid(GCRecipe arg0) {
+		return this.getRecipeCategoryUid();
+	}
+
 }

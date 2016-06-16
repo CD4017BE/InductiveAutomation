@@ -29,5 +29,10 @@ public class AdvFurnaceRecipeHandler implements IRecipeHandler<LFRecipe>
 			if (!Utils.valid(o)) return false;
 		return true;
 	}
+
+	@Override
+	public String getRecipeCategoryUid(LFRecipe arg0) {
+		return this.getRecipeCategoryUid();
+	}
     
 }
