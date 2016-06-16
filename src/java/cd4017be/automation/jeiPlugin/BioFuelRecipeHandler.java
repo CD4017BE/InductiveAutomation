@@ -27,5 +27,10 @@ public class BioFuelRecipeHandler implements IRecipeHandler<BioEntry> {
 	public boolean isRecipeValid(BioEntry recipe) {
 		return recipe.item instanceof ItemStack || recipe.item instanceof OreDictStack || recipe.item instanceof Class;
 	}
+
+	@Override
+	public String getRecipeCategoryUid(BioEntry arg0) {
+		return this.getRecipeCategoryUid();
+	}
 	
 }

@@ -248,6 +248,7 @@ public class Automation implements IWorldGenerator
         (solarpanel = TileBlock.create("solarpanel", Material.GLASS, SoundType.GLASS, DefaultItemBlock.class, 0x20)).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 0.125, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
         (teslaTransmitterLV = TileBlock.create("teslaTransmitterLV", Material.IRON, SoundType.METAL, DefaultItemBlock.class, 0x60)).setBlockBounds(new AxisAlignedBB(0.1875, 0, 0.1875, 0.8125, 1, 0.8125)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F);
         (teslaTransmitter = TileBlock.create("teslaTransmitter", Material.IRON, SoundType.METAL, DefaultItemBlock.class, 0x60)).setBlockBounds(new AxisAlignedBB(0.25, 0, 0.25, 0.75, 1, 0.75)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F);
+        (wormhole = TileBlock.create("wormhole", Material.PORTAL, SoundType.GLASS, ItemInterdimHole.class, 0x60)).setBlockBounds(new AxisAlignedBB(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F);
         proxy.registerBlocks();
     }
     

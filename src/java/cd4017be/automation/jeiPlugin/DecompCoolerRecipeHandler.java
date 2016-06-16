@@ -25,5 +25,10 @@ public class DecompCoolerRecipeHandler implements IRecipeHandler<CoolRecipe> {
 	public boolean isRecipeValid(CoolRecipe recipe) {
 		return Utils.valid(recipe.in0) && Utils.valid(recipe.in1) && Utils.valid(recipe.out0) && Utils.valid(recipe.out1);
 	}
+
+	@Override
+	public String getRecipeCategoryUid(CoolRecipe arg0) {
+		return this.getRecipeCategoryUid();
+	}
 	
 }

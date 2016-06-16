@@ -25,5 +25,10 @@ public class ElectrolyserRecipeHandler implements IRecipeHandler<ElRecipe> {
 	public boolean isRecipeValid(ElRecipe recipe) {
 		return Utils.valid(recipe.in) && Utils.valid(recipe.out0) && Utils.valid(recipe.out1);
 	}
+
+	@Override
+	public String getRecipeCategoryUid(ElRecipe arg0) {
+		return this.getRecipeCategoryUid();
+	}
 	
 }
