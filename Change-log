@@ -18,9 +18,14 @@ add other mod's energy types
 - pipe-filter tooltip
 ---THERMODYNAMIC-PHYSICS!!!!
 
-################################# VERSIONS 1.9 #################################
+################################# VERSIONS 1.9.4 #################################
 
-5.0.1 Changes:
+5.1.0 Changes:
+- added recipe processing devices to JEI recipe handler
+- fixed wrong item rendering (too big)
+- included 4.2.1 changes
+
+(1.9)5.0.1 Changes:
 - fixed wrong oriented block-item rendering
 - fixed issue #5 farm ignoring metadata for saplings (and probably also other things)
 - improved Chunk Protection System performance (1.8.9)
@@ -34,7 +39,7 @@ add other mod's energy types
 - moved recipes to config script file "inductiveAutomation.rcp"
 - removed recipe disable options in base config (use the recipe script instead)
 
-4.2.0 Changes: <-
+4.2.0 Changes:
 - fixed Whither Skull explosions destroying unbreakable blocks.
 - fixed Electric Cutter not getting silk touch in certain crafting devices.
 - fixed Detector output incorrect redstone signal to 1-bit Solid Wires.

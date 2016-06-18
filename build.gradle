@@ -35,7 +35,7 @@ sourceSets {
 }
 
 minecraft {
-	version = "${mc_version}-${forge_version}-${mc_version}"
+	version = "${mc_version}-${forge_version}"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -75,7 +75,7 @@ dependencies {
 	String libDir = new File(file('./').getParentFile(), "CD4017BE_lib").getAbsolutePath()
 	
 	compile files("${libDir}/build/libs/CD4017BE_lib-${mc_version}-${lib_version}-deobf.jar")
-	compile files("${libDir}/libs/OpenComputers-MC${mc_version}-${oc_version}-dev-api.jar")
+	compile files("${libDir}/libs/OpenComputers-MC${mc_version}-${oc_version}-api.jar")
 	// compile files("C:/Users/CD4017BE/Minecraft Modding/Mods-1.7.10/CD4017BE_lib/libs/ComputerCraft1.75.jar")
 	compile files("${libDir}/libs/jei_${mc_version}-${jei_version}.jar")
 	// deobfCompile "mezz.jei:jei_${mc_version}:${jei_version}"

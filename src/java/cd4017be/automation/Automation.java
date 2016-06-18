@@ -57,7 +57,7 @@ import static cd4017be.lib.BlockItemRegistry.stack;
  *
  * @author CD4017BE
  */
-@Mod(modid="Automation", name="Inductive Automation", version="5.0.0", acceptedMinecraftVersions="[1.9,1.10)")
+@Mod(modid="Automation", useMetadata=true)
 public class Automation implements IWorldGenerator
 {
     
