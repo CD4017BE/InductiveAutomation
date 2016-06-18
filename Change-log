@@ -17,6 +17,14 @@ add other mod's energy types
 - warp extraction pipe filter priority -> limit destination priority
 - pipe-filter tooltip
 ---THERMODYNAMIC-PHYSICS!!!!
+
+################################# VERSIONS 1.9.4 #################################
+
+5.1.0 Changes:
+- added recipe processing devices to JEI recipe handler
+- fixed wrong item rendering (too big)
+- included 4.2.1 changes
+
 ################################# VERSIONS 1.9 #################################
 
 5.0.2 Changes (from 1.8.9-4.2.3):
