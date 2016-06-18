@@ -12,10 +12,9 @@ import mezz.jei.api.gui.IDrawableStatic;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.BlankRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Translator;
 
-public class AssemblerRecipeCategory extends BlankRecipeCategory {
+public class AssemblerRecipeCategory extends BlankRecipeCategory<AssemblerRecipeWrapper> {
 
 	private static final int SlotIn = 0, SlotOut = 4;
 	
@@ -60,7 +59,7 @@ public class AssemblerRecipeCategory extends BlankRecipeCategory {
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) {
+	public void setRecipe(IRecipeLayout recipeLayout, AssemblerRecipeWrapper recipe) {
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 
 		guiItemStacks.init(0, true, 36, 9);
@@ -69,12 +68,9 @@ public class AssemblerRecipeCategory extends BlankRecipeCategory {
 		guiItemStacks.init(3, true, 54, 27);
 		guiItemStacks.init(4, false, 108, 18);
 
-		if (recipeWrapper instanceof AssemblerRecipeWrapper) {
-			AssemblerRecipeWrapper recipe = (AssemblerRecipeWrapper)recipeWrapper;
-			recipe.setPowerDraw(power, 1, 1);
-			craftingGridHelper.setInput(guiItemStacks, recipe.getInputs(), 3, 3);
-			craftingGridHelper.setOutput(guiItemStacks, recipe.getOutputs());
-		}
+		recipe.setPowerDraw(power, 1, 1);
+		craftingGridHelper.setInput(guiItemStacks, recipe.getInputs(), 3, 3);
+		craftingGridHelper.setOutput(guiItemStacks, recipe.getOutputs());
 	}
 
 }

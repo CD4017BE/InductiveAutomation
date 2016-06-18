@@ -11,10 +11,9 @@ import mezz.jei.api.gui.IDrawableStatic;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.BlankRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Translator;
 
-public class GravCondenserRecipeCategory extends BlankRecipeCategory {
+public class GravCondenserRecipeCategory extends BlankRecipeCategory<GravCondenserRecipeWrapper> {
 
 private static final int SlotIn = 0, SlotOut = 1;
 	
@@ -59,19 +58,16 @@ private static final int SlotIn = 0, SlotOut = 1;
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) {
+	public void setRecipe(IRecipeLayout recipeLayout, GravCondenserRecipeWrapper recipe) {
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		
 		guiItemStacks.init(SlotIn, true, 72, 18);
 		guiItemStacks.init(SlotOut, false, 108, 18);
 
-		if (recipeWrapper instanceof GravCondenserRecipeWrapper) {
-			GravCondenserRecipeWrapper recipe = (GravCondenserRecipeWrapper)recipeWrapper;
-			recipe.setPowerDraw(power, 1, 1);
-			recipe.setTrashDraw(trash, 28, 1);
-			guiItemStacks.set(SlotIn, recipe.getInputs());
-			guiItemStacks.set(SlotOut, recipe.getOutputs());
-		}
+		recipe.setPowerDraw(power, 1, 1);
+		recipe.setTrashDraw(trash, 28, 1);
+		guiItemStacks.set(SlotIn, recipe.getInputs());
+		guiItemStacks.set(SlotOut, recipe.getOutputs());
 	}
 
 }
