@@ -14,10 +14,9 @@ import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.BlankRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Translator;
 
-public class BioFuelRecipeCategory extends BlankRecipeCategory {
+public class BioFuelRecipeCategory extends BlankRecipeCategory<BioFuelRecipeWrapper> {
 
 	private final ResourceLocation backgroundLocation;
 	private final IDrawableStatic nutrient;
@@ -62,7 +61,7 @@ public class BioFuelRecipeCategory extends BlankRecipeCategory {
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) {
+	public void setRecipe(IRecipeLayout recipeLayout, BioFuelRecipeWrapper recipe) {
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 
@@ -72,16 +71,13 @@ public class BioFuelRecipeCategory extends BlankRecipeCategory {
 		guiFluidStacks.init(0, true, 1, 1, 16, 52, 8000, false, tankOverlay);
 		guiFluidStacks.init(1, false, 109, 1, 16, 52, 8000, false, tankOverlay);
 
-		if (recipeWrapper instanceof BioFuelRecipeWrapper) {
-			BioFuelRecipeWrapper recipe = (BioFuelRecipeWrapper)recipeWrapper;
-			recipe.setNutrientDraw(nutrient, 55, 1);
-			recipe.setAlgaeDraw(algae, 63, 1);
-			guiItemStacks.set(0, recipe.getInputs());
-			guiItemStacks.set(1, recipe.getOutputs());
-			guiItemStacks.set(2, new ItemStack(Items.GLASS_BOTTLE));
-			guiFluidStacks.set(0, recipe.getFluidInputs());
-			guiFluidStacks.set(1, recipe.getFluidOutputs());
-		}
+		recipe.setNutrientDraw(nutrient, 55, 1);
+		recipe.setAlgaeDraw(algae, 63, 1);
+		guiItemStacks.set(0, recipe.getInputs());
+		guiItemStacks.set(1, recipe.getOutputs());
+		guiItemStacks.set(2, new ItemStack(Items.GLASS_BOTTLE));
+		guiFluidStacks.set(0, recipe.getFluidInputs());
+		guiFluidStacks.set(1, recipe.getFluidOutputs());
 	}
 
 }

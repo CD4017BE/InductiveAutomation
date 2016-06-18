@@ -12,10 +12,9 @@ import mezz.jei.api.gui.IGuiFluidStackGroup;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.BlankRecipeCategory;
-import mezz.jei.api.recipe.IRecipeWrapper;
 import mezz.jei.util.Translator;
 
-public class DecompCoolerRecipeCategory extends BlankRecipeCategory {
+public class DecompCoolerRecipeCategory extends BlankRecipeCategory<DecompCoolerRecipeWrapper> {
 	
 	private final ResourceLocation backgroundLocation;
 	private final IDrawableStatic power;
@@ -62,7 +61,7 @@ public class DecompCoolerRecipeCategory extends BlankRecipeCategory {
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, IRecipeWrapper recipeWrapper) {
+	public void setRecipe(IRecipeLayout recipeLayout, DecompCoolerRecipeWrapper recipe) {
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 		
@@ -75,18 +74,15 @@ public class DecompCoolerRecipeCategory extends BlankRecipeCategory {
 		guiFluidStacks.init(2, false, 64, 1, 16, 52, 8000, false, tankOverlay);
 		guiFluidStacks.init(3, false, 127, 1, 16, 52, 8000, false, tankOverlay);
 
-		if (recipeWrapper instanceof DecompCoolerRecipeWrapper) {
-			DecompCoolerRecipeWrapper recipe = (DecompCoolerRecipeWrapper)recipeWrapper;
-			recipe.setPowerDraw(power, 1, 1);
-			if (recipe.inputI[0] != null) guiItemStacks.set(0, recipe.inputI[0]);
-			if (recipe.inputI[1] != null) guiItemStacks.set(1, recipe.inputI[1]);
-			if (recipe.outputI[0] != null) guiItemStacks.set(2, recipe.outputI[0]);
-			if (recipe.outputI[1] != null) guiItemStacks.set(3, recipe.outputI[1]);
-			if (recipe.inputF[0] != null) guiFluidStacks.set(0, recipe.inputF[0]);
-			if (recipe.inputF[1] != null) guiFluidStacks.set(1, recipe.inputF[1]);
-			if (recipe.outputF[0] != null) guiFluidStacks.set(2, recipe.outputF[0]);
-			if (recipe.outputF[1] != null) guiFluidStacks.set(3, recipe.outputF[1]);
-		}
+		recipe.setPowerDraw(power, 1, 1);
+		if (recipe.inputI[0] != null) guiItemStacks.set(0, recipe.inputI[0]);
+		if (recipe.inputI[1] != null) guiItemStacks.set(1, recipe.inputI[1]);
+		if (recipe.outputI[0] != null) guiItemStacks.set(2, recipe.outputI[0]);
+		if (recipe.outputI[1] != null) guiItemStacks.set(3, recipe.outputI[1]);
+		if (recipe.inputF[0] != null) guiFluidStacks.set(0, recipe.inputF[0]);
+		if (recipe.inputF[1] != null) guiFluidStacks.set(1, recipe.inputF[1]);
+		if (recipe.outputF[0] != null) guiFluidStacks.set(2, recipe.outputF[0]);
+		if (recipe.outputF[1] != null) guiFluidStacks.set(3, recipe.outputF[1]);
 	}
 
 }

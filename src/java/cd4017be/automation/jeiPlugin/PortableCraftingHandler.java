@@ -22,10 +22,7 @@ import mezz.jei.gui.ingredients.IGuiIngredient;
 
 public class PortableCraftingHandler implements IRecipeTransferHandler {
 
-	private final IRecipeTransferHandlerHelper helper;
-	public PortableCraftingHandler(IRecipeTransferHandlerHelper helper) {
-		this.helper = helper;
-	}
+	public PortableCraftingHandler(IRecipeTransferHandlerHelper helper) {}
 	
 	@Override
 	public Class<? extends Container> getContainerClass() {

@@ -4,8 +4,10 @@
  */
 package cd4017be.automation.jeiPlugin;
 
+import net.minecraft.item.ItemStack;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.automation.Automation;
+import cd4017be.automation.Objects;
 import cd4017be.automation.Gui.GuiAdvancedFurnace;
 import cd4017be.automation.Gui.GuiAlgaePool;
 import cd4017be.automation.Gui.GuiDecompCooler;
@@ -74,6 +76,19 @@ public class InductiveAutomationPlugin extends BlankModPlugin
 		registry.addRecipes(AutomationRecipes.getElectrolyserRecipes());
 		registry.addRecipes(AutomationRecipes.getGraviCondRecipes());
 		registry.addRecipes(Automation.proxy.getBioFuels());
+		
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.autoCrafting), VanillaRecipeCategoryUid.CRAFTING);
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.portableCrafter), VanillaRecipeCategoryUid.CRAFTING);
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.geothermalFurnace), VanillaRecipeCategoryUid.SMELTING);
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.energyFurnace), VanillaRecipeCategoryUid.SMELTING);
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.portableFurnace), VanillaRecipeCategoryUid.SMELTING);
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.steamCompressor), "automation.assembler");
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.electricCompressor), "automation.assembler");
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.advancedFurnace), "automation.advFurnace");
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.decompCooler), "automation.decompCool");
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.electrolyser), "automation.electrolyser");
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.gravCond), "automation.gravCond");
+		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.algaePool), "automation.bioFuel");
 		
 		recipeTransferRegistry.addRecipeTransferHandler(new AssemblerTransferHandler(transferHelper));
 		recipeTransferRegistry.addRecipeTransferHandler(new PortableCraftingHandler(transferHelper));
