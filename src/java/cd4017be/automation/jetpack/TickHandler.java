@@ -62,9 +62,8 @@ public class TickHandler
     @SubscribeEvent
     public void tick(TickEvent.ClientTickEvent event) 
     {
-    	if (event.phase == TickEvent.Phase.START && mc.thePlayer != null && mc.gameSettings != null) {
-            this.checkJetpack();
-        }
+    	if (event.phase == TickEvent.Phase.START && mc.thePlayer != null && mc.gameSettings != null && !mc.isGamePaused())
+    		this.checkJetpack();
     }
     
     private void checkJetpack()

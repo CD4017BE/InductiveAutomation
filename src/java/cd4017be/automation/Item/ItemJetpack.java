@@ -117,15 +117,16 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
     @Override
     public void onArmorTick(World world, EntityPlayer player, ItemStack item) 
     {
-        if (item.getTagCompound() == null) {
-            item.setTagCompound(new NBTTagCompound());
-            item.getTagCompound().setBoolean("On", false);
-            item.getTagCompound().setInteger("power", 0);
-            item.getTagCompound().setFloat("vecX", 0);
-            item.getTagCompound().setFloat("vecY", 1);
-            item.getTagCompound().setFloat("vecZ", 0);
+    	NBTTagCompound nbt = item.getTagCompound();
+    	if (nbt == null) {
+            nbt = new NBTTagCompound();
+            nbt.setBoolean("On", false);
+            nbt.setInteger("power", 0);
+            nbt.setFloat("vecX", 0);
+            nbt.setFloat("vecY", 1);
+            nbt.setFloat("vecZ", 0);
+            item.setTagCompound(nbt);
         }
-        NBTTagCompound nbt = item.getTagCompound();
         if (!nbt.getBoolean("On")) return;
         if (!world.isRemote) {
             int power = this.updateEnergy(nbt, player.inventory);
@@ -150,23 +151,20 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor
         float energy = 0;
         for (ItemStack item : inv.mainInventory)
             energy += ItemJetpackFuel.getFuel(item);
+        int power = (int)Math.floor(energy / energyUse);
         int lpow = data.getInteger("power");
-        if (lpow < 0 && energy > 0) {
-            lpow = 0;
-            data.setInteger("power", lpow);
+        if (lpow < 0 && power > 0) {
+            data.setInteger("power", 0);
+            return 0;
         }
-        int power = Math.min(lpow, (int)Math.floor(energy / energyUse));
-        if (power > 0) {
-            float needed = power * energyUse;
-            for (int i = 0; i < inv.mainInventory.length; i++) {
-                needed -= ItemJetpackFuel.useFuel(needed, inv, i);
-                if (needed <= 0) break;
-            }
-        }
+        energy = lpow * energyUse;
+        for (int i = 0; energy > 0 && i < inv.mainInventory.length; i++)
+        	energy -= ItemJetpackFuel.useFuel(energy, inv, i);
         if (power < lpow) {
             data.setInteger("power", -1);
             return 0;
-        } else return power;
+        } else if (lpow < power) return lpow; 
+        else return power;
     }
     
     public static void updateMovement(EntityPlayer player, Vec3 dir, int pow)
