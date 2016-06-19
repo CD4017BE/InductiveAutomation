@@ -10,6 +10,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.io.IOException;
+import java.util.List;
 
 import cd4017be.automation.Automation;
 import cd4017be.automation.Gui.ContainerItemUpgrade;
@@ -17,6 +18,7 @@ import cd4017be.automation.Gui.GuiItemUpgrade;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.DefaultItem;
 import cd4017be.lib.IGuiItem;
+import cd4017be.lib.TooltipInfo;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
@@ -24,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 /**
@@ -39,7 +42,30 @@ public class ItemItemUpgrade extends DefaultItem implements IGuiItem
         this.setCreativeTab(Automation.tabAutomation);
     }
     
-    @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
+	public void addInformation(ItemStack item, EntityPlayer player, List list, boolean b) {
+		if (item.hasTagCompound()) {
+			String[] states = StatCollector.translateToLocal("gui.cd4017be.filter.state").split(",");
+			PipeUpgradeItem filter = PipeUpgradeItem.load(item.getTagCompound());
+			String s;
+			if (states.length >= 8) {
+				s = states[(filter.mode & 1) == 0 ? 0 : 1];
+				if ((filter.mode & 4) != 0) s += states[2];
+				if ((filter.mode & 8) != 0) s += states[3];
+				if ((filter.mode & 16) != 0) s += states[4];
+				if ((filter.mode & 2) != 0) s += states[5];
+				if ((filter.mode & 64) != 0) s += states[(filter.mode & 128) != 0 ? 7 : 6];
+			} else s = "<invalid lang entry!>";
+			list.add(s);
+			boolean num = (filter.mode & 32) != 0;
+			for (ItemStack stack : filter.list) list.add((num ? stack.stackSize + "x " : "> ") + stack.getDisplayName());
+			if (filter.priority != 0) list.add(TooltipInfo.format("gui.cd4017be.priority", filter.priority));
+		}
+		super.addInformation(item, player, list, b);
+	}
+
+	@Override
     public ItemStack onItemRightClick(ItemStack item, World world, EntityPlayer player) 
     {
         BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
