@@ -128,11 +128,11 @@ public class WarpPipePhysics extends SharedNetwork<BasicWarpPipe, WarpPipePhysic
 	 * @param item
 	 * @return the result if not possible
 	 */
-	public ItemStack insertItem(ItemStack item)
+	public ItemStack insertItem(ItemStack item, byte pr)
 	{
 		if (item == null) return null;
 		for (IItemDest dest : itemDest) {
-			if (dest.isValid()) {
+			if (dest.getPriority() <= pr && dest.isValid()) {
 				item = dest.insertItem(item);
 				if (item == null) return null;
 				if (dest.blockItem(item)) return item;
@@ -146,11 +146,11 @@ public class WarpPipePhysics extends SharedNetwork<BasicWarpPipe, WarpPipePhysic
 	 * @param fluid
 	 * @return the result if not possible
 	 */
-	public FluidStack insertFluid(FluidStack fluid)
+	public FluidStack insertFluid(FluidStack fluid, byte pr)
 	{
 		if (fluid == null) return null;
 		for (IFluidDest dest : fluidDest) {
-			if (dest.isValid()) {
+			if (dest.getPriority() <= pr && dest.isValid()) {
 				fluid = dest.insertFluid(fluid);
 				if (fluid == null) return null;
 				if (dest.blockFluid(fluid)) return fluid;
@@ -165,7 +165,7 @@ public class WarpPipePhysics extends SharedNetwork<BasicWarpPipe, WarpPipePhysic
 	}
 	
 	public static interface IPrioritySorted {
-		public int getPriority();
+		public byte getPriority();
 	}
 	
 	public static interface IItemDest extends IObjLink, IPrioritySorted {

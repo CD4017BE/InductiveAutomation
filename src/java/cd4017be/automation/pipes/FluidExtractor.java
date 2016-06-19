@@ -39,7 +39,7 @@ public class FluidExtractor extends FluidComp implements ITickable {
             }
         } else fluid = inv.drain(dir, Integer.MAX_VALUE, false);
         if (fluid == null) return;
-        FluidStack result = pipe.network.insertFluid(fluid.copy());
+        FluidStack result = pipe.network.insertFluid(fluid.copy(), filter == null || (filter.mode & 2) == 0 ? Byte.MIN_VALUE : filter.priority);
         if (result != null) fluid.amount -= result.amount;
         if (fluid.amount > 0) inv.drain(dir, fluid, true);
 	}

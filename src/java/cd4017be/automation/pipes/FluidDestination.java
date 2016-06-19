@@ -16,7 +16,7 @@ public class FluidDestination extends FluidComp implements IFluidDest {
 	public boolean onClicked(EntityPlayer player, long uid) {
 		if (player == null) pipe.pipe.dropStack(new ItemStack(Objects.liquidPipe, 1, BlockLiquidPipe.ID_Injection));
 		if (super.onClicked(player, uid) || player == null) return true;
-		if (player.getCurrentEquippedItem() == null) {
+		if (player.getCurrentEquippedItem() == null && player.isSneaking()) {
 			pipe.pipe.dropStack(new ItemStack(Objects.liquidPipe, 1, BlockLiquidPipe.ID_Injection));
 			pipe.con[side] = 0;
 			pipe.network.remConnector(pipe, side);

@@ -36,7 +36,7 @@ public class ItemExtractor extends ItemComp implements ITickable {
 			}
 		}
 		if (target < 0 || stack == null) return;
-		stack = pipe.network.insertItem(inv.decrStackSize(target, stack.stackSize));
+		stack = pipe.network.insertItem(inv.decrStackSize(target, stack.stackSize), filter == null || (filter.mode & 2) == 0 ? Byte.MIN_VALUE : filter.priority);
 		if (stack != null) {
 			ItemStack item = inv.getStackInSlot(target);
 			if (item == null) inv.setInventorySlotContents(target, stack);

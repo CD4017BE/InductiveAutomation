@@ -100,7 +100,7 @@ public class ItemComp extends ConComp implements IObjLink{
 		return item.stackSize > 0 ? item : null;
 	}
 	
-	public int getPriority() {
+	public byte getPriority() {
 		return filter == null ? 0 : filter.priority;
 	}
 

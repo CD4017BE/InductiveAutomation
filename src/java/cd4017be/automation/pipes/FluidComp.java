@@ -107,7 +107,7 @@ public class FluidComp extends ConComp implements IObjLink
         return fluid.amount <= 0 ? null : fluid;
 	}
 	
-	public int getPriority() {
+	public byte getPriority() {
 		return filter == null ? 0 : filter.priority;
 	}
 
