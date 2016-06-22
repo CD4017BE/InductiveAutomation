@@ -138,6 +138,8 @@ public class ClientProxy extends CommonProxy
 		BlockItemRegistry.registerBlockRender("electricCoilC:0");
 		BlockItemRegistry.registerBlockRender("electricCoilA:0");
 		BlockItemRegistry.registerBlockRender("electricCoilH:0");
+		BlockItemRegistry.registerBlockRender("electricHeater:0");
+		BlockItemRegistry.registerBlockRender("thermIns:0");
 		//Items
         BlockItemRegistry.registerItemRender(material, new MaterialTextures("automation:"));
         BlockItemRegistry.registerItemRender("fluidDummy");
