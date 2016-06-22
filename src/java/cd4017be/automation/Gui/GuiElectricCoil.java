@@ -53,6 +53,7 @@ public class GuiElectricCoil extends GuiMachine {
         fontRendererObj.drawString(String.format("U:%.0fV", tileEntity.netData.floats[1]), guiLeft + 26, guiTop + 16, 0x808040);
         fontRendererObj.drawString(String.format("P:%+.1f" + TooltipInfo.getPowerUnit(), tileEntity.netData.floats[0] / 1000F), guiLeft + 26, guiTop + 24, 0x808040);
         fontRendererObj.drawString(String.format("N = %d", tileEntity.netData.ints[0]), guiLeft + 30, guiTop + 38, 0x404040);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 
     @Override
