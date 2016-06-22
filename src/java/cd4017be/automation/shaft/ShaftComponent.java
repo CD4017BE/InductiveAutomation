@@ -130,5 +130,11 @@ public class ShaftComponent implements IComponent<ShaftComponent, ShaftPhysics> 
 		shaft.markUpdate();
 		return true;
 	}
+	
+	private static final double[] loss = {Math.sqrt(0.99F), Math.sqrt(0.999F), 1};
+	
+	public double getCoilLoss() {
+		return loss[type >= 2 && type < 4 ? type - 2 : 2];
+	}
 
 }

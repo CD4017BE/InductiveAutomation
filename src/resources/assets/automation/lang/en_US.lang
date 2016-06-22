@@ -38,7 +38,7 @@ tile.cd4017be.itemPipe\:0.name=Item Transport Pipe
 tile.cd4017be.itemPipe\:1.name=Item Injection Pipe
 tile.cd4017be.itemPipe\:2.name=Item Extraction Pipe
 tile.cd4017be.warpPipe.name=Warp Pipe
-tile.cd4017be.voltageTransformer.name=Voltage Transformer
+tile.cd4017be.voltageTransformer.name=Voltage Transformer (DEPRECATED)
 tile.cd4017be.SCSU.name=Single-Cell Storage Unit
 tile.cd4017be.OCSU.name=Octa-Cell Storage Unit
 tile.cd4017be.CCSU.name=Crystall-Cell Storage Unit
@@ -114,7 +114,7 @@ tile.cd4017be.itemPipe\:0.tip=Transfers items from extraction to injection pipes
 tile.cd4017be.itemPipe\:1.tip=Puts items into connected inventories.\nCan be upgraded with an Item Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
 tile.cd4017be.itemPipe\:2.tip=Pulls items out of connected inventories.\nCan be upgraded with an Item Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
 tile.cd4017be.warpPipe.tip=Transfers items & fluids between connected blocks instantly\nwithout internal storage at 1 stack/t extraction rate.\nClick with Item/Fluid extraction/injection Pipe on\nside to extract/inject items/fluids from that side.\nItem/Fluid Pipe Filters are applied per connected side.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
-tile.cd4017be.voltageTransformer.tip=Conducts Energy between two\nnetworks of different Voltage.\nHV = LV * VoltageFactor
+tile.cd4017be.voltageTransformer.tip=replaced by Electric Coils
 tile.cd4017be.SCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:0> V\nRcond = \\<AF.EnergyTiers.Rcond:0> Ohm
 tile.cd4017be.OCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
 tile.cd4017be.CCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm
@@ -224,9 +224,9 @@ item.cd4017be.material\:SteelH.name=Steel Casing
 item.cd4017be.material\:GDPlate.name=Graphite Casing
 item.cd4017be.material\:unbrC.name=Unbreakable Casing
 item.cd4017be.material\:CoilH.name=Heating Coil
-item.cd4017be.material\:CoilCp.name=Copper Coil
-item.cd4017be.material\:CoilC.name=Conductive Coil
-item.cd4017be.material\:CoilSC.name=Superconductive Coil
+item.cd4017be.material\:CoilCp.name=Copper Coil (DEPRECATED)
+item.cd4017be.material\:CoilC.name=Conductive Coil (DEPRECATED)
+item.cd4017be.material\:CoilSC.name=Superconductive Coil (DEPRECATED)
 item.cd4017be.material\:Motor.name=Motor
 item.cd4017be.material\:Turbine.name=Electric Turbine
 item.cd4017be.material\:Circut.name=Redstone Circuit
