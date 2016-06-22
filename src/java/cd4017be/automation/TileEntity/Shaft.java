@@ -35,6 +35,7 @@ public class Shaft extends AutomatedTile implements IPipe, IShaft, IEnergy {
 		super.update();
 		if (shaft.updateCon) shaft.network.updateLink(shaft);
 		shaft.network.updateTick(shaft);
+		if (energy != null) energy.Ucap *= shaft.getCoilLoss();
 	}
 
 	@Override
