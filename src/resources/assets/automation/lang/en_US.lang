@@ -97,6 +97,8 @@ tile.cd4017be.shaft.name=Kinetic Shaft
 tile.cd4017be.electricCoilC.name=Electric Copper Coil
 tile.cd4017be.electricCoilA.name=Electric Conductive Alloy Coil
 tile.cd4017be.electricCoilH.name=Electric Superconductor Coil
+tile.cd4017be.electricHeater.name=Electric Heating Coil
+tile.cd4017be.thermIns.name=Ceramic Heat Insulation
 # tooltips
 tile.cd4017be.ore.tip=spawns in the world
 tile.cd4017be.placementHelper.tip=You shouldn't be able to get this.\nJust throw it away it's useless for you.\nPlacement controllers will temporary place\nthese blocks to click items against them.
@@ -173,6 +175,8 @@ tile.cd4017be.shaft.tip=Connects to kinectic components next to it.\nMass = 1000
 tile.cd4017be.electricCoilC.tip=Place against other coil to get a transformer,\nplace against magnetic shaft to get a motor/dynamo\nor insert into shaft to make it electromagnetic.\nNmin = 5, Nmax = 200\nUmax = \\<AI.EnergyTiers.Umax:0> V
 tile.cd4017be.electricCoilA.tip=Place against other coil to get a transformer,\nplace against magnetic shaft to get a motor/dynamo\nor insert into shaft to make it electromagnetic.\nNmin = 10, Nmax = 400\nUmax = \\<AI.EnergyTiers.Umax:1> V
 tile.cd4017be.electricCoilH.tip=Place against other coil to get a transformer,\nplace against magnetic shaft to get a motor/dynamo\nor insert into shaft to make it electromagnetic.\nNmin = 25, Nmax = 1000\nUmax = \\<AI.EnergyTiers.Umax:2> V
+tile.cd4017be.electricHeater.tip=Unfinished, currently just replaces Heating Coil.
+tile.cd4017be.thermIns.tip=Has high temperature resistance\nand low thermic conductivity.
 
 # Fluid names
 fluid.steam.name=Steam
@@ -216,14 +220,14 @@ item.cd4017be.material\:SiliconI.name=Silicon Ingot
 item.cd4017be.material\:HydrogenI.name=Superconductive Hydrogen Ingot
 item.cd4017be.material\:ElectrumR.name=Electrum Dust
 item.cd4017be.material\:CondRA.name=Conductive Alloy Dust
-item.cd4017be.material\:WoodC.name=Wood Casing
-item.cd4017be.material\:GlassC.name=Glass Casing
+item.cd4017be.material\:WoodC.name=Inventory Component
+item.cd4017be.material\:GlassC.name=Tank Component
 item.cd4017be.material\:IronC.name=Iron Casing
-item.cd4017be.material\:StoneC.name=Stone Casing
+item.cd4017be.material\:StoneC.name=Thermic Casing
 item.cd4017be.material\:SteelH.name=Steel Casing
 item.cd4017be.material\:GDPlate.name=Graphite Casing
 item.cd4017be.material\:unbrC.name=Unbreakable Casing
-item.cd4017be.material\:CoilH.name=Heating Coil
+item.cd4017be.material\:CoilH.name=Heating Coil (DEPRECATED)
 item.cd4017be.material\:CoilCp.name=Copper Coil (DEPRECATED)
 item.cd4017be.material\:CoilC.name=Conductive Coil (DEPRECATED)
 item.cd4017be.material\:CoilSC.name=Superconductive Coil (DEPRECATED)

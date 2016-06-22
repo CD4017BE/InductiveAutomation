@@ -25,6 +25,7 @@ import cd4017be.automation.jetpack.PacketHandler;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.ConfigurationFile;
+import cd4017be.lib.DefaultBlock;
 import cd4017be.lib.DefaultItemBlock;
 import cd4017be.lib.ModFluid;
 import cd4017be.lib.TileBlock;
@@ -32,6 +33,7 @@ import cd4017be.lib.templates.BlockPipe;
 import cd4017be.lib.templates.BlockSuperfluid;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -181,6 +183,14 @@ public class Automation implements IWorldGenerator
     
     private void initBlocks()
     {
+    	class TIMaterial extends Material {
+			public TIMaterial() {
+				super(MapColor.stoneColor);
+				this.setRequiresTool();
+			}
+    	}
+    	M_thermIns = new TIMaterial();
+    	
     	(heatRadiator = TileBlock.create("heatRadiator", Material.IRON, SoundType.METAL , DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
     	(lightShaft = TileBlock.create("lightShaft", Material.GLASS, SoundType.GLASS, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F);
     	(wireC = new BlockPipe("wireC", Material.IRON, SoundType.METAL, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F);
@@ -253,6 +263,12 @@ public class Automation implements IWorldGenerator
         (electricCoilC = TileBlock.create("electricCoilC", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
         (electricCoilA = TileBlock.create("electricCoilA", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
         (electricCoilH = TileBlock.create("electricCoilH", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (shaft = new BlockShaft("shaft", Material.iron, 0x20)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (electricCoilC = TileBlock.create("electricCoilC", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (electricCoilA = TileBlock.create("electricCoilA", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (electricCoilH = TileBlock.create("electricCoilH", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (electricHeater = TileBlock.create("electricHeater", M_thermIns, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (thermIns = new DefaultBlock("thermIns", M_thermIns, DefaultItemBlock.class)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
         proxy.registerBlocks();
     }
     

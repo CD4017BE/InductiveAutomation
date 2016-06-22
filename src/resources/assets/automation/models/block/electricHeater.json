@@ -1,0 +1,8 @@
+{
+	"parent": "automation:block/coil",
+	"textures": {
+		"main": "automation:blocks/heater0",
+		"front": "automation:blocks/heater1",
+		"back": "automation:blocks/thermIns"
+	}
+}

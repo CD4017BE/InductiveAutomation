@@ -52,7 +52,6 @@ add("smelt", it("SilverD"), it("SilverI"));
 print("added smelting recipes");
 
 #Crafting
-add("shaped", it("CoilH"), "000/010/000", it("minecraft:iron_bars"), "sandstone");
 add("shaped", it("Motor"), " 0 /121/ 0 ", it("tile.shaft"), it("tile.electricCoilA"), "dustRedstone");
 add("shaped", it("Vent"), "000/111/000", "ingotCopper", it("minecraft:iron_bars"));
 add("shaped", it("Breaker"), "01/ 4/23", it("minecraft:golden_pickaxe"), it("Motor"), it("minecraft:hopper"), "AIcasingWood", "AIcasingIron");
@@ -113,10 +112,12 @@ add("shapeless", it("minecraft:paper"), it("item.teleporterCoords"));
 add("shaped", it("minecraft:paper"), " 0 ", it("minecraft:paper"));
 add("shaped", it("minecraft:book"), " 0 ", it("minecraft:book"));
 print("added item crafting recipes");
+add("shaped", it("tile.thermIns", 3), "010/010/010", it("minecraft:brick"), "sandstone");
 add("shaped", it("tile.shaft", 2), "000", "ingotIron");
 add("shaped", it("tile.wireC", 8), "000", "ingotCopper");
 add("shaped", it("tile.wireA", 8), "000", "ingotConductiveAlloy");
 add("shaped", it("tile.wireH", 8), "010/222/010", "ingotElectrum", it("SiliconI"), it("HydrogenI"));
+add("shaped", it("tile.electricHeater"), "000/010/000", it("minecraft:iron_bars"), it("tile.thermIns"));
 add("shaped", it("tile.electricCoilC"), "000/010/000", it("tile.wireC"), "ingotIron");
 add("shaped", it("tile.electricCoilA"), "000/010/000", it("tile.wireA"), "ingotIron");
 add("shaped", it("tile.electricCoilH"), "000/010/000", it("tile.wireH"), "ingotIron");
@@ -135,7 +136,7 @@ add("shaped", it("tile.steamGenerator"), "000/121/000", it("minecraft:piston"), 
 add("shaped", it("tile.steamTurbine"), "001/222/100", "AIcasingSteel", "AIcasingGlass", it("Turbine"));
 add("shaped", it("tile.steamBoiler"), "010/ 2 ", "AIcasingGlass", it("minecraft:furnace"), "AIcasingWood");
 add("shaped", it("tile.lavaCooler"), "230/010", "AIcasingGlass", "AIcasingStone", "AIcasingWood", it("Vent"));
-add("shaped", it("tile.energyFurnace"), " 0 /121/ 3 ", it("CoilH"), it("minecraft:brick_block"), "AIcasingIron", "AIcasingWood");
+add("shaped", it("tile.energyFurnace"), " 3 /121/ 0 ", it("tile.electricHeater"), it("tile.thermIns"), "AIcasingIron", "AIcasingWood");
 add("shaped", it("tile.magnet", 2), "010/121/010", it("minecraft:iron_bars"), it("tile.electricCoilA"), "ingotIron");
 add("shaped", it("tile.farm"), "1 4/023", it("Circut"), "AIcasingWood", it("AreaFrame"), it("Breaker"), it("Placer"));
 add("shaped", it("tile.miner"), "1 3/023", "AIcasingIron", "AIcasingWood", it("AreaFrame"), it("Breaker"));
@@ -149,7 +150,7 @@ add("shaped", it("tile.teslaTransmitter"), "000/121/131", "ingotElectrum", it("t
 add("shaped", it("tile.teslaTransmitterLV"), "000/121/131", "ingotGold", it("tile.electricCoilA"), it("LCNitrogen"), it("tile.OCSU"));
 add("shaped", it("tile.teleporter"), "2  /016/435", it("EMatrix"), it("QSGen"), "AIcasingWood", it("BHGen"), "AIcasingSteel", it("AreaFrame"), it("item.translocator"));
 add("shaped", it("tile.pump"), "0 4/123", it("Circut"), "AIcasingGlass", it("AreaFrame"), it("tile.electricCoilA"), it("tile.collector"));
-add("shaped", it("tile.advancedFurnace"), " 0 /121/343", it("CoilH"), "AIcasingWood", "AIcasingIron", "AIcasingGlass", "AIcasingStone");
+add("shaped", it("tile.advancedFurnace"), " 0 /121/343", it("tile.electricHeater"), "AIcasingWood", "AIcasingIron", "AIcasingGlass", "AIcasingStone");
 add("shaped", it("tile.massstorageChest"), "000/010/000", "AIcasingWood", it("EMatrix"));
 add("shaped", it("tile.antimatterFabricator"), "012/343/210", it("Vent"), it("tile.electricCoilH"), it("Circut"), it("mAccelerator"), "AIcasingGraphite");
 add("shaped", it("tile.antimatterAnihilator"), "210/345/210", it("Vent"), it("tile.electricCoilH"), it("Circut"), it("amAcelerator"), it("AnihilationC"), it("tile.OCSU"));
@@ -235,7 +236,7 @@ add("compAs", it("WoodC"), nil, nil, nil, ore("plankWood", 4));
 add("compAs", it("GlassC"), nil, nil, ore("ingotCopper"), ore("blockGlass", 4));
 add("compAs", it("IronC"), nil, nil, nil, ore("ingotIron", 4));
 add("compAs", it("SteelH"), nil, nil, nil, ore("ingotSteel", 8));
-add("compAs", it("StoneC"), nil, nil, it("minecraft:obsidian", 2), ore("stone", 6));
+add("compAs", it("StoneC"), nil, nil, it("minecraft:obsidian", 2), it("tile.thermIns", 6));
 add("compAs", it("GDPlate"), nil, nil, ore("gemDiamond"), it("Graphite", 8));
 add("compAs", it("unbrC"), nil, nil, it("DenseM"), it("minecraft:bedrock"));
 add("compAs", it("Circut"), ore("dustRedstone", 4), it("SiliconI", 2), it("RstMetall", 2), it("Graphite"));
