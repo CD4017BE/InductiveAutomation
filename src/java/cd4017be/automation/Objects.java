@@ -2,8 +2,10 @@ package cd4017be.automation;
 
 import cd4017be.automation.Block.*;
 import cd4017be.automation.Item.*;
+import cd4017be.lib.DefaultBlock;
 import cd4017be.lib.TileBlock;
 import cd4017be.lib.templates.BlockPipe;
+import net.minecraft.block.material.Material;
 import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.fluids.Fluid;
 
@@ -140,7 +142,12 @@ public class Objects {
 	public static TileBlock electricCoilC;
 	public static TileBlock electricCoilA;
 	public static TileBlock electricCoilH;
+	public static TileBlock electricHeater;
+	public static DefaultBlock thermIns;
     
+	//Materials
+	public static Material M_thermIns;
+	
     //OreGen
     public static WorldGenerator copperGen;
     public static WorldGenerator silverGen;

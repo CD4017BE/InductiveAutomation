@@ -27,12 +27,14 @@ import cd4017be.automation.jetpack.PacketHandler;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.ConfigurationFile;
+import cd4017be.lib.DefaultBlock;
 import cd4017be.lib.DefaultItemBlock;
 import cd4017be.lib.ModFluid;
 import cd4017be.lib.TileBlock;
 import cd4017be.lib.templates.BlockPipe;
 import cd4017be.lib.templates.BlockSuperfluid;
 import net.minecraft.block.Block;
+import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
@@ -181,6 +183,14 @@ public class Automation implements IWorldGenerator
     
     private void initBlocks()
     {
+    	class TIMaterial extends Material {
+			public TIMaterial() {
+				super(MapColor.stoneColor);
+				this.setRequiresTool();
+			}
+    	}
+    	M_thermIns = new TIMaterial();
+    	
     	(lightShaft = TileBlock.create("lightShaft", Material.glass, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F).setStepSound(Block.soundTypeGlass);
     	(wireC = new BlockPipe("wireC", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(wireA = new BlockPipe("wireA", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
@@ -196,7 +206,7 @@ public class Automation implements IWorldGenerator
     	(steamTurbine = TileBlock.create("steamTurbine", Material.iron, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(steamGenerator = TileBlock.create("steamGenerator", Material.iron, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(steamBoiler = TileBlock.create("steamBoiler", Material.iron, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
-    	(lavaCooler = TileBlock.create("lavaCooler", Material.rock, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(lavaCooler = TileBlock.create("lavaCooler", M_thermIns, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
     	(energyFurnace = TileBlock.create("energyFurnace", Material.iron, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
     	(farm = TileBlock.create("farm", Material.iron, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
     	(miner = TileBlock.create("miner", Material.iron, DefaultItemBlock.class, 0x10)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
@@ -218,7 +228,7 @@ public class Automation implements IWorldGenerator
     	(antimatterAnihilator = TileBlock.create("antimatterAnihilator", Material.iron, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(40F).setStepSound(Block.soundTypeMetal);
     	(hpSolarpanel = TileBlock.create("hpSolarpanel", Material.glass, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeGlass);
     	(autoCrafting = TileBlock.create("autoCrafting", Material.wood, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeWood);
-    	(geothermalFurnace = TileBlock.create("geothermalFurnace", Material.rock, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+    	(geothermalFurnace = TileBlock.create("geothermalFurnace", M_thermIns, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
     	(steamCompressor = TileBlock.create("steamCompressor", Material.iron, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(electricCompressor = TileBlock.create("electricCompressor", Material.iron, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
     	(tank = TileBlock.create("tank", Material.glass, ItemTank.class, 0x60)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
@@ -253,6 +263,8 @@ public class Automation implements IWorldGenerator
         (electricCoilC = TileBlock.create("electricCoilC", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
         (electricCoilA = TileBlock.create("electricCoilA", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
         (electricCoilH = TileBlock.create("electricCoilH", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (electricHeater = TileBlock.create("electricHeater", M_thermIns, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (thermIns = new DefaultBlock("thermIns", M_thermIns, DefaultItemBlock.class)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
         proxy.registerBlocks();
     }
     
