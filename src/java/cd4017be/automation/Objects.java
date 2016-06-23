@@ -144,6 +144,9 @@ public class Objects {
 	public static TileBlock electricCoilH;
 	public static TileBlock electricHeater;
 	public static DefaultBlock thermIns;
+	public static TileBlock pneumaticPiston;
+	public static BlockPipe gasPipe;
+	public static TileBlock solidFuelHeater;
     
 	//Materials
 	public static Material M_thermIns;

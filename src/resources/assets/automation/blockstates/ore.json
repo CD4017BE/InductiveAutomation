@@ -1,6 +1,7 @@
 {
 	"variants": {
 		"ore=silver": { "model": "automation:silver" },
-		"ore=copper": { "model": "automation:copper" }
+		"ore=copper": { "model": "automation:copper" },
+		"ore=aluminium": { "model": "automation:aluminium" }
 	}
 }
