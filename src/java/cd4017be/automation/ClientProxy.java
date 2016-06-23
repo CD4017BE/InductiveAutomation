@@ -55,6 +55,7 @@ public class ClientProxy extends CommonProxy
     	//BlockItems
     	BlockItemRegistry.registerBlockRender("ore:0");
     	BlockItemRegistry.registerBlockRender("ore:1");
+    	BlockItemRegistry.registerBlockRender("ore:2");
     	BlockItemRegistry.registerBlockRender("pool:0");
     	BlockItemRegistry.registerBlockRender("unbrStone:0");
     	BlockItemRegistry.registerBlockRender("unbrStone:1");
@@ -146,6 +147,8 @@ public class ClientProxy extends CommonProxy
 		BlockItemRegistry.registerBlockRender("electricCoilH:0");
 		BlockItemRegistry.registerBlockRender("electricHeater:0");
 		BlockItemRegistry.registerBlockRender("thermIns:0");
+		BlockItemRegistry.registerBlockRender("pneumaticPiston:0");
+		BlockItemRegistry.registerBlockRender("gasPipe:0");
 		//Items
         BlockItemRegistry.registerItemRender(material, new MaterialTextures("automation:"));
         BlockItemRegistry.registerItemRender("fluidDummy");
@@ -203,6 +206,7 @@ public class ClientProxy extends CommonProxy
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilA");
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilH");
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftMass");
+        SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftGear");
     }
     
     @SubscribeEvent
@@ -217,7 +221,7 @@ public class ClientProxy extends CommonProxy
     {
     	BlockItemRegistry.registerModels(itemPipe, "itemPipe", "itemPipe_1", "itemPipe_2");
     	BlockItemRegistry.registerModels(liquidPipe, "liquidPipe", "liquidPipe_1", "liquidPipe_2");
-    	BlockItemRegistry.registerModels(ore, "ore", "ore_1");
+    	BlockItemRegistry.registerModels(ore, "ore", "ore_1", "ore_2");
     	String[] tex = new String[16];
     	for (int i = 0; i < tex.length; i++) tex[i] = "unbrStone" + (i == 0 ? "" : "_" + i);
     	BlockItemRegistry.registerModels(unbrStone, tex);
@@ -280,6 +284,8 @@ public class ClientProxy extends CommonProxy
         TileBlockRegistry.registerGui(electricCoilC, GuiElectricCoil.class);
         TileBlockRegistry.registerGui(electricCoilA, GuiElectricCoil.class);
         TileBlockRegistry.registerGui(electricCoilH, GuiElectricCoil.class);
+        TileBlockRegistry.registerGui(pneumaticPiston, GuiPneumaticPiston.class);
+        TileBlockRegistry.registerGui(gasPipe, GuiGasPipe.class);
         //set block transparencies
         Objects.itemPipe.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
         Objects.liquidPipe.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
@@ -289,6 +295,7 @@ public class ClientProxy extends CommonProxy
         Objects.quantumTank.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
         Objects.pool.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
         Objects.wormhole.setBlockLayer(EnumWorldBlockLayer.TRANSLUCENT);
+        Objects.pneumaticPiston.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
         //fluids
         SpecialModelLoader.setMod("automation");
         SpecialModelLoader.registerFluid(L_steam);
@@ -311,6 +318,7 @@ public class ClientProxy extends CommonProxy
         SpecialModelLoader.registerBlockModel(Objects.wireH, new ModelPipe("automation:wireH", 1, 1));
         SpecialModelLoader.registerBlockModel(Objects.warpPipe, new ModelPipe("automation:warpPipe", 1, 5));
         SpecialModelLoader.registerBlockModel(Objects.shaft, new ModelPipe("automation:shaft", 0, 1));
+        SpecialModelLoader.registerBlockModel(Objects.gasPipe, new ModelPipe("automation:gasPipe", 1, 1));
     }
     
 }

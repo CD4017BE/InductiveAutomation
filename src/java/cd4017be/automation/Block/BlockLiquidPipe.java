@@ -34,7 +34,7 @@ public class BlockLiquidPipe extends BlockPipe
     }
     
     @Override
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List list) 
+    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> list) 
     {
         list.add(new ItemStack(this, 1, ID_Transport));
         list.add(new ItemStack(this, 1, ID_Extraction));

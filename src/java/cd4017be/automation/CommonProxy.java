@@ -103,6 +103,10 @@ public class CommonProxy
     	TileBlockRegistry.register(electricCoilC, ElectricCoil.class, TileContainer.class);
     	TileBlockRegistry.register(electricCoilA, ElectricCoil.class, TileContainer.class);
     	TileBlockRegistry.register(electricCoilH, ElectricCoil.class, TileContainer.class);
+    	TileBlockRegistry.register(electricHeater, HeatingCoil.class, TileContainer.class);
+    	TileBlockRegistry.register(pneumaticPiston, PneumaticPiston.class, TileContainer.class);
+    	TileBlockRegistry.register(gasPipe, GasPipe.class, TileContainer.class);
+    	TileBlockRegistry.register(solidFuelHeater, SolidFuelHeater.class, TileContainer.class);
     }
     
     public void registerRenderers() {

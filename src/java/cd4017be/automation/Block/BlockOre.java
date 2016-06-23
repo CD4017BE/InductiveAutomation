@@ -25,7 +25,7 @@ import net.minecraft.util.IStringSerializable;
 public class BlockOre extends DefaultBlock
 {
     public static enum Ore implements IStringSerializable{
-    	Silver("silver"), Copper("copper");
+    	Silver("silver"), Copper("copper"), Aluminium("aluminium");
 		public final String name;
 		private Ore(String name) {
 			this.name = name;
@@ -44,10 +44,11 @@ public class BlockOre extends DefaultBlock
     }
 
     @Override
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List list) 
+    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> list) 
     {
         list.add(new ItemStack(this, 1, Ore.Silver.ordinal()));
         list.add(new ItemStack(this, 1, Ore.Copper.ordinal()));
+        list.add(new ItemStack(this, 1, Ore.Aluminium.ordinal()));
     }
     
     @Override

@@ -9,6 +9,7 @@ cd4017be.powerUnit=kW
 # names
 tile.cd4017be.ore\:0.name=Silver Ore
 tile.cd4017be.ore\:1.name=Copper Ore
+tile.cd4017be.ore\:2.name=Aluminium Ore
 tile.cd4017be.pool.name=Algae Pool
 tile.cd4017be.unbrStone\:0.name=Black Unbreakable Stone
 tile.cd4017be.unbrStone\:1.name=Red Unbreakable Stone
@@ -99,8 +100,12 @@ tile.cd4017be.electricCoilA.name=Electric Conductive Alloy Coil
 tile.cd4017be.electricCoilH.name=Electric Superconductor Coil
 tile.cd4017be.electricHeater.name=Electric Heating Coil
 tile.cd4017be.thermIns.name=Ceramic Heat Insulation
+tile.cd4017be.gasPipe.name=Gas Pipe
+tile.cd4017be.pneumaticPiston.name=Pneumatic Piston
 # tooltips
-tile.cd4017be.ore.tip=spawns in the world
+tile.cd4017be.ore\:0.tip=spawns @lvl 5-60 (16 best).
+tile.cd4017be.ore\:1.tip=spawns @lvl 5-64 (40 best).
+tile.cd4017be.ore\:1.tip=spawns @lvl 5-60 (30 best).
 tile.cd4017be.placementHelper.tip=You shouldn't be able to get this.\nJust throw it away it's useless for you.\nPlacement controllers will temporary place\nthese blocks to click items against them.
 tile.cd4017be.pool.tip=Place directly or indirectly next to an BioReactor.\nIncreases Algae capacity by \\<AI.FluidTiers.TankCap:1>L.\nOptimal if it has access to sunlight.
 tile.cd4017be.unbrStone.tip=Unbreakable with infinite explosion resistance\nand indestructable for mobs.\nSneak-click is the only possible way to remove it.
@@ -415,6 +420,8 @@ gui.cd4017be.heatRadiator.name=Fluid Heat Radiator
 gui.cd4017be.electricCoilC.name=Electric Coil
 gui.cd4017be.electricCoilA.name=Electric Coil
 gui.cd4017be.electricCoilH.name=Electric Coil
+gui.cd4017be.pneumaticPiston.name=Pneumatic Piston
+gui.cd4017be.gasPipe.name=Gas Properties
 # Gui tooltips
 gui.cd4017be.recipe.euse=Used Energy:\n%.0f kJ
 gui.cd4017be.recipe.algae=Algae:\n%d mB

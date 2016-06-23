@@ -22,6 +22,7 @@ public class ItemOre extends DefaultItemBlock
         this.setHasSubtypes(true);
         BlockItemRegistry.registerItemStack(new ItemStack(this, 1, Ore.Silver.ordinal()), "oreSilver");
         BlockItemRegistry.registerItemStack(new ItemStack(this, 1, Ore.Copper.ordinal()), "oreCopper");
+        BlockItemRegistry.registerItemStack(new ItemStack(this, 1, Ore.Aluminium.ordinal()), "oreAluminium");
     }
 
     @Override
