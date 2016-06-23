@@ -31,7 +31,7 @@ public class ShaftRenderer extends TileEntitySpecialRenderer<Shaft> {
 		"automation:models/tileEntity/shaftCoilC",
 		"automation:models/tileEntity/shaftCoilA",
 		"automation:models/tileEntity/shaftCoilH",
-		"automation:models/tileEntity/shaftMass"
+		"automation:models/tileEntity/shaftGear" //Mass
 		};
 	
 	private void renderShaft(World world, ShaftPhysics shaft, double x, double y, double z, float t) {

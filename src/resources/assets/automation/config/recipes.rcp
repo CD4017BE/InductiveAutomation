@@ -1,11 +1,15 @@
+#V:00002
+#To prevent your changes in this file being overidden with the next mod update, change the version number above to '99999'.
+#To force restore the preset, just delete this file from your config folder.
+
 @PRE_INIT
-#constants
 WILDCARD = 32767;
 dyes = ["dyeBlack", "dyeRed", "dyeGreen", "dyeBrown", "dyeBlue", "dyePurple", "dyeCyan", "dyeLightGray", "dyeGray", "dyePink", "dyeLime", "dyeYellow", "dyeLightBlue", "dyeMagenta", "dyeOrange", "dyeWhite"];
 
 #OreDictionary
 add("ore", "oreCopper", it("oreCopper"));
 add("ore", "oreSilver", it("oreSilver"));
+add("ore", "oreAluminium", it("oreAluminium"));
 add("ore", "ingotCopper", it("CopperI"));
 add("ore", "ingotSilver", it("SilverI"));
 add("ore", "ingotElectrum", it("ElectrumI"));
@@ -300,6 +304,20 @@ add("trash", it("BlackHole"), it("Neutron"), 24576000);
 print("added Gravitational Condenser recipes");
 
 @POST_INIT
+#Ore Generation (the number before 'nore(...)' is the minimum amount of OreDictionary entries required to disable generation)
+if(>(2, nore("oreCopper"))) {
+	add("worldgen", "minecraft:stone", it("oreCopper", 9), 8, [5, 40, 64]);
+	print("copper gen enabled");
+}
+if(>(2, nore("oreSilver"))) {
+	add("worldgen", "minecraft:stone", it("oreSilver", 6), 4, [5, 16, 60]);
+	print("silver gen enabled");
+}
+if(>(2, nore("oreAluminium"))) {
+	add("worldgen", "minecraft:stone", it("oreAluminium", 6), 6, [5, 30, 60]);
+	print("aluminium gen enabled");
+}
+
 #Optional Recipes
 if(hasit("ore:oreTin", "ore:ingotTin")) {add("advFurn", [fl("lava", 20), ore("oreTin")], [it("ore:ingotTin", 2), it("minecraft:stone")], 400);}
 if(hasit("ore:oreLead", "ore:ingotLead")) {add("advFurn", [fl("lava", 20), ore("oreLead")], [it("ore:ingotLead", 2), it("minecraft:stone")], 400);}

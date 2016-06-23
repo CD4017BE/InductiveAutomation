@@ -8,8 +8,6 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -78,15 +76,15 @@ public class Automation implements IWorldGenerator
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) 
     {
-    	Config.loadConfig(ConfigurationFile.init(event, "inductiveAutomation.cfg", "/assets/automation/config/preset.cfg"));
-    	ConfigurationFile.init(event, recipeFile, "/assets/automation/config/recipes.rcp");
+    	Config.loadConfig(ConfigurationFile.init(event, "inductiveAutomation.cfg", "/assets/automation/config/preset.cfg", true));
+    	ConfigurationFile.init(event, recipeFile, "/assets/automation/config/recipes.rcp", true);
     	BlockItemRegistry.setMod("automation");
         tabAutomation = new CreativeTabAutomation("automation");
         tabFluids = new CreativeTabFluids("fluids");
         initFluids();
         initItems();
         initBlocks();
-        initOres();
+        //initOres();
         RecipeAPI.loadRecipes(recipeFile, RecipeAPI.PRE_INIT);
         if (event.getSide().isClient()) JetPackConfig.loadData();
     }
@@ -98,7 +96,7 @@ public class Automation implements IWorldGenerator
     	BlockGuiHandler.registerMod(this);
     	PacketHandler.register();
         AreaProtect.register(this);
-    	GameRegistry.registerWorldGenerator(this, 0);
+    	//GameRegistry.registerWorldGenerator(this, 0);
         
         FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_biomass, FluidContainerRegistry.BUCKET_VOLUME), stack("LCBiomass", 1), FluidContainerRegistry.EMPTY_BOTTLE));
         FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_nitrogenL, 100), stack("LCNitrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
@@ -269,6 +267,20 @@ public class Automation implements IWorldGenerator
         (electricCoilH = TileBlock.create("electricCoilH", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
         (electricHeater = TileBlock.create("electricHeater", M_thermIns, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
         (thermIns = new DefaultBlock("thermIns", M_thermIns, DefaultItemBlock.class)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+        (shaft = new BlockShaft("shaft", Material.iron, 0x20)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (electricCoilC = TileBlock.create("electricCoilC", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (electricCoilA = TileBlock.create("electricCoilA", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (electricCoilH = TileBlock.create("electricCoilH", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (electricHeater = TileBlock.create("electricHeater", M_thermIns, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (thermIns = new DefaultBlock("thermIns", M_thermIns, DefaultItemBlock.class)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+        (pneumaticPiston = TileBlock.create("pneumaticPiston", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+        (gasPipe = new BlockPipe("gasPipe", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F).setStepSound(Block.soundTypeMetal);
+        (solidFuelHeater = TileBlock.create("solidFuelHeater", Material.rock, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+        gasPipe.size = 0.5F;
+        ore.setHarvestLevel("pickaxe", 1, ore.getStateFromMeta(Ore.Copper.ordinal()));
+        ore.setHarvestLevel("pickaxe", 2, ore.getStateFromMeta(Ore.Silver.ordinal()));
+        ore.setHarvestLevel("pickaxe", 1, ore.getStateFromMeta(Ore.Aluminium.ordinal()));
+        
         proxy.registerBlocks();
     }
     

@@ -16,7 +16,7 @@ import net.minecraft.world.World;
  */
 public class GasReservoir extends HeatReservoir {
 
-	public static interface IGasComp extends IHeatComp, IComponent {
+	public static interface IGasComp extends IComponent {
 		public boolean canConnect(IGasComp comp, EnumFacing side);
 		public GasReservoir getGas();
 		public void setGas(GasReservoir G);
