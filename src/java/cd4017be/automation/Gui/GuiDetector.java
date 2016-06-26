@@ -56,6 +56,8 @@ public class GuiDetector extends GuiMachine
         this.drawInfo(71, 16, 61, 8, "\\i", "detector.refH");
         this.drawInfo(71, 24, 61, 8, "\\i", "detector.refL");
         this.drawInfo(142, 15, 27, 108, "\\i", "detector.out");
+        if (this.isPointInRegion(8, 16, 160, 106, mx, my)) 
+        	this.drawSideCube(-64, 16, (my - guiTop - 15) / 18, (byte)0);
     }
     
     @Override

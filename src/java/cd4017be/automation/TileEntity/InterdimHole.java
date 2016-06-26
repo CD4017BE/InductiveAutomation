@@ -507,6 +507,11 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
 	public BasicWarpPipe getWarpPipe() {
 		return pipe;
 	}
+
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return false;
+	}
 	
 	/* TODO reimplement
     @Override

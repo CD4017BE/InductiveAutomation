@@ -223,5 +223,10 @@ public class MatterOrb extends ModTileEntity implements IMatterStorage, IInvento
 	@Override
 	public void clear() {
 	}
+
+	@Override
+	public boolean isUseableByPlayer(EntityPlayer player) {
+		return false;
+	}
     
 }

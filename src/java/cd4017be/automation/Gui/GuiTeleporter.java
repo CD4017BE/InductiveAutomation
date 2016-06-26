@@ -76,9 +76,10 @@ public class GuiTeleporter extends GuiMachine
         this.drawInfo(98, 34, 16, 16, "\\i", "rstCtr");
         this.drawInfo(116, 34, 16, 16, "\\i", "teleport." + ((tileEntity.netData.ints[3] & 2) == 0 ? "abs" : "rel"));
         this.drawInfo(134, 34, 34, 16, "\\i", "teleport.name");
-        this.drawInfo(8, 52, 34, 16, "X");
-        this.drawInfo(44, 52, 34, 16, "Y");
-        this.drawInfo(80, 52, 34, 16, "Z");
+        if (this.isPointInRegion(8, 52, 34, 16, mx, my)) this.drawSideCube(-64, tabsY + 63, 5, (byte)3);
+        else if (this.isPointInRegion(44, 52, 34, 16, mx, my)) this.drawSideCube(-64, tabsY + 63, 1, (byte)3);
+        else if (this.isPointInRegion(80, 52, 34, 16, mx, my)) this.drawSideCube(-64, tabsY + 63, 3, (byte)3);
+        
     }
     
     @Override
