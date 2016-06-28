@@ -38,7 +38,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -78,7 +77,9 @@ public class AntimatterBomb extends ModTileEntity implements ITickable
             state = 2;
         } else if (state == 2) {
         	if (explosion == null) {
-        		
+        		worldObj.setBlockState(pos, Objects.antimatterBombE.getDefaultState());
+        		if (loot != null) worldObj.setTileEntity(pos, loot);
+        		return;
         	}
         	if (!explosion.explode()) explosion = null;
         }
