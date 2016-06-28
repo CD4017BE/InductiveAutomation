@@ -202,6 +202,7 @@ public class Detector extends AutomatedTile implements IAutomatedInv, IRedstone8
     public void writeToNBT(NBTTagCompound nbt) 
     {
         super.writeToNBT(nbt);
+        if (node != null) ComputerAPI.saveNode(node, nbt);
         nbt.setIntArray("data", netData.ints);
         nbt.setLong("state", netData.longs[0]);
         nbt.setLong("cfg", netData.longs[1]);
@@ -211,6 +212,7 @@ public class Detector extends AutomatedTile implements IAutomatedInv, IRedstone8
     public void readFromNBT(NBTTagCompound nbt) 
     {
         super.readFromNBT(nbt);
+        if (node != null) ComputerAPI.readNode(node, nbt);
         for (int i = 0; i < inventory.items.length; i++) this.slotChange(null, inventory.items[i], i);
         int[] data = nbt.getIntArray("data");
         System.arraycopy(data, 0, netData.ints, 0, Math.min(data.length, netData.ints.length));

@@ -169,6 +169,10 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     
     private void teleport()
     {
+    	if (context != null) {
+        	ComputerAPI.sendEvent(context, "teleport_done");
+        	context = null;
+        }
     	netData.ints[3] &= ~8;
         int[] pos = {area[0], area[1], area[2], area[3] - area[0], area[4] - area[1], area[5] - area[2]};
         World world = DimensionManager.getWorld(target[3]);
@@ -314,6 +318,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     public void writeToNBT(NBTTagCompound nbt) 
     {
         super.writeToNBT(nbt);
+        ComputerAPI.saveNode(node, nbt);
         nbt.setByte("mode", (byte)netData.ints[3]);
         nbt.setInteger("px", netData.ints[0]);
         nbt.setInteger("py", netData.ints[1]);
@@ -328,6 +333,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     public void readFromNBT(NBTTagCompound nbt) 
     {
         super.readFromNBT(nbt);
+        ComputerAPI.readNode(node, nbt);
         netData.ints[3] = nbt.getByte("mode");
         netData.ints[0] = nbt.getInteger("px");
         netData.ints[1] = nbt.getInteger("py");
@@ -510,6 +516,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 	//OpenComputers:
 	
     private Object node = ComputerAPI.newOCnode(this, "Automation-Teleporter", true);
+    private Object context = null;
     
     @Optional.Method(modid = "OpenComputers")
 	@Override
@@ -555,7 +562,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 	@Callback(doc = "function():int{pos} --returns the position of the teleporter block", direct = true)
 	public Object[] getPosition(Context cont, Arguments args)
 	{
-		return new Object[]{pos};
+		return new Object[]{pos.getX(), pos.getY(), pos.getZ()};
 	}
 	
 	@Optional.Method(modid = "OpenComputers")
@@ -576,8 +583,14 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
 	public Object[] teleport(Context cont, Arguments args) throws Exception
 	{
 		if (!isInWorldBounds()) throw new Exception("Area out of world bounds! For safety reasons this teleport was denied!");
-		if ((netData.ints[3] & 8) == 0) initTeleportation();
-        return new Object[]{(netData.ints[3] & 8) != 0};
+		if ((netData.ints[3] & 8) == 0) {
+			initTeleportation();
+			if ((netData.ints[3] & 8) != 0) {
+				context = cont;
+				return new Object[]{true};
+			}
+		}
+        return new Object[]{false};
 	}
 	
 }

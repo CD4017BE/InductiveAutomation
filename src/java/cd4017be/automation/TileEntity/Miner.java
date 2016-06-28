@@ -295,6 +295,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     public void readFromNBT(NBTTagCompound nbt) 
     {
         super.readFromNBT(nbt);
+        if (node != null) ComputerAPI.readNode(node, nbt);
         area = nbt.getIntArray("area");
         if (area.length != 6) area = new int[6];
         px = nbt.getInteger("px");
@@ -312,6 +313,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     public void writeToNBT(NBTTagCompound nbt) 
     {
         super.writeToNBT(nbt);
+        if (node != null) ComputerAPI.saveNode(node, nbt);
         nbt.setIntArray("area", area);
         nbt.setInteger("px", px);
         nbt.setInteger("py", py);
