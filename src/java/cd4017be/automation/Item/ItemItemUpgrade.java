@@ -24,12 +24,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 /**
@@ -49,7 +47,7 @@ public class ItemItemUpgrade extends DefaultItem implements IGuiItem
 	@Override
 	public void addInformation(ItemStack item, EntityPlayer player, List list, boolean b) {
 		if (item.hasTagCompound()) {
-			String[] states = StatCollector.translateToLocal("gui.cd4017be.filter.state").split(",");
+			String[] states = I18n.translateToLocal("gui.cd4017be.filter.state").split(",");
 			PipeUpgradeItem filter = PipeUpgradeItem.load(item.getTagCompound());
 			String s;
 			if (states.length >= 8) {

@@ -17,7 +17,7 @@ public class ItemDestination extends ItemComp implements IItemDest {
 	public boolean onClicked(EntityPlayer player, EnumHand hand, ItemStack item, long uid) {
 		if (player == null) pipe.pipe.dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Injection));
 		if (super.onClicked(player, hand, item, uid) || player == null) return true;
-		if (player.getHeldItemMainhand() == null) {
+		if (player.getHeldItemMainhand() == null && player.isSneaking()) {
 			pipe.pipe.dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Injection));
 			pipe.con[side] = 0;
 			pipe.network.remConnector(pipe, side);

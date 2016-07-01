@@ -36,7 +36,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.IChunkGenerator;
@@ -182,7 +181,7 @@ public class Automation implements IWorldGenerator
     
     private void initBlocks()
     {
-    	(heatRadiator = TileBlock.create("heatRadiator", Material.iron, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
+    	(heatRadiator = TileBlock.create("heatRadiator", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
     	(lightShaft = TileBlock.create("lightShaft", Material.glass, SoundType.GLASS, DefaultItemBlock.class, 0)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F);
     	(wireC = new BlockPipe("wireC", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F);
     	(wireA = new BlockPipe("wireA", Material.iron, SoundType.METAL, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F);

@@ -4,7 +4,7 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import cd4017be.automation.TileEntity.HeatRadiator;
 import cd4017be.lib.TileContainer;
 import cd4017be.lib.templates.GuiMachine;
@@ -31,7 +31,7 @@ public class GuiHeatRadiator extends GuiMachine {
 		this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/radiator.png"));
 		this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
 		this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-		this.drawStringCentered(StatCollector.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
+		this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
 		super.drawGuiContainerBackgroundLayer(var1, var2, var3);
 	}
 

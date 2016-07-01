@@ -42,7 +42,7 @@ public class ItemCutter extends ItemEnergyCell
         this.damageVsEntity = ed;
         this.setMaxStackSize(1);
         ItemStack item = new ItemStack(this);
-        item.addEnchantment(Enchantment.silkTouch, 1);
+        item.addEnchantment(Enchantments.silkTouch, 1);
         BlockItemRegistry.registerItemStack(item, getUnlocalizedName());
     }
 
