@@ -20,9 +20,11 @@ add other mod's energy types
 
 ################################# VERSIONS 1.8.9 #################################
 
-4.2.2 Changes:
+4.2.3 Changes:
 - improved pipe filter tool-tips to display show their settings.
 - filters in warp pipe extractor components can now define a priority limit for destinations.
+- added new OpenComputers methods and events to some machines. 
+- fixed OC nodes changing their address every chunk reload.
 - fixed Jetpack acceleration while game paused.
 - fixed inventory crash with Quark
 
@@ -31,7 +33,7 @@ add other mod's energy types
 - moved recipes to config script file "inductiveAutomation.rcp"
 - removed recipe disable options in base config (use the recipe script instead)
 
-4.2.0 Changes: <-
+4.2.0 Changes:
 - fixed Whither Skull explosions destroying unbreakable blocks.
 - fixed Electric Cutter not getting silk touch in certain crafting devices.
 - fixed Detector output incorrect redstone signal to 1-bit Solid Wires.

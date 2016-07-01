@@ -56,7 +56,7 @@ import static cd4017be.lib.BlockItemRegistry.stack;
  *
  * @author CD4017BE
  */
-@Mod(modid="Automation", name="Inductive Automation", version="4.1.0")
+@Mod(modid="Automation", name="Inductive Automation", version="4.2.3")
 public class Automation implements IWorldGenerator
 {
     
