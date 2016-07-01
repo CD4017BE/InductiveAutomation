@@ -4,7 +4,6 @@
   "name": "Inductive Automation",
   "description": "Provides many helpful machines and tools. And allows automated building of even huge complicated structures.",
   "version": "${version}",
-  "mcversion": "${mc_version}",
   "url": "",
   "updateUrl": "",
   "authorList": ["CD4017BE"],

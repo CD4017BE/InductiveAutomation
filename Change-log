@@ -19,6 +19,23 @@ add other mod's energy types
 ---THERMODYNAMIC-PHYSICS!!!!
 ################################# VERSIONS 1.9 #################################
 
+5.0.2 Changes (from 1.8.9-4.2.3):
+- improved pipe filter tool-tips to display show their settings.
+- filters in warp pipe extractor components can now define a priority limit for destinations.
+- added new OpenComputers methods and events to some machines. 
+- fixed OC nodes changing their address every chunk reload.
+- fixed Jetpack acceleration while game paused.
+- fixed inventory crash with Quark
+- moved all config files to ".../config/cd4017be/"
+- moved recipes to config script file "inductiveAutomation.rcp"
+- removed recipe disable options in base config (use the recipe script instead)
+- fixed Whither Skull explosions destroying unbreakable blocks. (not effective in 1.9 as withers even destroy bedrock)
+- fixed Electric Cutter not getting silk touch in certain crafting devices.
+- fixed Detector output incorrect redstone signal to 1-bit Solid Wires.
+- fixed power sometimes not displayed in Energy Link when connected to RF.
+- added Water Vapor and changed some fluid recipes.
+- changed Jetpack Fuel recipe and function.
+
 5.0.1 Changes:
 - fixed wrong oriented block-item rendering
 - fixed issue #5 farm ignoring metadata for saplings (and probably also other things)
