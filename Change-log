@@ -20,6 +20,14 @@ add other mod's energy types
 
 ################################# VERSIONS 1.9.4 #################################
 
+5.1.1 Changes (from 1.8.9-4.2.3):
+- improved pipe filter tool-tips to display show their settings.
+- filters in warp pipe extractor components can now define a priority limit for destinations.
+- added new OpenComputers methods and events to some machines. 
+- fixed OC nodes changing their address every chunk reload.
+- fixed Jetpack acceleration while game paused.
+- fixed inventory crash with Quark
+
 5.1.0 Changes:
 - added recipe processing devices to JEI recipe handler
 - fixed wrong item rendering (too big)

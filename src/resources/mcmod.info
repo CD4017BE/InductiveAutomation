@@ -3,7 +3,7 @@
   "modid": "Automation",
   "name": "Inductive Automation",
   "description": "Provides many helpful machines and tools. And allows automated building of even huge complicated structures.",
-  "version": "5.1.0",
+  "version": "5.1.1",
   "acceptableRemoteVersions": "[5.1.0,5.2.0)",
   "acceptableSaveVersions": "[5.0.0,5.2.0)",
   "acceptedMinecraftVersions": "1.9.4",

@@ -214,7 +214,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         if (invFull(list.size())) return false;
         storage -= e;
         if (tool >= 0) {
-        	n = enchant.get(Enchantments.unbreaking);
+        	n = enchant.get(Enchantments.UNBREAKING);
         	if (n == null || randomDamage(n, pos)) {
         		int d = inventory.items[tool].getItemDamage() + 1;
                 if (d >= inventory.items[tool].getMaxDamage()) inventory.items[tool] = null;
