@@ -147,6 +147,8 @@ public class Objects {
 	public static TileBlock pneumaticPiston;
 	public static BlockPipe gasPipe;
 	public static TileBlock solidFuelHeater;
+	public static TileBlock gasVent;
+	public static TileBlock heatedFurnace;
     
 	//Materials
 	public static Material M_thermIns;

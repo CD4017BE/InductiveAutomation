@@ -10,11 +10,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.VertexBuffer;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class ShaftRenderer extends TileEntitySpecialRenderer<Shaft> {
@@ -35,6 +35,7 @@ public class ShaftRenderer extends TileEntitySpecialRenderer<Shaft> {
 		};
 	
 	private void renderShaft(World world, ShaftPhysics shaft, double x, double y, double z, float t) {
+		synchronized(shaft) {
 		RenderHelper.disableStandardItemLighting();
         GlStateManager.blendFunc(770, 771);
         GlStateManager.enableBlend();
@@ -52,7 +53,7 @@ public class ShaftRenderer extends TileEntitySpecialRenderer<Shaft> {
 		else if (ax == 2) GlStateManager.rotate(90F, 0, 0, 1);
 		GlStateManager.rotate((shaft.s + t * 0.05F * shaft.v) * 360F, 0, 1, 0);
 		this.bindTexture(texture);
-		WorldRenderer render = Tessellator.getInstance().getWorldRenderer();
+		VertexBuffer render = Tessellator.getInstance().getBuffer();
 		render.begin(GL11.GL_QUADS, DefaultVertexFormats.BLOCK);
 		int l;
 		String model;
@@ -66,6 +67,7 @@ public class ShaftRenderer extends TileEntitySpecialRenderer<Shaft> {
 		}
 		Tessellator.getInstance().draw();
 		GlStateManager.popMatrix();
+		}
 	}
 
 }

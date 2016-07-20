@@ -1,6 +1,8 @@
 package cd4017be.automation.shaft;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import net.minecraft.tileentity.TileEntity;
 import cd4017be.automation.gas.GasState;
@@ -12,6 +14,18 @@ public class GasPhysics extends SharedNetwork<GasContainer, GasPhysics> {
 
 	public final GasState gas;
 	public float heatCond, refTemp;
+	public HashMap<Long, HeatExchCon> heatExch = new HashMap<Long, HeatExchCon>();
+	
+	static class HeatExchCon {
+		HeatExchCon(GasContainer pipe, IHeatStorage other, byte dir) {
+			this.pipe = pipe;
+			this.other = other;
+			this.dir = dir;
+		}
+		final GasContainer pipe;
+		final IHeatStorage other;
+		final byte dir;
+	}
 	
 	public GasPhysics(GasContainer core, GasState gas) {
 		super(core);
@@ -36,6 +50,13 @@ public class GasPhysics extends SharedNetwork<GasContainer, GasPhysics> {
 		GasPhysics gp = new GasPhysics(comps, gas.split(V));
 		gp.heatCond = C;
 		gp.refTemp = T;
+		for (Iterator<Entry<Long, HeatExchCon>> it = heatExch.entrySet().iterator(); it.hasNext();) {
+			Entry<Long, HeatExchCon> e = it.next();
+			if (e.getValue().pipe.network == gp) {
+				gp.heatExch.put(e.getKey(), e.getValue());
+				it.remove();
+			}
+		}
 		return gp;
 	}
 
@@ -45,6 +66,7 @@ public class GasPhysics extends SharedNetwork<GasContainer, GasPhysics> {
 		gas.merge(network.gas);
 		this.heatCond += network.heatCond;
 		this.refTemp += network.refTemp;
+		this.heatExch.putAll(network.heatExch);
 	}
 
 	@Override
@@ -52,6 +74,7 @@ public class GasPhysics extends SharedNetwork<GasContainer, GasPhysics> {
 		if (this.components.containsKey(comp.getUID())) gas.split(comp.V);
 		this.heatCond -= comp.heatCond;
 		this.refTemp -= comp.refTemp;
+		for (int i = 0; i < 6; i+=2) this.heatExch.remove(SharedNetwork.SidedPosUID(comp.Uid, i));
 		super.remove(comp);
 	}
 
@@ -72,7 +95,13 @@ public class GasPhysics extends SharedNetwork<GasContainer, GasPhysics> {
 					GasContainer p = ((IGasStorage)te).getGas();
 					if (p.canConnect((byte)(i^1))) add(p);
 				}
-				if (te instanceof IHeatStorage) con |= 1 << i;
+				if (te instanceof IHeatStorage) {
+					con |= 1 << i;
+					if (i % 2 == 0 && !(te instanceof IGasStorage && ((IGasStorage)te).getGas().network == this)) {
+						HeatExchCon entr = new HeatExchCon(pipe, (IHeatStorage)te, i);
+						heatExch.put(SharedNetwork.SidedPosUID(pipe.Uid, i), entr);
+					}
+				}
 			}
 		con ^= 0x3f;
 		float dC = HeatReservoir.getEnvHeatCond((IHeatStorage)pipe.tile, pipe.tile.getWorld(), pipe.tile.getPos(), con) - pipe.heatCond;
@@ -89,6 +118,13 @@ public class GasPhysics extends SharedNetwork<GasContainer, GasPhysics> {
 		float T = R * this.refTemp;
 		if (R < 1F / gas.nR) gas.T = T;
 		else gas.T -= (gas.T - T) / R / gas.nR;
+		for (Iterator<HeatExchCon> it = heatExch.values().iterator(); it.hasNext();) {
+			HeatExchCon hc = it.next();
+			if (((TileEntity)hc.other).isInvalid() || (hc.other instanceof GasContainer && ((GasContainer)hc.other).network == this)) { it.remove(); continue; }
+			IHeatReservoir hr = hc.other.getHeat((byte)(hc.dir | 1));
+			R = hc.other.getHeatRes((byte)(hc.dir | 1)) + ((IHeatStorage)hc.pipe.tile).getHeatRes((byte)(hc.dir));
+			HeatReservoir.exchangeHeat(hc.pipe, hr, R);
+		}
 	}
 	
 }

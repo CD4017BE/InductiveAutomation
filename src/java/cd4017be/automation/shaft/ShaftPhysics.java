@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.WorldServer;
 import cd4017be.lib.ModTileEntity;
 import cd4017be.lib.templates.SharedNetwork;
 import cd4017be.lib.util.Utils;
@@ -105,6 +105,7 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 				this.addCon(shaft, con);
 			}
 		}
+		shaft.updateCon = false;
 	}
 	
 	public void changeMass(ShaftComponent shaft, float mass) {
@@ -153,7 +154,7 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 		nbt.setFloat("RotPos", s);
 		ModTileEntity tile = core.shaft;
 		BlockPos pos = tile.getPos();
-		MinecraftServer.getServer().getConfigurationManager().sendToAllNear(pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 64D, tile.dimensionId, new S35PacketUpdateTileEntity(pos, -1, nbt));
+		((WorldServer)this.core.shaft.getWorld()).getMinecraftServer().getPlayerList().sendToAllNearExcept(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 64D, tile.dimensionId, new SPacketUpdateTileEntity(pos, -1, nbt));
 	}
 	
 	public boolean isCore(ModTileEntity te) {

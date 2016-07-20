@@ -5,15 +5,16 @@ import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.automation.shaft.ShaftPhysics.IKineticComp;
+import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IComponent;
 import cd4017be.lib.templates.SharedNetwork;
@@ -101,28 +102,28 @@ public class ShaftComponent implements IComponent<ShaftComponent, ShaftPhysics> 
 		return (con >> i & 1) == 0;
 	}
 
-	public boolean onClicked(EntityPlayer player, ItemStack item) {
+	public boolean onClicked(EntityPlayer player, EnumHand hand, ItemStack item) {
 		float mass = m;
 		if (player == null || (player.isSneaking() && item == null)) {
 			switch (type) {
-			case 1: shaft.dropStack(new ItemStack(Items.redstone)); break;
+			case 1: shaft.dropStack(BlockItemRegistry.stack("RstMetall", 1)); break;
 			case 2: shaft.dropStack(new ItemStack(Objects.electricCoilC)); break;
 			case 3: shaft.dropStack(new ItemStack(Objects.electricCoilA)); break;
 			case 4: shaft.dropStack(new ItemStack(Objects.electricCoilH)); break;
-			case 5: shaft.dropStack(new ItemStack(Blocks.iron_block)); break;
+			case 5: shaft.dropStack(new ItemStack(Blocks.IRON_BARS)); break;
 			default: return false;
 			}
 			type = 0;
 			mass = 1000F;
 		} else if (type == 0 && !player.isSneaking() && item != null) {
 			Item i = item.getItem();
-			if (i == Items.redstone) {type = 1; mass = 2000F;}
+			if (item.isItemEqual(BlockItemRegistry.stack("RstMetall", 1))) {type = 1; mass = 2000F;}
 			else if (i == Item.getItemFromBlock(Objects.electricCoilC)) {type = 2; mass = 2000F;}
 			else if (i == Item.getItemFromBlock(Objects.electricCoilA)) {type = 3; mass = 2000F;}
 			else if (i == Item.getItemFromBlock(Objects.electricCoilH)) {type = 4; mass = 2000F;}
-			else if (i == Item.getItemFromBlock(Blocks.iron_block)) {type = 5; mass = 16000F;}
+			else if (i == Item.getItemFromBlock(Blocks.IRON_BARS)) {type = 5; mass = 16000F;}
 			else return false;
-			player.setCurrentItemOrArmor(0, --item.stackSize <= 0 ? null : item);
+			player.setHeldItem(hand, --item.stackSize <= 0 ? null : item);
 		} else return false;
 		if (type >= 2 && type < 5 && shaft.energy == null) shaft.energy = new PipeEnergy(Config.Umax[type - 2], Config.Rcond[type - 2]);
 		else if (type == 0 && shaft.energy != null) shaft.energy = null;

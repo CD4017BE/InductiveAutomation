@@ -4,12 +4,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
@@ -35,14 +35,13 @@ public class Shaft extends AutomatedTile implements IPipe, IShaft, IEnergy {
 		super.update();
 		if (shaft.updateCon) shaft.network.updateLink(shaft);
 		shaft.network.updateTick(shaft);
-		if (energy != null) energy.Ucap *= shaft.getCoilLoss();
+		if (!worldObj.isRemote && energy != null) energy.Ucap *= shaft.getCoilLoss();
 	}
 
 	@Override
-	public boolean onActivated(EntityPlayer player, EnumFacing dir, float X, float Y, float Z) 
+	public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing dir, float X, float Y, float Z) 
 	{
 		if (worldObj.isRemote) return true;
-		ItemStack item = player.getCurrentEquippedItem();
 		if (cover != null) {
 			if (player.isSneaking() && item == null) {
 				this.dropStack(cover.item);
@@ -52,10 +51,10 @@ public class Shaft extends AutomatedTile implements IPipe, IShaft, IEnergy {
 			}
 			return false;
 		} 
-		if (shaft.onClicked(player, item)) return true;
+		if (shaft.onClicked(player, hand, item)) return true;
 		else if (item != null && !player.isSneaking() && (cover = Cover.create(item)) != null) {
 			if (--item.stackSize <= 0) item = null;
-			player.setCurrentItemOrArmor(0, item);
+			player.setHeldItem(hand, item);
 			this.markUpdate();
 			return true;
 		} else return false;
@@ -68,11 +67,11 @@ public class Shaft extends AutomatedTile implements IPipe, IShaft, IEnergy {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) 
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		super.writeToNBT(nbt);
 		shaft.writeToNBT(nbt);
 		if (cover != null) cover.write(nbt, "cover");
+        return super.writeToNBT(nbt);
 	}
 
 	@Override
@@ -84,16 +83,28 @@ public class Shaft extends AutomatedTile implements IPipe, IShaft, IEnergy {
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
+	public void handleUpdateTag(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		cover = Cover.read(nbt, "cover");
+		shaft.type = nbt.getByte("type");
+		if (shaft.type >= 2 && shaft.type < 5 && energy == null) energy = new PipeEnergy(Config.Umax[shaft.type - 2], Config.Rcond[shaft.type - 2]);
+		else if (shaft.type == 0 && energy != null) energy = null;
+	}
+
+	@Override
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) 
 	{
 		NBTTagCompound nbt = pkt.getNbtCompound();
 		if (nbt.hasKey("RotVel")) {
 			shaft.network.v = nbt.getFloat("RotVel");
-			//shaft.network.s = nbt.getFloat("RotPos");
 		}
-		if (nbt.hasKey("con")) {
+		if (nbt.hasKey("type")) {
 			cover = Cover.read(nbt, "cover");
-			shaft.con = nbt.getByte("con");
+			//byte con = nbt.getByte("con");
+			//if (con != shaft.con) {
+			//	shaft.con = con;
+			//	shaft.updateCon = true;
+			//}
 			shaft.type = nbt.getByte("type");
 			if (shaft.type >= 2 && shaft.type < 5 && energy == null) energy = new PipeEnergy(Config.Umax[shaft.type - 2], Config.Rcond[shaft.type - 2]);
 			else if (shaft.type == 0 && energy != null) energy = null;
@@ -102,13 +113,13 @@ public class Shaft extends AutomatedTile implements IPipe, IShaft, IEnergy {
 	}
 
 	@Override
-	public Packet getDescriptionPacket() 
+	public SPacketUpdateTileEntity getUpdatePacket() 
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 		if (cover != null) cover.write(nbt, "cover");
 		nbt.setByte("type", shaft.type);
-		nbt.setByte("con", shaft.con);
-		return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
+		//nbt.setByte("con", shaft.con);
+		return new SPacketUpdateTileEntity(getPos(), -1, nbt);
 	}
 	
 	@Override
@@ -121,7 +132,7 @@ public class Shaft extends AutomatedTile implements IPipe, IShaft, IEnergy {
 	{
 		super.breakBlock();
 		if (cover != null) this.dropStack(cover.item);
-		shaft.onClicked(null, null);
+		shaft.onClicked(null, null, null);
 	}
 
 	@Override

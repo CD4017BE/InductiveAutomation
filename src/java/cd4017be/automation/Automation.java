@@ -1,7 +1,6 @@
 package cd4017be.automation;
 
 import net.minecraftforge.fml.common.FMLLog;
-import net.minecraftforge.fml.common.IWorldGenerator;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -9,8 +8,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import java.util.ArrayList;
-import java.util.Random;
-
 import org.apache.logging.log4j.Level;
 
 import cd4017be.api.automation.AreaProtect;
@@ -36,12 +33,6 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.IChunkGenerator;
-import net.minecraft.world.chunk.IChunkProvider;
-import net.minecraft.world.gen.feature.WorldGenMinable;
-import net.minecraft.world.gen.feature.WorldGenerator;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
@@ -58,7 +49,7 @@ import static cd4017be.lib.BlockItemRegistry.stack;
  * @author CD4017BE
  */
 @Mod(modid="Automation", useMetadata=true)
-public class Automation implements IWorldGenerator
+public class Automation
 {
     
     // The instance of your mod that Forge uses.
@@ -183,7 +174,7 @@ public class Automation implements IWorldGenerator
     {
     	class TIMaterial extends Material {
 			public TIMaterial() {
-				super(MapColor.stoneColor);
+				super(MapColor.STONE);
 				this.setRequiresTool();
 			}
     	}
@@ -257,25 +248,17 @@ public class Automation implements IWorldGenerator
         (teslaTransmitterLV = TileBlock.create("teslaTransmitterLV", Material.IRON, SoundType.METAL, DefaultItemBlock.class, 0x60)).setBlockBounds(new AxisAlignedBB(0.1875, 0, 0.1875, 0.8125, 1, 0.8125)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F);
         (teslaTransmitter = TileBlock.create("teslaTransmitter", Material.IRON, SoundType.METAL, DefaultItemBlock.class, 0x60)).setBlockBounds(new AxisAlignedBB(0.25, 0, 0.25, 0.75, 1, 0.75)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F);
         (wormhole = TileBlock.create("wormhole", Material.PORTAL, SoundType.GLASS, ItemInterdimHole.class, 0x60)).setBlockBounds(new AxisAlignedBB(0.0625, 0.0625, 0.0625, 0.9375, 0.9375, 0.9375)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F);
-        (shaft = new BlockShaft("shaft", Material.iron, 0x20)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricCoilC = TileBlock.create("electricCoilC", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricCoilA = TileBlock.create("electricCoilA", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricCoilH = TileBlock.create("electricCoilH", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (shaft = new BlockShaft("shaft", Material.iron, 0x20)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricCoilC = TileBlock.create("electricCoilC", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricCoilA = TileBlock.create("electricCoilA", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricCoilH = TileBlock.create("electricCoilH", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricHeater = TileBlock.create("electricHeater", M_thermIns, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (thermIns = new DefaultBlock("thermIns", M_thermIns, DefaultItemBlock.class)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
-        (shaft = new BlockShaft("shaft", Material.iron, 0x20)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricCoilC = TileBlock.create("electricCoilC", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricCoilA = TileBlock.create("electricCoilA", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricCoilH = TileBlock.create("electricCoilH", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (electricHeater = TileBlock.create("electricHeater", M_thermIns, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (thermIns = new DefaultBlock("thermIns", M_thermIns, DefaultItemBlock.class)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
-        (pneumaticPiston = TileBlock.create("pneumaticPiston", Material.iron, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeMetal);
-        (gasPipe = new BlockPipe("gasPipe", Material.iron, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F).setStepSound(Block.soundTypeMetal);
-        (solidFuelHeater = TileBlock.create("solidFuelHeater", Material.rock, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setStepSound(Block.soundTypeStone);
+        (shaft = new BlockShaft("shaft", Material.IRON, 0x20)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F);
+        (electricCoilC = TileBlock.create("electricCoilC", Material.IRON, SoundType.METAL, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+        (electricCoilA = TileBlock.create("electricCoilA", Material.IRON, SoundType.METAL, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+        (electricCoilH = TileBlock.create("electricCoilH", Material.IRON, SoundType.METAL, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+        (electricHeater = TileBlock.create("electricHeater", M_thermIns, SoundType.METAL, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+        (thermIns = new DefaultBlock("thermIns", M_thermIns, DefaultItemBlock.class)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+        (pneumaticPiston = TileBlock.create("pneumaticPiston", Material.IRON, SoundType.METAL, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+        (gasPipe = new BlockPipe("gasPipe", Material.IRON, SoundType.METAL, DefaultItemBlock.class, 0x20)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F);
+        (solidFuelHeater = TileBlock.create("solidFuelHeater", Material.ROCK, SoundType.STONE, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+        (gasVent = TileBlock.create("gasVent", Material.GLASS, SoundType.GLASS, DefaultItemBlock.class, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
+        (heatedFurnace = TileBlock.create("heatedFurnace", Material.ROCK, SoundType.STONE, DefaultItemBlock.class, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F);
         gasPipe.size = 0.5F;
         ore.setHarvestLevel("pickaxe", 1, ore.getStateFromMeta(Ore.Copper.ordinal()));
         ore.setHarvestLevel("pickaxe", 2, ore.getStateFromMeta(Ore.Silver.ordinal()));
@@ -316,14 +299,6 @@ public class Automation implements IWorldGenerator
         if (L_hydrogenG.canBePlacedInWorld()) Blocks.FIRE.setFireInfo(L_hydrogenG.getBlock(), 500, 20);
     }
     
-    private void initOres()
-    {
-        ore.setHarvestLevel("pickaxe", 1, ore.getStateFromMeta(Ore.Copper.ordinal()));
-        ore.setHarvestLevel("pickaxe", 2, ore.getStateFromMeta(Ore.Silver.ordinal()));
-        copperGen = new WorldGenMinable(ore.getStateFromMeta(Ore.Copper.ordinal()), 9);
-        silverGen = new WorldGenMinable(ore.getStateFromMeta(Ore.Silver.ordinal()), 6);
-    }
-    
     /**
      * clears configuration data that is not used anymore after initialization to improve performance and save RAM
      */
@@ -341,41 +316,6 @@ public class Automation implements IWorldGenerator
             fluid.setBlock(new BlockSuperfluid(fluid.getName(), (ModFluid)fluid));
             return fluid;
         } else return ret;
-    }
-    
-    @Override
-    public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) 
-    {
-        int x = chunkX << 4;
-        int z = chunkZ << 4;
-        if (silverGen != null) this.genOreDensed(4, world, silverGen, random, x, z, 5, 40);
-        if (copperGen != null) this.genOreDensed(8, world, copperGen, random, x, z, 48, 5);
-    }
-    
-    private void genOreHomogen(int n, World world, WorldGenerator gen, Random rand, int cx, int cz, int min, int max)
-    {
-        if (max < min) {
-            int a = min; min = max; max = a;
-        }
-        for (int i = 0; i < n; i++)
-        {
-            int x = cx + rand.nextInt(16);
-            int y = rand.nextInt(max - min) + min;
-            int z = cz + rand.nextInt(16);
-            gen.generate(world, rand, new BlockPos(x, y, z));
-        }
-    }
-    
-    private void genOreDensed(int n, World world, WorldGenerator gen, Random rand, int cx, int cz, int y0, int y1)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            float offset = rand.nextFloat();
-            int x = cx + rand.nextInt(16);
-            int y = y0 + (int)((float)(y1 - y0) * offset * offset);
-            int z = cz + rand.nextInt(16);
-            gen.generate(world, rand, new BlockPos(x, y, z));
-        }
     }
    
 }

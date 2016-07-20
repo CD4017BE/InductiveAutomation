@@ -8,6 +8,7 @@ import cd4017be.automation.TileEntity.AntimatterBomb;
 import cd4017be.automation.TileEntity.Builder;
 import cd4017be.automation.TileEntity.Farm;
 import cd4017be.automation.TileEntity.Miner;
+import cd4017be.automation.TileEntity.PneumaticPiston;
 import cd4017be.automation.TileEntity.Pump;
 import cd4017be.automation.TileEntity.Shaft;
 import cd4017be.automation.TileEntity.Tank;
@@ -16,6 +17,7 @@ import cd4017be.automation.TileEntity.VertexShematicGen;
 import cd4017be.automation.jetpack.TickHandler;
 import cd4017be.automation.render.FluidTextures;
 import cd4017be.automation.render.MaterialTextures;
+import cd4017be.automation.render.PistonRenderer;
 import cd4017be.automation.render.Render3DVertexShem;
 import cd4017be.automation.render.ShaftRenderer;
 import cd4017be.automation.render.TileEntityAntimatterBombRenderer;
@@ -143,6 +145,9 @@ public class ClientProxy extends CommonProxy
 		BlockItemRegistry.registerBlockRender("thermIns:0");
 		BlockItemRegistry.registerBlockRender("pneumaticPiston:0");
 		BlockItemRegistry.registerBlockRender("gasPipe:0");
+		BlockItemRegistry.registerBlockRender("solidFuelHeater:0");
+		BlockItemRegistry.registerBlockRender("gasVent:0");
+		BlockItemRegistry.registerBlockRender("heatedFurnace:0");
 		//Items
         BlockItemRegistry.registerItemRender(material, new MaterialTextures("automation:"));
         BlockItemRegistry.registerItemRender("fluidDummy");
@@ -194,6 +199,7 @@ public class ClientProxy extends CommonProxy
         ClientRegistry.bindTileEntitySpecialRenderer(AntimatterBomb.class, new TileEntityAntimatterBombRenderer());
         ClientRegistry.bindTileEntitySpecialRenderer(VertexShematicGen.class, new Render3DVertexShem());
         ClientRegistry.bindTileEntitySpecialRenderer(Shaft.class, new ShaftRenderer());
+        ClientRegistry.bindTileEntitySpecialRenderer(PneumaticPiston.class, new PistonRenderer());
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaft");
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftPermMag");
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftCoilC");
@@ -202,6 +208,7 @@ public class ClientProxy extends CommonProxy
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftMass");
         SpecialModelLoader.registerTESRModel("automation:models/tileEntity/shaftGear");
         SpecialModelLoader.registerTESRModel(TileEntityTankRenderer.model);
+        SpecialModelLoader.registerTESRModel(PistonRenderer.model);
     }
     
     private void registerAdditionalModels()
@@ -273,6 +280,9 @@ public class ClientProxy extends CommonProxy
         TileBlockRegistry.registerGui(electricCoilH, GuiElectricCoil.class);
         TileBlockRegistry.registerGui(pneumaticPiston, GuiPneumaticPiston.class);
         TileBlockRegistry.registerGui(gasPipe, GuiGasPipe.class);
+        TileBlockRegistry.registerGui(solidFuelHeater, GuiSolidFuelHeater.class);
+        TileBlockRegistry.registerGui(electricHeater, GuiElectricHeater.class);
+        TileBlockRegistry.registerGui(heatedFurnace, GuiHeatedFurnace.class);
         //set block transparencies
         Objects.itemPipe.setBlockLayer(BlockRenderLayer.CUTOUT);
         Objects.liquidPipe.setBlockLayer(BlockRenderLayer.CUTOUT);
@@ -282,7 +292,7 @@ public class ClientProxy extends CommonProxy
         Objects.quantumTank.setBlockLayer(BlockRenderLayer.CUTOUT);
         Objects.pool.setBlockLayer(BlockRenderLayer.CUTOUT);
         Objects.wormhole.setBlockLayer(BlockRenderLayer.TRANSLUCENT);
-        Objects.pneumaticPiston.setBlockLayer(EnumWorldBlockLayer.CUTOUT);
+        Objects.pneumaticPiston.setBlockLayer(BlockRenderLayer.CUTOUT);
         //fluids
         SpecialModelLoader.setMod("automation");
         SpecialModelLoader.registerFluid(L_steam);

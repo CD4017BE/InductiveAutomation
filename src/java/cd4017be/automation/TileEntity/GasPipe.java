@@ -5,17 +5,17 @@ import java.util.List;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
 import cd4017be.automation.gas.GasState;
 import cd4017be.automation.pipes.WarpPipePhysics;
 import cd4017be.automation.shaft.GasContainer;
@@ -48,11 +48,10 @@ public class GasPipe extends ModTileEntity implements IPipe, IGasStorage, ITicka
 	}
 	
 	@Override
-	public boolean onActivated(EntityPlayer player, EnumFacing dir, float X, float Y, float Z) 
+	public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing dir, float X, float Y, float Z) 
 	{
 		if (worldObj.isRemote) return true;
-		if (!player.isSneaking() && player.getCurrentEquippedItem() == null) return super.onActivated(player, dir, X, Y, Z);
-		ItemStack item = player.getCurrentEquippedItem();
+		if (!player.isSneaking() && item == null) return super.onActivated(player, hand, item, dir, X, Y, Z);
 		if (cover != null) {
 			if (player.isSneaking() && item == null) {
 				
@@ -85,7 +84,7 @@ public class GasPipe extends ModTileEntity implements IPipe, IGasStorage, ITicka
 		if (player.isSneaking()) return false;
 		if (item != null && (cover = Cover.create(item)) != null) {
 			if (--item.stackSize <= 0) item = null;
-			player.setCurrentItemOrArmor(0, item);
+			player.setHeldItem(hand, item);
 			this.markUpdate();
 			return true;
 		} else return false;
@@ -97,10 +96,10 @@ public class GasPipe extends ModTileEntity implements IPipe, IGasStorage, ITicka
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-		super.writeToNBT(nbt);
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		pipe.writeToNBT(nbt, "gas");
 		if (cover != null) cover.write(nbt, "cover");
+        return super.writeToNBT(nbt);
 	}
 
 	@Override
@@ -112,7 +111,7 @@ public class GasPipe extends ModTileEntity implements IPipe, IGasStorage, ITicka
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) 
+	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) 
 	{
 		cover = Cover.read(pkt.getNbtCompound(), "cover");
 		pipe.con = pkt.getNbtCompound().getByte("con");
@@ -120,12 +119,12 @@ public class GasPipe extends ModTileEntity implements IPipe, IGasStorage, ITicka
 	}
 
 	@Override
-	public Packet getDescriptionPacket() 
+	public SPacketUpdateTileEntity getUpdatePacket() 
 	{
 		NBTTagCompound nbt = new NBTTagCompound();
 		if (cover != null) cover.write(nbt, "cover");
 		nbt.setByte("con", pipe.con);
-		return new S35PacketUpdateTileEntity(getPos(), -1, nbt);
+		return new SPacketUpdateTileEntity(getPos(), -1, nbt);
 	}
 
 	@Override
@@ -190,7 +189,7 @@ public class GasPipe extends ModTileEntity implements IPipe, IGasStorage, ITicka
 	}
 
 	@Override
-	public boolean detectAndSendChanges(TileContainer container, List<ICrafting> crafters, PacketBuffer dos) throws IOException {
+	public boolean detectAndSendChanges(TileContainer container, List<IContainerListener> crafters, PacketBuffer dos) throws IOException {
 		
 		if (pipe.network == null) return false;
 		GasState gas = pipe.network.gas;
@@ -208,7 +207,7 @@ public class GasPipe extends ModTileEntity implements IPipe, IGasStorage, ITicka
 
 	@Override
 	public float getHeatRes(byte side) {
-		Float r = HeatReservoir.blocks.get(cover == null ? Material.air : cover.block.getBlock().getMaterial());
+		Float r = HeatReservoir.blocks.get(cover == null ? Material.AIR : cover.block.getMaterial());
 		return r == null ? HeatReservoir.def_block : r.floatValue();
 	}
 

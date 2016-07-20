@@ -5,10 +5,11 @@ import java.io.IOException;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import cd4017be.automation.shaft.HeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir.IHeatStorage;
@@ -29,7 +30,7 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage {
 		//ints: maxFuel, curFuel, burn; floats: targetTemp, Temp
 		netData = new TileEntityData(1, 3, 2, 0);
 		heat = new HeatReservoir(10000F);
-        inventory = new Inventory(this, 1, new Component(0, 1, -1));
+        inventory = new Inventory(this, 2, new Component(0, 2, -1));
         netData.ints[2] = 1;
         netData.floats[0] = 300F;
 	}
@@ -41,11 +42,11 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage {
 		heat.update(this);
 		if (netData.ints[1] < netData.ints[2] && heat.T < netData.floats[0] && !worldObj.isBlockPowered(pos)) {
 			for (int i = 0; i < 2; i++) {
-				int n = TileEntityFurnace.getItemBurnTime(inventory.items[0]);
+				int n = TileEntityFurnace.getItemBurnTime(inventory.items[i]);
 				if (n != 0) {
 					netData.ints[0] = n;
 					netData.ints[1] += netData.ints[0];
-					this.decrStackSize(0, 1);
+					this.decrStackSize(i, 1);
 					break;
 			    }
 			}
@@ -61,7 +62,8 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage {
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
 		if (cmd == 0) netData.floats[0] = dis.readFloat();
-		else if (cmd == 1) netData.ints[2] = dis.readByte();
+		else if (cmd == 1 && netData.ints[2] < BurnRate) netData.ints[2]++;
+		else if (cmd == 2 && netData.ints[2] > 1) netData.ints[2]--;
 	}
 
 	@Override
@@ -81,7 +83,7 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage {
 
 	@Override
 	public float getHeatRes(byte side) {
-		return side == this.getOrientation() ? HeatReservoir.def_con : HeatReservoir.def_discon;
+		return (side^1) == this.getOrientation() ? HeatReservoir.def_con : HeatReservoir.def_discon;
 	}
 
 	@Override
@@ -95,18 +97,26 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-		super.writeToNBT(nbt);
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		heat.save(nbt, "heat");
 		nbt.setFloat("refT", netData.floats[0]);
 		nbt.setInteger("fuel", netData.ints[1]);
 		nbt.setInteger("burn", netData.ints[2]);
+        return super.writeToNBT(nbt);
 	}
 
 	@Override
 	public void initContainer(TileContainer container) {
-		container.addEntitySlot(new Slot(this, 0, 8, 16));
-		container.addPlayerInventory(8, 86);
+		container.addEntitySlot(new Slot(this, 0, 26, 16));
+		container.addEntitySlot(new Slot(this, 1, 26, 34));
+		container.addPlayerInventory(8, 68);
+	}
+
+	@Override
+	public int[] stackTransferTarget(ItemStack item, int s, TileContainer container) {
+		int[] pi = container.getPlayerInv();
+		if (s < pi[0] || s >= pi[1]) return pi;
+        else return new int[]{0, 2};
 	}
 
 }
