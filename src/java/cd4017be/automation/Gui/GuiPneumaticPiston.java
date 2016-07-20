@@ -15,7 +15,7 @@ import cd4017be.lib.templates.GuiMachine;
 
 public class GuiPneumaticPiston extends GuiMachine {
 
-private final PneumaticPiston tileEntity;
+	private final PneumaticPiston tileEntity;
     
     public GuiPneumaticPiston(PneumaticPiston tileEntity, EntityPlayer player)
     {
@@ -29,6 +29,7 @@ private final PneumaticPiston tileEntity;
         this.xSize = 122;
         this.ySize = 58;
         super.initGui();
+        this.guiComps.add(new Slider(0, 81, 16, 34, 212, 54, 12, 4, false));
     }
 
     @Override
@@ -53,13 +54,12 @@ private final PneumaticPiston tileEntity;
         this.drawTexturedModalRect(guiLeft + 70, guiTop + 42, 122, 144 + ((tileEntity.netData.ints[0] >> 4 & 0xf) + tileEntity.getOrientation()) % 6 * 9, 9, 9);
         this.drawTexturedModalRect(guiLeft + 7, guiTop + 15, 176 + (tileEntity.netData.ints[0] >> 8 & 2) * 9, 54, 18, 18);
         this.drawTexturedModalRect(guiLeft + 7, guiTop + 33, 176 + (tileEntity.netData.ints[0] >> 8 & 3) * 18, 36, 18, 18);
-        this.drawTexturedModalRect(guiLeft + 81, guiTop + 48 - tileEntity.getVscaled(34), 212, 54, 12, 4);
         this.drawTexturedModalRect(guiLeft + 93, guiTop + 16, 131, 144 + (int)(31F * tileEntity.netData.floats[1] / PneumaticPiston.Amax), 20, 34);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         fontRendererObj.drawString(String.format("in : %.0fL/r", tileEntity.netData.floats[0] * 1000F), guiLeft + 26, guiTop + 16, 0x808040);
         fontRendererObj.drawString(String.format("out: %.0fL/r", tileEntity.netData.floats[1] * 1000F), guiLeft + 26, guiTop + 24, 0x808040);
         fontRendererObj.drawString(String.format("P: %.1f kW", tileEntity.netData.floats[2] / 1000F), guiLeft + 26, guiTop + 32, 0x808040);
-        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 
     @Override
@@ -85,45 +85,29 @@ private final PneumaticPiston tileEntity;
         	tileEntity.netData.ints[0] &= ~0xf0;
         	tileEntity.netData.ints[0] |= s << 4;
         	a = 1;
-        } else if (this.isPointInRegion(82, 16, 10, 36, x, y)) {
-        	int p = this.guiTop + 50 - y;
-			if (p < 0) p = 0;
-			else if (p > 34) p = 34;
-        	tileEntity.netData.floats[0] = p * PneumaticPiston.Amax / 34F;
-        	a = 0;
-		}
+        }
         if (a >= 0) {
             PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(AutomatedTile.CmdOffset + a);
-            if (a == 0) dos.writeFloat(tileEntity.netData.floats[0]);
-            else if (a == 1) dos.writeInt(tileEntity.netData.ints[0]);
+            if (a == 1) dos.writeInt(tileEntity.netData.ints[0]);
             BlockGuiHandler.sendPacketToServer(dos);
         }
     }
 
 	@Override
-	protected void mouseClickMove(int x, int y, int b, long t) {
-		if (this.isPointInRegion(82, 16, 10, 36, x, y)) {
-			int p = this.guiTop + 50 - y;
-			if (p < 0) p = 0;
-			else if (p > 34) p = 34;
-        	tileEntity.netData.floats[0] = p * PneumaticPiston.Amax / 34F;
-		} else super.mouseClickMove(x, y, b, t);
+	protected Object getDisplVar(int id) {
+		return 1F - tileEntity.netData.floats[0] / PneumaticPiston.Amax;
 	}
 
 	@Override
-	protected void mouseReleased(int x, int y, int b) {
-		if (this.isPointInRegion(82, 16, 10, 36, x, y)) {
-			int p = this.guiTop + 50 - y;
-			if (p < 0) p = 0;
-			else if (p > 34) p = 34;
-        	tileEntity.netData.floats[0] = p * PneumaticPiston.Amax / 34F;
-        	PacketBuffer dos = tileEntity.getPacketTargetData();
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		tileEntity.netData.floats[0] = (1F - (Float)obj) * PneumaticPiston.Amax;
+		if (send) {
+			PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(AutomatedTile.CmdOffset);
             dos.writeFloat(tileEntity.netData.floats[0]);
             BlockGuiHandler.sendPacketToServer(dos);
 		}
-		super.mouseReleased(x, y, b);
 	}
 
 }

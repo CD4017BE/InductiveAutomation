@@ -76,9 +76,12 @@ public class GasState {
 	 * @return amount of gas moved (nR)
 	 */
 	public float exchange(GasState s) {
-		if (P() < s.P()) return 0F;
-		float x = V / s.V;
-		float dnR = (s.T / T * x * s.nR - nR) / (x - 1);
+		if (P() <= s.P()) return 0F;
+		float x = (float)Math.sqrt(s.V * s.nR * s.T / V / nR / T);
+		float dV = (s.V - V * x) / (1 + x);
+		T *= V / (dV + V);
+		s.T *= s.V / (s.V - dV);
+		float dnR = nR * dV / V;
 		nR -= dnR; s.T = (s.T * s.nR + dnR * T) / (s.nR += dnR);
 		return dnR;
 	}

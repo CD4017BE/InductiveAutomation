@@ -3,11 +3,6 @@
 		"dir=0": { "model": "automation:shaft" },
 		"dir=1": { "model": "automation:shaft" },
 		"dir=2": { "model": "automation:shaft" },
-		"con0n": { "model": "automation:shaft_bearing" },
-		"con0e": { "model": "automation:shaft_bearing" , "y": 90 },
-		"con0s": { "model": "automation:shaft_bearing" , "y": 180 },
-		"con0w": { "model": "automation:shaft_bearing" , "y": 270 },
-		"con0b": { "model": "automation:shaft_bearing" , "x": 90 },
-		"con0t": { "model": "automation:shaft_bearing" , "x": 270 }
+		"con0": { "model": "automation:shaft_bearing" }
 	}
 }

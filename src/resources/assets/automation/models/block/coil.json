@@ -1,5 +1,6 @@
 {
-    "textures": {
+    "parent": "block/block",
+	"textures": {
         "particle": "#main"
     },
     "elements": [
@@ -29,7 +30,7 @@
             "to": [ 15, 15, 15 ],
             "faces": {
                 "down":  { "uv": [ 1, 1, 15, 15 ], "rotation": 180, "texture": "#main" },
-                "up":    { "uv": [ 1, 1, 15, 15 ], "texture": "#main", "cullface": "up" },
+                "up":    { "uv": [ 1, 1, 15, 15 ], "texture": "#main" },
                 "west":  { "uv": [ 1, 1, 15, 15 ], "rotation": 270, "texture": "#main" },
                 "east":  { "uv": [ 1, 1, 15, 15 ], "rotation": 90, "texture": "#main" }
             }

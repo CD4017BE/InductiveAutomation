@@ -1,5 +1,6 @@
 {
-    "textures": {
+    "parent": "block/block",
+	"textures": {
 		"main": "automation:blocks/piston0",
 		"front": "automation:blocks/piston1",
 		"back": "automation:blocks/piston2",

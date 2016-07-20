@@ -84,13 +84,13 @@ public class ElectricCoil extends AutomatedTile implements IKineticComp, IEnergy
     }
 
     @Override
-    public void writeToNBT(NBTTagCompound nbt) 
+    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        super.writeToNBT(nbt);
         nbt.setByte("type", (byte)type);
         nbt.setInteger("N", netData.ints[0]);
         nbt.setByte("cfg", (byte)netData.ints[1]);
         nbt.setDouble("Eflow", Eflow);
+        return super.writeToNBT(nbt);
     }
 
 	@Override
@@ -111,10 +111,6 @@ public class ElectricCoil extends AutomatedTile implements IKineticComp, IEnergy
 	@Override
 	public boolean valid() {
 		return !this.tileEntityInvalid;
-	}
-	
-	public int getNscaled(int s) {
-		return s * (netData.ints[0] - Nmin[type]) / (Nmax[type] - Nmin[type]);
 	}
 
 	private static final float[] C = {20F, 10F, 4F};

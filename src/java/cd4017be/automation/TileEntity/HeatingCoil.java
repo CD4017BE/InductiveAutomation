@@ -6,7 +6,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
@@ -25,6 +25,7 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IEnergy 
 		netData = new TileEntityData(0, 2, 3, 0);
 		heat = new HeatReservoir(10000F);
 		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		netData.floats[0] = 300F;
 		netData.ints[0] = Config.Rmin;
         powerScale = Config.Pscale;
 	}
@@ -59,9 +60,9 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IEnergy 
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-		super.writeToNBT(nbt);
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		heat.save(nbt, "heat");
+        return super.writeToNBT(nbt);
 	}
 
 	@Override
@@ -82,6 +83,10 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IEnergy 
 	@Override
 	public float getHeatRes(byte side) {
 		return side == this.getOrientation() ? HeatReservoir.def_con : HeatReservoir.def_discon;
+	}
+
+	public int getPowerScaled(int s) {
+		return (int)(s * netData.floats[1] * netData.floats[1] / (float)netData.ints[0]) / 200000;
 	}
 
 }

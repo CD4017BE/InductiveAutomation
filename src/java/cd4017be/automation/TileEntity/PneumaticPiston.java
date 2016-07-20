@@ -7,7 +7,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import cd4017be.automation.gas.GasState;
 import cd4017be.automation.shaft.GasContainer;
 import cd4017be.automation.shaft.GasPhysics.IGasCon;
@@ -46,7 +46,8 @@ public class PneumaticPiston extends AutomatedTile implements IKineticComp, IGas
 	
 	private GasContainer getConContainer(int side) {
 		if (side == 0) return null;
-		TileEntity te = Utils.getTileOnSide(this, (byte)((side + this.getOrientation()) % 6));
+		side += this.getOrientation(); side %= 6;
+		TileEntity te = Utils.getTileOnSide(this, (byte)side);
 		return te != null && te instanceof IGasStorage ? ((IGasStorage)te).getGas() : null;
 	}
 
@@ -127,11 +128,11 @@ public class PneumaticPiston extends AutomatedTile implements IKineticComp, IGas
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbt) {
-		super.writeToNBT(nbt);
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setFloat("Ain", netData.floats[0]);
 		nbt.setFloat("Aout", netData.floats[1]);
 		nbt.setInteger("cfg", netData.ints[0]);
+        return super.writeToNBT(nbt);
 	}
 
 	@Override

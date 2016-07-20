@@ -101,7 +101,10 @@ tile.cd4017be.electricCoilH.name=Electric Superconductor Coil
 tile.cd4017be.electricHeater.name=Electric Heating Coil
 tile.cd4017be.thermIns.name=Ceramic Heat Insulation
 tile.cd4017be.gasPipe.name=Gas Pipe
+tile.cd4017be.gasVent.name=Gas Vent
 tile.cd4017be.pneumaticPiston.name=Pneumatic Piston
+tile.cd4017be.solidFuelHeater.name=Solid Fueled Heater
+tile.cd4017be.heatedFurnace.name=External Heated Furnace
 # tooltips
 tile.cd4017be.ore\:0.tip=spawns @lvl 5-60 (16 best).
 tile.cd4017be.ore\:1.tip=spawns @lvl 5-64 (40 best).
@@ -182,6 +185,12 @@ tile.cd4017be.electricCoilA.tip=Place against other coil to get a transformer,\n
 tile.cd4017be.electricCoilH.tip=Place against other coil to get a transformer,\nplace against magnetic shaft to get a motor/dynamo\nor insert into shaft to make it electromagnetic.\nNmin = 25, Nmax = 1000\nUmax = \\<AI.EnergyTiers.Umax:2> V
 tile.cd4017be.electricHeater.tip=Unfinished, currently just replaces Heating Coil.
 tile.cd4017be.thermIns.tip=Has high temperature resistance\nand low thermic conductivity.
+tile.cd4017be.solidFuelHeater.tip=Produces heat by burning furnace fuel.\n1 Ft Fuel -> 10 kJ heat\nBack side has best heat conductivity.
+tile.cd4017be.electricHeater.tip=Converts electric energy into heat.\nFront side has best heat conductivity.\nUmax = \\<AI.EnergyTiers.Umax:1> V
+tile.cd4017be.heatedFurnace.tip=Smelts items like normal furnace but requires\nexternal heat source with at least 927°C,\nhigher temperatures increase operating speed.
+tile.cd4017be.pneumaticPiston.tip=Moves gas from one reservoir (GasPipe) to another.\nPerforms adiabatic compression/expansion\non moved gas depending on pressure.\nMust be connected to a shaft.
+tile.cd4017be.gasPipe.tip=Transports and stores gas.\nCover block affects heat conductivity to neighbors.
+tile.cd4017be.gasVent.tip=Provides access to the\nenvironment gas atmosphere.
 
 # Fluid names
 fluid.steam.name=Steam
@@ -422,6 +431,9 @@ gui.cd4017be.electricCoilA.name=Electric Coil
 gui.cd4017be.electricCoilH.name=Electric Coil
 gui.cd4017be.pneumaticPiston.name=Pneumatic Piston
 gui.cd4017be.gasPipe.name=Gas Properties
+gui.cd4017be.solidFuelHeater.name=Solid Fueled Heater
+gui.cd4017be.electricHeater.name=Electric Heater
+gui.cd4017be.heatedFurnace.name=Furnace
 # Gui tooltips
 gui.cd4017be.recipe.euse=Used Energy:\n%.0f kJ
 gui.cd4017be.recipe.algae=Algae:\n%d mB
@@ -431,7 +443,7 @@ gui.cd4017be.resistor=Electric working Resistance [Ohm]
 gui.cd4017be.voltage=Reference Voltage\nLMB: +/- 1/10\nRMB: +/- 100/1000
 gui.cd4017be.rstCtr=Redstone control mode
 gui.cd4017be.heat=Heat:\n%d / %d K
-gui.cd4017be.fuelHeat=Fuel Heat:\n%d K
+gui.cd4017be.fuelHeat=Fuel:\n%d Ft
 gui.cd4017be.lavaHeat=Lava Heat:\n%d / %d K
 gui.cd4017be.progress=Progress:\n%d / %d kJ
 gui.cd4017be.storage=Energy:\n%d / %d kJ
@@ -445,7 +457,7 @@ gui.cd4017be.autoCrafting=The slot IDs in the Crafting grid on the right\ndefine
 gui.cd4017be.advancedFurnace.swap=Swap Fluid Tanks
 gui.cd4017be.algae.nutr=Nutrients:\n%d %%
 gui.cd4017be.algae.algae=Algae:\n%s / %s m³
-gui.cd4017be.boiler.burnUp=Burnup Speed:\n%d K/t
+gui.cd4017be.boiler.burnUp=Burnup Rate:\n%d Ft/tick
 gui.cd4017be.steamComp.press=Pressure:\n%d / %d kPa
 gui.cd4017be.steamEng.speed=Speed:\n%d %%
 gui.cd4017be.steamEng.power=Power:\n%.1f kW\nmax %d kW

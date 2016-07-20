@@ -30,6 +30,7 @@ public class GuiElectricCoil extends GuiMachine {
         this.xSize = 122;
         this.ySize = 58;
         super.initGui();
+        this.guiComps.add(new Slider(0, 81, 18, 32, 212, 54, 12, 4, false));
     }
 
     @Override
@@ -48,12 +49,12 @@ public class GuiElectricCoil extends GuiMachine {
         this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 80, this.xSize, this.ySize);
         this.drawTexturedModalRect(guiLeft + 7, guiTop + 15, 176 + (tileEntity.netData.ints[1] & 2) * 9, 54, 18, 18);
         this.drawTexturedModalRect(guiLeft + 7, guiTop + 33, 176 + (tileEntity.netData.ints[1] & 3) * 18, 36, 18, 18);
-        this.drawTexturedModalRect(guiLeft + 81, guiTop + 16 + tileEntity.getNscaled(32), 212, 54, 12, 4);
+        //this.drawTexturedModalRect(guiLeft + 81, guiTop + 16 + tileEntity.getNscaled(32), 212, 54, 12, 4);
+        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
         this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
         fontRendererObj.drawString(String.format("U:%.0fV", tileEntity.netData.floats[1]), guiLeft + 26, guiTop + 16, 0x808040);
         fontRendererObj.drawString(String.format("P:%+.1f" + TooltipInfo.getPowerUnit(), tileEntity.netData.floats[0] / 1000F), guiLeft + 26, guiTop + 24, 0x808040);
         fontRendererObj.drawString(String.format("N = %d", tileEntity.netData.ints[0]), guiLeft + 30, guiTop + 38, 0x404040);
-        super.drawGuiContainerBackgroundLayer(var1, var2, var3);
     }
 
     @Override
@@ -67,45 +68,29 @@ public class GuiElectricCoil extends GuiMachine {
         } else if (this.isPointInRegion(8, 34, 16, 16, x, y)) {
         	tileEntity.netData.ints[1] ^= 1;
         	a = 1;
-        } else if (this.isPointInRegion(82, 16, 10, 36, x, y)) {
-			int p = y - this.guiTop - 18;
-			if (p < 0) p = 0;
-			else if (p > 30) p = 30;
-        	tileEntity.netData.ints[0] = p * (ElectricCoil.Nmax[tileEntity.type] - ElectricCoil.Nmin[tileEntity.type]) / 30 + ElectricCoil.Nmin[tileEntity.type];
-        	a = 0;
-		}
+        }
         if (a >= 0) {
             PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(AutomatedTile.CmdOffset + a);
-            if (a == 0) dos.writeInt(tileEntity.netData.ints[0]);
-            else if (a == 1) dos.writeByte(tileEntity.netData.ints[1]);
+            if (a == 1) dos.writeByte(tileEntity.netData.ints[1]);
             BlockGuiHandler.sendPacketToServer(dos);
         }
     }
 
 	@Override
-	protected void mouseClickMove(int x, int y, int b, long t) {
-		if (this.isPointInRegion(82, 16, 10, 36, x, y)) {
-			int p = y - this.guiTop - 18;
-			if (p < 0) p = 0;
-			else if (p > 30) p = 30;
-        	tileEntity.netData.ints[0] = p * (ElectricCoil.Nmax[tileEntity.type] - ElectricCoil.Nmin[tileEntity.type]) / 30 + ElectricCoil.Nmin[tileEntity.type];
-		} else super.mouseClickMove(x, y, b, t);
+	protected Object getDisplVar(int id) {
+		return (float)(tileEntity.netData.ints[0] - ElectricCoil.Nmin[tileEntity.type]) / (float)(ElectricCoil.Nmax[tileEntity.type] - ElectricCoil.Nmin[tileEntity.type]);
 	}
 
 	@Override
-	protected void mouseReleased(int x, int y, int b) {
-		if (this.isPointInRegion(82, 16, 10, 36, x, y)) {
-			int p = y - this.guiTop - 18;
-			if (p < 0) p = 0;
-			else if (p > 30) p = 30;
-        	tileEntity.netData.ints[0] = p * (ElectricCoil.Nmax[tileEntity.type] - ElectricCoil.Nmin[tileEntity.type]) / 30 + ElectricCoil.Nmin[tileEntity.type];
-        	PacketBuffer dos = tileEntity.getPacketTargetData();
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		tileEntity.netData.ints[0] = (int)((Float)obj * (float)(ElectricCoil.Nmax[tileEntity.type] - ElectricCoil.Nmin[tileEntity.type])) + ElectricCoil.Nmin[tileEntity.type];
+		if (send) {
+			PacketBuffer dos = tileEntity.getPacketTargetData();
             dos.writeByte(AutomatedTile.CmdOffset);
             dos.writeInt(tileEntity.netData.ints[0]);
             BlockGuiHandler.sendPacketToServer(dos);
 		}
-		super.mouseReleased(x, y, b);
 	}
 
 }
