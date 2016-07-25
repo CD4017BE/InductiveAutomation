@@ -349,6 +349,7 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
         Vec3 pos = Vec3.Def(entity.posX, entity.posY, entity.posZ);
         AxisAlignedBB block = this.getBlockType().getCollisionBoundingBox(worldObj.getBlockState(this.pos), worldObj, getPos());
         AxisAlignedBB box = entity.getEntityBoundingBox();
+        block = block.offset(this.pos);
         pos = pos.add(-0.5D - (double)this.pos.getX(), -0.5D - (double)this.pos.getY(), -0.5D - (double)this.pos.getZ());
         if (box.minY >= block.maxY || box.maxY <= block.minY) return;
         if (box.minX < block.maxX && box.maxX > block.minX) {
