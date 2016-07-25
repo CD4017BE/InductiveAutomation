@@ -115,13 +115,13 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     		this.s = s;
     	}
     	
-    	public boolean place(ItemStack item, EntityPlayer player, World world, float X, float Y, float Z, int ax, ArrayList<Position> list) {
+    	public boolean place(ItemStack item, EntityPlayer player, World world, EnumHand hand, float X, float Y, float Z, int ax, ArrayList<Position> list) {
     		BlockPos npos = pos.offset(s);
-    		if (!ItemMatterCannon.this.placeItem(item, player, world, npos, null, s, X, Y, Z)) return false;
-    		if (!world.getBlockState(npos).getBlock().isReplaceable(world, npos))
+    		if (world.getBlockState(npos).getBlock().isReplaceable(world, npos))
     			for (int i = 0; i < 6; i++)
     				if (i != ax && i != (ax^1) && i != (s.getIndex()^1))
     					list.add(new Position(npos, EnumFacing.VALUES[i]));
+    		if (!ItemMatterCannon.this.placeItem(item, player, world, npos, hand, s, X, Y, Z)) return false;
     		return true;
     	} 
     }
@@ -152,7 +152,7 @@ public class ItemMatterCannon extends ItemEnergyCell implements IMatterOrb, IGui
     		while (!curList.isEmpty() && n < 256) {
     			newList = new ArrayList<Position>();
     			for (Position p : curList)
-    				if (p.place(item, player, world, X, Y, Z, s.getIndex(), newList)) n++;
+    				if (p.place(item, player, world, hand, X, Y, Z, s.getIndex(), newList)) n++;
     				else return EnumActionResult.SUCCESS;
     			curList = newList;
     		}
