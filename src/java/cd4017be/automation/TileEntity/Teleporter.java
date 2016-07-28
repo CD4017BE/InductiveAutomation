@@ -332,7 +332,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     public void readFromNBT(NBTTagCompound nbt) 
     {
         super.readFromNBT(nbt);
-        ComputerAPI.readNode(node, nbt);
+        if (node != null) ComputerAPI.readNode(node, nbt);
         netData.ints[3] = nbt.getByte("mode");
         netData.ints[0] = nbt.getInteger("px");
         netData.ints[1] = nbt.getInteger("py");
