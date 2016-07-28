@@ -417,8 +417,8 @@ public class InterdimHole extends ModTileEntity implements ISidedInventory, IFlu
                 invIdx[i][j] = n++;
             }
         }
-        pipe.network.updateLink(pipe);
-        if (linkTile != null) linkTile.pipe.network.add(pipe);
+        if (pipe.network != null) pipe.network.updateLink(pipe);
+        if (linkTile != null && linkTile.pipe.network != null) linkTile.pipe.network.add(pipe);
     }
     
     @Override

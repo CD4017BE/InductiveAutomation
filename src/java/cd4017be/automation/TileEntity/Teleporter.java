@@ -315,7 +315,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     @Override
     public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
     {
-        ComputerAPI.saveNode(node, nbt);
+        if (node != null) ComputerAPI.saveNode(node, nbt);
         nbt.setByte("mode", (byte)netData.ints[3]);
         nbt.setInteger("px", netData.ints[0]);
         nbt.setInteger("py", netData.ints[1]);
