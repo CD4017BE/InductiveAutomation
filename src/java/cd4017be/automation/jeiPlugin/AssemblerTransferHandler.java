@@ -9,16 +9,15 @@ import cd4017be.automation.TileEntity.SteamCompressor;
 import cd4017be.automation.jeiPlugin.Utils.TransferEntry;
 import cd4017be.lib.TileContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import mezz.jei.api.gui.IGuiIngredient;
 import mezz.jei.api.gui.IGuiItemStackGroup;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import mezz.jei.gui.ingredients.IGuiIngredient;
 
-public class AssemblerTransferHandler implements IRecipeTransferHandler {
+public class AssemblerTransferHandler implements IRecipeTransferHandler<TileContainer> {
 
 	private final IRecipeTransferHandlerHelper helper;
 	public AssemblerTransferHandler(IRecipeTransferHandlerHelper helper) {
@@ -26,7 +25,7 @@ public class AssemblerTransferHandler implements IRecipeTransferHandler {
 	}
 	
 	@Override
-	public Class<? extends Container> getContainerClass() {
+	public Class<TileContainer> getContainerClass() {
 		return TileContainer.class;
 	}
 
@@ -36,8 +35,7 @@ public class AssemblerTransferHandler implements IRecipeTransferHandler {
 	}
 
 	@Override
-	public IRecipeTransferError transferRecipe(Container container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
-		TileContainer cont = (TileContainer)container; //all machines use TileContainer so we have to check if its the right one
+	public IRecipeTransferError transferRecipe(TileContainer cont, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
 		if (!(cont.tileEntity instanceof SteamCompressor || cont.tileEntity instanceof ElectricCompressor)) return helper.createInternalError();
 		IGuiItemStackGroup items = recipeLayout.getItemStacks();
 		//init recipe
