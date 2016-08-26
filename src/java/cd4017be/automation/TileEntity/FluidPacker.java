@@ -8,14 +8,14 @@ package cd4017be.automation.TileEntity;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Item.ItemFluidDummy;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.TileContainer.TankSlot;
+import cd4017be.lib.Gui.SlotOutput;
+import cd4017be.lib.Gui.SlotTank;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotOutput;
-import cd4017be.lib.templates.SlotTank;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.inventory.ISidedInventory;
@@ -33,7 +33,7 @@ public class FluidPacker extends AutomatedTile implements ISidedInventory, IFlui
     public FluidPacker()
     {
         netData = new TileEntityData(2, 0, 0, 4);
-        inventory = new Inventory(this, 7, new Component(0, 1, 1), new Component(1, 2, 1), new Component(2, 3, 1));
+        inventory = new Inventory(this, 7, new Group(0, 1, 1), new Group(1, 2, 1), new Group(2, 3, 1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[2], -1).setIn(3), new Tank(Config.tankCap[2], -1).setIn(4), new Tank(Config.tankCap[2], -1).setIn(5), new Tank(Config.tankCap[1], -1, Objects.L_antimatter).setIn(6)).setNetLong(1);
     }
 
@@ -64,12 +64,12 @@ public class FluidPacker extends AutomatedTile implements ISidedInventory, IFlui
     public void initContainer(TileContainer container) 
     {
         for (int i = 0; i < 3; i++) {
-            container.addEntitySlot(new SlotOutput(this, i, 80 + i * 36, 52));
+            container.addItemSlot(new SlotOutput(this, i, 80 + i * 36, 52));
         }
         for (int i = 0; i < 3; i++) {
-            container.addEntitySlot(new SlotTank(this, i + 3, 62 + i * 36, 34));
+            container.addItemSlot(new SlotTank(this, i + 3, 62 + i * 36, 34));
         }
-        container.addEntitySlot(new SlotTank(this, 6, 17, 34));
+        container.addItemSlot(new SlotTank(this, 6, 17, 34));
         
         container.addPlayerInventory(8, 86);
         

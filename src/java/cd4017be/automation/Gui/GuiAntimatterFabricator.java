@@ -15,10 +15,10 @@ import org.lwjgl.opengl.GL11;
 
 import cd4017be.automation.TileEntity.AntimatterFabricator;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TooltipInfo;
+import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
-import cd4017be.lib.templates.GuiMachine;
 
 /**
  *

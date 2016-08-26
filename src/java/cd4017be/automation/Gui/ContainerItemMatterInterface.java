@@ -7,8 +7,8 @@
 package cd4017be.automation.Gui;
 
 import cd4017be.api.automation.MatterOrbItemHandler;
-import cd4017be.lib.ItemContainer;
-import cd4017be.lib.templates.SlotOutput;
+import cd4017be.lib.Gui.ItemContainer;
+import cd4017be.lib.Gui.SlotOutput;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;

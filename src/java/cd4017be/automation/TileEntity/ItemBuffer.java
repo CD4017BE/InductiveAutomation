@@ -9,11 +9,11 @@ import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.Utils;
 
@@ -22,7 +22,7 @@ public class ItemBuffer extends AutomatedTile implements ISidedInventory
 	
 	public ItemBuffer()
 	{
-		inventory = new Inventory(this, 21, new Component(0, 18, -1), new Component(18, 19, 1), new Component(19, 20, 1), new Component(20, 21, 1));
+		inventory = new Inventory(this, 21, new Group(0, 18, -1), new Group(18, 19, 1), new Group(19, 20, 1), new Group(20, 21, 1));
 		netData = new TileEntityData(1, 3, 0, 0);
 	}
 
@@ -111,10 +111,10 @@ public class ItemBuffer extends AutomatedTile implements ISidedInventory
 		container.addPlayerInventory(8, 86);
 		for (int j = 0; j < 2; j++)
 			for (int i = 0; i < 9; i++)
-				container.addEntitySlot(new Slot(this, i + 9 * j, 8 + 18 * i, 16 + 18 * j));
-		container.addEntitySlot(new Slot(this, 18, 107, 52));
-		container.addEntitySlot(new Slot(this, 19, 152, 52));
-		container.addEntitySlot(new Slot(this, 20, 62, 52));
+				container.addItemSlot(new Slot(this, i + 9 * j, 8 + 18 * i, 16 + 18 * j));
+		container.addItemSlot(new Slot(this, 18, 107, 52));
+		container.addItemSlot(new Slot(this, 19, 152, 52));
+		container.addItemSlot(new Slot(this, 20, 62, 52));
 	}
 
 	@Override

@@ -15,12 +15,12 @@ import cd4017be.api.energy.EnergyAPI;
 import cd4017be.api.energy.EnergyAPI.IEnergyAccess;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.templates.Inventory.Group;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -40,7 +40,7 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     public ESU()
     {
         energy = new PipeEnergy(0, 0);
-    	inventory = new Inventory(this, 2, new Component(0, 1, 0), new Component(1, 2, 0));
+    	inventory = new Inventory(this, 2, new Group(0, 1, 0), new Group(1, 2, 0));
         netData = new TileEntityData(1, 1, 2, 0);
     }
     
@@ -176,8 +176,8 @@ public class ESU extends AutomatedTile implements IEnergy, IAutomatedInv, IEnerg
     @Override
     public void initContainer(TileContainer container)
     {
-        container.addEntitySlot(new Slot(this, 0, 98, 16));
-        container.addEntitySlot(new Slot(this, 1, 134, 16));
+        container.addItemSlot(new Slot(this, 0, 98, 16));
+        container.addItemSlot(new Slot(this, 1, 134, 16));
         
         container.addPlayerInventory(8, 86);
     }

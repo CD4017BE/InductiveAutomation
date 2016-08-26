@@ -6,6 +6,7 @@ package cd4017be.automation;
 
 
 import net.minecraftforge.fml.common.FMLLog;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,7 +15,7 @@ import org.apache.logging.log4j.Level;
 
 import cd4017be.automation.TileEntity.*;
 import cd4017be.lib.TileBlockRegistry;
-import cd4017be.lib.TileContainer;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.util.OreDictStack;
 import net.minecraft.block.BlockMushroom;
 import net.minecraft.init.Blocks;

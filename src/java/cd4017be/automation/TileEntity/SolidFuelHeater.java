@@ -13,11 +13,11 @@ import net.minecraft.util.math.BlockPos;
 import cd4017be.automation.shaft.HeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir.IHeatStorage;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.templates.Inventory.Group;
 
 public class SolidFuelHeater extends AutomatedTile implements IHeatStorage {
 	
@@ -30,7 +30,7 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage {
 		//ints: maxFuel, curFuel, burn; floats: targetTemp, Temp
 		netData = new TileEntityData(1, 3, 2, 0);
 		heat = new HeatReservoir(10000F);
-        inventory = new Inventory(this, 2, new Component(0, 2, -1));
+        inventory = new Inventory(this, 2, new Group(0, 2, -1));
         netData.ints[2] = 1;
         netData.floats[0] = 300F;
 	}
@@ -107,8 +107,8 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage {
 
 	@Override
 	public void initContainer(TileContainer container) {
-		container.addEntitySlot(new Slot(this, 0, 26, 16));
-		container.addEntitySlot(new Slot(this, 1, 26, 34));
+		container.addItemSlot(new Slot(this, 0, 26, 16));
+		container.addItemSlot(new Slot(this, 1, 26, 34));
 		container.addPlayerInventory(8, 68);
 	}
 

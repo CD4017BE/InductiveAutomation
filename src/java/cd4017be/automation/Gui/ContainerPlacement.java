@@ -1,8 +1,8 @@
 package cd4017be.automation.Gui;
 
 import net.minecraft.entity.player.EntityPlayer;
-import cd4017be.lib.ItemContainer;
-import cd4017be.lib.templates.SlotHolo;
+import cd4017be.lib.Gui.ItemContainer;
+import cd4017be.lib.Gui.SlotHolo;
 
 public class ContainerPlacement extends ItemContainer 
 {

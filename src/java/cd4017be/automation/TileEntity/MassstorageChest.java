@@ -11,12 +11,12 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -41,7 +41,7 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 	
 	public MassstorageChest()
 	{
-		inventory = new Inventory(this, 65, new Component(0, 1, -1), new Component(1, 65, 1));
+		inventory = new Inventory(this, 65, new Group(0, 1, -1), new Group(1, 65, 1));
 		netData = new TileEntityData(1, 0, 0, 0);
 	}
 	
@@ -174,9 +174,9 @@ public class MassstorageChest extends AutomatedTile implements IAutomatedInv
 		for (int i = 0; i < 8; i++)
 		for (int j = 0; j < 8; j++)
 		{
-			container.addEntitySlot(new Slot(this, 1 + j + i * 8, 14 + j * 24, 16 + i * 18));
+			container.addItemSlot(new Slot(this, 1 + j + i * 8, 14 + j * 24, 16 + i * 18));
 		}
-		container.addEntitySlot(new Slot(this, 0, 182, 174));
+		container.addItemSlot(new Slot(this, 0, 182, 174));
 		
 		container.addPlayerInventory(8, 174);
 	}

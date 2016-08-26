@@ -29,12 +29,12 @@ import cd4017be.api.energy.EnergyAPI.IEnergyAccess;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Item.PipeUpgradeFluid;
 import cd4017be.automation.Item.PipeUpgradeItem;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotItemType;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.SlotItemType;
 import cd4017be.lib.util.Utils;
 import cd4017be.lib.util.Utils.ItemType;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -241,7 +241,7 @@ public class Detector extends AutomatedTile implements IAutomatedInv, IRedstone8
     public void initContainer(TileContainer container)
     {
         for (int i = 0; i < 6; i++) {
-            container.addEntitySlot(new SlotItemType(this, i, 44, 16 + i * 18, new ItemStack(Objects.itemUpgrade), new ItemStack(Objects.fluidUpgrade)));
+            container.addItemSlot(new SlotItemType(this, i, 44, 16 + i * 18, new ItemStack(Objects.itemUpgrade), new ItemStack(Objects.fluidUpgrade)));
         }
         
         container.addPlayerInventory(8, 140);

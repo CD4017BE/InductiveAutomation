@@ -9,11 +9,11 @@ import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.api.recipes.AutomationRecipes.ElRecipe;
 import cd4017be.automation.Config;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.TileContainer.TankSlot;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
-import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import cd4017be.lib.templates.Inventory;
@@ -33,7 +33,7 @@ public class Electrolyser extends AutomatedTile implements ISidedInventory, IEne
 	{
             netData = new TileEntityData(2, 1, 3, 3);
 		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
-		inventory = new Inventory(this, 3, new Component(0, 1, -1), new Component(1, 2, 1), new Component(2, 3, 1));
+		inventory = new Inventory(this, 3, new Group(0, 1, -1), new Group(1, 2, 1), new Group(2, 3, 1));
 		tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(0), new Tank(Config.tankCap[1], 1).setOut(1), new Tank(Config.tankCap[1], 1).setOut(2)).setNetLong(1);
 		/**
 		 * long: invcfg, tankcfg
@@ -120,9 +120,9 @@ public class Electrolyser extends AutomatedTile implements ISidedInventory, IEne
 	@Override
 	public void initContainer(TileContainer container) 
 	{
-		container.addEntitySlot(new Slot(this, 0, 98, 34));
-		container.addEntitySlot(new Slot(this, 1, 44, 34));
-		container.addEntitySlot(new Slot(this, 2, 152, 34));
+		container.addItemSlot(new Slot(this, 0, 98, 34));
+		container.addItemSlot(new Slot(this, 1, 44, 34));
+		container.addItemSlot(new Slot(this, 2, 152, 34));
 		
 		container.addPlayerInventory(8, 86);
 		

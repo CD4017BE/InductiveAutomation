@@ -3,7 +3,7 @@ package cd4017be.automation.jeiPlugin;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import cd4017be.lib.templates.SlotHolo;
+import cd4017be.lib.Gui.SlotHolo;
 import cd4017be.lib.util.OreDictStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.PlayerControllerMP;

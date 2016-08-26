@@ -11,7 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.templates.GuiMachine;
+import cd4017be.lib.Gui.GuiMachine;
 
 public class GuiPortableTesla extends GuiMachine 
 {

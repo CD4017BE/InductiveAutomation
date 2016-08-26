@@ -2,7 +2,7 @@ package cd4017be.automation.Gui;
 
 import cd4017be.automation.Objects;
 import cd4017be.automation.Item.ItemItemUpgrade;
-import cd4017be.lib.templates.SlotItemType;
+import cd4017be.lib.Gui.SlotItemType;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;

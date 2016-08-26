@@ -8,13 +8,13 @@ import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotOutput;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotOutput;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.util.Utils;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,7 +38,7 @@ public class AutoCrafting extends AutomatedTile implements IAutomatedInv
     
     public AutoCrafting()
     {
-        inventory = new Inventory(this, 11, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, -1), new Component(3, 9, -1), new Component(9, 11, 1));
+        inventory = new Inventory(this, 11, new Group(0, 1, -1), new Group(1, 2, -1), new Group(2, 3, -1), new Group(3, 9, -1), new Group(9, 11, 1));
         netData = new TileEntityData(2, 0, 0, 0);
     }
     
@@ -182,9 +182,9 @@ public class AutoCrafting extends AutomatedTile implements IAutomatedInv
     {
         for (int j = 0; j < 3; j++)
         for (int i = 0; i < 3; i++)
-        container.addEntitySlot(new Slot(this, i + j * 3, 8 + i * 18, 16 + j * 18));
-        container.addEntitySlot(new SlotOutput(this, 9, 152, 34));
-        container.addEntitySlot(new SlotOutput(this, 10, 152, 52));
+        container.addItemSlot(new Slot(this, i + j * 3, 8 + i * 18, 16 + j * 18));
+        container.addItemSlot(new SlotOutput(this, 9, 152, 34));
+        container.addItemSlot(new SlotOutput(this, 10, 152, 52));
         
         container.addPlayerInventory(8, 86);
     }

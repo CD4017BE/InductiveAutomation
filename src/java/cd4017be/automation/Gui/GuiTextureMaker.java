@@ -20,14 +20,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.Fluid;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import cd4017be.automation.Item.ItemFluidDummy;
 import cd4017be.automation.TileEntity.TextureMaker;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.templates.GuiMachine;
+import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 
 /**
  *

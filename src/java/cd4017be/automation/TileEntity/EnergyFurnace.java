@@ -11,12 +11,12 @@ import java.io.IOException;
 import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotOutput;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotOutput;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.util.Utils;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ISidedInventory;
@@ -36,7 +36,7 @@ public class EnergyFurnace extends AutomatedTile implements ISidedInventory, IEn
     
     public EnergyFurnace()
     {
-        inventory = new Inventory(this, 5, new Component(0, 2, -1), new Component(2, 4, 1));
+        inventory = new Inventory(this, 5, new Group(0, 2, -1), new Group(2, 4, 1));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData = new TileEntityData(1, 1, 2, 0);
         netData.ints[0] = Config.Rmin;
@@ -136,11 +136,11 @@ public class EnergyFurnace extends AutomatedTile implements ISidedInventory, IEn
     @Override
     public void initContainer(TileContainer container)
     {
-        container.addEntitySlot(new Slot(this, 0, 44, 34));
-        container.addEntitySlot(new Slot(this, 1, 62, 34));
+        container.addItemSlot(new Slot(this, 0, 44, 34));
+        container.addItemSlot(new Slot(this, 1, 62, 34));
         
-        container.addEntitySlot(new SlotOutput(this, 2, 116, 34));
-        container.addEntitySlot(new SlotOutput(this, 3, 134, 34));
+        container.addItemSlot(new SlotOutput(this, 2, 116, 34));
+        container.addItemSlot(new SlotOutput(this, 3, 134, 34));
         
         container.addPlayerInventory(8, 86);
     }

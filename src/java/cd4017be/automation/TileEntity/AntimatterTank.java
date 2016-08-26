@@ -9,11 +9,11 @@ import java.util.ArrayList;
 
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import cd4017be.lib.util.Obj2;
@@ -42,7 +42,7 @@ public class AntimatterTank extends AutomatedTile implements ISidedInventory, IF
     {
         netData = new TileEntityData(2, 0, 0, 1);
     	tanks = new TankContainer(this, new Tank(Config.tankCap[4], 0, Objects.L_antimatter));
-    	inventory = new Inventory(this, 2, new Component(0, 1, 0), new Component(1, 2, 0)).setNetLong(1);
+    	inventory = new Inventory(this, 2, new Group(0, 1, 0), new Group(1, 2, 0)).setNetLong(1);
     }
     
     @Override
@@ -110,8 +110,8 @@ public class AntimatterTank extends AutomatedTile implements ISidedInventory, IF
     @Override
     public void initContainer(TileContainer container) 
     {
-        container.addEntitySlot(new Slot(this, 0, 152, 24));
-        container.addEntitySlot(new Slot(this, 1, 152, 42));
+        container.addItemSlot(new Slot(this, 0, 152, 24));
+        container.addItemSlot(new Slot(this, 1, 152, 42));
         
         container.addPlayerInventory(8, 84);
     }

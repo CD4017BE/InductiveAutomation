@@ -7,7 +7,7 @@ import java.util.Map.Entry;
 import cd4017be.automation.TileEntity.ElectricCompressor;
 import cd4017be.automation.TileEntity.SteamCompressor;
 import cd4017be.automation.jeiPlugin.Utils.TransferEntry;
-import cd4017be.lib.TileContainer;
+import cd4017be.lib.Gui.TileContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import mezz.jei.api.gui.IGuiIngredient;

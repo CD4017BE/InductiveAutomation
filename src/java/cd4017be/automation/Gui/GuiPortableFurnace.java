@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL11;
 import cd4017be.api.energy.EnergyAPI;
 import cd4017be.api.energy.EnergyAutomation.IEnergyItem;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.templates.GuiMachine;
+import cd4017be.lib.Gui.GuiMachine;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;

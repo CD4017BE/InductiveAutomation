@@ -13,12 +13,12 @@ import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.api.recipes.AutomationRecipes.CoolRecipe;
 import cd4017be.automation.Config;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.TileContainer.TankSlot;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,7 +39,7 @@ public class DecompCooler extends AutomatedTile implements IEnergy, IFluidHandle
     public DecompCooler()
     {
         netData = new TileEntityData(2, 1, 3, 4);
-        inventory = new Inventory(this, 4, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, 1), new Component(3, 4, 1));
+        inventory = new Inventory(this, 4, new Group(0, 1, -1), new Group(1, 2, -1), new Group(2, 3, 1), new Group(3, 4, 1));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(0), new Tank(Config.tankCap[1], -1).setIn(1), new Tank(Config.tankCap[1], 1).setOut(2), new Tank(Config.tankCap[1], 1).setOut(3)).setNetLong(1);
        
@@ -121,10 +121,10 @@ public class DecompCooler extends AutomatedTile implements IEnergy, IFluidHandle
     @Override
     public void initContainer(TileContainer container) 
     {
-        container.addEntitySlot(new Slot(this, 0, 44, 34));
-        container.addEntitySlot(new Slot(this, 1, 116, 34));
-        container.addEntitySlot(new Slot(this, 2, 80, 34));
-        container.addEntitySlot(new Slot(this, 3, 152, 34));
+        container.addItemSlot(new Slot(this, 0, 44, 34));
+        container.addItemSlot(new Slot(this, 1, 116, 34));
+        container.addItemSlot(new Slot(this, 2, 80, 34));
+        container.addItemSlot(new Slot(this, 3, 152, 34));
         
         container.addPlayerInventory(8, 86);
         

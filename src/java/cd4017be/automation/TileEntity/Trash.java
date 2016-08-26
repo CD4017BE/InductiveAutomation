@@ -9,12 +9,12 @@ import net.minecraft.network.PacketBuffer;
 import java.io.IOException;
 
 import cd4017be.automation.Config;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotTank;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotTank;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -34,7 +34,7 @@ public class Trash extends AutomatedTile implements ISidedInventory, IFluidHandl
     public Trash()
     {
         netData = new TileEntityData(2, 1, 0, 1);
-        inventory = new Inventory(this, 2, new Component(0, 1, -1));
+        inventory = new Inventory(this, 2, new Group(0, 1, -1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(1)).setNetLong(1);
         
     }
@@ -72,8 +72,8 @@ public class Trash extends AutomatedTile implements ISidedInventory, IFluidHandl
     @Override
     public void initContainer(TileContainer container) 
     {
-        container.addEntitySlot(new Slot(this, 0, 134, 16));
-        container.addEntitySlot(new SlotTank(this, 1, 26, 16));
+        container.addItemSlot(new Slot(this, 0, 134, 16));
+        container.addItemSlot(new SlotTank(this, 1, 26, 16));
         container.addPlayerInventory(8, 50);
     }
 

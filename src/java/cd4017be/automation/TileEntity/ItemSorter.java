@@ -10,13 +10,13 @@ package cd4017be.automation.TileEntity;
 import cd4017be.api.automation.IItemPipeCon;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Item.PipeUpgradeItem;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotItemType;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotItemType;
+import cd4017be.lib.templates.Inventory.Group;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -37,7 +37,7 @@ public class ItemSorter extends AutomatedTile implements IAutomatedInv, IItemPip
     
     public ItemSorter()
     {
-        inventory = new Inventory(this, 9, new Component(0, 1, 1), new Component(2, 3, 1), new Component(4, 5, 1), new Component(6, 7, 1), new Component(8, 9, 1));
+        inventory = new Inventory(this, 9, new Group(0, 1, 1), new Group(2, 3, 1), new Group(4, 5, 1), new Group(6, 7, 1), new Group(8, 9, 1));
         /**
          * long: cfg
          * int: flags
@@ -93,9 +93,9 @@ public class ItemSorter extends AutomatedTile implements IAutomatedInv, IItemPip
     public void initContainer(TileContainer container) 
     {
         for (int i = 1; i < 9; i+=2)
-            container.addEntitySlot(new SlotItemType(this, i, 8 + i * 18, 16, new ItemStack(Objects.itemUpgrade)));
+            container.addItemSlot(new SlotItemType(this, i, 8 + i * 18, 16, new ItemStack(Objects.itemUpgrade)));
         for (int i = 0; i < 9; i+=2)
-            container.addEntitySlot(new Slot(this, i, 8 + i * 18, 16));
+            container.addItemSlot(new Slot(this, i, 8 + i * 18, 16));
         
         container.addPlayerInventory(8, 50);
     }

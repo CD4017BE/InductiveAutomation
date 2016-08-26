@@ -17,9 +17,9 @@ import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
 import cd4017be.automation.TileEntity.EnergyFurnace;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.TileContainer;
+import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
-import cd4017be.lib.templates.GuiMachine;
 
 /**
  *

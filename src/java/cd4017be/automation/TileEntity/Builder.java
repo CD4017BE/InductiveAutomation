@@ -32,12 +32,12 @@ import cd4017be.automation.Item.ItemBuilderTexture;
 import cd4017be.automation.Item.ItemFluidDummy;
 import cd4017be.automation.Item.ItemMachineSynchronizer;
 import cd4017be.automation.Item.ItemPlacement;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotItemType;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotItemType;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.util.CachedChunkProtection;
 import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.Utils;
@@ -323,7 +323,7 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
 
     public Builder()
     {
-        inventory = new Inventory(this, 50, new Component(17, 44, 0));
+        inventory = new Inventory(this, 50, new Group(17, 44, 0));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData = new TileEntityData(1, 10, 0, 0);
     }
@@ -728,25 +728,25 @@ public class Builder extends AutomatedTile implements ISidedInventory, IOperatin
     {
         for (int i = 0; i < 3; i++)
         {
-            container.addEntitySlot(new Slot(this, i, 62 + i * 18, 16));
+            container.addItemSlot(new Slot(this, i, 62 + i * 18, 16));
         }
         for (int i = 0; i < 6; i++)
         {
-            container.addEntitySlot(new Slot(this, 3 + i, 8 + i * 18, 34));
+            container.addItemSlot(new Slot(this, 3 + i, 8 + i * 18, 34));
         }
         for (int i = 0; i < 8; i++)
         {
-            container.addEntitySlot(new Slot(this, 9 + i, 8 + i * 18, 52));
+            container.addItemSlot(new Slot(this, 9 + i, 8 + i * 18, 52));
         }
         
         for (int i = 0; i < 3; i++)
         {
             for (int j = 0; j < 9; j++)
             {
-                container.addEntitySlot(new Slot(this, 17 + i * 9 + j, 8 + j * 18, 88 + i * 18));
+                container.addItemSlot(new Slot(this, 17 + i * 9 + j, 8 + j * 18, 88 + i * 18));
             }
         }
-        container.addEntitySlot(new SlotItemType(this, 49, 152, 52, new ItemStack(Items.PAPER)));
+        container.addItemSlot(new SlotItemType(this, 49, 152, 52, new ItemStack(Items.PAPER)));
         container.addPlayerInventory(8, 158);
     }
 

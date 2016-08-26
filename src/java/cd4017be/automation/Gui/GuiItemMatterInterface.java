@@ -19,7 +19,7 @@ import org.lwjgl.opengl.GL11;
 
 import cd4017be.api.automation.MatterOrbItemHandler;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.templates.GuiMachine;
+import cd4017be.lib.Gui.GuiMachine;
 
 /**
  *

@@ -11,13 +11,13 @@ import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.api.recipes.AutomationRecipes.GCRecipe;
 import cd4017be.automation.Config;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotOutput;
+import cd4017be.lib.Gui.SlotTank;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotOutput;
-import cd4017be.lib.templates.SlotTank;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import cd4017be.lib.util.Utils;
@@ -36,7 +36,7 @@ public class GraviCond extends AutomatedTile implements IEnergy, ISidedInventory
 		 * ints: storage
 		 */
 		netData = new TileEntityData(2, 2, 1, 1);
-		inventory = new Inventory(this, 4, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, 1));
+		inventory = new Inventory(this, 4, new Group(0, 1, -1), new Group(1, 2, -1), new Group(2, 3, 1));
 		tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(3)).setNetLong(1);
 		energy = new PipeEnergy(maxVoltage, Config.Rcond[2]);
 	}
@@ -107,10 +107,10 @@ public class GraviCond extends AutomatedTile implements IEnergy, ISidedInventory
 	public void initContainer(TileContainer container) 
 	{
 		container.addPlayerInventory(8, 86);
-		container.addEntitySlot(new Slot(this, 0, 8, 52));
-		container.addEntitySlot(new Slot(this, 1, 116, 34));
-		container.addEntitySlot(new SlotOutput(this, 2, 152, 34));
-		container.addEntitySlot(new SlotTank(this, 3, 8, 16));
+		container.addItemSlot(new Slot(this, 0, 8, 52));
+		container.addItemSlot(new Slot(this, 1, 116, 34));
+		container.addItemSlot(new SlotOutput(this, 2, 152, 34));
+		container.addItemSlot(new SlotTank(this, 3, 8, 16));
 	}
 	
 	public int getEnergyScaled(int s)

@@ -11,13 +11,13 @@ import cd4017be.automation.Automation;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.BlockItemRegistry;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.TileContainer.TankSlot;
+import cd4017be.lib.Gui.SlotTank;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotTank;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.init.Items;
@@ -45,7 +45,7 @@ public class AlgaePool extends AutomatedTile implements ISidedInventory, IFluidH
     public AlgaePool()
     {
         netData = new TileEntityData(2, 1, 2, 2);
-        inventory = new Inventory(this, 5, new Component(4, 5, -1));
+        inventory = new Inventory(this, 5, new Group(4, 5, -1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_water).setIn(2), new Tank(Config.tankCap[1], 1, Objects.L_biomass).setOut(3)).setNetLong(1);
         
     }
@@ -173,11 +173,11 @@ public class AlgaePool extends AutomatedTile implements ISidedInventory, IFluidH
     @Override
     public void initContainer(TileContainer container) 
     {
-        container.addEntitySlot(new Slot(this, 0, 80, 34));
-        container.addEntitySlot(new Slot(this, 1, 98, 34));
-        container.addEntitySlot(new SlotTank(this, 2, 17, 34));
-        container.addEntitySlot(new SlotTank(this, 3, 143, 34));
-        container.addEntitySlot(new Slot(this, 4, 44, 34));
+        container.addItemSlot(new Slot(this, 0, 80, 34));
+        container.addItemSlot(new Slot(this, 1, 98, 34));
+        container.addItemSlot(new SlotTank(this, 2, 17, 34));
+        container.addItemSlot(new SlotTank(this, 3, 143, 34));
+        container.addItemSlot(new Slot(this, 4, 44, 34));
         
         container.addPlayerInventory(8, 86);
         

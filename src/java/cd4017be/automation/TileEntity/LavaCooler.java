@@ -10,14 +10,14 @@ import java.io.IOException;
 
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.TileContainer.TankSlot;
+import cd4017be.lib.Gui.SlotHolo;
+import cd4017be.lib.Gui.SlotTank;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotHolo;
-import cd4017be.lib.templates.SlotTank;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -70,7 +70,7 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
     public LavaCooler()
     {
         netData = new TileEntityData(2, 2, 0, 3);
-        inventory = new Inventory(this, 5, new Component(0, 2, 1));
+        inventory = new Inventory(this, 5, new Group(0, 2, 1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_water).setIn(3), new Tank(Config.tankCap[1], -1, Objects.L_lava).setIn(2), new Tank(Config.tankCap[1], 1, Objects.L_steam).setOut(4)).setNetLong(1);
     }
 
@@ -187,17 +187,17 @@ public class LavaCooler extends AutomatedTile implements ISidedInventory, IFluid
 	@Override
     public void initContainer(TileContainer container)
     {
-    	container.addEntitySlot(new Slot(this, 0, 8, 52));
-    	container.addEntitySlot(new Slot(this, 1, 26, 52));
+    	container.addItemSlot(new Slot(this, 0, 8, 52));
+    	container.addItemSlot(new Slot(this, 1, 26, 52));
     	
-        container.addEntitySlot(new SlotTank(this, 2, 53, 34));
-        container.addEntitySlot(new SlotTank(this, 3, 107, 34));
-        container.addEntitySlot(new SlotTank(this, 4, 143, 34));
+        container.addItemSlot(new SlotTank(this, 2, 53, 34));
+        container.addItemSlot(new SlotTank(this, 3, 107, 34));
+        container.addItemSlot(new SlotTank(this, 4, 143, 34));
         
-        container.addEntitySlot(new SlotHolo(this, 5, 8, 16, true, false));
-        container.addEntitySlot(new SlotHolo(this, 6, 26, 16, true, false));
-        container.addEntitySlot(new SlotHolo(this, 7, 8, 34, true, false));
-        container.addEntitySlot(new SlotHolo(this, 8, 26, 34, true, false));
+        container.addItemSlot(new SlotHolo(this, 5, 8, 16, true, false));
+        container.addItemSlot(new SlotHolo(this, 6, 26, 16, true, false));
+        container.addItemSlot(new SlotHolo(this, 7, 8, 34, true, false));
+        container.addItemSlot(new SlotHolo(this, 8, 26, 34, true, false));
         
         container.addPlayerInventory(8, 86);
         

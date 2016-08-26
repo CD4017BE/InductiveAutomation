@@ -11,13 +11,13 @@ import net.minecraft.network.PacketBuffer;
 import java.io.IOException;
 
 import cd4017be.api.automation.MatterOrbItemHandler;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotOutput;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotOutput;
+import cd4017be.lib.templates.Inventory.Group;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -32,7 +32,7 @@ public class MatterInterface extends AutomatedTile implements IAutomatedInv
     
     public MatterInterface()
     {
-        inventory = new Inventory(this, 5, new Component(1, 2, -1), new Component(2, 3, 1), new Component(0, 1, 0));
+        inventory = new Inventory(this, 5, new Group(1, 2, -1), new Group(2, 3, 1), new Group(0, 1, 0));
         netData = new TileEntityData(1, 1, 0, 0);
     }
 
@@ -104,10 +104,10 @@ public class MatterInterface extends AutomatedTile implements IAutomatedInv
     @Override
     public void initContainer(TileContainer container) 
     {
-        container.addEntitySlot(new Slot(this, 0, 44, 34));
-        container.addEntitySlot(new Slot(this, 1, 26, 16));
-        container.addEntitySlot(new SlotOutput(this, 2, 26, 52));
-        container.addEntitySlot(new Slot(this, 3, 8, 34));
+        container.addItemSlot(new Slot(this, 0, 44, 34));
+        container.addItemSlot(new Slot(this, 1, 26, 16));
+        container.addItemSlot(new SlotOutput(this, 2, 26, 52));
+        container.addItemSlot(new Slot(this, 3, 8, 34));
         
         container.addPlayerInventory(8, 86);
     }

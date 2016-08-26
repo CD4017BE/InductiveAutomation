@@ -16,7 +16,7 @@ import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IPipe;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.util.Utils;
 import cd4017be.lib.util.Utils.ItemType;
 import net.minecraft.block.Block;
@@ -49,7 +49,7 @@ public class ItemPipe extends AutomatedTile implements IPipe, ISidedInventory
     
     public ItemPipe()
     {
-        inventory = new Inventory(this, 1, new Component(0, 1, 0));
+        inventory = new Inventory(this, 1, new Group(0, 1, 0));
         netData = new TileEntityData(1, 0, 0, 1);
         netData.longs[0] = 0x555;
     }

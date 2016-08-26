@@ -15,9 +15,9 @@ import cd4017be.automation.Gui.GuiTextureMaker;
 import cd4017be.automation.Item.ItemBuilderTexture;
 import cd4017be.automation.Item.ItemFluidDummy;
 import cd4017be.lib.ModTileEntity;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
-import cd4017be.lib.templates.SlotHolo;
+import cd4017be.lib.Gui.SlotHolo;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.util.Utils;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -409,9 +409,9 @@ public class TextureMaker extends ModTileEntity implements ISidedInventory
     @Override
     public void initContainer(TileContainer container)
     {
-        container.addEntitySlot(new Slot(this, 0, 178, 302));
+        container.addItemSlot(new Slot(this, 0, 178, 302));
         for (int i = 0; i < 15; i++)
-        	container.addEntitySlot(new SlotHolo(this, i + 1, 264, 8 + i * 16, false, false));
+        	container.addItemSlot(new SlotHolo(this, i + 1, 264, 8 + i * 16, false, false));
         container.addPlayerInventory(8, 264);
     }
 

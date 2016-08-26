@@ -10,9 +10,9 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import cd4017be.automation.TileEntity.ItemBuffer;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.TileContainer;
+import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
-import cd4017be.lib.templates.GuiMachine;
 
 public class GuiItemBuffer extends GuiMachine {
 

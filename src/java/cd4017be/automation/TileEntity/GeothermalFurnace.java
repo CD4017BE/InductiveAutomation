@@ -7,16 +7,16 @@ package cd4017be.automation.TileEntity;
 
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.TileContainer.TankSlot;
+import cd4017be.lib.Gui.SlotItemType;
+import cd4017be.lib.Gui.SlotOutput;
+import cd4017be.lib.Gui.SlotTank;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotItemType;
-import cd4017be.lib.templates.SlotOutput;
-import cd4017be.lib.templates.SlotTank;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.init.Blocks;
@@ -41,7 +41,7 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
     public GeothermalFurnace()
     {
         netData = new TileEntityData(2, 5, 0, 1);
-        inventory = new Inventory(this, 7, new Component(4, 5, -1), new Component(5, 6, 1), new Component(0, 1, -1), new Component(1, 2, 0));
+        inventory = new Inventory(this, 7, new Group(4, 5, -1), new Group(5, 6, 1), new Group(0, 1, -1), new Group(1, 2, 0));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], 0, Objects.L_lava).setIn(2).setOut(3)).setNetLong(1);
         
     }
@@ -193,12 +193,12 @@ public class GeothermalFurnace extends AutomatedTile implements IAutomatedInv, I
     @Override
     public void initContainer(TileContainer container)
     {
-        container.addEntitySlot(new Slot(this, 0, 62, 52));
-        container.addEntitySlot(new SlotItemType(this, 1, 62, 16, new ItemStack[]{new ItemStack(Blocks.STONE)}));
-        container.addEntitySlot(new SlotTank(this, 2, 8, 34));
-        container.addEntitySlot(new SlotTank(this, 3, 26, 34));
-        container.addEntitySlot(new Slot(this, 4, 98, 34));
-        container.addEntitySlot(new SlotOutput(this, 5, 152, 34));
+        container.addItemSlot(new Slot(this, 0, 62, 52));
+        container.addItemSlot(new SlotItemType(this, 1, 62, 16, new ItemStack[]{new ItemStack(Blocks.STONE)}));
+        container.addItemSlot(new SlotTank(this, 2, 8, 34));
+        container.addItemSlot(new SlotTank(this, 3, 26, 34));
+        container.addItemSlot(new Slot(this, 4, 98, 34));
+        container.addItemSlot(new SlotOutput(this, 5, 152, 34));
         
         container.addPlayerInventory(8, 86);
         

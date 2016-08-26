@@ -10,13 +10,13 @@ import java.io.IOException;
 
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.TileContainer.TankSlot;
+import cd4017be.lib.Gui.SlotTank;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotTank;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -39,7 +39,7 @@ public class SteamBoiler extends AutomatedTile implements ISidedInventory, IFlui
     public SteamBoiler()
     {
         netData = new TileEntityData(2, 5, 0, 2);
-        inventory = new Inventory(this, 5, new Component(0, 3, -1));
+        inventory = new Inventory(this, 5, new Group(0, 3, -1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_water, Objects.L_biomass).setIn(3), new Tank(Config.tankCap[1], 1, Objects.L_steam).setOut(4)).setNetLong(1);
         
         netData.ints[4] = 1;
@@ -163,10 +163,10 @@ public class SteamBoiler extends AutomatedTile implements ISidedInventory, IFlui
     {
         for (int i = 0; i < 3; i++)
         {
-            container.addEntitySlot(new Slot(this, i, 8, 16 + 18 * i));
+            container.addItemSlot(new Slot(this, i, 8, 16 + 18 * i));
         }
-        container.addEntitySlot(new SlotTank(this, 3, 71, 34));
-        container.addEntitySlot(new SlotTank(this, 4, 143, 34));
+        container.addItemSlot(new SlotTank(this, 3, 71, 34));
+        container.addItemSlot(new SlotTank(this, 4, 143, 34));
         container.addPlayerInventory(8, 86);
         
         container.addTankSlot(new TankSlot(tanks, 0, 62, 16, true));

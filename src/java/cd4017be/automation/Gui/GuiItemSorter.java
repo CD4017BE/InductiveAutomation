@@ -13,8 +13,8 @@ import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.opengl.GL11;
 
 import cd4017be.automation.TileEntity.ItemSorter;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.templates.GuiMachine;
+import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 
 /**
  *

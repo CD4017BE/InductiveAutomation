@@ -13,14 +13,14 @@ import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.api.recipes.AutomationRecipes.LFRecipe;
 import cd4017be.automation.Config;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.TileContainer.TankSlot;
+import cd4017be.lib.Gui.SlotOutput;
+import cd4017be.lib.Gui.SlotTank;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotOutput;
-import cd4017be.lib.templates.SlotTank;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import net.minecraft.inventory.Slot;
@@ -43,7 +43,7 @@ public class AdvancedFurnace extends AutomatedTile implements IEnergy, ISidedInv
     public AdvancedFurnace()
     {
         netData = new TileEntityData(2, 1, 3, 2);
-        inventory = new Inventory(this, 8, new Component(2, 5, -1), new Component(5, 8, 1));
+        inventory = new Inventory(this, 8, new Group(2, 5, -1), new Group(5, 8, 1));
         tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(0), new Tank(Config.tankCap[1], 1).setOut(1)).setNetLong(1);
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData.ints[0] = Config.Rmin;
@@ -172,15 +172,15 @@ public class AdvancedFurnace extends AutomatedTile implements IEnergy, ISidedInv
     @Override
     public void initContainer(TileContainer container)
     {
-        container.addEntitySlot(new SlotTank(this, 0, 62, 34));
-        container.addEntitySlot(new SlotTank(this, 1, 152, 34));
+        container.addItemSlot(new SlotTank(this, 0, 62, 34));
+        container.addItemSlot(new SlotTank(this, 1, 152, 34));
         for (int i = 0; i < 3; i++)
         {
-            container.addEntitySlot(new Slot(this, 2 + i, 80, 16 + 18 * i));
+            container.addItemSlot(new Slot(this, 2 + i, 80, 16 + 18 * i));
         }
         for (int i = 0; i < 3; i++)
         {
-            container.addEntitySlot(new SlotOutput(this, 5 + i, 116, 16 + 18 * i));
+            container.addItemSlot(new SlotOutput(this, 5 + i, 116, 16 + 18 * i));
         }
         
         container.addPlayerInventory(8, 86);

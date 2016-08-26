@@ -22,12 +22,12 @@ import cd4017be.automation.Item.ItemItemUpgrade;
 import cd4017be.automation.Item.ItemMachineSynchronizer;
 import cd4017be.automation.Item.ItemPlacement;
 import cd4017be.automation.Item.PipeUpgradeItem;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotHolo;
+import cd4017be.lib.Gui.SlotItemType;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotHolo;
-import cd4017be.lib.templates.SlotItemType;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.util.CachedChunkProtection;
 import cd4017be.lib.util.Utils;
 import cd4017be.lib.util.Utils.ItemType;
@@ -74,7 +74,7 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
 
     public Farm()
     {
-        inventory = new Inventory(this, 38, new Component(20, 32, 1), new Component(8, 20, 0));
+        inventory = new Inventory(this, 38, new Group(20, 32, 1), new Group(8, 20, 0));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData = new TileEntityData(1, 0, 0, 0);
     }
@@ -375,14 +375,14 @@ public class Farm extends AutomatedTile implements ISidedInventory, IOperatingAr
     public void initContainer(TileContainer container)
     {
     	for (int i = 0; i < 8; i++)
-    		container.addEntitySlot(new SlotHolo(this, i, 8 + 18 * i, 16, false, true));
+    		container.addItemSlot(new SlotHolo(this, i, 8 + 18 * i, 16, false, true));
         
         for (int k = 0; k < 2; k++)
             for (int j = 0; j < 3; j++)
                 for (int i = 0; i < 4; i++)
-                    container.addEntitySlot(new Slot(this, 8 + i + j * 4 + k * 12, 8 + 18 * (i + 5 * k), 34 + 18 * j));
+                    container.addItemSlot(new Slot(this, 8 + i + j * 4 + k * 12, 8 + 18 * (i + 5 * k), 34 + 18 * j));
         
-        container.addEntitySlot(new SlotItemType(this, 36, 152, 16, new ItemStack(Objects.itemUpgrade)));
+        container.addItemSlot(new SlotItemType(this, 36, 152, 16, new ItemStack(Objects.itemUpgrade)));
         
         container.addPlayerInventory(8, 104);
     }

@@ -8,8 +8,8 @@ import net.minecraft.util.math.BlockPos;
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.automation.Objects;
 import cd4017be.lib.BlockItemRegistry;
-import cd4017be.lib.ItemContainer;
-import cd4017be.lib.templates.SlotItemType;
+import cd4017be.lib.Gui.ItemContainer;
+import cd4017be.lib.Gui.SlotItemType;
 
 public class ContainerAreaUpgrade extends ItemContainer 
 {

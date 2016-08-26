@@ -9,10 +9,10 @@ import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import cd4017be.automation.TileEntity.ElectricCoil;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TooltipInfo;
+import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
-import cd4017be.lib.templates.GuiMachine;
 
 public class GuiElectricCoil extends GuiMachine {
 

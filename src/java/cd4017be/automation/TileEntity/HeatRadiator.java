@@ -4,12 +4,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.automation.Config;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
-import cd4017be.lib.TileContainer.TankSlot;
+import cd4017be.lib.Gui.SlotTank;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.SlotTank;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.templates.TankContainer.Tank;
 import cd4017be.lib.util.Obj2;
@@ -51,8 +51,8 @@ public class HeatRadiator extends AutomatedTile implements IFluidHandler {
 	@Override
     public void initContainer(TileContainer container)
     {
-    	container.addEntitySlot(new SlotTank(this, 0, 17, 34));
-        container.addEntitySlot(new SlotTank(this, 1, 143, 34));
+    	container.addItemSlot(new SlotTank(this, 0, 17, 34));
+        container.addItemSlot(new SlotTank(this, 1, 143, 34));
         
         container.addPlayerInventory(8, 86);
         

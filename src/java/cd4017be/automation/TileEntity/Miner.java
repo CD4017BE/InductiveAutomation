@@ -30,11 +30,11 @@ import cd4017be.api.computers.ComputerAPI;
 import cd4017be.automation.Config;
 import cd4017be.automation.Item.ItemMachineSynchronizer;
 import cd4017be.automation.Item.ItemMinerDrill;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.util.CachedChunkProtection;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -84,7 +84,7 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
     
     public Miner()
     {
-        inventory = new Inventory(this, 29, new Component(0, 6, -1), new Component(6, 24, 1));
+        inventory = new Inventory(this, 29, new Group(0, 6, -1), new Group(6, 24, 1));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData = new TileEntityData(1, 1, 0, 0);
     }
@@ -334,14 +334,14 @@ public class Miner extends AutomatedTile implements ISidedInventory, IEnergy, IO
         {
             for (int j = 0; j < 3; j++)
             {
-                container.addEntitySlot(new Slot(this, i + j * 2, 134 + i * 18, 16 + j * 18));
+                container.addItemSlot(new Slot(this, i + j * 2, 134 + i * 18, 16 + j * 18));
             }
         }
         for (int i = 0; i < 6; i++)
         {
             for (int j = 0; j < 3; j++)
             {
-                container.addEntitySlot(new Slot(this, 6 + i + j * 6, 8 + i * 18, 16 + j * 18));
+                container.addItemSlot(new Slot(this, 6 + i + j * 6, 8 + i * 18, 16 + j * 18));
             }
         }
         

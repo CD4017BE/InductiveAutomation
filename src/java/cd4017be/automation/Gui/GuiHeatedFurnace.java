@@ -6,8 +6,8 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.translation.I18n;
 import cd4017be.automation.TileEntity.HeatedFurnace;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.templates.GuiMachine;
+import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 
 public class GuiHeatedFurnace extends GuiMachine {
 

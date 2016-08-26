@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11;
 import cd4017be.api.energy.EnergyAPI;
 import cd4017be.automation.Item.ItemPortableTeleporter;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.templates.GuiMachine;
+import cd4017be.lib.Gui.GuiMachine;
 import cd4017be.lib.util.Utils;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.item.ItemStack;

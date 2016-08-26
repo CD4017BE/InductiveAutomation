@@ -13,12 +13,12 @@ import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.api.recipes.AutomationRecipes.CmpRecipe;
 import cd4017be.automation.Config;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotOutput;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotOutput;
+import cd4017be.lib.templates.Inventory.Group;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.Slot;
@@ -37,7 +37,7 @@ public class ElectricCompressor extends AutomatedTile implements ISidedInventory
     
     public ElectricCompressor()
     {
-        inventory = new Inventory(this, 6, new Component(0, 1, -1), new Component(1, 2, -1), new Component(2, 3, -1), new Component(3, 4, -1), new Component(4, 5, 1));
+        inventory = new Inventory(this, 6, new Group(0, 1, -1), new Group(1, 2, -1), new Group(2, 3, -1), new Group(3, 4, -1), new Group(4, 5, 1));
         energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
         netData = new TileEntityData(1, 1, 2, 0);
         netData.ints[0] = Config.Rmin;
@@ -140,8 +140,8 @@ public class ElectricCompressor extends AutomatedTile implements ISidedInventory
     {
     	for (int j = 0; j < 2; j++)
         	for (int i = 0; i < 2; i++)
-        		container.addEntitySlot(new Slot(this, i + 2 * j, 62 + 18 * i, 25 + 18 * j));
-        container.addEntitySlot(new SlotOutput(this, 4, 134, 34));
+        		container.addItemSlot(new Slot(this, i + 2 * j, 62 + 18 * i, 25 + 18 * j));
+        container.addItemSlot(new SlotOutput(this, 4, 134, 34));
         
         container.addPlayerInventory(8, 86);
     }

@@ -8,13 +8,13 @@ package cd4017be.automation.TileEntity;
 import java.util.ArrayList;
 
 import cd4017be.automation.Config;
-import cd4017be.lib.TileContainer;
-import cd4017be.lib.TileContainer.TankSlot;
+import cd4017be.lib.Gui.SlotTank;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotTank;
+import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,7 +37,7 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
     public Tank()
     {
         netData = new TileEntityData(2, 0, 0, 1);
-        inventory = new Inventory(this, 2, new Component(0, 1, 0), new Component(1, 2, 0));
+        inventory = new Inventory(this, 2, new Group(0, 1, 0), new Group(1, 2, 0));
         tanks = new TankContainer(this, new TankContainer.Tank(this.capacity(), 1).setIn(0).setOut(1)).setNetLong(1);
     }
 
@@ -72,8 +72,8 @@ public class Tank extends AutomatedTile implements IFluidHandler, ISidedInventor
     @Override
     public void initContainer(TileContainer container) 
     {
-        container.addEntitySlot(new SlotTank(this, 0, 184, 74));
-        container.addEntitySlot(new SlotTank(this, 1, 202, 74));
+        container.addItemSlot(new SlotTank(this, 0, 184, 74));
+        container.addItemSlot(new SlotTank(this, 1, 202, 74));
         
         container.addPlayerInventory(8, 16);
         

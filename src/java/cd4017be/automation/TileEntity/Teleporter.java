@@ -29,12 +29,12 @@ import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Item.ItemTeleporterCoords;
 import cd4017be.lib.MovedBlock;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
+import cd4017be.lib.templates.Inventory.Group;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -70,7 +70,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     
     public Teleporter()
     {
-        inventory = new Inventory(this, 16, new Component(1, 2, 0));
+        inventory = new Inventory(this, 16, new Group(1, 2, 0));
         energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
         //mode[int 3]: 0x1 = use rst, 0x2 = rel coord, 0x4 = last rst, 0x8 = teleport, 0x10 = copy
         netData = new TileEntityData(1, 4, 2, 0);
@@ -396,11 +396,11 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, IAutoma
     @Override
     public void initContainer(TileContainer container)
     {
-        container.addEntitySlot(new Slot(this, 0, 116, 52));
-        container.addEntitySlot(new Slot(this, 1, 152, 52));
+        container.addItemSlot(new Slot(this, 0, 116, 52));
+        container.addItemSlot(new Slot(this, 1, 152, 52));
         for (int i = 0; i < 9; i++)
         {
-            container.addEntitySlot(new Slot(this, 2 + i, 8 + i * 18, 16));
+            container.addItemSlot(new Slot(this, 2 + i, 8 + i * 18, 16));
         }
         
         container.addPlayerInventory(8, 86);

@@ -9,12 +9,12 @@ import net.minecraft.util.math.BlockPos;
 import cd4017be.automation.shaft.HeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir.IHeatStorage;
-import cd4017be.lib.TileContainer;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.SlotOutput;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Component;
-import cd4017be.lib.templates.SlotOutput;
+import cd4017be.lib.templates.Inventory.Group;
 
 public class HeatedFurnace extends AutomatedTile implements IHeatStorage {
 	public static final float NeededTemp = 1200F, TRwork = 20, Energy = 250000F;
@@ -23,7 +23,7 @@ public class HeatedFurnace extends AutomatedTile implements IHeatStorage {
 	
 	public HeatedFurnace() {
 		netData = new TileEntityData(1, 1, 2, 0);
-		inventory = new Inventory(this, 3, new Component(0, 1, -1), new Component(1, 2, 1));
+		inventory = new Inventory(this, 3, new Group(0, 1, -1), new Group(1, 2, 1));
 		heat = new HeatReservoir(10000F);
 	}
 
@@ -99,8 +99,8 @@ public class HeatedFurnace extends AutomatedTile implements IHeatStorage {
 
 	@Override
 	public void initContainer(TileContainer container) {
-		container.addEntitySlot(new Slot(this, 0, 17, 16));
-		container.addEntitySlot(new SlotOutput(this, 1, 71, 16));
+		container.addItemSlot(new Slot(this, 0, 17, 16));
+		container.addItemSlot(new SlotOutput(this, 1, 71, 16));
 		container.addPlayerInventory(8, 68);
 	}
 

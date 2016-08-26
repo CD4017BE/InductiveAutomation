@@ -7,7 +7,7 @@ import net.minecraft.util.text.translation.I18n;
 import cd4017be.automation.Item.ItemAntimatterLaser;
 import cd4017be.automation.Item.ItemAntimatterLaser.Enchantments;
 import cd4017be.lib.TooltipInfo;
-import cd4017be.lib.templates.GuiMachine;
+import cd4017be.lib.Gui.GuiMachine;
 
 public class GuiAMLEnchant extends GuiMachine 
 {

@@ -3,8 +3,8 @@ package cd4017be.automation.Gui;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import cd4017be.lib.ItemContainer;
-import cd4017be.lib.templates.SlotItemType;
+import cd4017be.lib.Gui.ItemContainer;
+import cd4017be.lib.Gui.SlotItemType;
 
 public class ContainerAMLEnchant extends ItemContainer 
 {	

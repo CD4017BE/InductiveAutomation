@@ -16,7 +16,7 @@ import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.opengl.GL11;
 
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.templates.GuiMachine;
+import cd4017be.lib.Gui.GuiMachine;
 import cd4017be.lib.util.Utils;
 
 /**
