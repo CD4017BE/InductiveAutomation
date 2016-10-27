@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.Block;
 
 import java.util.List;
@@ -9,7 +5,6 @@ import java.util.List;
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.ProtectLvl;
 import cd4017be.automation.Automation;
-import cd4017be.automation.Item.ItemBlockUnbreakable;
 import cd4017be.lib.DefaultBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyInteger;
@@ -32,20 +27,18 @@ import net.minecraft.world.World;
  *
  * @author CD4017BE
  */
-public class BlockUnbreakable extends DefaultBlock
-{   
-    
-    public BlockUnbreakable(String id)
-    {
-        super(id, Material.ROCK, ItemBlockUnbreakable.class);
-        this.setCreativeTab(Automation.tabAutomation);
-        this.setBlockUnbreakable();
-        this.setResistance(Float.POSITIVE_INFINITY);
-    }
+public class BlockUnbreakable extends DefaultBlock {
 
-    private static final PropertyInteger prop = PropertyInteger.create("type", 0, 15);
-    
-    @Override
+	public BlockUnbreakable(String id) {
+		super(id, Material.ROCK);
+		this.setCreativeTab(Automation.tabAutomation);
+		this.setBlockUnbreakable();
+		this.setResistance(Float.POSITIVE_INFINITY);
+	}
+
+	private static final PropertyInteger prop = PropertyInteger.create("type", 0, 15);
+
+	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return this.blockState.getBaseState().withProperty(prop, meta);
 	}
@@ -54,44 +47,40 @@ public class BlockUnbreakable extends DefaultBlock
 	public int getMetaFromState(IBlockState state) {
 		return state.getValue(prop);
 	}
-    
-    @Override
+
+	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, prop);
 	}
 
 	@Override
-    public int damageDropped(IBlockState m) 
-    {
-        return this.getMetaFromState(m);
-    }
+	public int damageDropped(IBlockState m) {
+		return this.getMetaFromState(m);
+	}
 
-    @Override
-    public void getSubBlocks(Item id, CreativeTabs par2CreativeTabs, List<ItemStack> list) 
-    {
-        for (int i = 0; i < 16; i++) list.add(new ItemStack(id, 1, i));
-    }
+	@Override
+	public void getSubBlocks(Item id, CreativeTabs par2CreativeTabs, List<ItemStack> list) {
+		for (int i = 0; i < 16; i++) list.add(new ItemStack(id, 1, i));
+	}
 
-    @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
-    {
-        ProtectLvl pr = AreaProtect.playerAccess(player.getGameProfile(), world, pos.getX() >> 4, pos.getZ() >> 4);
-        if (pr == ProtectLvl.Free && !world.isRemote && player.isSneaking()) {
-            dropBlockAsItem(world, pos, state, 0);
-            world.setBlockToAir(pos);
-        }
-        return player.isSneaking();
-    }
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) {
+		ProtectLvl pr = AreaProtect.playerAccess(player.getGameProfile(), world, pos.getX() >> 4, pos.getZ() >> 4);
+		if (pr == ProtectLvl.Free && !world.isRemote && player.isSneaking()) {
+			dropBlockAsItem(world, pos, state, 0);
+			world.setBlockToAir(pos);
+		}
+		return player.isSneaking();
+	}
 
-    @Override
-	public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity) 
-	{
+	@Override
+	public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity) {
 		return false;
 	}
-    
-    @Override
+
+	@Override
 	public float getExplosionResistance(Entity exploder) {
-    	if (exploder != null && exploder instanceof EntityWitherSkull) ((EntityWitherSkull)exploder).setInvulnerable(false);
+		if (exploder != null && exploder instanceof EntityWitherSkull) ((EntityWitherSkull)exploder).setInvulnerable(false);
 		return Float.POSITIVE_INFINITY;
 	}
 
@@ -100,5 +89,5 @@ public class BlockUnbreakable extends DefaultBlock
 		if (exploder != null && exploder instanceof EntityWitherSkull) ((EntityWitherSkull)exploder).setInvulnerable(false);
 		return Float.POSITIVE_INFINITY;
 	}
-    
+
 }

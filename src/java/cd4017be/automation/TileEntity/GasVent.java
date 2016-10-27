@@ -2,21 +2,19 @@ package cd4017be.automation.TileEntity;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ITickable;
-import net.minecraft.util.math.BlockPos;
 import cd4017be.automation.gas.GasState;
 import cd4017be.automation.shaft.GasContainer;
-import cd4017be.automation.shaft.GasPhysics.IGasStorage;
+import cd4017be.automation.shaft.GasPhysics;
+import cd4017be.automation.shaft.GasPhysics.IGasCon;
 import cd4017be.automation.shaft.HeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir;
-import cd4017be.lib.ModTileEntity;
-import cd4017be.lib.templates.SharedNetwork;
+import cd4017be.automation.shaft.IHeatReservoir.IHeatStorage;
+import cd4017be.lib.templates.MutiblockTile;
 
-public class GasVent extends ModTileEntity implements IGasStorage, ITickable {
+public class GasVent extends MutiblockTile<GasContainer, GasPhysics> implements IGasCon, IHeatStorage, ITickable {
 
-	public GasContainer gas;
-	
 	public GasVent() {
-		gas = new GasContainer(this, 5F);
+		comp = new GasContainer(this, 5F);
 	}
 
 	@Override
@@ -26,7 +24,7 @@ public class GasVent extends ModTileEntity implements IGasStorage, ITickable {
 
 	@Override
 	public IHeatReservoir getHeat(byte side) {
-		return gas;
+		return comp;
 	}
 
 	@Override
@@ -35,52 +33,23 @@ public class GasVent extends ModTileEntity implements IGasStorage, ITickable {
 	}
 
 	@Override
-	public GasContainer getGas() {
-		return gas;
-	}
-
-	@Override
 	public void update() {
 		if (worldObj.isRemote) return;
-		if (gas.updateCon) gas.network.updateLink(gas);
-		gas.network.updateTick(gas);
+		super.update();
 		GasState state = GasContainer.getEnvironmentGas(worldObj, pos, 100);
-		if (state.exchange(gas.network.gas) == 0) gas.network.gas.exchange(state);
-	}
-	
-	@Override
-	public void onNeighborTileChange(BlockPos pos) {
-		gas.updateCon = true;
+		if (state.exchange(comp.network.gas) == 0) comp.network.gas.exchange(state);
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		gas.writeToNBT(nbt, "gas");
-        return super.writeToNBT(nbt);
+		comp.writeToNBT(nbt, "gas");
+		return super.writeToNBT(nbt);
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) 
-	{
+	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-		gas = GasContainer.readFromNBT(this, nbt, "gas", 5F);
-	}
-	
-	@Override
-	public void validate() {
-		super.validate();
-		if (!worldObj.isRemote) gas.initUID(SharedNetwork.ExtPosUID(pos, 0));
+		comp = GasContainer.readFromNBT(this, nbt, "gas", 5F);
 	}
 
-	@Override
-	public void invalidate() {
-		super.invalidate();
-		gas.remove();
-	}
-
-	@Override
-	public void onChunkUnload() {
-		super.onChunkUnload();
-		gas.remove();
-	}
 }

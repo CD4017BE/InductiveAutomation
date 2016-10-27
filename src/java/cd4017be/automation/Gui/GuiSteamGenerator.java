@@ -13,10 +13,10 @@ import net.minecraft.entity.player.EntityPlayer;
  */
 public class GuiSteamGenerator extends GuiSteamEngine
 {
-    
-    public GuiSteamGenerator(SteamGenerator tileEntity, EntityPlayer player)
-    {
-        super(tileEntity, player);
-    }
-    
+	
+	public GuiSteamGenerator(SteamGenerator tileEntity, EntityPlayer player)
+	{
+		super(tileEntity, player);
+	}
+	
 }

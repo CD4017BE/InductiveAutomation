@@ -8,14 +8,12 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.util.EnumBlockRenderType;
 import cd4017be.lib.DefaultBlock;
 
-public class GhostBlock extends DefaultBlock 
-{
+public class GhostBlock extends DefaultBlock {
 
 	public static Block ID;
-	
-	public GhostBlock(String id) 
-	{
-		super(id, Material.ROCK, null);
+
+	public GhostBlock(String id) {
+		super(id, Material.ROCK);
 		ID = this;
 	}
 

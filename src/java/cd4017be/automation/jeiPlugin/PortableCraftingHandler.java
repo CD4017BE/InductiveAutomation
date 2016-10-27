@@ -3,8 +3,8 @@ package cd4017be.automation.jeiPlugin;
 import java.util.List;
 import java.util.Map.Entry;
 
-import cd4017be.automation.Gui.ContainerPortableCrafting;
 import cd4017be.lib.BlockGuiHandler;
+import cd4017be.lib.Gui.TileContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -19,13 +19,13 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 
-public class PortableCraftingHandler implements IRecipeTransferHandler<ContainerPortableCrafting> {
+public class PortableCraftingHandler implements IRecipeTransferHandler<TileContainer> {
 
 	public PortableCraftingHandler(IRecipeTransferHandlerHelper helper) {}
 	
 	@Override
-	public Class<ContainerPortableCrafting> getContainerClass() {
-		return ContainerPortableCrafting.class;
+	public Class<TileContainer> getContainerClass() {
+		return TileContainer.class;
 	}
 
 	@Override
@@ -34,7 +34,7 @@ public class PortableCraftingHandler implements IRecipeTransferHandler<Container
 	}
 
 	@Override
-	public IRecipeTransferError transferRecipe(ContainerPortableCrafting container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
+	public IRecipeTransferError transferRecipe(TileContainer container, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
 		if (!doTransfer) return null;
 		IGuiItemStackGroup items = recipeLayout.getItemStacks();
 		ItemStack type, stack;

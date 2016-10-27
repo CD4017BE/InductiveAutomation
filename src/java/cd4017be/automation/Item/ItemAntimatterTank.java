@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.Item;
 
 import java.util.List;
@@ -26,78 +22,69 @@ import net.minecraftforge.fluids.IFluidContainerItem;
  *
  * @author CD4017BE
  */
-public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterItem, IFluidContainerItem
-{
-    public static double explFaktor;
-    public static int BombMaxCap = 160000000;
-    private final int cap;
-    
-    public ItemAntimatterTank(Block id)
-    {
-        super(id);
-        this.setMaxStackSize(1);
-        cap = id == Objects.antimatterBombF ? BombMaxCap : Config.tankCap[4];
-    }
+public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterItem, IFluidContainerItem {
 
-    @Override
-	public EnumRarity getRarity(ItemStack item) 
-    {
+	public static double explFaktor;
+	public static int BombMaxCap = 160000000;
+	private final int cap;
+
+	public ItemAntimatterTank(Block id){
+		super(id);
+		this.setMaxStackSize(1);
+		cap = id == Objects.antimatterBombF ? BombMaxCap : Config.tankCap[4];
+	}
+
+	@Override
+	public EnumRarity getRarity(ItemStack item) {
 		return item.isItemEqual(new ItemStack(Objects.antimatterBombF)) ? EnumRarity.EPIC : EnumRarity.UNCOMMON;
 	}
-    
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
-    public void addInformation(ItemStack item, EntityPlayer player, List list, boolean par4) 
-    {
-        AntimatterItemHandler.addInformation(item, list);
-        if (item.getTagCompound() != null && item.isItemEqual(new ItemStack(Objects.antimatterBombF)))
-        {
-            int d = (int)Math.cbrt((double)item.getTagCompound().getInteger(getAntimatterTag(item)) * explFaktor);
-            list.add("Crater radius (Stone) ~ " + d + " m");
-            if (d > AntimatterBomb.maxSize) list.add(String.format("Explosion will stop at %d m !", AntimatterBomb.maxSize));
-        }
-        super.addInformation(item, player, list, par4);
-    }
-
-    @Override
-    public void getSubItems(Item id, CreativeTabs tab, List<ItemStack> list) 
-    {
-        super.getSubItems(id, tab, list);
-        if (id == Item.getItemFromBlock(Objects.antimatterTank)) {
-            ItemStack item = new ItemStack(id, 1, 0);
-            item.setTagCompound(new NBTTagCompound());
-            item.getTagCompound().setInteger("antimatter", Config.tankCap[4]);
-            list.add(item);
-        }
-    }
-
-    @Override
-    public int getAmCapacity(ItemStack item) 
-    {
-        return cap;
-    }
-
-    @Override
-    public String getAntimatterTag(ItemStack item) 
-    {
-        return "antimatter";
-    }
+	public void addInformation(ItemStack item, EntityPlayer player, List list, boolean par4) {
+		AntimatterItemHandler.addInformation(item, list);
+		if (item.getTagCompound() != null && item.isItemEqual(new ItemStack(Objects.antimatterBombF)))
+		{
+			int d = (int)Math.cbrt((double)item.getTagCompound().getInteger(getAntimatterTag(item)) * explFaktor);
+			list.add("Crater radius (Stone) ~ " + d + " m");
+			if (d > AntimatterBomb.maxSize) list.add(String.format("Explosion will stop at %d m !", AntimatterBomb.maxSize));
+		}
+		super.addInformation(item, player, list, par4);
+	}
 
 	@Override
-	public FluidStack getFluid(ItemStack item) 
-	{
+	public void getSubItems(Item id, CreativeTabs tab, List<ItemStack> list) {
+		super.getSubItems(id, tab, list);
+		if (id == Item.getItemFromBlock(Objects.antimatterTank)) {
+			ItemStack item = new ItemStack(id, 1, 0);
+			item.setTagCompound(new NBTTagCompound());
+			item.getTagCompound().setInteger("antimatter", Config.tankCap[4]);
+			list.add(item);
+		}
+	}
+
+	@Override
+	public int getAmCapacity(ItemStack item) {
+		return cap;
+	}
+
+	@Override
+	public String getAntimatterTag(ItemStack item) {
+		return "antimatter";
+	}
+
+	@Override
+	public FluidStack getFluid(ItemStack item) {
 		return new FluidStack(Objects.L_antimatter, AntimatterItemHandler.getAntimatter(item));
 	}
 
 	@Override
-	public int getCapacity(ItemStack item) 
-	{
+	public int getCapacity(ItemStack item) {
 		return getAmCapacity(item);
 	}
 
 	@Override
-	public int fill(ItemStack item, FluidStack resource, boolean doFill) 
-	{
+	public int fill(ItemStack item, FluidStack resource, boolean doFill) {
 		if (resource == null || resource.getFluid() != Objects.L_antimatter) return 0;
 		if (doFill) return AntimatterItemHandler.addAntimatter(item, resource.amount);
 		else return Math.min(resource.amount, getAmCapacity(item) - AntimatterItemHandler.getAntimatter(item));
@@ -108,5 +95,5 @@ public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterI
 		if (doDrain) return new FluidStack(Objects.L_antimatter, -AntimatterItemHandler.addAntimatter(item, -maxDrain));
 		else return new FluidStack(Objects.L_antimatter, Math.min(maxDrain, AntimatterItemHandler.getAntimatter(item)));
 	}
-    
+
 }

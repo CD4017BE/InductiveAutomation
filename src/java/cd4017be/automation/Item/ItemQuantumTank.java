@@ -5,23 +5,19 @@ import net.minecraft.block.Block;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemStack;
 
-public class ItemQuantumTank extends ItemTank 
-{
+public class ItemQuantumTank extends ItemTank {
 
-	public ItemQuantumTank(Block id) 
-	{
+	public ItemQuantumTank(Block id) {
 		super(id);
 	}
-	
+
 	@Override
-    public int getCapacity(ItemStack item) 
-    {
-        return Config.tankCap[5];
-    }
-	
+	public int getCapacity(ItemStack item) {
+		return Config.tankCap[5];
+	}
+
 	@Override
-	public EnumRarity getRarity(ItemStack item) 
-    {
+	public EnumRarity getRarity(ItemStack item) {
 		return EnumRarity.UNCOMMON;
 	}
 

@@ -1,15 +1,15 @@
 package cd4017be.automation.Item;
 
-import java.io.IOException;
 import java.util.List;
 
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.automation.Config;
-import cd4017be.automation.Gui.ContainerPortableTeleporter;
 import cd4017be.automation.Gui.GuiPortableTeleporter;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.IGuiItem;
 import cd4017be.lib.MovedBlock;
+import cd4017be.lib.Gui.ItemGuiData;
+import cd4017be.lib.Gui.TileContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -34,41 +34,34 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
-public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
-{
-	
+public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem {
+
 	public static float energyUse = 8.0F;
-	
-	public ItemPortableTeleporter(String id) 
-	{
+
+	public ItemPortableTeleporter(String id) {
 		super(id, Config.Ecap[1]);
 		this.setMaxDamage(16);
 		this.setMaxStackSize(1);
 	}
-	
+
 	@Override
-	public EnumRarity getRarity(ItemStack item) 
-    {
+	public EnumRarity getRarity(ItemStack item) {
 		return EnumRarity.RARE;
 	}
 
 	@Override
-	public Container getContainer(World world, EntityPlayer player, int x, int y, int z) 
-	{
-		return new ContainerPortableTeleporter(player);
+	public Container getContainer(World world, EntityPlayer player, int x, int y, int z) {
+		return new TileContainer(new ItemGuiData(this), player);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public GuiContainer getGui(World world, EntityPlayer player, int x, int y, int z) 
-	{
-		return new GuiPortableTeleporter(new ContainerPortableTeleporter(player));
+	public GuiContainer getGui(World world, EntityPlayer player, int x, int y, int z) {
+		return new GuiPortableTeleporter(new TileContainer(new ItemGuiData(this), player));
 	}
 
 	@Override
-	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
-	{
-		ItemStack item = player.getHeldItem(player.getActiveHand());
+	public void onPlayerCommand(ItemStack item, EntityPlayer player, PacketBuffer dis) {
 		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 		NBTTagList points = item.getTagCompound().getTagList("points", 10);
 		NBTTagCompound tag;
@@ -83,11 +76,11 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 			if (y < 0 || y > 256) {
 				player.addChatMessage(new TextComponentString("Destination outside the world!"));
 				return;
-			} else if (world.getBlockState(new BlockPos(x, y, z)).getMaterial().blocksMovement() || world.getBlockState(new BlockPos(x, y + 1, z)).getMaterial().blocksMovement()) {
+			} else if (player.worldObj.getBlockState(new BlockPos(x, y, z)).getMaterial().blocksMovement() || player.worldObj.getBlockState(new BlockPos(x, y + 1, z)).getMaterial().blocksMovement()) {
 				player.addChatMessage(new TextComponentString("Destination obscured!"));
 				return;
 			}
-			this.teleportTo(item, world, x, y, z, player);
+			this.teleportTo(item, player.worldObj, x, y, z, player);
 			player.setHeldItem(player.getActiveHand(), item);
 			return;
 		} else if (cmd == 1) {//add Point
@@ -118,34 +111,31 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 	}
 
 	@Override
-	public int getChargeSpeed(ItemStack item) 
-	{
+	public int getChargeSpeed(ItemStack item) {
 		return 400;
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
-	{
+	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) {
 		if (player.isSneaking()) {
 			if (world.isRemote) return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
 			Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-	        Vec3d dir = player.getLookVec();
-	        RayTraceResult obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 256, dir.yCoord * 256, dir.zCoord * 256), false, true, false);
-	        if (obj == null) return new ActionResult<ItemStack>(EnumActionResult.PASS, item);
-	        int[] t = this.findTarget(obj, world);
-	        if (t != null) {
-	        	this.teleportTo(item, world, t[0], t[1], t[2], player);
-	        } else {
-	        	player.addChatMessage(new TextComponentString("Destination obscured!"));
-	        }
+			Vec3d dir = player.getLookVec();
+			RayTraceResult obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * 256, dir.yCoord * 256, dir.zCoord * 256), false, true, false);
+			if (obj == null) return new ActionResult<ItemStack>(EnumActionResult.PASS, item);
+			int[] t = this.findTarget(obj, world);
+			if (t != null) {
+				this.teleportTo(item, world, t[0], t[1], t[2], player);
+			} else {
+				player.addChatMessage(new TextComponentString("Destination obscured!"));
+			}
 		} else {
 			BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
 		}
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
 	}
-	
-	private int[] findTarget(RayTraceResult pos, World world)
-	{
+
+	private int[] findTarget(RayTraceResult pos, World world) {
 		if (!world.getBlockState(pos.getBlockPos().up()).getMaterial().blocksMovement() && !world.getBlockState(pos.getBlockPos().up(2)).getMaterial().blocksMovement())
 			return new int[]{pos.getBlockPos().getX(), pos.getBlockPos().getY() + 1, pos.getBlockPos().getZ()};
 		if (pos.sideHit == EnumFacing.UP) return null;
@@ -160,15 +150,14 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 		else if (!world.getBlockState(p.up()).getMaterial().blocksMovement()) return new int[]{p.getX(), p.getY(), p.getZ()};
 		else return null;
 	}
-	
-	public void teleportTo(ItemStack item, World world, int x, int y, int z, EntityPlayer player)
-	{
+
+	public void teleportTo(ItemStack item, World world, int x, int y, int z, EntityPlayer player) {
 		int x0 = MathHelper.floor_double(player.posX),
 			y0 = MathHelper.floor_double(player.posY) - 1,
 			z0 = MathHelper.floor_double(player.posZ);
 		int dx = x - x0, dy = y - y0, dz = z - z0;
 		int e = MathHelper.floor_double(Math.sqrt(dx * dx + dy * dy + dz * dz) * energyUse);
-		EnergyItem energy = new EnergyItem(item, this);
+		EnergyItem energy = new EnergyItem(item, this, -1);
 		if (energy.getStorageI() < e) {
 			player.addChatMessage(new TextComponentString("Not enough Energy: " + e + " kJ needed!"));
 			return;
@@ -177,7 +166,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem
 			player.addChatMessage(new TextComponentString("Destination protected!"));
 			return;
 		}
-		energy.addEnergyI(-e, -1);
+		energy.addEnergyI(-e);
 		int dim = player.dimension;
 		List<Entity> entities = world.getEntitiesWithinAABB(Entity.class, new AxisAlignedBB(x0, y0, z0, x0 + 1, y0 + 2, z0 + 1));
 		for (Entity entity : entities) {

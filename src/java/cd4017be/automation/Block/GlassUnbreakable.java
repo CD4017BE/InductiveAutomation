@@ -1,14 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.Block;
 
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.automation.ProtectLvl;
 import cd4017be.automation.Automation;
 import cd4017be.lib.DefaultBlock;
-import cd4017be.lib.DefaultItemBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
@@ -29,60 +24,54 @@ import net.minecraftforge.fml.relauncher.SideOnly;
  *
  * @author CD4017BE
  */
-public class GlassUnbreakable extends DefaultBlock
-{
-    
-    public GlassUnbreakable(String id)
-    {
-        super(id, Material.GLASS, DefaultItemBlock.class);
-        this.setCreativeTab(Automation.tabAutomation);
-        this.setBlockUnbreakable();
-        this.setResistance(Float.POSITIVE_INFINITY);
-    }
+public class GlassUnbreakable extends DefaultBlock {
 
-    @Override
-    public boolean isOpaqueCube(IBlockState state) 
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isBlockSolid(IBlockAccess world, BlockPos pos, EnumFacing side) {
-        return true;
-    }
-    
-    @SideOnly(Side.CLIENT)
-    public BlockRenderLayer getBlockLayer()
-    {
-        return BlockRenderLayer.CUTOUT;
-    }
-
-    @Override
-	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
-    	if (world.getBlockState(pos) == this) return false;
-        else return super.shouldSideBeRendered(state, world, pos, side);
+	public GlassUnbreakable(String id) {
+		super(id, Material.GLASS);
+		this.setCreativeTab(Automation.tabAutomation);
+		this.setBlockUnbreakable();
+		this.setResistance(Float.POSITIVE_INFINITY);
 	}
 
-    @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) 
-    {
-        ProtectLvl pr = AreaProtect.playerAccess(player.getGameProfile(), world, pos.getX() >> 4, pos.getZ() >> 4);
-        if (pr == ProtectLvl.Free && !world.isRemote && player.isSneaking()) {
-            dropBlockAsItem(world, pos, state, 0);
-            world.setBlockToAir(pos);
-        }
-        return player.isSneaking();
-    }
-    
-    @Override
-	public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity) 
-	{
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
 		return false;
 	}
 
-    @Override
+	@Override
+	public boolean isBlockSolid(IBlockAccess world, BlockPos pos, EnumFacing side) {
+		return true;
+	}
+
+	@SideOnly(Side.CLIENT)
+	public BlockRenderLayer getBlockLayer() {
+		return BlockRenderLayer.CUTOUT;
+	}
+
+	@Override
+	public boolean shouldSideBeRendered(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing side) {
+		if (world.getBlockState(pos) == this) return false;
+		else return super.shouldSideBeRendered(state, world, pos, side);
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing s, float X, float Y, float Z) {
+		ProtectLvl pr = AreaProtect.playerAccess(player.getGameProfile(), world, pos.getX() >> 4, pos.getZ() >> 4);
+		if (pr == ProtectLvl.Free && !world.isRemote && player.isSneaking()) {
+			dropBlockAsItem(world, pos, state, 0);
+			world.setBlockToAir(pos);
+		}
+		return player.isSneaking();
+	}
+
+	@Override
+	public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity) {
+		return false;
+	}
+
+	@Override
 	public float getExplosionResistance(Entity exploder) {
-    	if (exploder != null && exploder instanceof EntityWitherSkull) ((EntityWitherSkull)exploder).setInvulnerable(false);
+		if (exploder != null && exploder instanceof EntityWitherSkull) ((EntityWitherSkull)exploder).setInvulnerable(false);
 		return Float.POSITIVE_INFINITY;
 	}
 
@@ -91,5 +80,5 @@ public class GlassUnbreakable extends DefaultBlock
 		if (exploder != null && exploder instanceof EntityWitherSkull) ((EntityWitherSkull)exploder).setInvulnerable(false);
 		return Float.POSITIVE_INFINITY;
 	}
-    
+
 }

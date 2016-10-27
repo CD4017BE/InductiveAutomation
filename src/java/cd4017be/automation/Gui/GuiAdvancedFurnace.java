@@ -1,18 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.Gui;
-
-import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
-
-import org.lwjgl.opengl.GL11;
-
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
 import cd4017be.automation.TileEntity.AdvancedFurnace;
@@ -25,88 +15,47 @@ import cd4017be.lib.templates.AutomatedTile;
  *
  * @author CD4017BE
  */
-public class GuiAdvancedFurnace extends GuiMachine
-{
-    private final AdvancedFurnace tileEntity;
-    
-    public GuiAdvancedFurnace(AdvancedFurnace tileEntity, EntityPlayer player)
-    {
-        super(new TileContainer(tileEntity, player));
-        this.tileEntity = tileEntity;
-    }
+public class GuiAdvancedFurnace extends GuiMachine {
 
-    @Override
-    public void initGui() 
-    {
-        this.xSize = 176;
-        this.ySize = 168;
-        super.initGui();
-    }
+	private final AdvancedFurnace tile;
 
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mx, int my) 
-    {
-        super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(26, 16, 8, 52, PipeEnergy.getEnergyInfo(tileEntity.netData.floats[2], 0F, (float)tileEntity.netData.ints[0]));
-        this.drawInfo(100, 18, 12, 12, "\\i", "advancedFurnace.swap");
-        this.drawInfo(8, 36, 16, 12, "\\i", "resistor");
-    }
-    
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) 
-    {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/advancedFurnace.png"));
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        int n = tileEntity.getProgressScaled(18);
-        this.drawTexturedModalRect(this.guiLeft + 97, this.guiTop + 37, 184, 0, n, 10);
-        n = tileEntity.getPowerScaled(52);
-        this.drawTexturedModalRect(this.guiLeft + 26, this.guiTop + 68 - n, 176, 52 - n, 8, n);
-        this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
-        this.drawStringCentered("" + tileEntity.netData.ints[0], this.guiLeft + 16, this.guiTop + 38, 0x404040);
-        super.drawGuiContainerBackgroundLayer(var1, x, y);
-    }
-    
-    @Override
-    protected void mouseClicked(int x, int y, int b) throws IOException
-    {
-        boolean a = false;
-        int cmd = 0;
-        if (this.isPointInRegion(100, 18, 12, 12, x, y))
-        {
-            cmd = 1;
-            a = true;
-        } else
-        if (this.isPointInRegion(8, 16, 16, 10, x, y))
-        {
-            tileEntity.netData.ints[0] += 10;
-            a = true;
-        } else
-        if (this.isPointInRegion(8, 26, 16, 10, x, y))
-        {
-            tileEntity.netData.ints[0] ++;
-            a = true;
-        } else
-        if (this.isPointInRegion(8, 48, 16, 10, x, y))
-        {
-            tileEntity.netData.ints[0] --;
-            a = true;
-        } else
-        if (this.isPointInRegion(8, 58, 16, 10, x, y))
-        {
-            tileEntity.netData.ints[0] -= 10;
-            a = true;
-        }
-        if (a)
-        {
-        	if (tileEntity.netData.ints[0] < Config.Rmin) tileEntity.netData.ints[0] = Config.Rmin;
-            PacketBuffer dos = tileEntity.getPacketTargetData();
-            dos.writeByte(cmd + AutomatedTile.CmdOffset);
-            if (cmd == 0) dos.writeInt(tileEntity.netData.ints[0]);
-            BlockGuiHandler.sendPacketToServer(dos);
-        }
-        super.mouseClicked(x, y, b);
-    }
-    
+	public GuiAdvancedFurnace(AdvancedFurnace tileEntity, EntityPlayer player) {
+		super(new TileContainer(tileEntity, player));
+		this.tile = tileEntity;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/advancedFurnace.png");
+	}
+
+	@Override
+	public void initGui() {
+		this.xSize = 176;
+		this.ySize = 168;
+		super.initGui();
+		guiComps.add(new NumberSel(5, 8, 16, 16, 52, "%d", Config.Rmin, 1000, 10).setTooltip("resistor"));
+		guiComps.add(new ProgressBar(6, 26, 16, 8, 52, 176, 0, (byte)1));
+		guiComps.add(new Tooltip(7, 26, 16, 8, 52, "energyFlow"));
+		guiComps.add(new Button(8, 100, 18, 12, 12, -1).setTooltip("advancedFurnace.swap"));
+		guiComps.add(new ProgressBar(9, 97, 37, 18, 10, 184, 0, (byte)0));
+	}
+
+	@Override
+	protected Object getDisplVar(int id) {
+		switch(id) {
+		case 5: return tile.Rw;
+		case 6: return tile.getPower();
+		case 7: return PipeEnergy.getEnergyInfo(tile.Uc, 0, tile.Rw);
+		case 9: return tile.getProgress();
+		default: return null;
+		}
+	}
+
+	@Override
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		PacketBuffer dos = tile.getPacketTargetData();
+		switch(id) {
+		case 5: dos.writeByte(AutomatedTile.CmdOffset).writeInt(tile.Rw = (Integer)obj); break;
+		case 8: dos.writeByte(AutomatedTile.CmdOffset + 1); break;
+		}
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
+	}
+
 }

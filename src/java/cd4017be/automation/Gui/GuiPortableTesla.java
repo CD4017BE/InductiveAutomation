@@ -1,137 +1,67 @@
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
-import org.lwjgl.opengl.GL11;
-
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 
-public class GuiPortableTesla extends GuiMachine 
-{
-	private final ContainerPortableTesla container;
-	private GuiTextField freq;
-	private boolean Enabled;
-	private byte[] Ipos = new byte[3];
-	private int Estore;
-	private short mode;
-	
-	public GuiPortableTesla(ContainerPortableTesla container) 
-	{
+public class GuiPortableTesla extends GuiMachine {
+
+	private final InventoryPlayer inv;
+
+	public GuiPortableTesla(TileContainer container) {
 		super(container);
-		this.container = container;
+		this.inv = container.player.inventory;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/portableTesla.png");
 	}
 
 	@Override
-    public void initGui() 
-    {
-        this.xSize = 176;
-        this.ySize = 132;
-        super.initGui();
-        freq = new GuiTextField(0, fontRendererObj, this.guiLeft + 8, this.guiTop + 16, 34, 16);
-    }
+	public void initGui() {
+		this.xSize = 194;
+		this.ySize = 132;
+		super.initGui();
+		guiComps.add(new TextField(0, 134, 16, 34, 7, 5).setTooltip("tesla.set"));
+		guiComps.add(new Button(1, 169, 15, 18, 9, 0).texture(194, 27).setTooltip("teslaP.on"));
+		guiComps.add(new Button(2, 133, 24, 18, 9, 0).texture(194, 0).setTooltip("teslaP.invH"));
+		guiComps.add(new Button(3, 151, 24, 18, 9, 0).texture(212, 0).setTooltip("teslaP.invM"));
+		guiComps.add(new Button(4, 169, 24, 18, 9, 0).texture(230, 0).setTooltip("teslaP.invA"));
+		guiComps.add(new Text(5, 8, 16, 120, 10, "tesla.stor").center());
+		guiComps.add(new Text(6, 0, 4, xSize, 0, "gui.cd4017be.portableTesla.name").center());
+	}
 
-    @Override
-    public void updateScreen() 
-    {
-        super.updateScreen();
-        ItemStack item = container.player.getHeldItemMainhand();
-        if (item != null && item.getTagCompound() != null) {
-        	mode = item.getTagCompound().getShort("mode");
-        	double u = item.getTagCompound().getDouble("voltage");
-        	Estore = (int)(u * u * 0.001D);
-        	Enabled = (mode & 0x1) != 0;
-        	for (int i = 0; i < 3; i++) {
-        		
-        		Ipos[i] = (byte)(mode >> (8 + i * 2) & 0x3);
-        	}
-        	if (!freq.isFocused()) 
-        		freq.setText("" + item.getTagCompound().getShort("freq"));
-        }
-        freq.updateCursorCounter();
-    }
+	@Override
+	protected Object getDisplVar(int id) {
+		ItemStack item = inv.mainInventory[inv.currentItem];
+		NBTTagCompound nbt = item != null && item.hasTagCompound() ? item.getTagCompound() : new NBTTagCompound();
+		switch(id) {
+		case 0: return "" + nbt.getShort("freq");
+		case 1: return nbt.getShort("mode") & 1;
+		case 2: return nbt.getShort("mode") >> 8 & 3;
+		case 3: return nbt.getShort("mode") >> 10 & 3;
+		case 4: return nbt.getShort("mode") >> 12 & 3;
+		case 5: {double u = nbt.getDouble("voltage"); return (int)(u * u * 0.001D);}
+		default: return null;
+		}
+	}
 
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mx, int my) 
-    {
-        super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(44, 16, 16, 16, "\\i", "tesla.set");
-        this.drawInfo(62, 25, 16, 7, "\\i", "teslaP.on");
-        this.drawInfo(116, 25, 16, 7, "\\i", "teslaP.invH");
-        this.drawInfo(134, 25, 16, 7, "\\i", "teslaP.invM");
-        this.drawInfo(152, 25, 16, 7, "\\i", "teslaP.invA");
-    }
-    
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
-    {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/portableTesla.png"));
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        this.drawTexturedModalRect(guiLeft + 61, guiTop + 24, 230, Enabled ? 18 : 9, 18, 9);
-        for (int i = 0; i < 3; i++) {
-        	if (Ipos[i] == 1) this.drawTexturedModalRect(guiLeft + 115 + i * 18, guiTop + 24, 176 + i * 18, 9, 18, 9);
-        	else if (Ipos[i] == 2) this.drawTexturedModalRect(guiLeft + 115 + i * 18, guiTop + 24, 176 + i * 18, 18, 18, 9);
-        }
-        freq.drawTextBox();
-        this.drawLocString(this.guiLeft + 62, this.guiTop + 16, 8, 0xffdf40, "tesla.stor", Estore);
-        this.drawStringCentered(I18n.translateToLocal("gui.cd4017be.portableTesla.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
-    }
-    
-    @Override
-    protected void mouseClicked(int x, int y, int b) throws IOException 
-    {
-        freq.mouseClicked(x, y, b);
-    	byte cmd = -1;
-        short v = 0;
-    	if (this.isPointInRegion(61, 24, 18, 9, x, y)) {
-            cmd = 0;
-            mode ^= 1;
-        } else if (this.isPointInRegion(115, 24, 54, 9, x, y)) {
-        	cmd = 0;
-            int i = ((x - this.guiLeft - 115) / 18) % 3;
-            int p = 8 + i * 2;
-            int k = mode >> p & 0x3;
-            k = (k + (b == 0 ? 1 : 2)) % 3;
-            mode = (short)((mode & ~(0x3 << p)) | (k << p));
-        } else
-        if (this.isPointInRegion(44, 16, 16, 16, x, y)) {
-        	cmd = 1;
-        	v = (short)this.getNumber(freq.getText());
-        	if (v < 0) v = 0;
-        }
-        if (cmd >= 0)
-        {
-            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
-            dos.writeByte(cmd);
-            if (cmd == 0) dos.writeShort(mode);
-            else if (cmd == 1) dos.writeShort(v); 
-            BlockGuiHandler.sendPacketToServer(dos);
-        }
-        super.mouseClicked(x, y, b);
-    }
-    
-    @Override
-    protected void keyTyped(char c, int k) throws IOException 
-    {
-        if (!freq.isFocused()) super.keyTyped(c, k);
-        freq.textboxKeyTyped(c, k);
-    }
-    
-    private int getNumber(String s)
-    {
-    	try{
-    		return Integer.parseInt(s);
-    	} catch(NumberFormatException e) {
-    		return 0;
-    	}
-    }
+	@Override
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		PacketBuffer dos = BlockGuiHandler.getPacketTargetData(((TileContainer)inventorySlots).data.pos());
+		if (id == 0) try {
+				dos.writeByte(1).writeShort(Integer.parseInt((String)obj));
+			} catch(NumberFormatException e) {return;}
+		else if (id < 5){
+			ItemStack item = inv.mainInventory[inv.currentItem];
+			short mode = item != null && item.hasTagCompound() ? item.getTagCompound().getShort("mode") : 0;
+			if (id == 1) mode ^= 1;
+			else mode ^= 1 << (id * 2 + 4);
+			dos.writeByte(0).writeShort(mode);
+		} else return;
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
+	}
 
 }

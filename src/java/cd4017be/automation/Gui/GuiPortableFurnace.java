@@ -1,83 +1,54 @@
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
-import org.lwjgl.opengl.GL11;
-
 import cd4017be.api.energy.EnergyAPI;
 import cd4017be.api.energy.EnergyAutomation.IEnergyItem;
+import cd4017be.automation.Item.ItemFilteredSubInventory;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 
 public class GuiPortableFurnace extends GuiMachine {
-	
-	private final ContainerPortableFurnace furnace;
-	private int energy;
+
+	private final InventoryPlayer inv;
 	private int capacity;
-	
-	public GuiPortableFurnace(ContainerPortableFurnace container) 
-	{
+
+	public GuiPortableFurnace(TileContainer container) {
 		super(container);
-		this.furnace = container;
+		this.inv = container.player.inventory;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/portableFurnace.png");
 	}
 
 	@Override
-    public void initGui() 
-    {
-        this.xSize = 176;
-        this.ySize = 132;
-        super.initGui();
-        ItemStack item = this.furnace.player.getHeldItemMainhand();
-        if (item.getItem() instanceof IEnergyItem) {
-        	capacity = ((IEnergyItem)item.getItem()).getEnergyCap(item);
-        }
-    }
-
-    @Override
-	public void updateScreen() 
-    {
-		energy = (int)(EnergyAPI.get(this.furnace.player.getHeldItemMainhand()).getStorage(0) / 1000D);
-		super.updateScreen();
+	public void initGui() {
+		ItemStack item = inv.mainInventory[inv.currentItem];
+		if (item.getItem() instanceof IEnergyItem)
+			capacity = ((IEnergyItem)item.getItem()).getEnergyCap(item);
+		this.xSize = 176;
+		this.ySize = 132;
+		super.initGui();
+		guiComps.add(new Button(0, 61, 19, 18, 10, 0).texture(176, 16).setTooltip("inputFilter"));
+		guiComps.add(new ProgressBar(1, 116, 16, 34, 16, 176, 0, (byte)0).setTooltip("x*" + capacity + "+0;storage"));
+		guiComps.add(new Text(2, 0, 4, xSize, 0, "item.cd4017be.portableFurnace.name").center());
 	}
 
 	@Override
-    protected void drawGuiContainerForegroundLayer(int mx, int my) 
-    {
-        super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawFormatInfo(116, 16, 34, 16, "storage", energy, capacity);
-        this.drawInfo(61, 15, 18, 18, "\\i", "inputFilter");
-    }
-    
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
-    {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/portableFurnace.png"));
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        this.drawTexturedModalRect(this.guiLeft + 116, this.guiTop + 16, 176, 0, energy * 34 / capacity, 16);
-        if (this.furnace.isFilterOn(0)) this.drawTexturedModalRect(this.guiLeft + 61, this.guiTop + 19, 176, 16, 18, 10);
-        this.drawStringCentered(this.furnace.inventory.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
-    }
+	protected Object getDisplVar(int id) {
+		ItemStack item = inv.mainInventory[inv.currentItem];
+		if (id == 0) return ItemFilteredSubInventory.isFilterOn(item, true);
+		else if (id == 1) return EnergyAPI.get(item, -1).getStorage() / 1000F / (float)capacity;
+		else return null;
+	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int b) throws IOException 
-	{
-		super.mouseClicked(x, y, b);
-		byte cmd = -1;
-		if (this.isPointInRegion(61, 19, 18, 10, x, y)) {
-			cmd = 0;
-		}
-		if (cmd >= 0) {
-	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
-	            dos.writeByte(cmd);
-	            BlockGuiHandler.sendPacketToServer(dos);
-		}
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		PacketBuffer dos = BlockGuiHandler.getPacketTargetData(((TileContainer)inventorySlots).data.pos());
+		if (id == 0) dos.writeByte(0);
+		else return;
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
 	}
 
 }

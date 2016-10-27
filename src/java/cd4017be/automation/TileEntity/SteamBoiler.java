@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.TileEntity;
 
 import net.minecraft.network.PacketBuffer;
@@ -10,175 +6,184 @@ import java.io.IOException;
 
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
+import cd4017be.lib.Gui.DataContainer;
+import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.Gui.SlotTank;
 import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.Gui.TileContainer.TankSlot;
-import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
-import cd4017be.lib.templates.TankContainer.Tank;
+import cd4017be.lib.util.Utils;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 /**
  *
  * @author CD4017BE
  */
-public class SteamBoiler extends AutomatedTile implements ISidedInventory, IFluidHandler
-{
-    public byte waterType;
-    
-    public SteamBoiler()
-    {
-        netData = new TileEntityData(2, 5, 0, 2);
-        inventory = new Inventory(this, 5, new Group(0, 3, -1));
-        tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1, Objects.L_water, Objects.L_biomass).setIn(3), new Tank(Config.tankCap[1], 1, Objects.L_steam).setOut(4)).setNetLong(1);
-        
-        netData.ints[4] = 1;
-    }
+public class SteamBoiler extends AutomatedTile implements IGuiData {
 
-    @Override
-    public void update() 
-    {
-    	super.update();
-        if (this.worldObj.isRemote) return;
-        int steamOut = 0;
-        if (netData.ints[1] > 0)
-        {
-        	int d = Math.min(netData.ints[4], netData.ints[1]);
-            netData.ints[1] -= d;
-            netData.ints[2] += d;
-            steamOut += Config.Lsteam_Kfuel_burning * netData.ints[4];
-            if (netData.ints[2] > Config.maxK_steamBoiler) netData.ints[2] = Config.maxK_steamBoiler;
-        }
-        if (netData.ints[1] <= 0 && netData.ints[2] < Config.maxK_steamBoiler)
-        {
-            burnItem();
-        }
-        int nw = tanks.getFluid(0) == null || tanks.getFluid(0).getFluid().equals(Objects.L_water) ? Config.get_LWater_Cooking() : Config.get_LBiomass_Cooking();
-        if (netData.ints[2] >= Config.K_Cooking_steamBoiler && tanks.getAmount(0) >= nw)
-        {
-            netData.ints[3]++;
-            if (netData.ints[3] >= getCookTime())
-            {
-                if (tanks.getFluid(0).getFluid().equals(Objects.L_water))
-                {
-                    netData.ints[2] -= Config.K_Cooking_steamBoiler;
-                } else
-                {
-                    steamOut += Config.steam_biomass_burning;
-                }
-                tanks.drain(0, nw, true);
-                steamOut += Config.get_LSteam_Cooking();
-                netData.ints[3] = 0;
-            }
-        }
-        tanks.fill(1, new FluidStack(Objects.L_steam, steamOut), true);
-    }
-    
-    private void burnItem()
-    {
-        if (worldObj.isBlockPowered(getPos())) return;
-        for (int i = 0; i < inventory.items.length; i++)
-        {
-            if (inventory.items[i] == null) continue;
-            int n = TileEntityFurnace.getItemBurnTime(inventory.items[i]);
-            if (n != 0)
-            {
-                netData.ints[0] = n;
-                netData.ints[1] += netData.ints[0];
-                this.decrStackSize(i, 1);
-                return;
-            }
-        }
-    }
-    
-    public int getBurnScaled(int s)
-    {
-        if (netData.ints[0] == 0) return 0;
-        return netData.ints[1] * s / netData.ints[0];
-    }
-    
-    public int getCookScaled(int s)
-    {
-        int i = netData.ints[3] * s / getCookTime();
-        if (i > s) i = s;
-        return i;
-    }
-    
-    private int getCookTime()
-    {
-        if (netData.ints[2] == 0) return Integer.MAX_VALUE;
-        return 40000 / netData.ints[2];
-    }
-    
-    public int getTempScaled(int s)
-    {
-        return netData.ints[2] * s / Config.maxK_steamBoiler;
-    }
+	public byte waterType;
+	public int netI0, netI1, netI2, netI3, netI4;
 
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
-    {
-        nbt.setInteger("burn", netData.ints[1]);
-        nbt.setInteger("cook", netData.ints[3]);
-        nbt.setInteger("temp", netData.ints[2]);
-        nbt.setInteger("blow", netData.ints[4]);
-        return super.writeToNBT(nbt);
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) 
-    {
-        super.readFromNBT(nbt);
-        netData.ints[1] = nbt.getInteger("burn");
-        netData.ints[3] = nbt.getInteger("cook");
-        netData.ints[2] = nbt.getInteger("temp");
-        netData.ints[4] = nbt.getInteger("blow");
-        netData.ints[0] = netData.ints[1];
-    }
-    
-    @Override
-	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
-    {
-    	if (cmd == 0) {
-    		netData.ints[4]--;
-    		if (netData.ints[4] < 1) netData.ints[4] = 1;
-    	} else if (cmd == 1) {
-    		netData.ints[4]++;
-    		if (netData.ints[4] > 8) netData.ints[4] = 8;
-    	}
+	public SteamBoiler() {
+		inventory = new Inventory(5, 1, null).group(0, 0, 3, Utils.IN);
+		tanks = new TankContainer(2, 2).tank(0, Config.tankCap[1], Utils.IN, 3, -1, Objects.L_water, Objects.L_biomass).tank(1, Config.tankCap[1], Utils.OUT, -1, 4, Objects.L_steam);
+		netI4 = 1;
 	}
 
 	@Override
-    public void initContainer(TileContainer container)
-    {
-        for (int i = 0; i < 3; i++)
-        {
-            container.addItemSlot(new Slot(this, i, 8, 16 + 18 * i));
-        }
-        container.addItemSlot(new SlotTank(this, 3, 71, 34));
-        container.addItemSlot(new SlotTank(this, 4, 143, 34));
-        container.addPlayerInventory(8, 86);
-        
-        container.addTankSlot(new TankSlot(tanks, 0, 62, 16, true));
-        container.addTankSlot(new TankSlot(tanks, 1, 134, 16, true));
-    }
-    
-    @Override
-    public int[] stackTransferTarget(ItemStack item, int s, TileContainer container) 
-    {
-        int[] pi = container.getPlayerInv();
-        if (s < pi[0]) return pi;
-        else return new int[]{0, 3};
-    }
-    
+	public void update() {
+		super.update();
+		if (this.worldObj.isRemote) return;
+		int steamOut = 0;
+		if (netI1 > 0)
+		{
+			int d = Math.min(netI4, netI1);
+			netI1 -= d;
+			netI2 += d;
+			steamOut += Config.Lsteam_Kfuel_burning * netI4;
+			if (netI2 > Config.maxK_steamBoiler) netI2 = Config.maxK_steamBoiler;
+		}
+		if (netI1 <= 0 && netI2 < Config.maxK_steamBoiler)
+		{
+			burnItem();
+		}
+		int nw = tanks.fluids[0] == null || tanks.fluids[0].getFluid().equals(Objects.L_water) ? Config.get_LWater_Cooking() : Config.get_LBiomass_Cooking();
+		if (netI2 >= Config.K_Cooking_steamBoiler && tanks.getAmount(0) >= nw)
+		{
+			netI3++;
+			if (netI3 >= getCookTime())
+			{
+				if (tanks.fluids[0].getFluid().equals(Objects.L_water))
+				{
+					netI2 -= Config.K_Cooking_steamBoiler;
+				} else
+				{
+					steamOut += Config.steam_biomass_burning;
+				}
+				tanks.drain(0, nw, true);
+				steamOut += Config.get_LSteam_Cooking();
+				netI3 = 0;
+			}
+		}
+		tanks.fill(1, new FluidStack(Objects.L_steam, steamOut), true);
+	}
+	
+	private void burnItem()
+	{
+		if (worldObj.isBlockPowered(getPos())) return;
+		for (int i = 0; i < inventory.items.length; i++)
+		{
+			if (inventory.items[i] == null) continue;
+			int n = TileEntityFurnace.getItemBurnTime(inventory.items[i]);
+			if (n != 0)
+			{
+				netI0 = n;
+				netI1 += netI0;
+				inventory.extractItem(i, 1, false);
+				return;
+			}
+		}
+	}
+	
+	public int getBurnScaled(int s)
+	{
+		if (netI0 == 0) return 0;
+		return netI1 * s / netI0;
+	}
+	
+	public int getCookScaled(int s)
+	{
+		int i = netI3 * s / getCookTime();
+		if (i > s) i = s;
+		return i;
+	}
+	
+	private int getCookTime()
+	{
+		if (netI2 == 0) return Integer.MAX_VALUE;
+		return 40000 / netI2;
+	}
+	
+	public int getTempScaled(int s)
+	{
+		return netI2 * s / Config.maxK_steamBoiler;
+	}
+
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
+	{
+		nbt.setInteger("burn", netI1);
+		nbt.setInteger("cook", netI3);
+		nbt.setInteger("temp", netI2);
+		nbt.setInteger("blow", netI4);
+		return super.writeToNBT(nbt);
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) 
+	{
+		super.readFromNBT(nbt);
+		netI1 = nbt.getInteger("burn");
+		netI3 = nbt.getInteger("cook");
+		netI2 = nbt.getInteger("temp");
+		netI4 = nbt.getInteger("blow");
+		netI0 = netI1;
+	}
+	
+	@Override
+	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
+	{
+		if (cmd == 0) {
+			netI4--;
+			if (netI4 < 1) netI4 = 1;
+		} else if (cmd == 1) {
+			netI4++;
+			if (netI4 > 8) netI4 = 8;
+		}
+	}
+
+	@Override
+	public void initContainer(DataContainer cont) {
+		TileContainer container = (TileContainer)cont;
+		cont.refInts = new int[5];
+		for (int i = 0; i < 3; i++)
+			container.addItemSlot(new SlotItemHandler(inventory, i, 8, 16 + 18 * i));
+		container.addItemSlot(new SlotTank(inventory, 3, 71, 34));
+		container.addItemSlot(new SlotTank(inventory, 4, 143, 34));
+		container.addPlayerInventory(8, 86);
+		
+		container.addTankSlot(new TankSlot(tanks, 0, 62, 16, (byte)0x23));
+		container.addTankSlot(new TankSlot(tanks, 1, 134, 16, (byte)0x23));
+	}
+
+	@Override
+	public boolean transferStack(ItemStack item, int s, TileContainer container) {
+		if (s < container.invPlayerS) container.mergeItemStack(item, container.invPlayerS, container.invPlayerE, false);
+		else container.mergeItemStack(item, 0, 3, false);
+		return true;
+	}
+
+	@Override
+	public int[] getSyncVariables() {
+		return new int[]{netI0, netI1, netI2, netI3, netI4};
+	}
+
+	@Override
+	public void setSyncVariable(int i, int v) {
+		switch(i) {
+		case 0: netI0 = v; break;
+		case 1: netI1 = v; break;
+		case 2: netI2 = v; break;
+		case 3: netI3 = v; break;
+		case 4: netI4 = v; break;
+		}
+	}
+
 }

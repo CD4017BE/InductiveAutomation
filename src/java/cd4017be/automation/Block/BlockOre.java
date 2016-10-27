@@ -1,13 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.Block;
 
 import java.util.List;
 
 import cd4017be.automation.Automation;
-import cd4017be.automation.Item.ItemOre;
 import cd4017be.lib.DefaultBlock;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
@@ -22,36 +17,35 @@ import net.minecraft.util.IStringSerializable;
  *
  * @author CD4017BE
  */
-public class BlockOre extends DefaultBlock
-{
-    public static enum Ore implements IStringSerializable{
-    	Silver("silver"), Copper("copper"), Aluminium("aluminium");
+public class BlockOre extends DefaultBlock {
+
+	public static enum Ore implements IStringSerializable {
+		Silver("silver"), Copper("copper"), Aluminium("aluminium");
 		public final String name;
 		private Ore(String name) {
 			this.name = name;
 		}
-    	@Override
+		@Override
 		public String getName() {
 			return name;
 		}
-    }
-	public static PropertyEnum<Ore> prop = PropertyEnum.create("ore", Ore.class);
-    
-    public BlockOre(String id)
-    {
-        super(id, Material.ROCK, ItemOre.class);
-        this.setCreativeTab(Automation.tabAutomation);
-    }
+	}
 
-    @Override
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> list) 
-    {
-        list.add(new ItemStack(this, 1, Ore.Silver.ordinal()));
-        list.add(new ItemStack(this, 1, Ore.Copper.ordinal()));
-        list.add(new ItemStack(this, 1, Ore.Aluminium.ordinal()));
-    }
-    
-    @Override
+	public static PropertyEnum<Ore> prop = PropertyEnum.create("ore", Ore.class);
+
+	public BlockOre(String id) {
+		super(id, Material.ROCK);
+		this.setCreativeTab(Automation.tabAutomation);
+	}
+
+	@Override
+	public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> list) {
+		list.add(new ItemStack(this, 1, Ore.Silver.ordinal()));
+		list.add(new ItemStack(this, 1, Ore.Copper.ordinal()));
+		list.add(new ItemStack(this, 1, Ore.Aluminium.ordinal()));
+	}
+
+	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return this.blockState.getBaseState().withProperty(prop, Ore.values()[meta]);
 	}
@@ -61,15 +55,14 @@ public class BlockOre extends DefaultBlock
 		return state.getValue(prop).ordinal();
 	}
 
-    @Override
+	@Override
 	protected BlockStateContainer createBlockState() {
 		return new BlockStateContainer(this, prop);
 	}
 
 	@Override
-    public int damageDropped(IBlockState m) 
-    {
-        return this.getMetaFromState(m);
-    }
-    
+	public int damageDropped(IBlockState m) {
+		return this.getMetaFromState(m);
+	}
+
 }

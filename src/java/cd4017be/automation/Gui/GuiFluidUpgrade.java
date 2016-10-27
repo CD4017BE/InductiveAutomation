@@ -1,115 +1,71 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
-
-import org.lwjgl.opengl.GL11;
-
+import net.minecraftforge.fluids.Fluid;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.util.Utils;
 
 /**
  *
  * @author CD4017BE
  */
-public class GuiFluidUpgrade extends GuiMachine
-{
-    private final ContainerFluidUpgrade container;
-    
-    public GuiFluidUpgrade(ContainerFluidUpgrade container)
-    {
-        super(container);
-        this.container = container;
-    }
-    
-    @Override
-    public void initGui() 
-    {
-        this.xSize = 176;
-        this.ySize = 132;
-        super.initGui();
-    }
+public class GuiFluidUpgrade extends GuiMachine {
 
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mx, int my) 
-    {
-        super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(8, 16, 8, 16, "\\i", "filter.tryF" + (this.container.inventory.upgrade.mode >> 1 & 1));
-        this.drawInfo(17, 16, 8, 16, "\\i", "filter.invertF" + (this.container.inventory.upgrade.mode & 1));
-        this.drawInfo(98, 16, 44, 8, "\\i", "filter.targetF");
-        this.drawInfo(161, 16, 8, 16, "\\i", "rstCtr");
-        this.drawInfo(144, 20, 16, 8, "\\i", "filter.priority");
-    }
-    
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
-    {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/fluidUpgrade.png"));
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        if ((this.container.inventory.upgrade.mode & 1) != 0) this.drawTexturedModalRect(this.guiLeft + 16, this.guiTop + 15, 185, 0, 9, 18);
-        if ((this.container.inventory.upgrade.mode & 2) != 0) this.drawTexturedModalRect(this.guiLeft + 7, this.guiTop + 15, 176, 0, 9, 18);
-        if ((this.container.inventory.upgrade.mode & 4) != 0) this.drawTexturedModalRect(this.guiLeft + 161, this.guiTop + 15, (this.container.inventory.upgrade.mode & 8) != 0 ? 202 : 194, 0, 8, 18);
-        this.drawStringCentered(Utils.formatNumber((double)this.container.inventory.upgrade.maxAmount / 1000D, 3), this.guiLeft + 120, this.guiTop + 16, 0x804040);
-        this.drawStringCentered("" + this.container.inventory.upgrade.priority, this.guiLeft + 152, this.guiTop + 20, 0x404040);
-        this.drawStringCentered(this.container.inventory.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
-    }
-    
-    @Override
-    protected void mouseClicked(int x, int y, int b) throws IOException 
-    {
-        byte a = -1;
-        if (this.isPointInRegion(7, 15, 9, 18, x, y)) {
-            a = 0;
-            this.container.inventory.upgrade.mode ^= 2;
-        } else if (this.isPointInRegion(16, 15, 9, 18, x, y)) {
-            a = 0;
-            this.container.inventory.upgrade.mode ^= 1;
-        } else if (this.isPointInRegion(99, 16, 8, 16, x, y)) {
-            a = 1;
-            this.container.inventory.upgrade.maxAmount -= b == 0 ? 10 : b == 1 ? 1000 : 100000;
-        } else if (this.isPointInRegion(109, 16, 8, 16, x, y)) {
-            a = 1;
-            this.container.inventory.upgrade.maxAmount -= b == 0 ? 1 : b == 1 ? 100 : 10000;
-        } else if (this.isPointInRegion(123, 16, 8, 16, x, y)) {
-            a = 1;
-            this.container.inventory.upgrade.maxAmount += b == 0 ? 1 : b == 1 ? 100 : 10000;
-        } else if (this.isPointInRegion(133, 16, 8, 16, x, y)) {
-            a = 1;
-            this.container.inventory.upgrade.maxAmount += b == 0 ? 10 : b == 1 ? 1000 : 100000;
-        } else if (this.isPointInRegion(161, 15, 8, 18, x, y)) {
-            a = 0;
-            byte m = this.container.inventory.upgrade.mode;
-            if ((m & 12) != 4) this.container.inventory.upgrade.mode ^= 4;
-            if ((m & 4) != 0) this.container.inventory.upgrade.mode ^= 8;
-        } else if (this.isPointInRegion(143, 15, 18, 5, x, y)) {
-            a = 2;
-            this.container.inventory.upgrade.priority += b == 0 ? 1 : 8;
-        } else if (this.isPointInRegion(143, 28, 18, 5, x, y)) {
-            a = 2;
-            this.container.inventory.upgrade.priority -= b == 0 ? 1 : 8;
-        }
-        if (this.container.inventory.upgrade.maxAmount < 0) this.container.inventory.upgrade.maxAmount = 0;
-        if (a >= 0) {
-            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
-            dos.writeByte(a);
-            if (a == 0) dos.writeByte(this.container.inventory.upgrade.mode);
-            else if (a == 1) dos.writeInt(this.container.inventory.upgrade.maxAmount);
-            else if (a == 2) dos.writeByte(this.container.inventory.upgrade.priority);
-            BlockGuiHandler.sendPacketToServer(dos);
-        }
-        super.mouseClicked(x, y, b);
-    }
+	private final InventoryPlayer inv;
+
+	public GuiFluidUpgrade(TileContainer container) {
+		super(container);
+		this.inv = container.player.inventory;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/fluidUpgrade.png");
+	}
+
+	@Override
+	public void initGui() {
+		this.xSize = 176;
+		this.ySize = 132;
+		super.initGui();
+		guiComps.add(new Button(5, 7, 15, 9, 18, 0).texture(176, 0).setTooltip("filter.tryF#"));
+		guiComps.add(new Button(6, 16, 15, 9, 18, 0).texture(185, 0).setTooltip("filter.invertF#"));
+		guiComps.add(new Button(7, 161, 15, 8, 18, 0).texture(194, 0).setTooltip("rstCtr"));
+		guiComps.add(new TextField(8, 116, 16, 44, 7, 8).setTooltip("filter.targetF"));
+		guiComps.add(new TextField(9, 136, 25, 24, 7, 4).setTooltip("filter.priority"));
+		guiComps.add(new Text(10, 0, 4, xSize, 0, "item.cd4017be.fluidFilter.name").center());
+	}
+
+	@Override
+	protected Object getDisplVar(int id) {
+		ItemStack item = inv.mainInventory[inv.currentItem];
+		if (id < 8) {
+			byte mode = item != null && item.hasTagCompound() ? item.getTagCompound().getByte("mode") : 0;
+			return id == 5 ? mode >> 1 & 1 : id == 6 ?  mode & 1 : mode >> 2 & 3;
+		} else if (id == 8) return item != null && item.hasTagCompound() ? Utils.formatNumber((double)item.getTagCompound().getInteger("maxAm") / 1000D, 3) : "0";
+		else if (id == 9) return item != null && item.hasTagCompound() ? "" + item.getTagCompound().getByte("prior") : "0";
+		else return null;
+	}
+
+	@Override
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		PacketBuffer dos = BlockGuiHandler.getPacketTargetData(((TileContainer)inventorySlots).data.pos());
+		ItemStack item = inv.mainInventory[inv.currentItem];
+		if (id < 5) {dos.writeByte(id); dos.writeString(obj == null ? "" : ((Fluid)obj).getName());}
+		else if (id < 8) {
+			byte mode = item != null && item.hasTagCompound() ? item.getTagCompound().getByte("mode") : 0;
+			if (id != 7) mode ^= id == 5 ? 2 : 1;
+			else {
+				if ((mode & 12) != 64) mode ^= 4;
+				if ((mode & 4) != 0) mode ^= 8;
+			}
+			dos.writeByte(5);
+			dos.writeByte(mode);
+		} else if (id == 8) try {dos.writeByte(6); dos.writeInt((int)(Float.parseFloat((String)obj) * 1000D));} catch(NumberFormatException e) {return;}
+		else if (id == 9) try {dos.writeByte(7); dos.writeByte(Integer.parseInt((String)obj));} catch(NumberFormatException e) {return;}
+		else return;
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
+	}
+
 }

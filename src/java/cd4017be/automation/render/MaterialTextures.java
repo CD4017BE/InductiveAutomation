@@ -13,10 +13,10 @@ public class MaterialTextures implements ItemMeshDefinition {
 	public MaterialTextures(String path) {
 		this.path = path;
 		ResourceLocation[] locs = new ResourceLocation[ItemMaterial.types.length];
-    	for (int i = 0; i < locs.length; i++) {
-    		locs[i] = new ResourceLocation(path + ItemMaterial.types[i]);
-    	}
-    	ModelBakery.registerItemVariants(Objects.material, locs);
+		for (int i = 0; i < locs.length; i++) {
+			locs[i] = new ResourceLocation(path + ItemMaterial.types[i]);
+		}
+		ModelBakery.registerItemVariants(Objects.material, locs);
 	}
 	
 	@Override

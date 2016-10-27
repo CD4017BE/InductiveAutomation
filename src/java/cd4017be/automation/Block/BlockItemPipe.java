@@ -1,13 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.Block;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import cd4017be.automation.Item.ItemItemPipe;
 import cd4017be.lib.templates.BlockPipe;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -22,28 +17,27 @@ import net.minecraft.item.ItemStack;
  *
  * @author CD4017BE
  */
-public class BlockItemPipe extends BlockPipe 
-{
-    public static final byte ID_Transport = 0;
-    public static final byte ID_Extraction = 2;
-    public static final byte ID_Injection = 1;
-    
-    public BlockItemPipe(String id, Material m, SoundType sound, int type)
-    {
-        super(id, m, sound, ItemItemPipe.class, type);
-    }
-    
-    @Override
-    public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> list) 
-    {
-        list.add(new ItemStack(this, 1, ID_Transport));
-        list.add(new ItemStack(this, 1, ID_Extraction));
-        list.add(new ItemStack(this, 1, ID_Injection));
-    }
+public class BlockItemPipe extends BlockPipe {
 
-    private static final PropertyInteger prop = PropertyInteger.create("type", 0, 2);
-    
-    @Override
+	//TODO use Enum instead
+	public static final byte ID_Transport = 0;
+	public static final byte ID_Extraction = 2;
+	public static final byte ID_Injection = 1;
+
+	public BlockItemPipe(String id, Material m, SoundType sound, int type) {
+		super(id, m, sound, type);
+	}
+
+	@Override
+	public void getSubBlocks(Item par1, CreativeTabs par2CreativeTabs, List<ItemStack> list) {
+		list.add(new ItemStack(this, 1, ID_Transport));
+		list.add(new ItemStack(this, 1, ID_Extraction));
+		list.add(new ItemStack(this, 1, ID_Injection));
+	}
+
+	private static final PropertyInteger prop = PropertyInteger.create("type", 0, 2);
+
+	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return this.blockState.getBaseState().withProperty(prop, meta);
 	}
@@ -53,14 +47,15 @@ public class BlockItemPipe extends BlockPipe
 		return state.getValue(prop);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected void addProperties(ArrayList<IProperty> main) {
 		main.add(prop);
 	}
 
 	@Override
-    public int damageDropped(IBlockState m) 
-    {
-        return this.getMetaFromState(m);
-    }
+	public int damageDropped(IBlockState m) {
+		return this.getMetaFromState(m);
+	}
+
 }

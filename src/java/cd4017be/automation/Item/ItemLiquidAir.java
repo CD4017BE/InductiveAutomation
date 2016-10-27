@@ -9,20 +9,17 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ItemLiquidAir extends DefaultItem 
-{
-	
-	public ItemLiquidAir(String id)
-	{
+public class ItemLiquidAir extends DefaultItem {
+
+	public ItemLiquidAir(String id) {
 		super(id);
-        this.setCreativeTab(Automation.tabAutomation);
-        this.setMaxDamage(Config.data.getInt("Tool.AirTank.dur", 600));
-        this.setMaxStackSize(1);
+		this.setCreativeTab(Automation.tabAutomation);
+		this.setMaxDamage(Config.data.getInt("Tool.AirTank.dur", 600));
+		this.setMaxStackSize(1);
 	}
 
 	@Override
-	public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean par5) 
-	{
+	public void onUpdate(ItemStack item, World world, Entity entity, int slot, boolean par5) {
 		if (!(entity instanceof EntityPlayer)) return;
 		EntityPlayer player = (EntityPlayer)entity;
 		int air = player.getAir();
@@ -35,8 +32,7 @@ public class ItemLiquidAir extends DefaultItem
 	}
 
 	@Override
-	public String getItemStackDisplayName(ItemStack item) 
-	{
+	public String getItemStackDisplayName(ItemStack item) {
 		int dmg = item.getItemDamage();
 		if (dmg > 0) {
 			dmg = this.getMaxDamage() - dmg;
@@ -44,5 +40,5 @@ public class ItemLiquidAir extends DefaultItem
 		}
 		return super.getItemStackDisplayName(item);
 	}
-	
+
 }

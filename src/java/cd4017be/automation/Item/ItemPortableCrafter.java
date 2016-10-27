@@ -3,11 +3,17 @@ package cd4017be.automation.Item;
 import java.io.IOException;
 
 import cd4017be.automation.Automation;
-import cd4017be.automation.Gui.ContainerPortableCrafting;
 import cd4017be.automation.Gui.GuiPortableCrafting;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.DefaultItem;
 import cd4017be.lib.IGuiItem;
+import cd4017be.lib.Gui.DataContainer;
+import cd4017be.lib.Gui.ItemGuiData;
+import cd4017be.lib.Gui.SlotHolo;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.templates.InventoryItem;
+import cd4017be.lib.templates.InventoryItem.IItemInventory;
+import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Utils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -16,7 +22,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
@@ -28,32 +33,27 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
+public class ItemPortableCrafter extends DefaultItem implements IGuiItem, IItemInventory {
 
-	public ItemPortableCrafter(String id) 
-	{
+	public ItemPortableCrafter(String id) {
 		super(id);
-        this.setCreativeTab(Automation.tabAutomation);
-        this.setMaxStackSize(1);
+		this.setCreativeTab(Automation.tabAutomation);
+		this.setMaxStackSize(1);
 	}
 
 	@Override
-	public Container getContainer(World world, EntityPlayer player, int x, int y, int z) 
-	{
-		return new ContainerPortableCrafting(player);
+	public Container getContainer(World world, EntityPlayer player, int x, int y, int z) {
+		return new TileContainer(new GuiData(), player);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public GuiContainer getGui(World world, EntityPlayer player, int x, int y, int z) 
-	{
-		return new GuiPortableCrafting(new ContainerPortableCrafting(player));
+	public GuiContainer getGui(World world, EntityPlayer player, int x, int y, int z) {
+		return new GuiPortableCrafting(new TileContainer(new GuiData(), player));
 	}
 
 	@Override
-	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
-	{
-		ItemStack item = player.getHeldItemMainhand();
+	public void onPlayerCommand(ItemStack item, EntityPlayer player, PacketBuffer dis) {
 		if (item == null || item.getItem() != this) return;
 		if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 		byte cmd = dis.readByte();
@@ -70,10 +70,10 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 			item.getTagCompound().setByte("amount", n);
 		} else if (cmd == 3) {
 			byte n = dis.readByte();
-			ItemStack[] recipe = loadRecipe(item.getTagCompound().getTagList("grid", 10), world);
+			ItemStack[] recipe = loadRecipe(item.getTagCompound().getTagList("grid", 10), player.worldObj);
 			if (recipe[0] != null) this.craft(player.inventory, recipe, n > 0 ? n : Integer.MAX_VALUE, false);
 			item.getTagCompound().setBoolean("active", false);
-		} else if (cmd == 4) {// set crafting grid (used for JEI recipe transfer)
+		} else if (cmd == 4) try {// set crafting grid (used for JEI recipe transfer)
 			NBTTagCompound nbt = dis.readNBTTagCompoundFromBuffer();
 			item.getTagCompound().setTag("grid", nbt.getTagList("grid", 10));
 			byte n = nbt.getByte("amount");
@@ -81,21 +81,18 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 			if (n > 64) n = 64;
 			item.getTagCompound().setByte("amount", n);
 			item.getTagCompound().setBoolean("active", false);
-			if (player.openContainer instanceof ContainerPortableCrafting) 
-				((ContainerPortableCrafting)player.openContainer).load(item);
-		}
+			ItemGuiData.updateInventory(player, player.inventory.currentItem);
+		} catch (IOException e) {}
 	}
-	
-	@Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
-    {
-        BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
-        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
-    }
 
 	@Override
-	public void onUpdate(ItemStack item, World world, Entity entity, int s, boolean b) 
-	{
+	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) {
+		BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
+	}
+
+	@Override
+	public void onUpdate(ItemStack item, World world, Entity entity, int s, boolean b) {
 		if (entity instanceof EntityPlayer) {
 			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
 			int t = item.getTagCompound().getByte("t") + 1;
@@ -118,17 +115,9 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 			item.getTagCompound().setByte("t", (byte)t);
 		}
 	}
-	
-	public static ItemStack[] loadRecipe(NBTTagList data, World world)
-	{
-		InventoryCrafting icr = new InventoryCrafting(new Container() {
-            @Override
-            public boolean canInteractWith(EntityPlayer var1) {
-                return true;
-            }
-            @Override
-            public void onCraftMatrixChanged(IInventory par1IInventory) {}
-        }, 3, 3);
+
+	public static ItemStack[] loadRecipe(NBTTagList data, World world) {
+		InventoryCrafting icr = new InventoryCrafting(ItemFluidUtil.CraftContDummy, 3, 3);
 		ItemStack[] recipe = new ItemStack[data.tagCount()];
 		int n = 0;
 		NBTTagCompound tag;
@@ -149,9 +138,8 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 		System.arraycopy(recipe, 0, ret, 1, n);
 		return ret;
 	}
-	
-	private int craft(InventoryPlayer inv, ItemStack[] recipe, int n, boolean auto)
-	{
+
+	private int craft(InventoryPlayer inv, ItemStack[] recipe, int n, boolean auto) {
 		if (auto) {
 			n *= recipe[0].stackSize;
 			for (int i = 0; i < inv.mainInventory.length && n > 0; i++) {
@@ -178,15 +166,15 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 				m -= inv.decrStackSize(slots[p++], m).stackSize;
 			}
 			if (recipe[i].getItem().hasContainerItem(recipe[i])) {
-                ItemStack iout = recipe[i].getItem().getContainerItem(recipe[i]);
-                if (iout.isItemStackDamageable() && iout.getItemDamage() > iout.getMaxDamage()) iout = null;
-                if (iout != null) {
-                	iout.stackSize = recipe[i].stackSize * n;
-                	if (!inv.addItemStackToInventory(iout)) {
-            			inv.player.dropItem(iout, true);
-            		}
-                }
-            }
+				ItemStack iout = recipe[i].getItem().getContainerItem(recipe[i]);
+				if (iout.isItemStackDamageable() && iout.getItemDamage() > iout.getMaxDamage()) iout = null;
+				if (iout != null) {
+					iout.stackSize = recipe[i].stackSize * n;
+					if (!inv.addItemStackToInventory(iout)) {
+						inv.player.dropItem(iout, true);
+					}
+				}
+			}
 		}
 		recipe[0].stackSize *= n;
 		if (!inv.addItemStackToInventory(recipe[0])) {
@@ -194,6 +182,41 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem {
 		}
 		if (auto) return 0;
 		else return n;
+	}
+
+	@Override
+	public ItemStack[] loadInventory(ItemStack inv, EntityPlayer player) {
+		ItemStack[] items = new ItemStack[10];
+		if (inv.hasTagCompound()) {
+			ItemFluidUtil.loadInventory(inv.getTagCompound().getTagList("grid", 10), items);
+			items[9] = CraftingManager.getInstance().findMatchingRecipe(ItemFluidUtil.craftingInventory(items, 3), player.worldObj);
+		}
+		return items;
+	}
+
+	@Override
+	public void saveInventory(ItemStack inv, EntityPlayer player, ItemStack[] items) {
+		if (!inv.hasTagCompound()) inv.setTagCompound(new NBTTagCompound());
+		items[9] = null;
+		inv.getTagCompound().setTag("grid", ItemFluidUtil.saveInventory(items));
+		items[9] = CraftingManager.getInstance().findMatchingRecipe(ItemFluidUtil.craftingInventory(items, 3), player.worldObj);
+	}
+
+	class GuiData extends ItemGuiData {
+
+		public GuiData() {super(ItemPortableCrafter.this);}
+
+		@Override
+		public void initContainer(DataContainer container) {
+			TileContainer cont = (TileContainer)container;
+			this.inv = new InventoryItem(cont.player);
+			for (int j = 0; j < 3; j++)
+				for (int i = 0; i < 3; i++) 
+					cont.addItemSlot(new SlotHolo(inv, i + 3 * j, 17 + i * 18, 16 + j * 18, false, false));
+			cont.addItemSlot(new SlotHolo(inv, 9, 89, 34, true, true));
+			cont.addPlayerInventory(8, 68, false, true);
+		}
+
 	}
 
 }

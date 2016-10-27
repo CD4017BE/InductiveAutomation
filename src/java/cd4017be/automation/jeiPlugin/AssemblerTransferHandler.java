@@ -36,7 +36,7 @@ public class AssemblerTransferHandler implements IRecipeTransferHandler<TileCont
 
 	@Override
 	public IRecipeTransferError transferRecipe(TileContainer cont, IRecipeLayout recipeLayout, EntityPlayer player, boolean maxTransfer, boolean doTransfer) {
-		if (!(cont.tileEntity instanceof SteamCompressor || cont.tileEntity instanceof ElectricCompressor)) return helper.createInternalError();
+		if (!(cont.data instanceof SteamCompressor || cont.data instanceof ElectricCompressor)) return helper.createInternalError();
 		IGuiItemStackGroup items = recipeLayout.getItemStacks();
 		//init recipe
 		ArrayList<TransferEntry> transfer = new ArrayList<TransferEntry>();

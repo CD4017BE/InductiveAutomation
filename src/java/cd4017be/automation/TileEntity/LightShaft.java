@@ -19,26 +19,26 @@ import net.minecraft.world.EnumSkyBlock;
 public class LightShaft extends ModTileEntity implements ITickable
 {
 
-    private int counter = 0;
-    
-    @Override
-    public void onNeighborBlockChange(Block b) 
-    {
-        if (worldObj.getBlockState(pos.down()) == Blocks.AIR.getDefaultState()) worldObj.setBlockState(pos.down(), BlockSkyLight.ID.getDefaultState());
-    }
+	private int counter = 0;
+	
+	@Override
+	public void onNeighborBlockChange(Block b) 
+	{
+		if (worldObj.getBlockState(pos.down()) == Blocks.AIR.getDefaultState()) worldObj.setBlockState(pos.down(), BlockSkyLight.ID.getDefaultState());
+	}
 
-    @Override
-    public void update() 
-    {
-        if (counter == 0) this.onNeighborBlockChange(Blocks.AIR);
-        if (++counter > 20){
-            counter = 1;
-            worldObj.setLightFor(EnumSkyBlock.SKY, getPos(), EnumSkyBlock.SKY.defaultLightValue);
-            BlockPos y = new BlockPos(pos);
-            while (worldObj.getBlockState(y = y.down()) == BlockSkyLight.ID.getDefaultState()) {
-                worldObj.setLightFor(EnumSkyBlock.SKY, y, EnumSkyBlock.SKY.defaultLightValue);
-            }
-        }
-    }
-    
+	@Override
+	public void update() 
+	{
+		if (counter == 0) this.onNeighborBlockChange(Blocks.AIR);
+		if (++counter > 20){
+			counter = 1;
+			worldObj.setLightFor(EnumSkyBlock.SKY, getPos(), EnumSkyBlock.SKY.defaultLightValue);
+			BlockPos y = new BlockPos(pos);
+			while (worldObj.getBlockState(y = y.down()) == BlockSkyLight.ID.getDefaultState()) {
+				worldObj.setLightFor(EnumSkyBlock.SKY, y, EnumSkyBlock.SKY.defaultLightValue);
+			}
+		}
+	}
+	
 }

@@ -1,15 +1,16 @@
 package cd4017be.automation.Item;
 
-import java.io.IOException;
 import java.util.List;
 
 import cd4017be.api.automation.InventoryItemHandler;
 import cd4017be.api.automation.InventoryItemHandler.IItemStorage;
 import cd4017be.automation.Automation;
-import cd4017be.automation.Gui.ContainerFilteredSubInventory;
+import cd4017be.automation.Objects;
 import cd4017be.lib.DefaultItem;
 import cd4017be.lib.IGuiItem;
-import cd4017be.lib.util.Utils;
+import cd4017be.lib.Gui.ItemGuiData;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.util.ItemFluidUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -17,14 +18,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 public abstract class ItemFilteredSubInventory extends DefaultItem implements IItemStorage, IGuiItem {
 
-	public ItemFilteredSubInventory(String id)
-	{
+	public ItemFilteredSubInventory(String id) {
 		super(id);
-        this.setCreativeTab(Automation.tabAutomation);
-        this.setMaxStackSize(1);
+		this.setCreativeTab(Automation.tabAutomation);
+		this.setMaxStackSize(1);
 	}
 
 	@Override
@@ -33,20 +35,56 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 	}
 
 	@Override
-	public void addInformation(ItemStack item, EntityPlayer player, List list, boolean b)
-	{
+	public ItemStack[] loadInventory(ItemStack inv, EntityPlayer player) {
+		int l = getSizeInventory(inv);
+		ItemStack[] items = new ItemStack[l + 2];
+		if (inv.hasTagCompound()) {
+			NBTTagCompound nbt = inv.getTagCompound();
+			ItemFluidUtil.loadInventory(nbt.getTagList(getInventoryTag(), 10), items);
+			if (nbt.hasKey("fin")) {
+				items[l] = new ItemStack(Objects.itemUpgrade);
+				items[l].setTagCompound(nbt.getCompoundTag("fin"));
+			} else items[l] = null;
+			if (nbt.hasKey("fout")) {
+				items[l + 1] = new ItemStack(Objects.itemUpgrade);
+				items[l + 1].setTagCompound(nbt.getCompoundTag("fout"));
+			} else items[l + 1] = null;
+		}
+		return items;
+	}
+
+	@Override
+	public void saveInventory(ItemStack inv, EntityPlayer player, ItemStack[] items) {
+		int l = getSizeInventory(inv);
+		NBTTagCompound nbt;
+		if (inv.hasTagCompound()) nbt = inv.getTagCompound();
+		else inv.setTagCompound(nbt = new NBTTagCompound());
+		ItemStack fin = items[l], fout = items[l + 1]; items[l] = null; items[l + 1] = null;
+		nbt.setTag(getInventoryTag(), ItemFluidUtil.saveInventory(items));
+		if (fin != null && fin.getItem() == Objects.itemUpgrade) {
+			if (!fin.hasTagCompound()) fin.setTagCompound(new NBTTagCompound());
+			nbt.setTag("fin", fin.getTagCompound());
+			items[l] = fin;
+		} else nbt.removeTag("fin");
+		if (fout != null && fout.getItem() == Objects.itemUpgrade) {
+			if (!fout.hasTagCompound()) fout.setTagCompound(new NBTTagCompound());
+			nbt.setTag("fout", fout.getTagCompound());
+			items[l + 1] = fout;
+		} else nbt.removeTag("fout");
+	}
+
+	@Override
+	public void addInformation(ItemStack item, EntityPlayer player, List<String> list, boolean b) {
 		InventoryItemHandler.addInformation(item, list);
 		super.addInformation(item, player, list, b);
 	}
 
-	protected int tickTime()
-	{
+	protected int tickTime() {
 		return 20;
 	}
-	
+
 	@Override
-	public void onUpdate(ItemStack item, World world, Entity entity, int s, boolean b) 
-	{
+	public void onUpdate(ItemStack item, World world, Entity entity, int s, boolean b) {
 		if (world.isRemote) return;
 		if (entity instanceof EntityPlayer) {
 			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
@@ -54,96 +92,93 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 			if (t >= this.tickTime()) {
 				t = 0;
 				EntityPlayer player = (EntityPlayer)entity;
-				ContainerFilteredSubInventory container = null;
-				if (b && player.openContainer != null && player.openContainer instanceof ContainerFilteredSubInventory) container = (ContainerFilteredSubInventory)player.openContainer;
-				if (container != null) container.save(item);
 				InventoryPlayer inv = player.inventory;
 				PipeUpgradeItem in = item.getTagCompound().hasKey("fin") ? PipeUpgradeItem.load(item.getTagCompound().getCompoundTag("fin")) : null;
 				PipeUpgradeItem out = item.getTagCompound().hasKey("fout") ? PipeUpgradeItem.load(item.getTagCompound().getCompoundTag("fout")) : null;
 				this.updateItem(item, player, inv, s, in, out);
-				if (container != null) container.update(item);
 			}
 			item.getTagCompound().setByte("t", (byte)t);
 		}
 	}
-	
-	protected void updateItem(ItemStack item, EntityPlayer player, InventoryPlayer inv, int s, PipeUpgradeItem in, PipeUpgradeItem out)
-	{
-		
-		int[] slots = new int[s == inv.currentItem ? 35 : 34];
-		int ofs = 0;
-		for (int i = 0; i < slots.length; i++)
-			if (i + ofs == s || i + ofs == inv.currentItem) {ofs++; i--;}
-			else slots[i] = i + ofs;
-		//for (int i = 0; i < s; i++) slots[i] = i;
-		//for (int i = s; i < slots.length; i++) slots[i] = i + 1;
-		if (in != null) this.autoInput(item, inv, slots, in);
-		if (out != null) this.autoOutput(item, inv, slots, out);
+
+	protected void updateItem(ItemStack item, EntityPlayer player, InventoryPlayer inv, int s, PipeUpgradeItem in, PipeUpgradeItem out) {
+		boolean update = false;
+		if (in != null) update |= this.autoInput(item, inv, in);
+		if (out != null) update |= this.autoOutput(item, inv, out);
+		if (update) ItemGuiData.updateInventory(player, s);
 	}
-	
-	protected void autoInput(ItemStack item, InventoryPlayer inv, int[] slots, PipeUpgradeItem in)
-	{
-		int n, p, sp;
-		ItemStack stack;
+
+	protected boolean autoInput(ItemStack item, InventoryPlayer inv, PipeUpgradeItem in) {
+		IItemHandler acc = new InvWrapper(inv);
 		in.mode |= 64;
-		if ((in.mode & 128) == 0) return;
+		if ((in.mode & 128) == 0) return false;
 		for (ItemStack search : InventoryItemHandler.getItemList(item)) {
-			search = in.getExtractItem(search, inv, slots, false);
-			if (search == null) continue;
-			n = search.stackSize;
-			p = 0;
-			while((p = Utils.findStack(search, inv, slots, p)) >= 0 && n > 0) {
-				sp = slots[p++];
-				stack = inv.decrStackSize(sp, n);
-				n -= stack.stackSize;
-				stack = InventoryItemHandler.insertItemStack(item, stack);
-				if (stack != null) {
-					if (inv.getStackInSlot(sp) != null) stack.stackSize += inv.getStackInSlot(sp).stackSize;
-					inv.setInventorySlotContents(sp, stack);
-					return;
-				}
-			}
+			search = in.getExtract(search, acc);
+			if (extract(item, inv, search)) return true;
 		}
 		while(InventoryItemHandler.hasEmptySlot(item)) {
-			ItemStack search = in.getExtractItem(null, inv, slots, false);
-			if (search == null) break;
-			n = search.stackSize;
-			p = 0;
-			while((p = Utils.findStack(search, inv, slots, p)) >= 0 && n > 0) {
-				sp = slots[p++];
-				stack = inv.decrStackSize(sp, n);
+			ItemStack search = in.getExtract(null, acc);
+			if (extract(item, inv, search)) return true;
+		}
+		return true;
+	}
+	
+	private boolean extract(ItemStack item, InventoryPlayer inv, ItemStack search) {
+		if (search == null || search.getItem() == item.getItem()) return false;
+		int n = search.stackSize;
+		for (int i = 0; i < inv.mainInventory.length && n > 0; i++)
+			if (ItemStack.areItemStacksEqual(item, inv.mainInventory[i])) {
+				ItemStack stack = inv.decrStackSize(i, n);
 				n -= stack.stackSize;
 				stack = InventoryItemHandler.insertItemStack(item, stack);
 				if (stack != null) {
-					if (inv.getStackInSlot(sp) != null) stack.stackSize += inv.getStackInSlot(sp).stackSize;
-					inv.setInventorySlotContents(sp, stack);
-					return;
+					if (inv.mainInventory[i] == null) inv.mainInventory[i] = stack;
+					else inv.mainInventory[i].stackSize += stack.stackSize;
+					return true;
 				}
 			}
-		}
+		return false;
 	}
-	
-	protected void autoOutput(ItemStack item, InventoryPlayer inv, int[] slots, PipeUpgradeItem out)
-	{
+
+	protected boolean autoOutput(ItemStack item, InventoryPlayer inv, PipeUpgradeItem out) {
+		IItemHandler acc = new InvWrapper(inv);
 		int n;
 		out.mode |= 64;
-		if ((out.mode & 128) == 0) return;
+		if ((out.mode & 128) == 0) return false;
 		for (ItemStack search : InventoryItemHandler.getItemList(item)) {
-			n = out.getInsertAmount(search, inv, slots, false);
+			n = out.insertAmount(search, acc);
 			if (n <= 0) continue;
 			if (n < search.stackSize) search.stackSize = n;
-			ItemStack[] rem = Utils.fill(inv, 0, slots, search);
-			if (rem.length == 1) n -= rem[0].stackSize;
+			n -= TileContainer.putInPlayerInv(search, inv);
 			search = search.copy();
 			search.stackSize = n;
 			InventoryItemHandler.extractItemStack(item, search);
 		}
+		return true;
 	}
 
 	@Override
-	public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException 
-	{
-		if (player.openContainer != null && player.openContainer instanceof ContainerFilteredSubInventory) ((ContainerFilteredSubInventory)player.openContainer).onPlayerCommand(world, player, dis);
+	public void onPlayerCommand(ItemStack item, EntityPlayer player, PacketBuffer dis) {
+		byte cmd = dis.readByte();
+		if (cmd >= 0 && cmd < 2) {
+			String name = cmd == 0 ? "fin" : "fout";
+			if (item.hasTagCompound() && item.getTagCompound().hasKey(name, 10)) {
+				NBTTagCompound tag = item.getTagCompound().getCompoundTag(name);
+				byte m = tag.getByte("mode");
+				m |= 64;
+				m ^= 128;
+				tag.setByte("mode", m);
+				ItemGuiData.updateInventory(player, player.inventory.currentItem);
+			}
+		} else this.customPlayerCommand(item, player, cmd, dis);
+	}
+
+	protected void customPlayerCommand(ItemStack item, EntityPlayer player, byte cmd, PacketBuffer dis) {}
+
+	public static boolean isFilterOn(ItemStack item, boolean in) {
+		if (item != null && item.hasTagCompound() && item.getTagCompound().hasKey(in ? "fin" : "fout", 10))
+			return (item.getTagCompound().getCompoundTag(in ? "fin" : "fout").getByte("mode") & 128) != 0;
+		return false;
 	}
 
 }

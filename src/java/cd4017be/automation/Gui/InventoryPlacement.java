@@ -1,177 +1,101 @@
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
+import cd4017be.lib.util.ItemFluidUtil;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 
-public class InventoryPlacement implements IInventory
-{
+public class InventoryPlacement {
 
-	public final ItemStack[] inventory = new ItemStack[8];
-    public byte[] placement = new byte[8];
-    public float[] Vxy = new float[]{0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F, 0.5F};
-    public boolean useBlock;
-	
-    public InventoryPlacement(ItemStack item)
-    {
-        if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
-        useBlock = item.getTagCompound().getBoolean("block");
-        if (item.getTagCompound().hasKey("list")) {
-            NBTTagList list = item.getTagCompound().getTagList("list", 10);
-            for (int i = 0; i < list.tagCount(); i++) {
-                NBTTagCompound tag = list.getCompoundTagAt(i);
-            	inventory[i] = ItemStack.loadItemStackFromNBT(tag);
-            	placement[i] = tag.getByte("mode");
-            	Vxy[i] = tag.getFloat("Vx");
-            	Vxy[i|8] = tag.getFloat("Vy");
-            }
-        }
-    }
-    
-    public boolean useDamage(int i)
-    {
-    	return (placement[i] & 16) == 0;
-    }
-    
-    public boolean sneak(int i)
-    {
-    	return (placement[i] & 8) != 0;
-    }
-    
-    public byte getDir(int i)
-    {
-    	return (byte)(placement[i] & 7);
-    }
-    
-    public void onCommand(PacketBuffer dis) throws IOException
-    {
-        byte cmd = dis.readByte();
-        if (cmd <= 1) {
-        	useBlock = cmd == 1;
-        } else if (cmd == 3) {
-        	byte s = dis.readByte();
-        	if (s >= 0 && s < placement.length) placement[s] = dis.readByte();
-        } else if (cmd == 2) {
-        	byte s = dis.readByte();
-        	if (s >= 0 && s < Vxy.length) Vxy[s] = dis.readFloat(); 
-        }
-    }
-    
-    @Override
-    public int getSizeInventory() 
-    {
-        return inventory.length;
-    }
+	public final ItemStack[] inventory;
+	public final int[] placement;
 
-    @Override
-    public ItemStack getStackInSlot(int i) 
-    {
-        return inventory[i];
-    }
-
-    @Override
-    public ItemStack decrStackSize(int i, int n) 
-    {
-        if (inventory[i] == null) return null;
-        ItemStack item = inventory[i].stackSize <= n ? this.removeStackFromSlot(i) : inventory[i].splitStack(n);
-        return item;
-    }
-
-    @Override
-    public ItemStack removeStackFromSlot(int i) 
-    {
-        ItemStack item = inventory[i];
-        inventory[i] = null;
-        return item;
-    }
-
-    @Override
-    public void setInventorySlotContents(int i, ItemStack item) 
-    {
-        inventory[i] = item;
-    }
-
-    @Override
-    public int getInventoryStackLimit() 
-    {
-        return 1;
-    }
-
-    @Override
-    public boolean isUseableByPlayer(EntityPlayer player) 
-    {
-        return !player.isDead;
-    }
-
-    @Override
-    public boolean isItemValidForSlot(int i, ItemStack itemstack) 
-    {
-        return true;
-    }
-    
-    public void onClose(ItemStack item)
-    {
-        if (item == null) return;
-        if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
-        item.getTagCompound().setBoolean("block", useBlock);
-        NBTTagList list = new NBTTagList();
-        for (int i = 0; i < inventory.length; i++) {
-        	if (inventory[i] == null) continue;
-        	NBTTagCompound tag = new NBTTagCompound();
-        	inventory[i].writeToNBT(tag);
-        	tag.setByte("mode", placement[i]);
-        	tag.setFloat("Vx", Vxy[i]);
-        	tag.setFloat("Vy", Vxy[i|8]);
-        	list.appendTag(tag);
-        }
-        item.getTagCompound().setTag("list", list);
-        
-    }
-
-	@Override
-	public String getName() {
-		return "Block placement controller";
+	public InventoryPlacement(ItemStack item) {
+		if (item != null && item.hasTagCompound()) {
+			inventory = ItemFluidUtil.loadItems(item.getTagCompound().getTagList(ItemFluidUtil.Tag_ItemList, 10));
+			placement = item.getTagCompound().getIntArray("mode");
+		} else {
+			inventory = new ItemStack[0];
+			placement = new int[0];
+		}
 	}
 
-	@Override
-	public boolean hasCustomName() {
-		return true;
+	public boolean useDamage(int i) {
+		return (placement[i] & 0x2000) != 0;
 	}
 
-	@Override
-	public void markDirty() {}
-
-	@Override
-	public void openInventory(EntityPlayer player) {}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {}
-	@Override
-	public ITextComponent getDisplayName() {
-		return new TextComponentString(this.getName());
+	public boolean sneak(int i) {
+		return (placement[i] & 0x1000) != 0;
 	}
 
-	@Override
-	public int getField(int id) {
-		return 0;
+	public EnumFacing getDir(int i) {
+		return EnumFacing.VALUES[(placement[i] >> 8 & 0xf) % 6];
 	}
 
-	@Override
-	public void setField(int id, int value) {}
-
-	@Override
-	public int getFieldCount() {
-		return 0;
+	public boolean rayTrace(int i) {
+		return (placement[i] & 0x4000) != 0;
 	}
 
-	@Override
-	public void clear() {}
-	
+	public ItemStack doPlacement(World world, EntityPlayer player, BlockPos pos, int i, ItemStack stack) {
+		int ci = player.inventory.currentItem;
+		ItemStack lItem = player.inventory.mainInventory[ci];
+		float lYaw = player.rotationYaw, lPitch = player.rotationPitch;
+		double lPx = player.posX, lPy = player.posY, lPz = player.posZ;
+		boolean lSneak = player.isSneaking();
+
+		player.setHeldItem(EnumHand.MAIN_HAND, stack);
+		player.setSneaking(this.sneak(i));
+		EnumFacing dir = this.getDir(i);
+		float X = 0, Y = 0, Z = 0, A = (float)(placement[i] & 0xf) * 0.0625F + 0.03125F, B = (float)(placement[i] >> 4 & 0xf) * 0.0625F + 0.03125F;
+		if (dir == EnumFacing.DOWN || dir == EnumFacing.UP) {
+			player.rotationYaw = (float)Math.toDegrees(Math.atan2(A - 0.5D, B - 0.5D));
+			player.posX = (double)pos.getX() + (X = A);
+			player.posZ = (double)pos.getZ() + (Z = B);
+			if (dir == EnumFacing.DOWN) {player.rotationPitch = -90; player.posY = (double)pos.getY() + (Y = 1) + (double)player.getEyeHeight();}
+			else {player.rotationPitch = 90; player.posY = (double)pos.getY() + (Y = 0) - (double)player.getYOffset();}
+		} else {
+			player.rotationPitch = 0;
+			player.posY = (double)pos.getY() + (Y = B);
+			if (dir.ordinal() < 4) player.posX = (double)pos.getX() + (X = A);
+			else player.posZ = (double)pos.getZ() + (Z = A);
+			if (dir == EnumFacing.NORTH) {player.rotationYaw = 0; player.posZ = (double)pos.getZ() + (Z = 0) - 0.5D;}
+			else if (dir == EnumFacing.SOUTH) {player.rotationYaw = 180; player.posZ = (double)pos.getZ() + (Z = 1) + 0.5D;}
+			else if (dir == EnumFacing.WEST) {player.rotationYaw = 90; player.posX = (double)pos.getX() + (X = 0) - 0.5D;}
+			else {player.rotationYaw = 270; player.posX = (double)pos.getX() + (X = 1) + 0.5D;}
+		}
+		IBlockState state = world.getBlockState(pos);
+		BlockPos pos1 = pos.offset(dir, -1);
+		Vec3d v0 = new Vec3d((double)pos1.getX() + X, (double)pos1.getY() + Y, (double)pos1.getZ() + Z);
+		Vec3d v1 = new Vec3d((double)pos.getX() + X, (double)pos.getX() + Y, (double)pos.getZ() + Z);
+		boolean flag = false;
+		RayTraceResult obj = null;
+		if (this.rayTrace(i)) obj = world.rayTraceBlocks(v0, v1);//TODO correct vectors
+		if (obj != null) {
+			X = (float)obj.hitVec.xCoord; Y = (float)obj.hitVec.yCoord; Z = (float)obj.hitVec.zCoord;
+			pos = obj.getBlockPos();
+			state = world.getBlockState(pos);
+			//PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_BLOCK, world, pos, obj.sideHit);
+			flag = /*(event.useBlock != Event.Result.DENY && */state.getBlock().onBlockActivated(world, pos, state, player, EnumHand.MAIN_HAND, lItem, obj.sideHit, X, Y, Z) /*) || event.useItem == Event.Result.DENY */;
+		}
+		if (!flag) {
+			//PlayerInteractEvent event = ForgeEventFactory.onPlayerInteract(player, Action.RIGHT_CLICK_AIR, world, pos, dir);
+			//if (event.useBlock != Event.Result.DENY && event.useItem != Event.Result.DENY) 
+				stack.getItem().onItemUse(player.getHeldItemMainhand(), player, world, pos, EnumHand.MAIN_HAND, dir.getOpposite(), X, Y, Z);
+		}
+		stack = player.getHeldItemMainhand();
+		if (stack != null && stack.stackSize <= 0) stack = null;
+
+		player.setHeldItem(EnumHand.MAIN_HAND, lItem);
+		player.rotationYaw = lYaw; player.rotationPitch = lPitch;
+		player.posX = lPx; player.posY = lPy; player.posZ = lPz;
+		player.setSneaking(lSneak);
+		return stack;
+	}
+
 }

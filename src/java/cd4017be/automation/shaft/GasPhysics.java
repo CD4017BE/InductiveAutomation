@@ -5,10 +5,12 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import cd4017be.automation.Objects;
 import cd4017be.automation.gas.GasState;
 import cd4017be.automation.shaft.IHeatReservoir.IHeatStorage;
 import cd4017be.lib.templates.SharedNetwork;
-import cd4017be.lib.util.Utils;
 
 public class GasPhysics extends SharedNetwork<GasContainer, GasPhysics> {
 
@@ -74,41 +76,35 @@ public class GasPhysics extends SharedNetwork<GasContainer, GasPhysics> {
 		if (this.components.containsKey(comp.getUID())) gas.split(comp.V);
 		this.heatCond -= comp.heatCond;
 		this.refTemp -= comp.refTemp;
-		for (int i = 0; i < 6; i+=2) this.heatExch.remove(SharedNetwork.SidedPosUID(comp.Uid, i));
+		for (int i = 0; i < 6; i+=2) this.heatExch.remove(SharedNetwork.SidedPosUID(comp.getUID(), i));
 		super.remove(comp);
 	}
 
-	public static interface IGasStorage extends IGasCon, IHeatStorage {
-		public GasContainer getGas();
-	}
-	
 	public static interface IGasCon {
 		public boolean conGas(byte side);
 	}
 
-	public void updateLink(GasContainer pipe) {
-		TileEntity te;
+	@Override
+	public void updateCompCon(GasContainer comp) {
+		super.updateCompCon(comp);
+		ICapabilityProvider te;
 		byte con = 0;
+		GasContainer cont;
 		for (byte i = 0; i < 6; i++) 
-			if (pipe.canConnect(i) && (te = Utils.getTileOnSide(pipe.tile, i)) != null) {
-				if (te instanceof IGasStorage) {
-					GasContainer p = ((IGasStorage)te).getGas();
-					if (p.canConnect((byte)(i^1))) add(p);
-				}
-				if (te instanceof IHeatStorage) {
-					con |= 1 << i;
-					if (i % 2 == 0 && !(te instanceof IGasStorage && ((IGasStorage)te).getGas().network == this)) {
-						HeatExchCon entr = new HeatExchCon(pipe, (IHeatStorage)te, i);
-						heatExch.put(SharedNetwork.SidedPosUID(pipe.Uid, i), entr);
-					}
+			if ((te = comp.tile.getTileOnSide(EnumFacing.VALUES[i])) != null && te instanceof IHeatStorage) {
+				con |= 1 << i;
+				if (i % 2 == 0 && !((cont = te.getCapability(Objects.GAS_CAP, EnumFacing.VALUES[i^1])) != null && cont.network == this)) {
+					HeatExchCon entr = new HeatExchCon(comp, (IHeatStorage)te, i);
+					heatExch.put(SharedNetwork.SidedPosUID(comp.getUID(), i), entr);
 				}
 			}
+		TileEntity tile = (TileEntity)comp.tile;
 		con ^= 0x3f;
-		float dC = HeatReservoir.getEnvHeatCond((IHeatStorage)pipe.tile, pipe.tile.getWorld(), pipe.tile.getPos(), con) - pipe.heatCond;
-		pipe.heatCond += dC;
+		float dC = HeatReservoir.getEnvHeatCond((IHeatStorage)comp.tile, tile.getWorld(), tile.getPos(), con) - comp.heatCond;
+		comp.heatCond += dC;
 		this.heatCond += dC;
-		float dT = HeatReservoir.getEnvironmentTemp(pipe.tile.getWorld(), pipe.tile.getPos()) * pipe.heatCond - pipe.refTemp;
-		pipe.refTemp += dT;
+		float dT = HeatReservoir.getEnvironmentTemp(tile.getWorld(), tile.getPos()) * comp.heatCond - comp.refTemp;
+		comp.refTemp += dT;
 		this.refTemp += dT;
 	}
 

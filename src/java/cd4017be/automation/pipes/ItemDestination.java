@@ -6,6 +6,7 @@ import net.minecraft.util.EnumHand;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Block.BlockItemPipe;
 import cd4017be.automation.pipes.WarpPipePhysics.IItemDest;
+import cd4017be.lib.ModTileEntity;
 
 public class ItemDestination extends ItemComp implements IItemDest {
 
@@ -15,14 +16,14 @@ public class ItemDestination extends ItemComp implements IItemDest {
 	
 	@Override
 	public boolean onClicked(EntityPlayer player, EnumHand hand, ItemStack item, long uid) {
-		if (player == null) pipe.pipe.dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Injection));
+		if (player == null) ((ModTileEntity)pipe.tile).dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Injection));
 		if (super.onClicked(player, hand, item, uid) || player == null) return true;
 		if (player.getHeldItemMainhand() == null && player.isSneaking()) {
-			pipe.pipe.dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Injection));
+			((ModTileEntity)pipe.tile).dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Injection));
 			pipe.con[side] = 0;
 			pipe.network.remConnector(pipe, side);
 			pipe.updateCon = true;
-			pipe.pipe.markUpdate();
+			((ModTileEntity)pipe.tile).markUpdate();
 			return true;
 		}
 		return false;

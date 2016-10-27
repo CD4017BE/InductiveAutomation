@@ -2,15 +2,20 @@ package cd4017be.automation;
 
 import cd4017be.automation.Block.*;
 import cd4017be.automation.Item.*;
+import cd4017be.automation.pipes.BasicWarpPipe;
+import cd4017be.automation.shaft.GasContainer;
+import cd4017be.automation.shaft.ShaftComponent;
 import cd4017be.lib.DefaultBlock;
+import cd4017be.lib.DefaultItem;
 import cd4017be.lib.TileBlock;
 import cd4017be.lib.templates.BlockPipe;
 import net.minecraft.block.material.Material;
-import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.fluids.Fluid;
 
 public class Objects {
-	
+
 	//Fluids
 	public static Fluid L_water; //1000g/l
 	public static Fluid L_lava; //??
@@ -26,7 +31,7 @@ public class Objects {
 	public static Fluid L_heliumL; //144g/l, 4K
 	public static Fluid L_oxygenG; //1.62g/l, 273K :x800
 	public static Fluid L_oxygenL; //1296g/l, 90K
-	
+
 	//Items
 	public static ItemMaterial material;
 	public static ItemSelectionTool selectionTool;
@@ -49,38 +54,38 @@ public class Objects {
 	public static ItemJetpack jetpack;
 	public static ItemJetpack jetpackIron;
 	public static ItemJetpack jetpackSteel;
-    public static ItemJetpack jetpackGraphite;
-    public static ItemJetpack jetpackUnbr;
-    public static ItemMatterInterface matterInterface;
-    public static ItemFluidDummy fluidDummy;
-    public static ItemFluidUpgrade fluidUpgrade;
-    public static ItemItemUpgrade itemUpgrade;
-    public static ItemFurnace portableFurnace;
-    public static ItemInventory portableInventory;
-    public static ItemPortableCrafter portableCrafter;
-    public static ItemPortableGenerator portableGenerator;
-    public static ItemRemoteInv portableRemoteInv;
-    public static ItemPortableTeleporter portableTeleporter;
-    public static ItemPortablePump portablePump;
-    public static ItemTranslocator translocator;
-    public static ItemPortableTesla portableTesla;
-    public static ItemPlacement placement;
-    public static ItemMachineSynchronizer synchronizer;
-    public static ItemBuilderAirType remBlockType;
-    public static ItemVertexSel vertexSel;
-    
-    //Blocks
-    public static BlockOre ore;
-    public static TileBlock pool;
-    public static BlockUnbreakable unbrStone;
-    public static GlassUnbreakable unbrGlass;
-    public static BlockSkyLight light;
-    public static GhostBlock placementHelper;
-    public static TileBlock solarpanel;
-    public static TileBlock teslaTransmitterLV;
-    public static TileBlock teslaTransmitter;
-    public static TileBlock wormhole;
-    public static TileBlock lightShaft;
+	public static ItemJetpack jetpackGraphite;
+	public static ItemJetpack jetpackUnbr;
+	public static ItemMatterInterface matterInterface;
+	public static ItemFluidDummy fluidDummy;
+	public static ItemFluidUpgrade fluidUpgrade;
+	public static ItemItemUpgrade itemUpgrade;
+	public static ItemFurnace portableFurnace;
+	public static ItemInventory portableInventory;
+	public static ItemPortableCrafter portableCrafter;
+	public static ItemPortableGenerator portableGenerator;
+	public static ItemRemoteInv portableRemoteInv;
+	public static ItemPortableTeleporter portableTeleporter;
+	public static ItemPortablePump portablePump;
+	public static ItemTranslocator translocator;
+	public static ItemPortableTesla portableTesla;
+	public static ItemPlacement placement;
+	public static ItemMachineSynchronizer synchronizer;
+	public static DefaultItem remBlockType;
+	public static ItemVertexSel vertexSel;
+
+	//Blocks
+	public static BlockOre ore;
+	public static TileBlock pool;
+	public static BlockUnbreakable unbrStone;
+	public static GlassUnbreakable unbrGlass;
+	public static BlockSkyLight light;
+	public static GhostBlock placementHelper;
+	public static TileBlock solarpanel;
+	public static TileBlock teslaTransmitterLV;
+	public static TileBlock teslaTransmitter;
+	public static TileBlock wormhole;
+	public static TileBlock lightShaft;
 	public static BlockPipe wireC;
 	public static BlockPipe wireA;
 	public static BlockPipe wireH;
@@ -149,11 +154,16 @@ public class Objects {
 	public static TileBlock solidFuelHeater;
 	public static TileBlock gasVent;
 	public static TileBlock heatedFurnace;
-    
+
 	//Materials
 	public static Material M_thermIns;
-	
-    //OreGen
-    public static WorldGenerator copperGen;
-    public static WorldGenerator silverGen;
+
+	//TODO init Capabilities
+	@CapabilityInject(BasicWarpPipe.class)
+	public static Capability<BasicWarpPipe> WARP_PIPE_CAP;
+	@CapabilityInject(ShaftComponent.class)
+	public static Capability<ShaftComponent> SHAFT_CAP;
+	@CapabilityInject(GasContainer.class)
+	public static Capability<GasContainer> GAS_CAP;
+
 }

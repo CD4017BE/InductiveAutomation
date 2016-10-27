@@ -7,27 +7,28 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
 import cd4017be.automation.shaft.HeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir.IHeatStorage;
-import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.DataContainer;
+import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.templates.AutomatedTile;
 
-public class HeatingCoil extends AutomatedTile implements IHeatStorage, IEnergy {
+public class HeatingCoil extends AutomatedTile implements IHeatStorage, IGuiData {
 
 	public HeatReservoir heat;
 	private float powerScale = 0;
-	
+	public int netI0, netI1;
+	public float netF0, netF1, netF2;
+
 	public HeatingCoil() {
-		netData = new TileEntityData(0, 2, 3, 0);
 		heat = new HeatReservoir(10000F);
 		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
-		netData.floats[0] = 300F;
-		netData.ints[0] = Config.Rmin;
-        powerScale = Config.Pscale;
+		netF0 = 300F;
+		netI0 = Config.Rmin;
+		powerScale = Config.Pscale;
 	}
 	
 	@Override
@@ -35,12 +36,12 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IEnergy 
 		super.update();
 		if (worldObj.isRemote) return;
 		heat.update(this);
-		netData.floats[2] = heat.T;
-		netData.floats[1] = (float)energy.Ucap;
-        if (heat.T < netData.floats[0] && ((netData.ints[1] & 1) != 0 ^ ((netData.ints[1] & 2) != 0 && worldObj.getStrongPower(pos) > 0))) {
-        	heat.addHeat((float)energy.getEnergy(0, netData.ints[0]));
-        	energy.Ucap *= powerScale;
-        }
+		netF2 = heat.T;
+		netF1 = (float)energy.Ucap;
+		if (heat.T < netF0 && ((netI1 & 1) != 0 ^ ((netI1 & 2) != 0 && worldObj.getStrongPower(pos) > 0))) {
+			heat.addHeat((float)energy.getEnergy(0, netI0));
+			energy.Ucap *= powerScale;
+		}
 	}
 	
 	@Override
@@ -62,17 +63,17 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IEnergy 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		heat.save(nbt, "heat");
-        return super.writeToNBT(nbt);
+		return super.writeToNBT(nbt);
 	}
 
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
 		if (cmd == 0) {
-			netData.ints[0] = dis.readShort();
-            if (netData.ints[0] < Config.Rmin) netData.ints[0] = Config.Rmin;
-            powerScale = (float)Math.sqrt(1.0D - 1.0D / (double)netData.ints[0]);
-		} else if (cmd == 1) netData.floats[0] = dis.readFloat();
-		else if (cmd == 2) netData.ints[1] = dis.readByte();
+			netI0 = dis.readShort();
+			if (netI0 < Config.Rmin) netI0 = Config.Rmin;
+			powerScale = (float)Math.sqrt(1.0D - 1.0D / (double)netI0);
+		} else if (cmd == 1) netF0 = dis.readFloat();
+		else if (cmd == 2) netI1 = dis.readByte();
 	}
 
 	@Override
@@ -86,7 +87,28 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IEnergy 
 	}
 
 	public int getPowerScaled(int s) {
-		return (int)(s * netData.floats[1] * netData.floats[1] / (float)netData.ints[0]) / 200000;
+		return (int)(s * netF1 * netF1 / (float)netI0) / 200000;
+	}
+
+	@Override
+	public void initContainer(DataContainer container) {
+		container.refInts = new int[5];
+	}
+
+	@Override
+	public int[] getSyncVariables() {
+		return new int[]{netI0, netI1, Float.floatToIntBits(netF0), Float.floatToIntBits(netF1), Float.floatToIntBits(netF1)};
+	}
+
+	@Override
+	public void setSyncVariable(int i, int v) {
+		switch(i) {
+		case 0: netI0 = v; break;
+		case 1: netI1 = v; break;
+		case 2: netF0 = Float.intBitsToFloat(v); break;
+		case 3: netF1 = Float.intBitsToFloat(v); break;
+		case 4: netF2 = Float.intBitsToFloat(v); break;
+		}
 	}
 
 }

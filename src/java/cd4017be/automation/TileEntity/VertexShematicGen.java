@@ -16,6 +16,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
 import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.SlotItemType;
 import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
@@ -275,9 +276,9 @@ public class VertexShematicGen extends AutomatedTile
 	}
 
 	@Override
-	public void initContainer(TileContainer container) 
-	{
-		container.addItemSlot(new SlotItemType(this, 0, 152, 51, new ItemStack(Items.PAPER), new ItemStack(Items.BOOK)));
+	public void initContainer(DataContainer cont) {
+		TileContainer container = (TileContainer)cont;
+		container.addItemSlot(new SlotItemType(inventory, 0, 152, 51, new ItemStack(Items.PAPER), new ItemStack(Items.BOOK)));
 		
 		container.addPlayerInventory(8, 97);
 	}

@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.Block;
 
 import java.util.Random;
@@ -22,59 +18,54 @@ import net.minecraft.world.World;
  *
  * @author CD4017BE
  */
-public class BlockSkyLight extends DefaultBlock
-{
-    
-    public static Block ID;
-    
-    public BlockSkyLight(String id)
-    {
-        super(id, Material.AIR, null);
-        ID = this;
-        this.setLightOpacity(0);
-    }
+public class BlockSkyLight extends DefaultBlock {
 
-    @Override
-    public boolean isOpaqueCube(IBlockState state) 
-    {
-        return false;
-    }
+	public static Block ID;
 
-    @Override
-    public void onBlockAdded(World world, BlockPos pos, IBlockState state) 
-    {
-        this.neighborChanged(state, world, pos, this);
-    }
+	public BlockSkyLight(String id) {
+		super(id, Material.AIR);
+		ID = this;
+		this.setLightOpacity(0);
+	}
 
-    @Override
+	@Override
+	public boolean isOpaqueCube(IBlockState state) {
+		return false;
+	}
+
+	@Override
+	public void onBlockAdded(World world, BlockPos pos, IBlockState state) {
+		this.neighborChanged(state, world, pos, this);
+	}
+
+	@Override
 	public EnumBlockRenderType getRenderType(IBlockState state) {
 		return EnumBlockRenderType.INVISIBLE;
 	}
 
 	@Override
-    public void neighborChanged(IBlockState state, World world, BlockPos pos, Block b) 
-    {
-        Block id = world.getBlockState(pos.up()).getBlock();
-        if (id == this || id == Objects.lightShaft) {
-            if (world.getBlockState(pos.down()) == Blocks.AIR.getDefaultState()) {
-                world.setBlockState(pos.down(), this.getDefaultState());
-            }
-        } else world.setBlockToAir(pos);
-    }
+	public void neighborChanged(IBlockState state, World world, BlockPos pos, Block b) {
+		Block id = world.getBlockState(pos.up()).getBlock();
+		if (id == this || id == Objects.lightShaft) {
+			if (world.getBlockState(pos.down()) == Blocks.AIR.getDefaultState()) {
+				world.setBlockState(pos.down(), this.getDefaultState());
+			}
+		} else world.setBlockToAir(pos);
+	}
 
-    @Override
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
-        return null;
-    }
+	@Override
+	public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess world, BlockPos pos) {
+		return null;
+	}
 
-    @Override
-    public boolean isCollidable() {
-        return false;
-    }
+	@Override
+	public boolean isCollidable() {
+		return false;
+	}
 
-    @Override
-    public int quantityDropped(IBlockState meta, int fortune, Random random) {
-        return 0;
-    }
-    
+	@Override
+	public int quantityDropped(IBlockState meta, int fortune, Random random) {
+		return 0;
+	}
+
 }

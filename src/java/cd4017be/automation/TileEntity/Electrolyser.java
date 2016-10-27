@@ -4,37 +4,34 @@ import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
-import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.api.recipes.AutomationRecipes.ElRecipe;
 import cd4017be.automation.Config;
+import cd4017be.lib.Gui.DataContainer;
+import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.Gui.TileContainer.TankSlot;
-import cd4017be.lib.TileEntityData;
 import cd4017be.lib.templates.AutomatedTile;
-import cd4017be.lib.templates.Inventory.Group;
 import cd4017be.lib.templates.TankContainer;
-import cd4017be.lib.templates.TankContainer.Tank;
 import cd4017be.lib.templates.Inventory;
+import cd4017be.lib.util.Utils;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
-public class Electrolyser extends AutomatedTile implements ISidedInventory, IEnergy, IFluidHandler
-{
-    private float powerScale;
-    private ElRecipe recipe;
+public class Electrolyser extends AutomatedTile implements IGuiData {
+
+	private float powerScale;
+	private ElRecipe recipe;
+	public int Rw;
+	public float Estor, Eneed, Uc;
 	
-	public Electrolyser()
-	{
-            netData = new TileEntityData(2, 1, 3, 3);
+	public Electrolyser() {
 		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
-		inventory = new Inventory(this, 3, new Group(0, 1, -1), new Group(1, 2, 1), new Group(2, 3, 1));
-		tanks = new TankContainer(this, new Tank(Config.tankCap[1], -1).setIn(0), new Tank(Config.tankCap[1], 1).setOut(1), new Tank(Config.tankCap[1], 1).setOut(2)).setNetLong(1);
+		inventory = new Inventory(3, 3, null).group(0, 0, 1, Utils.IN).group(1, 1, 2, Utils.OUT).group(2, 2, 3, Utils.OUT);
+		tanks = new TankContainer(3, 3).tank(0, Config.tankCap[1], Utils.IN, 0, -1).tank(1, Config.tankCap[1], Utils.OUT, -1, 1).tank(2, Config.tankCap[1], Utils.OUT, -1, 2);
 		/**
 		 * long: invcfg, tankcfg
 		 * int: resistor
@@ -42,8 +39,8 @@ public class Electrolyser extends AutomatedTile implements ISidedInventory, IEne
 		 * fluid: input, output0, output1
 		 */
 		
-		netData.ints[0] = Config.Rmin;
-        powerScale = Config.Pscale;
+		Rw = Config.Rmin;
+		powerScale = Config.Pscale;
 	}
 
 	@Override
@@ -52,37 +49,33 @@ public class Electrolyser extends AutomatedTile implements ISidedInventory, IEne
 		super.update();
 		if (worldObj.isRemote) return;
 		if (recipe == null) {
-            recipe = AutomationRecipes.getRecipeFor(inventory.items, 0, tanks.getFluid(0));
-            if (recipe != null) {
-                recipe.useRes(inventory, 0, tanks, 0);
-                netData.floats[1] = recipe.energy;
-            }
-        }
-		netData.floats[2] = (float)energy.Ucap;
-        double power = energy.getEnergy(0, netData.ints[0]) / 1000D;
-        if (recipe != null) {
-            if (netData.floats[0] < netData.floats[1]) {
-                netData.floats[0] += power;
-                energy.Ucap *= powerScale;
-            }
-            if (netData.floats[0] >= netData.floats[1] && recipe.output(inventory, 1, 2, tanks, 1, 2)) {
-                recipe = null;
-                netData.floats[0] -= netData.floats[1];
-                netData.floats[1] = 0;
-            }
-        }
+			recipe = AutomationRecipes.getRecipeFor(inventory.items, 0, tanks.fluids[0]);
+			if (recipe != null) {
+				recipe.useRes(inventory, 0, tanks, 0);
+				Eneed = recipe.energy;
+			}
+		}
+		Uc = (float)energy.Ucap;
+		double power = energy.getEnergy(0, Rw) / 1000D;
+		if (recipe != null) {
+			if (Estor < Eneed) {
+				Estor += power;
+				energy.Ucap *= powerScale;
+			}
+			if (Estor >= Eneed && recipe.output(inventory, 1, 2, tanks, 1, 2)) {
+				recipe = null;
+				Estor -= Eneed;
+				Eneed = 0;
+			}
+		}
 	}
-	
-	public int getProgressScaled(int s)
-	{
-            if (netData.floats[1] <= 0) return 0;
-            int n = (int)(netData.floats[0] * s / netData.floats[1]);
-            return n > s ? s : n;
+
+	public float getProgress() {
+		return Estor / Eneed;
 	}
-	
-	public int getPowerScaled(int s)
-	{
-		return (int)(s * netData.floats[2] * netData.floats[2] / (float)netData.ints[0]) / 200000;
+
+	public float getPower() {
+		return Uc * Uc / (float)Rw / 200000F;
 	}
 
 	@Override
@@ -90,53 +83,68 @@ public class Electrolyser extends AutomatedTile implements ISidedInventory, IEne
 	{
 		super.readFromNBT(nbt);
 		if (nbt.hasKey("recipe")) recipe = AutomationRecipes.readElRecipeFromNBT(nbt.getCompoundTag("recipe"));
-        else recipe = null;
-        netData.floats[0] = nbt.getFloat("progress");
-        netData.ints[0] = nbt.getInteger("resistor");
-        powerScale = nbt.getFloat("pScale");
+		else recipe = null;
+		Estor = nbt.getFloat("progress");
+		Rw = nbt.getInteger("resistor");
+		powerScale = nbt.getFloat("pScale");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
 		if (recipe != null) nbt.setTag("recipe", AutomationRecipes.writeElRecipeToNBT(recipe));
-        nbt.setFloat("progress", netData.floats[0]);
-        nbt.setInteger("resistor", netData.ints[0]);
-        nbt.setFloat("pScale", powerScale);
-        return super.writeToNBT(nbt);
+		nbt.setFloat("progress", Estor);
+		nbt.setInteger("resistor", Rw);
+		nbt.setFloat("pScale", powerScale);
+		return super.writeToNBT(nbt);
 	}
 
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
 	{
 		if (cmd == 0)
-        {
-            netData.ints[0] = dis.readInt();
-            if (netData.ints[0] < Config.Rmin) netData.ints[0] = Config.Rmin;
-            powerScale = (float)Math.sqrt(1.0D - 1.0D / (double)netData.ints[0]);
-        }
+		{
+			Rw = dis.readInt();
+			if (Rw < Config.Rmin) Rw = Config.Rmin;
+			powerScale = (float)Math.sqrt(1.0D - 1.0D / (double)Rw);
+		}
 	}
 
 	@Override
-	public void initContainer(TileContainer container) 
-	{
-		container.addItemSlot(new Slot(this, 0, 98, 34));
-		container.addItemSlot(new Slot(this, 1, 44, 34));
-		container.addItemSlot(new Slot(this, 2, 152, 34));
+	public void initContainer(DataContainer cont) {
+		TileContainer container = (TileContainer)cont;
+		cont.refInts = new int[4];
+		container.addItemSlot(new SlotItemHandler(inventory, 0, 98, 34));
+		container.addItemSlot(new SlotItemHandler(inventory, 1, 44, 34));
+		container.addItemSlot(new SlotItemHandler(inventory, 2, 152, 34));
 		
 		container.addPlayerInventory(8, 86);
 		
-		container.addTankSlot(new TankSlot(tanks, 0, 98, 16, false));
-		container.addTankSlot(new TankSlot(tanks, 1, 44, 16, false));
-		container.addTankSlot(new TankSlot(tanks, 2, 152, 16, false));
+		container.addTankSlot(new TankSlot(tanks, 0, 98, 16, (byte)0x13));
+		container.addTankSlot(new TankSlot(tanks, 1, 44, 16, (byte)0x13));
+		container.addTankSlot(new TankSlot(tanks, 2, 152, 16, (byte)0x13));
 	}
 
 	@Override
-	public int[] stackTransferTarget(ItemStack item, int s, TileContainer container) 
-	{
-		int[] pi = container.getPlayerInv();
-        if (s < pi[0]) return pi;
-        else return new int[]{0, 1};
+	public boolean transferStack(ItemStack item, int s, TileContainer container) {
+		if (s < container.invPlayerS) container.mergeItemStack(item, container.invPlayerS, container.invPlayerE, false);
+		else container.mergeItemStack(item, 0, 1, false);
+		return true;
 	}
-	
+
+	@Override
+	public int[] getSyncVariables() {
+		return new int[]{Rw, Float.floatToIntBits(Estor), Float.floatToIntBits(Eneed), Float.floatToIntBits(Uc)};
+	}
+
+	@Override
+	public void setSyncVariable(int i, int v) {
+		switch(i) {
+		case 0: Rw = v; break;
+		case 1: Estor = Float.intBitsToFloat(v); break;
+		case 2: Eneed = Float.intBitsToFloat(v); break;
+		case 3: Uc = Float.intBitsToFloat(v); break;
+		}
+	}
+
 }

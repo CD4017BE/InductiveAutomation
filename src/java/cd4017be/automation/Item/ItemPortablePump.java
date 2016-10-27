@@ -25,115 +25,107 @@ public class ItemPortablePump extends ItemEnergyCell implements IFluidContainerI
 
 	public static int energyUse = 8;
 	public static float reachDist = 16F;
-	
-	public ItemPortablePump(String id) 
-	{
+
+	public ItemPortablePump(String id) {
 		super(id, Config.Ecap[0]);
 		this.setMaxStackSize(1);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-    public void addInformation(ItemStack item, EntityPlayer player, List list, boolean par4) 
-    {
-        FluidStack fluid = this.getFluid(item);
-        if (fluid != null) {
-            list.add(String.format("%s/%s %s %s", 
-            		Utils.formatNumber((float)fluid.amount / 1000F, 3), 
-            		Utils.formatNumber((float)this.getCapacity(item) / 1000F, 3),
-            		TooltipInfo.getFluidUnit(),
-            		fluid.getLocalizedName()));
-        }
-        super.addInformation(item, player, list, par4);
-    }
-
-    @Override
-    public FluidStack getFluid(ItemStack item) 
-    {
-        if (item.getTagCompound() == null) return null;
-        else return FluidStack.loadFluidStackFromNBT(item.getTagCompound().getCompoundTag("fluid"));
-    }
-
-    @Override
-    public int getCapacity(ItemStack item) 
-    {
-        return 16000;
-    }
-
-    @Override
-    public int fill(ItemStack item, FluidStack resource, boolean doFill) 
-    {
-        if (resource == null) return 0;
-        if (doFill && item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
-        int n;
-        FluidStack fluid = this.getFluid(item);
-        if (fluid != null) {
-            if (!fluid.isFluidEqual(resource)) return 0;
-            n = Math.min(this.getCapacity(item) - fluid.amount, resource.amount);
-            if (doFill){
-                fluid.amount += n;
-                NBTTagCompound tag = new NBTTagCompound();
-                fluid.writeToNBT(tag);
-                item.getTagCompound().setTag("fluid", tag);
-            }
-            return n;
-        } else {
-            n = Math.min(this.getCapacity(item), resource.amount);
-            if (doFill) {
-                fluid = resource.copy();
-                fluid.amount = n;
-                NBTTagCompound tag = new NBTTagCompound();
-                fluid.writeToNBT(tag);
-                item.getTagCompound().setTag("fluid", tag);
-            }
-            return n;
-        }
-    }
-
-    @Override
-    public FluidStack drain(ItemStack item, int maxDrain, boolean doDrain) 
-    {
-        FluidStack fluid = this.getFluid(item);
-        if (fluid == null) return null;
-        FluidStack ret = fluid.copy();
-        ret.amount = Math.min(fluid.amount, maxDrain);
-        if (doDrain) {
-            fluid.amount -= ret.amount;
-            if (fluid.amount <= 0) item.getTagCompound().removeTag("fluid");
-            else {
-            	NBTTagCompound tag = new NBTTagCompound();
-                fluid.writeToNBT(tag);
-                item.getTagCompound().setTag("fluid", tag);
-            }
-        }
-        return ret;
-    }
+	public void addInformation(ItemStack item, EntityPlayer player, List list, boolean par4) {
+		FluidStack fluid = this.getFluid(item);
+		if (fluid != null) {
+			list.add(String.format("%s/%s %s %s", 
+					Utils.formatNumber((float)fluid.amount / 1000F, 3), 
+					Utils.formatNumber((float)this.getCapacity(item) / 1000F, 3),
+					TooltipInfo.getFluidUnit(),
+					fluid.getLocalizedName()));
+		}
+		super.addInformation(item, player, list, par4);
+	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
-	{
+	public FluidStack getFluid(ItemStack item) {
+		if (item.getTagCompound() == null) return null;
+		else return FluidStack.loadFluidStackFromNBT(item.getTagCompound().getCompoundTag("fluid"));
+	}
+
+	@Override
+	public int getCapacity(ItemStack item) {
+		return 16000;
+	}
+
+	@Override
+	public int fill(ItemStack item, FluidStack resource, boolean doFill) {
+		if (resource == null) return 0;
+		if (doFill && item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
+		int n;
+		FluidStack fluid = this.getFluid(item);
+		if (fluid != null) {
+			if (!fluid.isFluidEqual(resource)) return 0;
+			n = Math.min(this.getCapacity(item) - fluid.amount, resource.amount);
+			if (doFill){
+				fluid.amount += n;
+				NBTTagCompound tag = new NBTTagCompound();
+				fluid.writeToNBT(tag);
+				item.getTagCompound().setTag("fluid", tag);
+			}
+			return n;
+		} else {
+			n = Math.min(this.getCapacity(item), resource.amount);
+			if (doFill) {
+				fluid = resource.copy();
+				fluid.amount = n;
+				NBTTagCompound tag = new NBTTagCompound();
+				fluid.writeToNBT(tag);
+				item.getTagCompound().setTag("fluid", tag);
+			}
+			return n;
+		}
+	}
+
+	@Override
+	public FluidStack drain(ItemStack item, int maxDrain, boolean doDrain) {
+		FluidStack fluid = this.getFluid(item);
+		if (fluid == null) return null;
+		FluidStack ret = fluid.copy();
+		ret.amount = Math.min(fluid.amount, maxDrain);
+		if (doDrain) {
+			fluid.amount -= ret.amount;
+			if (fluid.amount <= 0) item.getTagCompound().removeTag("fluid");
+			else {
+				NBTTagCompound tag = new NBTTagCompound();
+				fluid.writeToNBT(tag);
+				item.getTagCompound().setTag("fluid", tag);
+			}
+		}
+		return ret;
+	}
+
+	@Override
+	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) {
 		if (world.isRemote) return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
-		EnergyItem energy = new EnergyItem(item, this);
+		EnergyItem energy = new EnergyItem(item, this, -1);
 		if (energy.getStorageI() < energyUse) return new ActionResult<ItemStack>(EnumActionResult.FAIL, item);
 		Vec3d pos = new Vec3d(player.posX, player.posY + player.getEyeHeight(), player.posZ);
-        Vec3d dir = player.getLookVec();
-        boolean sneak = player.isSneaking();
-        RayTraceResult obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * reachDist, dir.yCoord * reachDist, dir.zCoord * reachDist), true, false, sneak);
-        if (obj == null) {
-        	return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, this.fillFluid(item, player.inventory));
-        }
-        FluidStack fluid = Utils.getFluid(world, obj.getBlockPos(), !sneak);
-        if (fluid != null && this.fill(item, fluid, false) == fluid.amount) {
-        	this.fill(item, fluid, true);
-        	energy.addEnergyI(fluid.amount == 0 ? energyUse / -4 : -energyUse, -1);
-        	if (sneak) world.setBlockState(obj.getBlockPos(), Blocks.AIR.getDefaultState(), 2);
-        	else world.setBlockToAir(obj.getBlockPos());
-        }
-        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, this.fillFluid(item, player.inventory));
+		Vec3d dir = player.getLookVec();
+		boolean sneak = player.isSneaking();
+		RayTraceResult obj = world.rayTraceBlocks(pos, pos.addVector(dir.xCoord * reachDist, dir.yCoord * reachDist, dir.zCoord * reachDist), true, false, sneak);
+		if (obj == null) {
+			return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, this.fillFluid(item, player.inventory));
+		}
+		FluidStack fluid = Utils.getFluid(world, obj.getBlockPos(), !sneak);
+		if (fluid != null && this.fill(item, fluid, false) == fluid.amount) {
+			this.fill(item, fluid, true);
+			energy.addEnergyI(fluid.amount == 0 ? energyUse / -4 : -energyUse);
+			if (sneak) world.setBlockState(obj.getBlockPos(), Blocks.AIR.getDefaultState(), 2);
+			else world.setBlockToAir(obj.getBlockPos());
+		}
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, this.fillFluid(item, player.inventory));
 	}
-	
-	private ItemStack fillFluid(ItemStack item, InventoryPlayer inv)
-	{
+
+	private ItemStack fillFluid(ItemStack item, InventoryPlayer inv) {
 		item = item.copy();
 		FluidStack type = this.getFluid(item);
 		if (type == null) {

@@ -1,125 +1,80 @@
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.ResourceLocation;
 
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
-
 import cd4017be.api.automation.IOperatingArea;
+import cd4017be.automation.Item.ItemSelectionTool;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 
-public class GuiAreaUpgrade extends GuiMachine 
-{
+public class GuiAreaUpgrade extends GuiMachine {
 
-	private final ContainerAreaUpgrade data;
-	private final GuiTextField[] areaDsp;
-	private int distance, maxDist, sx, sy, sz, mx, my, mz, Umax;
-	
-	public GuiAreaUpgrade(ContainerAreaUpgrade container) 
-	{
-		super(container);
-		this.data = container;
-		this.areaDsp = new GuiTextField[6];
+	private final ItemSelectionTool.GuiData data;
+	private int[] area = new int[6];
+	private int distance, maxDist, mx, my, mz, Umax;
+
+	public GuiAreaUpgrade(TileContainer c) {
+		super(c);
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/areaConfig.png");
+		this.data = (ItemSelectionTool.GuiData)c.data;
 	}
 
 	@Override
-    public void initGui() 
-    {
-        this.xSize = 176;
-        this.ySize = 168;
-        super.initGui();
-        int n = 0;
-        for (int i = 0; i < 2; i++)
-        	for (int j = 0; j < 3; j++) {
-        		areaDsp[n] = new GuiTextField(0, this.fontRendererObj, this.guiLeft + 110 + i * 33, this.guiTop + 36 + j * 12, 25, 8);
-        		areaDsp[n++].setEnableBackgroundDrawing(false);
-        	}
-    }
-
-    @Override
-    protected void drawGuiContainerForegroundLayer(int mx, int my) 
-    {
-        super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(26, 16, 88, 16, "\\i", "areaCfg.size");
-        this.drawInfo(26, 34, 70, 16, "\\i", "areaCfg.dist");
-        this.drawInfo(26, 52, 70, 16, "\\i", "areaCfg.Umax");
-        this.drawInfo(116, 16, 16, 16, "\\i", "areaCfg.copy");
-        this.drawInfo(152, 16, 16, 16, "\\i", "areaCfg.dspl");
-        this.drawInfo(134, 16, 16, 16, "\\i", "areaCfg.synch");
-    }
-    
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int x, int y) 
-    {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/areaConfig.png"));
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        for (GuiTextField gui: areaDsp) gui.drawTextBox();
-        this.drawLocString(this.guiLeft + 26, this.guiTop + 16, 8, 0x404040, "areaCfg.size_", sx, sy, sz, mx, my, mz);
-        this.drawLocString(this.guiLeft + 26, this.guiTop + 34, 8, 0x404040, "areaCfg.dist_", distance, maxDist == Integer.MAX_VALUE ? "inf" : "" + maxDist);
-        this.drawLocString(this.guiLeft + 26, this.guiTop + 52, 8, 0x404040, "areaCfg.Umax_", Umax);
-        this.drawStringCentered(I18n.translateToLocal("gui.cd4017be.selectionTool.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
-    }
-    
-    @Override
-    protected void mouseClicked(int x, int y, int b) throws IOException 
-    {
-        for (GuiTextField gui: areaDsp) gui.mouseClicked(x, y, b);
-        if (this.isPointInRegion(116, 16, 16, 16, x, y)) {
-	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
-	            dos.writeByte((byte)6);
-	            BlockGuiHandler.sendPacketToServer(dos);
-        }
-        super.mouseClicked(x, y, b);
-    }
-
-	@Override
-	protected void keyTyped(char c, int k) throws IOException 
-	{
-		for (int i = 0; i < areaDsp.length; i++)
-			if (areaDsp[i].isFocused()) {
-				if (k == Keyboard.KEY_RETURN) {
-					try {
-			            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
-			            dos.writeByte((byte)i);
-			            dos.writeInt(Integer.parseInt(areaDsp[i].getText()));
-			            BlockGuiHandler.sendPacketToServer(dos);
-			            areaDsp[i].setFocused(false);
-			        } catch (NumberFormatException e) {}
-				} else areaDsp[i].textboxKeyTyped(c, k);
-				return;
-			}
-		super.keyTyped(c, k);
+	public void initGui() {
+		this.xSize = 176;
+		this.ySize = 168;
+		super.initGui();
+		for (int i = 0; i < 2; i++)
+			for (int j = 0; j < 3; j++)
+				guiComps.add(new TextField(i * 3 + j, 110 + i * 33, 36 + j * 12, 25, 8, 5));
+		guiComps.add(new Text(6, 26, 16, 88, 16, "gui.cd4017be.areaCfg.size_").setTooltip("areaCfg.size"));
+		guiComps.add(new Text(7, 26, 34, 88, 16, "gui.cd4017be.areaCfg.dist_").setTooltip("areaCfg.dist"));
+		guiComps.add(new Text(8, 26, 52, 88, 16, "gui.cd4017be.areaCfg.Umax_").setTooltip("areaCfg.Umax"));
+		guiComps.add(new Button(9, 115, 15, 18, 18, -1).setTooltip("areaCfg.copy"));
+		guiComps.add(new GuiComp(10, 152, 16, 16, 16).setTooltip("areaCfg.dspl"));
+		guiComps.add(new GuiComp(11, 134, 16, 16, 16).setTooltip("areaCfg.synch"));
+		guiComps.add(new Text(99, 0, 4, xSize, 0, "gui.cd4017be.selectionTool.name").center());
 	}
 
 	@Override
-	public void updateScreen() 
-	{
-		int[] area = data.machine.getOperatingArea();
-		for (int i = 0; i < areaDsp.length; i++)
-			if (!areaDsp[i].isFocused()) {
-				areaDsp[i].setText("" + area[i]);
-			}
-		sx = area[3] - area[0];
-		sy = area[4] - area[1];
-		sz = area[5] - area[2];
-		area = IOperatingArea.Handler.maxSize(data.machine);
-		mx = area[0];
-		my = area[1];
-		mz = area[2];
-		distance = data.getDistance();
-		maxDist = IOperatingArea.Handler.maxRange(data.machine);
-		Umax = IOperatingArea.Handler.Umax(data.machine);
+	protected Object getDisplVar(int id) {
+		switch(id) {
+		case 6: return new Object[]{area[3] - area[0], area[4] - area[1], area[5] - area[2], mx, my, mz};
+		case 7: return new Object[]{distance, maxDist == Integer.MAX_VALUE ? "inf" : "" + maxDist};
+		case 8: return Umax;
+		default: if (id < 6) return "" + area[id];
+		else return null;
+		}
+	}
+
+	@Override
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
+		if (id == 9) dos.writeByte((byte)6);
+		else if (id < 6) try {
+				dos.writeByte((byte)id);
+				dos.writeInt(Integer.parseInt((String)obj));
+			} catch (NumberFormatException e) {return;}
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
+	}
+
+	@Override
+	public void updateScreen() {
+		area = data.tile.getOperatingArea();
+		int[] max = IOperatingArea.Handler.maxSize(data.tile);
+		mx = max[0];
+		my = max[1];
+		mz = max[2];
+		maxDist = IOperatingArea.Handler.maxRange(data.tile);
+		Umax = IOperatingArea.Handler.Umax(data.tile);
+		int dx = data.pos.getX() + 1 < area[0] ? area[0] - data.pos.getX() - 1 : data.pos.getX() > area[3] ? data.pos.getX() - area[3] : 0;
+		int dy = data.pos.getY() + 1 < area[1] ? area[1] - data.pos.getY() - 1 : data.pos.getY() > area[4] ? data.pos.getY() - area[4] : 0;
+		int dz = data.pos.getZ() + 1 < area[2] ? area[2] - data.pos.getZ() - 1 : data.pos.getZ() > area[5] ? data.pos.getZ() - area[5] : 0;
+		distance = dx > dy ? (dz > dx ? dz : dx) : (dz > dy ? dz : dy);
 		super.updateScreen();
 	}
-    
 
 }

@@ -2,13 +2,14 @@ package cd4017be.automation.pipes;
 
 import cd4017be.automation.Objects;
 import cd4017be.automation.Block.BlockItemPipe;
-import cd4017be.lib.util.Utils;
+import cd4017be.lib.ModTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.ITickable;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 public class ItemExtractor extends ItemComp implements ITickable {
 
@@ -21,46 +22,35 @@ public class ItemExtractor extends ItemComp implements ITickable {
 	@Override
 	public void update() {
 		if (!this.isValid()) return;
-		int[] slots = Utils.accessibleSlots(inv, side^1);
-		ISidedInventory invS = inv instanceof ISidedInventory ? (ISidedInventory)inv : null;
-		if (slots.length == 0) return;
-		int s, target = -1;
+		IItemHandler acc = link.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.VALUES[this.side^1]);
+		if (acc == null) return;
+		int s, target = -1, m = acc.getSlots();
 		ItemStack stack = null;
-		for (int i = slotIdx; i < slotIdx + slots.length; i++) {
-			s = slots[i % slots.length];
-			stack = inv.getStackInSlot(s);
-			if (stack != null && (invS == null || invS.canExtractItem(s, stack, EnumFacing.VALUES[side^1]))) {
-				if (filter != null && (stack = filter.getExtractItem(stack, inv, slots, pipe.redstone)) == null) continue;
+		for (int i = slotIdx; i < slotIdx + m; i++) {
+			stack = acc.extractItem(s = i % m, 65536, true);
+			if (stack != null && (filter == null || (stack = filter.getExtract(stack, acc)) != null)) {
 				target = s;
-				slotIdx = (i + 1) % slots.length;
+				slotIdx = (i + 1) % m;
 				break;
 			}
 		}
 		if (target < 0 || stack == null) return;
-		stack = pipe.network.insertItem(inv.decrStackSize(target, stack.stackSize), filter == null || (filter.mode & 2) == 0 ? Byte.MAX_VALUE : filter.priority);
-		if (stack != null) {
-			ItemStack item = inv.getStackInSlot(target);
-			if (item == null) inv.setInventorySlotContents(target, stack);
-			else if (item.isItemEqual(stack)) {
-				stack.stackSize += item.stackSize;
-				inv.setInventorySlotContents(target, stack);
-			} else {
-				stack = Utils.fillStack(inv, side^1, slots, stack);
-				if (stack != null) pipe.pipe.dropStack(stack);
-			}
-		}
+		m = stack.stackSize;
+		stack = pipe.network.insertItem(stack, filter == null || (filter.mode & 2) == 0 ? Byte.MAX_VALUE : filter.priority);
+		if (stack != null) m -= stack.stackSize;
+		acc.extractItem(target, m, false);
 	}
-	
+
 	@Override
 	public boolean onClicked(EntityPlayer player, EnumHand hand, ItemStack item, long uid) {
-		if (player == null) pipe.pipe.dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Extraction));
+		if (player == null) ((ModTileEntity)pipe.tile).dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Extraction));
 		if (super.onClicked(player, hand, item, uid) || player == null) return true;
 		if (player.isSneaking() && player.getHeldItemMainhand() == null) {
-			pipe.pipe.dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Extraction));
+			((ModTileEntity)pipe.tile).dropStack(new ItemStack(Objects.itemPipe, 1, BlockItemPipe.ID_Extraction));
 			pipe.con[side] = 0;
 			pipe.network.remConnector(pipe, side);
 			pipe.updateCon = true;
-			pipe.pipe.markUpdate();
+			((ModTileEntity)pipe.tile).markUpdate();
 			return true;
 		}
 		return false;

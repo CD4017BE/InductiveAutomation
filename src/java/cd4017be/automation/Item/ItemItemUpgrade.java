@@ -1,28 +1,28 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cd4017be.automation.Item;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.io.IOException;
 import java.util.List;
 
 import cd4017be.automation.Automation;
-import cd4017be.automation.Gui.ContainerItemUpgrade;
 import cd4017be.automation.Gui.GuiItemUpgrade;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.DefaultItem;
 import cd4017be.lib.IGuiItem;
 import cd4017be.lib.TooltipInfo;
+import cd4017be.lib.Gui.DataContainer;
+import cd4017be.lib.Gui.ItemGuiData;
+import cd4017be.lib.Gui.SlotHolo;
+import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.templates.InventoryItem;
+import cd4017be.lib.templates.InventoryItem.IItemInventory;
+import cd4017be.lib.util.ItemFluidUtil;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraft.util.ActionResult;
@@ -34,18 +34,15 @@ import net.minecraft.world.World;
  *
  * @author CD4017BE
  */
-public class ItemItemUpgrade extends DefaultItem implements IGuiItem
-{
-    
-    public ItemItemUpgrade(String id)
-    {
-        super(id);
-        this.setCreativeTab(Automation.tabAutomation);
-    }
-    
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+public class ItemItemUpgrade extends DefaultItem implements IGuiItem, IItemInventory {
+
+	public ItemItemUpgrade(String id) {
+		super(id);
+		this.setCreativeTab(Automation.tabAutomation);
+	}
+
 	@Override
-	public void addInformation(ItemStack item, EntityPlayer player, List list, boolean b) {
+	public void addInformation(ItemStack item, EntityPlayer player, List<String> list, boolean b) {
 		if (item.hasTagCompound()) {
 			String[] states = I18n.translateToLocal("gui.cd4017be.filter.state").split(",");
 			PipeUpgradeItem filter = PipeUpgradeItem.load(item.getTagCompound());
@@ -67,31 +64,61 @@ public class ItemItemUpgrade extends DefaultItem implements IGuiItem
 	}
 
 	@Override
-    public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) 
-    {
-        BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
-        return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
-    }
-    
-    @Override
-    public Container getContainer(World world, EntityPlayer player, int x, int y, int z) 
-    {
-        return new ContainerItemUpgrade(player);
-    }
+	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) {
+		BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
+		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
+	}
 
-    @SideOnly(Side.CLIENT)
-    @Override
-    public GuiContainer getGui(World world, EntityPlayer player, int x, int y, int z) 
-    {
-        return new GuiItemUpgrade(new ContainerItemUpgrade(player));
-    }
+	@Override
+	public Container getContainer(World world, EntityPlayer player, int x, int y, int z) {
+		return new TileContainer(new GuiData(), player);
+	}
 
-    @Override
-    public void onPlayerCommand(World world, EntityPlayer player, PacketBuffer dis) throws IOException
-    {
-        if (player.openContainer != null && player.openContainer instanceof ContainerItemUpgrade) {
-            ((ContainerItemUpgrade)player.openContainer).inventory.onCommand(dis);
-        }
-    }
-    
+	@SideOnly(Side.CLIENT)
+	@Override
+	public GuiContainer getGui(World world, EntityPlayer player, int x, int y, int z) {
+		return new GuiItemUpgrade(new TileContainer(new GuiData(), player));
+	}
+
+	@Override
+	public void onPlayerCommand(ItemStack item, EntityPlayer player, PacketBuffer dis) {
+		NBTTagCompound nbt;
+		if (item.hasTagCompound()) nbt = item.getTagCompound();
+		else item.setTagCompound(nbt = new NBTTagCompound());
+		byte cmd = dis.readByte();
+		if (cmd == 0) nbt.setByte("mode", dis.readByte());
+		else if (cmd == 1) nbt.setInteger("maxAm", dis.readInt());
+		else if (cmd == 2) nbt.removeTag(ItemFluidUtil.Tag_ItemIndex);
+	}
+
+	@Override
+	public ItemStack[] loadInventory(ItemStack inv, EntityPlayer player) {
+		ItemStack[] items = new ItemStack[12];
+		if (inv.hasTagCompound())
+			ItemFluidUtil.loadItems(inv.getTagCompound().getTagList(ItemFluidUtil.Tag_ItemList, 10), items);
+		return items;
+	}
+
+	@Override
+	public void saveInventory(ItemStack inv, EntityPlayer player, ItemStack[] items) {
+		if (!inv.hasTagCompound()) inv.setTagCompound(new NBTTagCompound());
+		inv.getTagCompound().setTag(ItemFluidUtil.Tag_ItemList, ItemFluidUtil.saveItems(items));
+	}
+
+	class GuiData extends ItemGuiData {
+
+		public GuiData() {super(ItemItemUpgrade.this);}
+
+		@Override
+		public void initContainer(DataContainer container) {
+			TileContainer cont = (TileContainer)container;
+			this.inv = new InventoryItem(cont.player);
+			for (int j = 0; j < 2; j++)
+				for (int i = 0; i < 6; i++)
+					cont.addItemSlot(new SlotHolo(inv, j * 6 + i, 8 + i * 18, 16 + j * 18, false, true));
+			cont.addPlayerInventory(8, 68, false, true);
+		}
+
+	}
+
 }

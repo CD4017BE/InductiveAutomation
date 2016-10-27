@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.Item;
 
 import java.util.List;
@@ -21,56 +17,49 @@ import net.minecraft.item.ItemStack;
  *
  * @author CD4017BE
  */
-public class ItemESU extends DefaultItemBlock implements IEnergyItem
-{
-    
-    public ItemESU(Block id)
-    {
-        super(id);
-    }
+public class ItemESU extends DefaultItemBlock implements IEnergyItem {
 
-    @Override
-    public void addInformation(ItemStack item, EntityPlayer player, List list, boolean f) 
-    {
-    	new EnergyItem(item, this).addInformation(list);
-        super.addInformation(item, player, list, f);
-    }
-    
-    @Override
+	public ItemESU(Block id) {
+		super(id);
+	}
+
+	@Override
+	public void addInformation(ItemStack item, EntityPlayer player, List<String> list, boolean f) {
+		new EnergyItem(item, this, -1).addInformation(list);
+		super.addInformation(item, player, list, f);
+	}
+
+	@Override
 	public boolean showDurabilityBar(ItemStack stack) {
 		return true;
 	}
 
 	@Override
 	public double getDurabilityForDisplay(ItemStack stack) {
-    	return 1D - (double)new EnergyItem(stack, this).getStorageI() / (double)this.getEnergyCap(stack);
+		return 1D - (double)new EnergyItem(stack, this, -1).getStorageI() / (double)this.getEnergyCap(stack);
 	}
 
-    @Override
-	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) 
-    {
+	@Override
+	public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
 		super.getSubItems(item, tab, list);
 		ItemStack stack = new ItemStack(item);
-		new EnergyItem(stack, this).addEnergyI(getEnergyCap(stack), -1);
+		new EnergyItem(stack, this, -1).addEnergyI(getEnergyCap(stack));
 		list.add(stack);
 	}
 
 	@Override
-    public int getEnergyCap(ItemStack item) 
-    {
-        return item.getItem() == Item.getItemFromBlock(Objects.SCSU) ? Config.Ecap[0] : item.getItem() == Item.getItemFromBlock(Objects.OCSU) ? Config.Ecap[1] : Config.Ecap[2];
-    }
+	public int getEnergyCap(ItemStack item) {
+		return item.getItem() == Item.getItemFromBlock(Objects.SCSU) ? Config.Ecap[0] : item.getItem() == Item.getItemFromBlock(Objects.OCSU) ? Config.Ecap[1] : Config.Ecap[2];
+	}
 
-    @Override
-    public int getChargeSpeed(ItemStack item) 
-    {
-        return item.getItem() == Item.getItemFromBlock(Objects.SCSU) ? 160 : item.getItem() == Item.getItemFromBlock(Objects.OCSU) ? 400 : 1000;
-    }
+	@Override
+	public int getChargeSpeed(ItemStack item) {
+		return item.getItem() == Item.getItemFromBlock(Objects.SCSU) ? 160 : item.getItem() == Item.getItemFromBlock(Objects.OCSU) ? 400 : 1000;
+	}
 
-    @Override
-    public String getEnergyTag() 
-    {
-        return "energy";
-    }
-    
+	@Override
+	public String getEnergyTag() {
+		return "energy";
+	}
+
 }

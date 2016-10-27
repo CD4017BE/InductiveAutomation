@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.Item;
 
 import java.util.List;
@@ -15,20 +11,17 @@ import net.minecraft.item.ItemStack;
  *
  * @author CD4017BE
  */
-public class ItemBuilderTexture extends DefaultItem
-{
-    
-    public ItemBuilderTexture(String id)
-    {
-        super(id);
-        this.setCreativeTab(Automation.tabAutomation);
-    }
+public class ItemBuilderTexture extends DefaultItem {
 
-    @Override
-    public void addInformation(ItemStack item, EntityPlayer player, List list, boolean b) 
-    {
-        if (item.getTagCompound() != null) list.add(item.getTagCompound().getString("name"));
-        super.addInformation(item, player, list, b);
-    }
-    
+	public ItemBuilderTexture(String id) {
+		super(id);
+		this.setCreativeTab(Automation.tabAutomation);
+	}
+
+	@Override
+	public void addInformation(ItemStack item, EntityPlayer player, List<String> list, boolean b) {
+		if (item.getTagCompound() != null) list.add(item.getTagCompound().getString("name"));
+		super.addInformation(item, player, list, b);
+	}
+
 }

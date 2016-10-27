@@ -8,11 +8,9 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ITickable;
 import net.minecraftforge.fluids.FluidStack;
 import cd4017be.lib.templates.SharedNetwork;
-import cd4017be.lib.util.Utils;
 
 public class WarpPipePhysics extends SharedNetwork<BasicWarpPipe, WarpPipePhysics> {
 
@@ -32,11 +30,11 @@ public class WarpPipePhysics extends SharedNetwork<BasicWarpPipe, WarpPipePhysic
 	}
 	
 	public void addConnector(BasicWarpPipe pipe, ConComp con) {
-		this.addConnector(SharedNetwork.SidedPosUID(pipe.Uid, con.side), con);
+		this.addConnector(SharedNetwork.SidedPosUID(pipe.getUID(), con.side), con);
 	}
 	
 	public ConComp remConnector(BasicWarpPipe pipe, byte side) {
-		return this.remConnector(SharedNetwork.SidedPosUID(pipe.Uid, side));
+		return this.remConnector(SharedNetwork.SidedPosUID(pipe.getUID(), side));
 	}
 	
 	public void reorder(ConComp con) {
@@ -92,20 +90,18 @@ public class WarpPipePhysics extends SharedNetwork<BasicWarpPipe, WarpPipePhysic
 		long l;
 		for (int i = 0; i < 6; i++)
 			if (comp.con[i] >= 2) {
-				l = SharedNetwork.SidedPosUID(comp.Uid, i);
+				l = SharedNetwork.SidedPosUID(comp.getUID(), i);
 				this.remConnector(l);
 			}
 	}
-	
-	public void updateLink(BasicWarpPipe pipe) {
-		TileEntity te;
-		ConComp con;
-		for (byte i = 0; i < 6; i++) 
-			if (pipe.canConnect(i) && (te = Utils.getTileOnSide(pipe.pipe, i)) != null && te instanceof IWarpPipe) {
-				BasicWarpPipe p = ((IWarpPipe)te).getWarpPipe();
-				if (p.canConnect((byte)(i^1))) add(p);
-			} else if (pipe.con[i] >= 2) {
-				con = connectors.get(SharedNetwork.SidedPosUID(pipe.Uid, i));
+
+
+	@Override
+	public void updateCompCon(BasicWarpPipe comp) {
+		super.updateCompCon(comp);
+		for (byte s : sides())
+			if (comp.con[s] >= 2) {
+				ConComp con = connectors.get(SharedNetwork.SidedPosUID(comp.getUID(), s));
 				if (con instanceof IObjLink) ((IObjLink)con).updateLink();
 			}
 	}

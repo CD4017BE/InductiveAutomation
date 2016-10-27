@@ -13,10 +13,10 @@ import cd4017be.automation.Config;
 public class HugeTank extends Tank
 {
 
-    @Override
-    protected int capacity()
-    {
-        return Config.tankCap[3];
-    }
-    
+	@Override
+	protected int capacity()
+	{
+		return Config.tankCap[3];
+	}
+	
 }

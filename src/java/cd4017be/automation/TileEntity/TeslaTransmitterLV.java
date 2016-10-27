@@ -12,8 +12,8 @@ public class TeslaTransmitterLV extends TeslaTransmitter
 	}
 	
 	public boolean checkAlive()
-    {
+	{
 		return !this.isInvalid() && worldObj.isBlockLoaded(getPos()) && worldObj.getTileEntity(getPos()) == this;
-    }
+	}
 	
 }

@@ -34,5 +34,5 @@ public class AdvFurnaceRecipeHandler implements IRecipeHandler<LFRecipe>
 	public String getRecipeCategoryUid(LFRecipe arg0) {
 		return this.getRecipeCategoryUid();
 	}
-    
+	
 }

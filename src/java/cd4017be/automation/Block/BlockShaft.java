@@ -11,17 +11,16 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import cd4017be.lib.DefaultItemBlock;
 import cd4017be.lib.templates.BlockPipe;
 import cd4017be.lib.util.Utils;
 
 public class BlockShaft extends BlockPipe {
 
 	public BlockShaft(String id, Material m, int type) {
-		super(id, m, SoundType.METAL, DefaultItemBlock.class, type);
+		super(id, m, SoundType.METAL, type);
 		this.size = 0.5F;
 	}
-	
+
 	@Override
 	public IBlockState onBlockPlaced(World world, BlockPos pos, EnumFacing s, float X, float Y, float Z, int m, EntityLivingBase placer) {
 		int dir = placer.isSneaking() ? s.getIndex() : Utils.getLookDir(placer);
@@ -29,8 +28,8 @@ public class BlockShaft extends BlockPipe {
 	}
 
 	private static final PropertyInteger prop = PropertyInteger.create("dir", 0, 2);
-    
-    @Override
+	
+	@Override
 	public IBlockState getStateFromMeta(int meta) {
 		return this.blockState.getBaseState().withProperty(prop, meta);
 	}
@@ -40,6 +39,7 @@ public class BlockShaft extends BlockPipe {
 		return state.getValue(prop);
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected void addProperties(ArrayList<IProperty> main) {
 		main.add(prop);

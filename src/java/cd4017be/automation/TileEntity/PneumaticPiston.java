@@ -7,14 +7,15 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
+import cd4017be.automation.Objects;
 import cd4017be.automation.gas.GasState;
 import cd4017be.automation.shaft.GasContainer;
 import cd4017be.automation.shaft.GasPhysics.IGasCon;
-import cd4017be.automation.shaft.GasPhysics.IGasStorage;
 import cd4017be.automation.shaft.ShaftComponent;
 import cd4017be.automation.shaft.ShaftPhysics.IKineticComp;
-import cd4017be.lib.TileEntityData;
+import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.util.Utils;
 
@@ -23,32 +24,30 @@ import cd4017be.lib.util.Utils;
  * @author CD4017BE
  *
  */
-public class PneumaticPiston extends AutomatedTile implements IKineticComp, IGasCon {
+public class PneumaticPiston extends AutomatedTile implements IKineticComp, IGasCon, IGuiData {
 
 	private ShaftComponent link;
 	private GasContainer input, output;
 	public static final float Amax = 0.1F;
 	private boolean updateCon = false, run = false;
-	
-	public PneumaticPiston() {
-		netData = new TileEntityData(0, 1, 3, 0);
-	}
+	public int netI0;
+	public float netF0, netF1, netF2;
 
 	@Override
 	public void update() {
 		if (worldObj.isRemote) return;
 		if (updateCon) {
-			input = this.getConContainer(netData.ints[0] & 0xf);
-			output = this.getConContainer(netData.ints[0] >> 4 & 0xf);
+			input = this.getConContainer(netI0 & 0xf);
+			output = this.getConContainer(netI0 >> 4 & 0xf);
 			updateCon = false;
 		}
 	}
-	
+
 	private GasContainer getConContainer(int side) {
 		if (side == 0) return null;
 		side += this.getOrientation(); side %= 6;
 		TileEntity te = Utils.getTileOnSide(this, (byte)side);
-		return te != null && te instanceof IGasStorage ? ((IGasStorage)te).getGas() : null;
+		return te != null ? te.getCapability(Objects.GAS_CAP, EnumFacing.VALUES[side^1]) : null;
 	}
 
 	@Override
@@ -72,21 +71,21 @@ public class PneumaticPiston extends AutomatedTile implements IKineticComp, IGas
 	}
 
 	private static final float LIMIT = 1e-18F;
-	
+
 	@Override
 	public float estimatedForce(float ds) {
-		if (input != null && input.tile.isInvalid()) {input = null; updateCon = true;}
-		if (output != null && output.tile.isInvalid()) {output = null; updateCon = true;}
-		if (input == null || output == null || netData.floats[0] == 0 || input.network.gas.P() < LIMIT || ((netData.ints[0] & 0x100) == 0 ^ ((netData.ints[0] & 0x200) != 0 && worldObj.getStrongPower(pos) > 0))) {
+		if (input != null && ((TileEntity)input.tile).isInvalid()) {input = null; updateCon = true;}
+		if (output != null && ((TileEntity)input.tile).isInvalid()) {output = null; updateCon = true;}
+		if (input == null || output == null || netF0 == 0 || input.network.gas.P() < LIMIT || ((netI0 & 0x100) == 0 ^ ((netI0 & 0x200) != 0 && worldObj.getStrongPower(pos) > 0))) {
 			run = false;
 			return 0;
 		}
 		run = true;
-		if (netData.floats[1] == 0) netData.floats[1] = netData.floats[0];
+		if (netF1 == 0) netF1 = netF0;
 		GasState in = input.network.gas, out = output.network.gas;
-		float x0 = netData.floats[0] / in.V;
-		x0 *= 2F - netData.floats[0] / netData.floats[1];
-		return in.E() * x0 - out.E() * netData.floats[1] / out.V;
+		float x0 = netF0 / in.V;
+		x0 *= 2F - netF0 / netF1;
+		return in.E() * x0 - out.E() * netF1 / out.V;
 		/*
 		float x0;
 		if (ds <= 0) {
@@ -106,33 +105,33 @@ public class PneumaticPiston extends AutomatedTile implements IKineticComp, IGas
 
 	@Override
 	public float work(float ds, float v) {
-		if (!run) return netData.floats[2] = 0;
+		if (!run) return netF2 = 0;
 		GasState in = input.network.gas, out = output.network.gas;
 		float E = in.E() + out.E();
-		GasState s = in.extract(netData.floats[0] * ds);
-		float sqA = s.T * s.nR * netData.floats[0] / out.P() / ds;
-		if (sqA > Amax * Amax || sqA < 0 || Float.isNaN(sqA)) netData.floats[1] = Amax;
-		else netData.floats[1] = (float)Math.sqrt(sqA);
-		s.adiabat(netData.floats[1] * ds);
+		GasState s = in.extract(netF0 * ds);
+		float sqA = s.T * s.nR * netF0 / out.P() / ds;
+		if (sqA > Amax * Amax || sqA < 0 || Float.isNaN(sqA)) netF1 = Amax;
+		else netF1 = (float)Math.sqrt(sqA);
+		s.adiabat(netF1 * ds);
 		out.inject(s);
-		return netData.floats[2] = E - in.E() - out.E();
+		return netF2 = E - in.E() - out.E();
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
-		netData.floats[0] = nbt.getFloat("Ain");
-		netData.floats[1] = nbt.getFloat("Aout");
-		netData.ints[0] = nbt.getInteger("cfg");
+		netF0 = nbt.getFloat("Ain");
+		netF1 = nbt.getFloat("Aout");
+		netI0 = nbt.getInteger("cfg");
 		updateCon = true;
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
-		nbt.setFloat("Ain", netData.floats[0]);
-		nbt.setFloat("Aout", netData.floats[1]);
-		nbt.setInteger("cfg", netData.ints[0]);
-        return super.writeToNBT(nbt);
+		nbt.setFloat("Ain", netF0);
+		nbt.setFloat("Aout", netF1);
+		nbt.setInteger("cfg", netI0);
+		return super.writeToNBT(nbt);
 	}
 
 	@Override
@@ -148,23 +147,38 @@ public class PneumaticPiston extends AutomatedTile implements IKineticComp, IGas
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
 		if (cmd == 0) {
-			netData.floats[0] = dis.readFloat();
-			if (netData.floats[0] < 0) netData.floats[0] = 0;
-			else if (netData.floats[0] > Amax) netData.floats[0] = Amax;
+			netF0 = dis.readFloat();
+			if (netF0 < 0) netF0 = 0;
+			else if (netF0 > Amax) netF0 = Amax;
 		} else if (cmd == 1) {
-			netData.ints[0] = dis.readInt();
+			netI0 = dis.readInt();
 			updateCon = true;
 		}
 	}
 
 	public int getVscaled(int i) {
-		return (int)(netData.floats[0] * (float)i / Amax);
+		return (int)(netF0 * (float)i / Amax);
 	}
 
 	@Override
 	public boolean conGas(byte side) {
 		side = (byte)((side + 6 - this.getOrientation()) % 6);
-		return (netData.ints[0] & 0xf) == side || (netData.ints[0] >> 4 & 0xf) == side;
+		return (netI0 & 0xf) == side || (netI0 >> 4 & 0xf) == side;
+	}
+
+	@Override
+	public int[] getSyncVariables() {
+		return new int[]{netI0, Float.floatToIntBits(netF0), Float.floatToIntBits(netF1), Float.floatToIntBits(netF2)};
+	}
+
+	@Override
+	public void setSyncVariable(int i, int v) {
+		switch(i) {
+		case 0: netI0 = v; break;
+		case 1: netF0 = Float.intBitsToFloat(v); break;
+		case 2: netF1 = Float.intBitsToFloat(v); break;
+		case 3: netF2 = Float.intBitsToFloat(v); break;
+		}
 	}
 
 }

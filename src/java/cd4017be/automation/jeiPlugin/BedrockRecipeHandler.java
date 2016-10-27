@@ -15,10 +15,10 @@ import net.minecraft.init.Blocks;
  */
 public class BedrockRecipeHandler
 {
-    public static final float neededAm;
-    static {
-        float i = (2 * AntimatterBomb.Density + 1) / AntimatterBomb.Density;
-        neededAm = Blocks.BEDROCK.getExplosionResistance(null) / AntimatterBomb.PowerFactor / AntimatterBomb.explMult * i * i * 9.375F;
-    }
-    
+	public static final float neededAm;
+	static {
+		float i = (2 * AntimatterBomb.Density + 1) / AntimatterBomb.Density;
+		neededAm = Blocks.BEDROCK.getExplosionResistance(null) / AntimatterBomb.PowerFactor / AntimatterBomb.explMult * i * i * 9.375F;
+	}
+	
 }

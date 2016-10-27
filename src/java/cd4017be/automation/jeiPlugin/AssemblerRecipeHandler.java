@@ -41,5 +41,5 @@ public class AssemblerRecipeHandler implements IRecipeHandler<CmpRecipe>
 	public String getRecipeCategoryUid(CmpRecipe arg0) {
 		return this.getRecipeCategoryUid();
 	}
-    
+	
 }

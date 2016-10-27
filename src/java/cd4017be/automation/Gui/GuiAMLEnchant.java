@@ -1,61 +1,44 @@
 package cd4017be.automation.Gui;
 
-import org.lwjgl.opengl.GL11;
-
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import cd4017be.automation.Item.ItemAntimatterLaser;
 import cd4017be.automation.Item.ItemAntimatterLaser.Enchantments;
-import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
 
-public class GuiAMLEnchant extends GuiMachine 
-{
+public class GuiAMLEnchant extends GuiMachine {
 
 	private int Euse = ItemAntimatterLaser.EnergyUsage;
 	private float AMuse = 1;
-	private final ContainerAMLEnchant cont;
-	
-	public GuiAMLEnchant(ContainerAMLEnchant container) 
-	{
+	private final InventoryPlayer inv;
+
+	public GuiAMLEnchant(TileContainer container) {
 		super(container);
-		this.cont = container;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/amlEnchant.png");
+		this.inv = container.player.inventory;
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mx, int my) 
-	{
-		super.drawGuiContainerForegroundLayer(mx, my);
-		this.drawInfo(49, 20, 7, 8, "\\i", "amlE.info");
-	}
-
-	@Override
-	public void initGui() 
-	{
+	public void initGui() {
 		this.xSize = 176;
-        this.ySize = 132;
-        super.initGui();
+		this.ySize = 132;
+		super.initGui();
+		guiComps.add(new Text(0, 62, 16, 88, 16, "gui.cd4017be.amLaser.EUse").setTooltip("amlE.info"));
+		guiComps.add(new Text(1, 0, 4, xSize, 0, "gui.cd4017be.amLaser.name").center());
 	}
-	
+
 	@Override
-	public void updateScreen() 
-	{
+	protected Object getDisplVar(int id) {
+		return new Object[]{AMuse, Euse};
+	}
+
+	@Override
+	public void updateScreen() {
 		super.updateScreen();
-		Enchantments ench = new Enchantments(cont.player.getHeldItemMainhand());
+		Enchantments ench = new Enchantments(inv.mainInventory[inv.currentItem]);
 		AMuse = ench.amMult * 8;
 		Euse = ench.Euse;
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float p_146976_1_, int p_146976_2_, int p_146976_3_) 
-	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/amlEnchant.png"));
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-        this.fontRendererObj.drawString("Euse = " + Euse + " " + TooltipInfo.getEnergyUnit(), this.guiLeft + 62, this.guiTop + 17, 0x404040);
-        this.fontRendererObj.drawString("AMuse = " + (int)(AMuse * 100F) + " %", this.guiLeft + 62, this.guiTop + 26, 0x404040);
-        this.drawStringCentered(I18n.translateToLocal("gui.cd4017be.amLaser.name"), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 36, 0x404040);
 	}
 
 }

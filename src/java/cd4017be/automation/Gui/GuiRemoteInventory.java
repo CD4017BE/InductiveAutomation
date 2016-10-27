@@ -1,80 +1,64 @@
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
-import org.lwjgl.opengl.GL11;
-
+import cd4017be.automation.Item.ItemFilteredSubInventory;
+import cd4017be.automation.Item.ItemRemoteInv.GuiData;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.Gui.GuiMachine;
+import cd4017be.lib.Gui.TileContainer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 
-public class GuiRemoteInventory extends GuiMachine 
-{
-	
-	private final ContainerRemoteInventory container;
-	
-	public GuiRemoteInventory(ContainerRemoteInventory container) 
-	{
-		super(container);
-		this.container = container;
+public class GuiRemoteInventory extends GuiMachine {
+
+	private final GuiData data;
+	private final InventoryPlayer inv;
+
+	public GuiRemoteInventory(TileContainer cont) {
+		super(cont);
+		this.data = (GuiData)cont.data;
+		this.inv = cont.player.inventory;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/portableRemoteInv.png");
 	}
 
 	@Override
-    public void initGui() 
-    {
+	public void initGui() {
 		this.xSize = 230;
-        this.ySize = 150 + container.ofsY;
-        super.initGui();
-    }
+		this.ySize = 150 + data.ofsY;
+		super.initGui();
+		guiComps.add(new Button(0, 7, 34, 18, 18, 0).texture(176, 0).setTooltip("inputFilter"));//TODO gui comp coords
+		guiComps.add(new Button(1, 7, 42, 18, 8, 0).texture(176, 8).setTooltip("outputFilter"));
+		guiComps.add(new Text(2, 0, 4, xSize, 0, "item.cd4017be.RemoteInv.name"));
+	}
 
 	@Override
-    protected void drawGuiContainerForegroundLayer(int mx, int my) 
-    {
-        super.drawGuiContainerForegroundLayer(mx, my);
-        this.drawInfo(11, 67 + container.ofsY, 10, 18, "\\i", "inputFilter");
-        this.drawInfo(29, 67 + container.ofsY, 10, 18, "\\i", "outputFilter");
-    }
-    
-    @Override
-    protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
-    {
-        GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/portableRemoteInv.png"));
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, 15);
-        int h = container.size / 12;
-        int w = container.size % 12;
-        for (int i = 0; i < h; i++)
-        	this.drawTexturedModalRect(this.guiLeft, this.guiTop + 15 + i * 18, 0, 15, this.xSize, 18);
-        if (w != 0) {
-        	int n = 7 + w * 18;
-        	this.drawTexturedModalRect(this.guiLeft, this.guiTop + 15 + h * 18, 0, 15, n, 18);
-        	this.drawTexturedModalRect(this.guiLeft + n, this.guiTop + 15 + h * 18, n, 33, this.xSize - n, 18);
-        }
-        this.drawTexturedModalRect(this.guiLeft, this.guiTop + 51 + container.ofsY, 0, 51, this.xSize, 99);
-        if (this.container.isFilterOn(0)) this.drawTexturedModalRect(this.guiLeft + 11, this.guiTop + 67 + container.ofsY, 230, 0, 10, 18);
-        if (this.container.isFilterOn(1)) this.drawTexturedModalRect(this.guiLeft + 29, this.guiTop + 67 + container.ofsY, 240, 0, 10, 18);
-        this.drawStringCentered(this.container.inventoryName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-        this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 54 + container.ofsY, 0x404040);
-    }
+	protected Object getDisplVar(int id) {
+		ItemStack item = inv.mainInventory[inv.currentItem];
+		if (id < 2) return ItemFilteredSubInventory.isFilterOn(item, id == 0);
+		else return null;
+	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int b) throws IOException 
-	{
-		super.mouseClicked(x, y, b);
-		byte cmd = -1;
-		if (this.isPointInRegion(11, 67 + container.ofsY, 10, 18, x, y)) {
-			cmd = 0;
-		} else if (this.isPointInRegion(29, 67 + container.ofsY, 10, 18, x, y)) {
-			cmd = 1;
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		PacketBuffer dos = BlockGuiHandler.getPacketTargetData(((TileContainer)inventorySlots).data.pos());
+		dos.writeByte(id);
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
+	}
+
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
+		super.drawGuiContainerBackgroundLayer(var1, var2, var3);
+		int h = data.size / 12;
+		int w = data.size % 12;
+		for (int i = 0; i < h; i++)
+			this.drawTexturedModalRect(this.guiLeft, this.guiTop + 15 + i * 18, 0, 15, this.xSize, 18);
+		if (w != 0) {
+			int n = 7 + w * 18;
+			this.drawTexturedModalRect(this.guiLeft, this.guiTop + 15 + h * 18, 0, 15, n, 18);
+			this.drawTexturedModalRect(this.guiLeft + n, this.guiTop + 15 + h * 18, n, 33, this.xSize - n, 18);
 		}
-		if (cmd >= 0) {
-	            PacketBuffer dos = BlockGuiHandler.getPacketTargetData(new BlockPos(0, -1, 0));
-	            dos.writeByte(cmd);
-	            BlockGuiHandler.sendPacketToServer(dos);
-		}
+		this.drawTexturedModalRect(this.guiLeft, this.guiTop + 51 + data.ofsY, 0, 51, this.xSize, 99);
 	}
 
 }

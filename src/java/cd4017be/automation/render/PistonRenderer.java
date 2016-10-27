@@ -26,13 +26,13 @@ public class PistonRenderer extends TileEntitySpecialRenderer<PneumaticPiston> {
 	@Override
 	public void renderTileEntityAt(PneumaticPiston te, double x, double y, double z, float t, int destroyStage) {
 		RenderHelper.disableStandardItemLighting();
-        GlStateManager.blendFunc(770, 771);
-        GlStateManager.enableBlend();
-        GlStateManager.enableCull();
-        if (Minecraft.isAmbientOcclusionEnabled()) GlStateManager.shadeModel(7425);
-        else GlStateManager.shadeModel(7424);
-        byte dir = te.getOrientation();
-        TileEntity te2 = Utils.getTileOnSide(te, dir); 
+		GlStateManager.blendFunc(770, 771);
+		GlStateManager.enableBlend();
+		GlStateManager.enableCull();
+		if (Minecraft.isAmbientOcclusionEnabled()) GlStateManager.shadeModel(7425);
+		else GlStateManager.shadeModel(7424);
+		byte dir = te.getOrientation();
+		TileEntity te2 = Utils.getTileOnSide(te, dir); 
 		float f;
 		if (te2 != null && te2 instanceof IShaft) {
 			ShaftPhysics sp = ((IShaft)te2).getShaft().network;

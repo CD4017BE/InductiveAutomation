@@ -1,157 +1,154 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.TileEntity;
 
 import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
 
-import cd4017be.api.automation.IEnergy;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.api.recipes.AutomationRecipes.CmpRecipe;
 import cd4017be.automation.Config;
-import cd4017be.lib.TileEntityData;
-import cd4017be.lib.Gui.SlotOutput;
+import cd4017be.lib.Gui.DataContainer;
+import cd4017be.lib.Gui.DataContainer.IGuiData;
+import cd4017be.lib.Gui.SlotItemType;
 import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Group;
+import cd4017be.lib.templates.Inventory.IAccessHandler;
+import cd4017be.lib.util.ItemFluidUtil;
+import cd4017be.lib.util.Utils;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.SlotItemHandler;
 
 /**
  *
  * @author CD4017BE
  */
-public class ElectricCompressor extends AutomatedTile implements ISidedInventory, IEnergy
-{
-    public static float Energy = 200F;
+public class ElectricCompressor extends AutomatedTile implements IGuiData, IAccessHandler {
+
+	public static float Energy = 200F;
 	private float powerScale = 0;
-    private boolean craftInvChange = true;
-    
-    public ElectricCompressor()
-    {
-        inventory = new Inventory(this, 6, new Group(0, 1, -1), new Group(1, 2, -1), new Group(2, 3, -1), new Group(3, 4, -1), new Group(4, 5, 1));
-        energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
-        netData = new TileEntityData(1, 1, 2, 0);
-        netData.ints[0] = Config.Rmin;
-        powerScale = Config.Pscale;
-    }
-    
-    @Override
-    public void update() 
-    {
-    	super.update();
-        if(worldObj.isRemote) return;
-        //power
-        netData.floats[1] = (float)energy.Ucap;
-        double power = energy.getEnergy(0, netData.ints[0]) / 1000F;
-        //Item process
-        craftInvChange |= this.checkInvChange();
-        if (inventory.items[5] == null && craftInvChange)
-        {
-            CmpRecipe recipe = AutomationRecipes.getRecipeFor(inventory.items, 0, 4);
-            if (recipe != null) {
-            	int n;
-            	for (int i = 0; i < recipe.input.length; i++)
-                	if ((n = AutomationRecipes.getStacksize(recipe.input[i])) > 0) this.decrStackSize(i, n);
-                inventory.items[5] = recipe.output.copy();
-            } else
-            craftInvChange = false;
-        }
-        if (inventory.items[5] != null)
-        {
-            if (netData.floats[0] < Energy)
-            {
-                netData.floats[0] += power;
-                energy.Ucap *= powerScale;
-            }
-            if (netData.floats[0] >= Energy)
-            {
-                inventory.items[5] = this.putItemStack(inventory.items[5], this, -1, 4);
-                if (inventory.items[5] == null) netData.floats[0] -= Energy;
-            }
-        }
-    }
-    
-    private boolean checkInvChange()
-    {
-        boolean change = false;
-        for (int i = 0; i < 4; i++) {
-            change |= inventory.componets[i].invChange;
-            inventory.componets[i].invChange = false;
-        }
-        return change;
-    }
+	private boolean craftInvChange = true;
+	public int Rw;
+	public float Estor, Uc;
+
+	public ElectricCompressor() {
+		inventory = new Inventory(6, 5, this).group(0, 0, 1, Utils.IN).group(1, 1, 2, Utils.IN).group(2, 2, 3, Utils.IN).group(3, 3, 4, Utils.IN).group(4, 4, 5, Utils.OUT);
+		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		Rw = Config.Rmin;
+		powerScale = Config.Pscale;
+	}
+	
+	@Override
+	public void update() 
+	{
+		super.update();
+		if(worldObj.isRemote) return;
+		//power
+		Uc = (float)energy.Ucap;
+		double power = energy.getEnergy(0, Rw) / 1000F;
+		//Item process
+		if (inventory.items[5] == null && craftInvChange)
+		{
+			CmpRecipe recipe = AutomationRecipes.getRecipeFor(inventory.items, 0, 4);
+			if (recipe != null) {
+				int n;
+				for (int i = 0; i < recipe.input.length; i++)
+					if ((n = AutomationRecipes.getStacksize(recipe.input[i])) > 0) inventory.extractItem(i, n, false);
+				inventory.items[5] = recipe.output.copy();
+			} else
+			craftInvChange = false;
+		}
+		if (inventory.items[5] != null)
+		{
+			if (Estor < Energy)
+			{
+				Estor += power;
+				energy.Ucap *= powerScale;
+			}
+			if (Estor >= Energy)
+			{
+				inventory.items[5] = ItemFluidUtil.putInSlots(inventory, inventory.items[5], 4);
+				if (inventory.items[5] == null) Estor -= Energy;
+			}
+		}
+	}
+
+	public float getProgress() {
+		return Estor / Energy;
+	}
+
+	public float getPower() {
+		return Uc * Uc / (float)Rw / 200000F;
+	}
 
 	@Override
-	public void markDirty() {
-		super.markDirty();
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
+	{
+		nbt.setFloat("progress", Estor);
+		nbt.setShort("resistor", (short)Rw);
+		nbt.setFloat("pScale", powerScale);
+		return super.writeToNBT(nbt);
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) 
+	{
+		super.readFromNBT(nbt);
+		Estor = nbt.getFloat("progress");
+		Rw = nbt.getShort("resistor");
+		powerScale = nbt.getFloat("pScale");
 		craftInvChange = true;
 	}
 
-	public int getPowerScaled(int s)
-    {
-        return (int)(s * netData.floats[1] * netData.floats[1] / (float)netData.ints[0]) / 200000;
-    }
-    
-    public int getProgressScaled(int s)
-    {
-        int i = (int)((double)s * netData.floats[0] / Energy);
-        return i < s ? i : s;
-    }
+	@Override
+	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
+		if (cmd == 0) {
+			Rw = dis.readShort();
+			if (Rw < Config.Rmin) Rw = Config.Rmin;
+			powerScale = (float)Math.sqrt(1.0D - 1.0D / (double)Rw);
+		}
+	}
+	
+	@Override
+	public void initContainer(DataContainer cont) {
+		TileContainer container = (TileContainer)cont;
+		cont.refInts = new int[3];
+		for (int j = 0; j < 2; j++)
+			for (int i = 0; i < 2; i++)
+				container.addItemSlot(new SlotItemHandler(inventory, i + 2 * j, 62 + 18 * i, 25 + 18 * j));
+		container.addItemSlot(new SlotItemType(inventory, 4, 134, 34));
+		
+		container.addPlayerInventory(8, 86);
+	}
 
-    @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
-    {
-        nbt.setFloat("progress", netData.floats[0]);
-        nbt.setShort("resistor", (short)netData.ints[0]);
-        nbt.setFloat("pScale", powerScale);
-        return super.writeToNBT(nbt);
-    }
+	@Override
+	public boolean transferStack(ItemStack item, int s, TileContainer container) {
+		if (s < container.invPlayerS) container.mergeItemStack(item, container.invPlayerS, container.invPlayerE, false);
+		else container.mergeItemStack(item, 0, 4, false);
+		return true;
+	}
 
-    @Override
-    public void readFromNBT(NBTTagCompound nbt) 
-    {
-        super.readFromNBT(nbt);
-        netData.floats[0] = nbt.getFloat("progress");
-        netData.ints[0] = nbt.getShort("resistor");
-        powerScale = nbt.getFloat("pScale");
-        craftInvChange = true;
-    }
+	@Override
+	public int[] getSyncVariables() {
+		return new int[]{Rw, Float.floatToIntBits(Estor), Float.floatToIntBits(Uc)};
+	}
 
-    @Override
-    protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
-        if (cmd == 0) {
-            netData.ints[0] = dis.readShort();
-            if (netData.ints[0] < Config.Rmin) netData.ints[0] = Config.Rmin;
-            powerScale = (float)Math.sqrt(1.0D - 1.0D / (double)netData.ints[0]);
-        }
-    }
-    
-    @Override
-    public void initContainer(TileContainer container)
-    {
-    	for (int j = 0; j < 2; j++)
-        	for (int i = 0; i < 2; i++)
-        		container.addItemSlot(new Slot(this, i + 2 * j, 62 + 18 * i, 25 + 18 * j));
-        container.addItemSlot(new SlotOutput(this, 4, 134, 34));
-        
-        container.addPlayerInventory(8, 86);
-    }
-    
-    @Override
-    public int[] stackTransferTarget(ItemStack item, int s, TileContainer container) 
-    {
-        int[] inv = container.getPlayerInv();
-        if (s < inv[0]) return inv;
-        else return new int[]{0, 4};
-    }
-    
+	@Override
+	public void setSyncVariable(int i, int v) {
+		switch(i) {
+		case 0: Rw = v; break;
+		case 1: Estor = Float.intBitsToFloat(v); break;
+		case 2: Uc = Float.intBitsToFloat(v); break;
+		}
+	}
+
+	@Override
+	public void setSlot(int g, int s, ItemStack item) {
+		inventory.items[s] = item;
+		craftInvChange = true;
+	}
+
 }

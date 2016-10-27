@@ -6,12 +6,14 @@ import java.util.Iterator;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import cd4017be.lib.ModTileEntity;
 import cd4017be.lib.templates.SharedNetwork;
-import cd4017be.lib.util.Utils;
 
 public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 
@@ -35,6 +37,8 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 	public ShaftPhysics(ShaftComponent core) {
 		super(core);
 		m = core.m;
+		pos = ((TileEntity)core.tile).getPos();
+		axis = core.axis();
 	}
 	
 	public ShaftPhysics(HashMap<Long, ShaftComponent> comps) {
@@ -45,40 +49,46 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 	public ShaftPhysics onSplit(HashMap<Long, ShaftComponent> comps) {
 		ShaftPhysics network = new ShaftPhysics(comps);
 		for (ShaftComponent comp : comps.values()) {
-			for (int i = 0; i < 6; i++)
-				if ((comp.con >> i & 1) != 0) {
+			for (byte i = 0, c = comp.getCon(); c != 0; c >>>= 1, i++)
+				if ((c & 1) != 0) {
 					long id = SharedNetwork.SidedPosUID(comp.getUID(), i);
-					network.connectors.put(id, this.connectors.remove(id));
+					IKineticComp con = connectors.remove(id);
+					if (con != null) network.connectors.put(id, con);
 				}
 			network.m += comp.m;
 		}
+		network.pos = pos;
+		network.axis = axis;
 		network.s = this.s;
 		network.v = this.v;
 		this.m -= network.m;
+		model = null;
 		return network;
 	}
-	
+
 	@Override
 	public void onMerged(ShaftPhysics network) {
 		super.onMerged(network);
-		this.connectors.putAll(network.connectors);
 		this.v *= this.m;
 		this.v += network.v * network.m;
 		this.m += network.m;
 		this.v /= this.m;
+		this.connectors.putAll(network.connectors);
+		model = null;
 	}
 
 	@Override
 	public void remove(ShaftComponent comp) {
 		if (this.components.containsKey(comp.getUID())) {
 			this.m -= comp.m;
-			for (int i = 0; i < 6; i++)
-				if ((comp.con >> i & 1) != 0) {
+			for (byte i = 0, c = comp.getCon(); c != 0; c >>>= 1, i++)
+				if ((c & 1) != 0) {
 					IKineticComp con = this.connectors.remove(SharedNetwork.SidedPosUID(comp.getUID(), i));
 					if (con != null) con.setShaft(null);
 				}	
 		}
 		super.remove(comp);
+		model = null;
 	}
 
 	/**
@@ -89,37 +99,33 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 		byte side = (byte)(con.getConSide()^1);
 		con.setShaft(comp);
 		connectors.put(SharedNetwork.SidedPosUID(comp.getUID(), side), con);
-		comp.con |= 1 << side;
+		comp.setCon(side, true);
 	}
 	
-	public void updateLink(ShaftComponent shaft) {
-		TileEntity te;
+	@Override
+	public void updateCompCon(ShaftComponent comp) {
 		IKineticComp con;
+		super.updateCompCon(comp);
 		for (byte i = 0; i < 6; i++) {
-			te = Utils.getTileOnSide(shaft.shaft, i);
+			ICapabilityProvider te = comp.tile.getTileOnSide(EnumFacing.VALUES[i]);
 			if (te == null) continue;
-			if (shaft.canConnect(i) && te instanceof IShaft) {
-				ShaftComponent p = ((IShaft)te).getShaft();
-				if (p.canConnect((byte)(i^1))) add(p);
-			} else if (te instanceof IKineticComp && (con = (IKineticComp)te).getConSide() == (i^1) && shaft.supports(con, i)) {
-				this.addCon(shaft, con);
-			}
+			if (te instanceof IKineticComp && (con = (IKineticComp)te).getConSide() == (i^1) && comp.supports(con, i))
+				this.addCon(comp, con);
 		}
-		shaft.updateCon = false;
 	}
-	
+
 	public void changeMass(ShaftComponent shaft, float mass) {
 		mass -= shaft.m;
 		if (mass > 0) v *= m / (m + mass);
 		shaft.m += mass;
 		m += mass;
 	}
-	
+
 	@Override
 	protected void updatePhysics() {
 		float dt = 0.05F;
 		float ds = v * dt, F = 0, a, E, v1;
-		if (core.shaft.getWorld().isRemote) {
+		if (((TileEntity)core.tile).getWorld().isRemote) {
 			s += ds;//just simulate constant rotation speed
 			if (s > 1F) s -= Math.floor(s);
 			return;
@@ -127,15 +133,15 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 		Iterator<IKineticComp> it = connectors.values().iterator();
 		while (it.hasNext()) {//get the estimated total force of all components on the shaft
 			IKineticComp comp = it.next();
-			if (!comp.valid()) {
+			if (comp.valid()) F += comp.estimatedForce(ds);
+			else {
 				it.remove();
-				if (comp.getShaft() != null) comp.getShaft().con &= ~(1 << (comp.getConSide() ^ 1));
+				if (comp.getShaft() != null) comp.getShaft().setCon(comp.getConSide() ^ 1, false);
 			}
-			else F += comp.estimatedForce(ds);
 		}
+		if (v == 0 && F <= 0) return; //can't slow down any further if already stopped
 		a = F / m; //convert to acceleration
-		if (v == 0 && a <= 0) return;
-		v1 = (v + a * dt) * dt;
+		v1 = (v + a * dt) * dt; //calculate estimated target velocity
 		if (v1 < 0) {dt = -v / a; v1 = 0;} //if rotation would stop, only calculate till that point
 		ds = 0.5F * a * dt * dt + v * dt; //now use the real distance moved
 		E = 0.5F * m * v * v; //get the kinetic Energy of the shaft and add the work of all components to it
@@ -152,32 +158,9 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 		NBTTagCompound nbt = new NBTTagCompound();
 		nbt.setFloat("RotVel", v);
 		nbt.setFloat("RotPos", s);
-		ModTileEntity tile = core.shaft;
+		ModTileEntity tile = (ModTileEntity)core.tile;
 		BlockPos pos = tile.getPos();
-		((WorldServer)this.core.shaft.getWorld()).getMinecraftServer().getPlayerList().sendToAllNearExcept(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 64D, tile.dimensionId, new SPacketUpdateTileEntity(pos, -1, nbt));
-	}
-	
-	public boolean isCore(ModTileEntity te) {
-		return core != null && core.shaft == te;
-	}
-	
-	public BlockPos pos() {
-		return core.shaft.getPos();
-	}
-	
-	public byte ax() {
-		return (byte)core.shaft.getBlockMetadata();
-	}
-	
-	public AxisAlignedBB boundingBox(ModTileEntity te) {
-		BlockPos pos = te.getPos();
-		AxisAlignedBB box = new AxisAlignedBB(pos, pos);
-		if (!this.isCore(te)) return box;
-		for (ShaftComponent comp : components.values()) {
-			pos = comp.shaft.getPos();
-			box = box.addCoord(pos.getX(), pos.getY(), pos.getZ());
-		}
-		return box.offset(0.5D, 0.5D, 0.5D).expand(1D, 1D, 1D);
+		((WorldServer)tile.getWorld()).getMinecraftServer().getPlayerList().sendToAllNearExcept(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 64D, tile.dimensionId, new SPacketUpdateTileEntity(pos, -1, nbt));
 	}
 
 	public interface IKineticComp {
@@ -206,4 +189,15 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 		public ShaftComponent getShaft();
 	}
 
+	//client rendering stuff
+
+	/**	used in combination with {@link TickHandler.tick} to check whether this has already been rendered */
+	@SideOnly(Side.CLIENT)
+	public int lastRendered = -1;
+	/** cached structure model for fast rendering */
+	public int[] model = null;
+	/** reference location for cached model */
+	public BlockPos pos;
+	/** structure orientation */
+	public byte axis;
 }
