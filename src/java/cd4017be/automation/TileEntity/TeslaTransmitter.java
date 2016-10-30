@@ -34,8 +34,8 @@ public class TeslaTransmitter extends ModTileEntity implements ITeslaTransmitter
 	public boolean interdim = false;
 	public PipeEnergy energy = new PipeEnergy(this.getMaxVoltage(), 0);
 	private float addEnergy = 0;
-	public int netI0;
-	public float netF0;
+	public int freq;
+	public float Estor;
 	
 	protected int getMaxVoltage() {
 		return Config.Umax[4];
@@ -47,15 +47,15 @@ public class TeslaTransmitter extends ModTileEntity implements ITeslaTransmitter
 		if (worldObj.isRemote) return;
 		if (addEnergy != 0) energy.addEnergy(addEnergy);
 		addEnergy = 0;
-		netF0 = (float)(energy.Ucap * energy.Ucap);
+		Estor = (float)(energy.Ucap * energy.Ucap);
 		TeslaNetwork.instance.transmittEnergy(this);
 	}
 	
 	private void changeFrequency(short nf)
 	{
-		if (nf == netI0) return;
+		if (nf == freq) return;
 		TeslaNetwork.instance.remove(this);
-		netI0 = nf;
+		freq = nf;
 		TeslaNetwork.instance.register(this);
 	}
 	
@@ -153,7 +153,7 @@ public class TeslaTransmitter extends ModTileEntity implements ITeslaTransmitter
 		if (addEnergy != 0) energy.addEnergy(addEnergy);
 		addEnergy = 0;
 		energy.writeToNBT(nbt, "wire");
-		nbt.setShort("frequency", (short)netI0);
+		nbt.setShort("frequency", (short)freq);
 		nbt.setBoolean("interdim", interdim);
 		return super.writeToNBT(nbt);
 	}
@@ -163,7 +163,7 @@ public class TeslaTransmitter extends ModTileEntity implements ITeslaTransmitter
 	{
 		super.readFromNBT(nbt);
 		energy.readFromNBT(nbt, "wire");
-		netI0 = nbt.getShort("frequency");
+		freq = nbt.getShort("frequency");
 		interdim = nbt.getBoolean("interdim");
 		TeslaNetwork.instance.register(this);
 	}
@@ -187,7 +187,7 @@ public class TeslaTransmitter extends ModTileEntity implements ITeslaTransmitter
 
 	public short getFrequency()
 	{
-		return (short)netI0;
+		return (short)freq;
 	}
 
 	@Override
@@ -209,14 +209,14 @@ public class TeslaTransmitter extends ModTileEntity implements ITeslaTransmitter
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, Float.floatToIntBits(netF0)};
+		return new int[]{freq, Float.floatToIntBits(Estor)};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netF0 = Float.intBitsToFloat(v); break;
+		case 0: freq = v; break;
+		case 1: Estor = Float.intBitsToFloat(v); break;
 		}
 	}
 

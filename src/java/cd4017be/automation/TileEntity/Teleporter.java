@@ -62,7 +62,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	
 	private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "#Teleporter");
 	private GameProfile lastUser = defaultUser;
-	public int netI0, netI1, netI2, netI3;
+	public int tgX, tgY, tgZ, netI3;
 	public float netF0, netF1;
 	
 	public Teleporter() {
@@ -116,8 +116,8 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	
 	public boolean isInWorldBounds()
 	{
-		int yn = area[1] + netI1;
-		int yp = area[4] + netI1;
+		int yn = area[1] + tgY;
+		int yp = area[4] + tgY;
 		if ((netI3 & 2) == 0) {yn -= pos.getY(); yp -= pos.getY();}
 		return area[1] >= 0 && area[4] < 256 && yn >= 0 && yp < 256;
 	}
@@ -127,9 +127,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 		int sx = area[3] - area[0];
 		int sy = area[4] - area[1];
 		int sz = area[5] - area[2];
-		int dx = netI0;
-		int dy = netI1;
-		int dz = netI2;
+		int dx = tgX;
+		int dy = tgY;
+		int dz = tgZ;
 		if ((netI3 & 2) == 0)
 		{
 			dx -= pos.getX();
@@ -248,13 +248,13 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 			{
 				netI3 ^= 2;
 				if ((netI3 & 2) == 0) {
-					netI0 += pos.getX();
-					netI1 += pos.getY();
-					netI2 += pos.getZ();
+					tgX += pos.getX();
+					tgY += pos.getY();
+					tgZ += pos.getZ();
 				} else {
-					netI0 -= pos.getX();
-					netI1 -= pos.getY();
-					netI2 -= pos.getZ();
+					tgX -= pos.getX();
+					tgY -= pos.getY();
+					tgZ -= pos.getZ();
 				}
 			} else
 			if (b == 3)
@@ -262,13 +262,13 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 				if (inventory.items[0] == null && inventory.items[1] == null)
 				{
 					if ((netI3 & 2) == 0){
-						netI0 = pos.getX();
-						netI1 = pos.getY();
-						netI2 = pos.getZ();
+						tgX = pos.getX();
+						tgY = pos.getY();
+						tgZ = pos.getZ();
 					} else {
-						netI0 = 0;
-						netI1 = 0;
-						netI2 = 0;
+						tgX = 0;
+						tgY = 0;
+						tgZ = 0;
 					}
 				}
 				if (inventory.items[0] != null && (inventory.items[0].getItem() instanceof ItemTeleporterCoords || inventory.items[0].getItem() == Items.PAPER))
@@ -277,9 +277,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 					inventory.items[0] = new ItemStack(Objects.teleporterCoords, inventory.items[0].stackSize);
 					inventory.items[0].setTagCompound(new NBTTagCompound());
 					inventory.items[0].getTagCompound().setString("name", name);
-					inventory.items[0].getTagCompound().setInteger("x", netI0);
-					inventory.items[0].getTagCompound().setInteger("y", netI1);
-					inventory.items[0].getTagCompound().setInteger("z", netI2);
+					inventory.items[0].getTagCompound().setInteger("x", tgX);
+					inventory.items[0].getTagCompound().setInteger("y", tgY);
+					inventory.items[0].getTagCompound().setInteger("z", tgZ);
 				}
 			} else
 			if (b == 4)
@@ -290,15 +290,15 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 		} else
 		if (cmd == 1)
 		{
-			netI0 = dis.readInt();
+			tgX = dis.readInt();
 		} else
 		if (cmd == 2)
 		{
-			netI1 = dis.readInt();
+			tgY = dis.readInt();
 		} else
 		if (cmd == 3)
 		{
-			netI2 = dis.readInt();
+			tgZ = dis.readInt();
 		} else
 		if (cmd == 4 && inventory.items[0] != null && inventory.items[0].getItem() instanceof ItemTeleporterCoords && inventory.items[0].getTagCompound() != null)
 		{
@@ -312,9 +312,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	{
 		if (node != null) ComputerAPI.saveNode(node, nbt);
 		nbt.setByte("mode", (byte)netI3);
-		nbt.setInteger("px", netI0);
-		nbt.setInteger("py", netI1);
-		nbt.setInteger("pz", netI2);
+		nbt.setInteger("px", tgX);
+		nbt.setInteger("py", tgY);
+		nbt.setInteger("pz", tgZ);
 		nbt.setIntArray("area", area);
 		nbt.setFloat("storage", netF0);
 		nbt.setString("lastUser", lastUser.getName());
@@ -329,9 +329,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 		super.readFromNBT(nbt);
 		if (node != null) ComputerAPI.readNode(node, nbt);
 		netI3 = nbt.getByte("mode");
-		netI0 = nbt.getInteger("px");
-		netI1 = nbt.getInteger("py");
-		netI2 = nbt.getInteger("pz");
+		tgX = nbt.getInteger("px");
+		tgY = nbt.getInteger("py");
+		tgZ = nbt.getInteger("pz");
 		area = nbt.getIntArray("area");
 		if (area == null || area.length != 6) area = new int[6];
 		netF0 = nbt.getFloat("storage");
@@ -408,9 +408,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 		} else if (s == 12 || s == 13){
 			Handler.setCorrectArea(this, area, true);
 		} else if (s >= inventory.groups[0].s && s < inventory.groups[0].e && item != null && item.getItem() instanceof ItemTeleporterCoords && item.getTagCompound() != null) {
-			netI0 = item.getTagCompound().getInteger("x");
-			netI1 = item.getTagCompound().getInteger("y");
-			netI2 = item.getTagCompound().getInteger("z");
+			tgX = item.getTagCompound().getInteger("x");
+			tgY = item.getTagCompound().getInteger("y");
+			tgZ = item.getTagCompound().getInteger("z");
 		}
 	}
 	
@@ -428,15 +428,15 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, netI2, netI3, Float.floatToIntBits(netF0), Float.floatToIntBits(netF1)};
+		return new int[]{tgX, tgY, tgZ, netI3, Float.floatToIntBits(netF0), Float.floatToIntBits(netF1)};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netI1 = v; break;
-		case 2: netI2 = v; break;
+		case 0: tgX = v; break;
+		case 1: tgY = v; break;
+		case 2: tgZ = v; break;
 		case 3: netI3 = v; break;
 		case 4: netF0 = Float.intBitsToFloat(v); break;
 		case 5: netF1 = Float.intBitsToFloat(v); break;
@@ -500,9 +500,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	public Object[] setCoords(Context cont, Arguments args)
 	{
 		netI3 &= ~8;
-		netI0 = args.checkInteger(0);
-		netI1 = args.checkInteger(1);
-		netI2 = args.checkInteger(2);
+		tgX = args.checkInteger(0);
+		tgY = args.checkInteger(1);
+		tgZ = args.checkInteger(2);
 		if (args.checkBoolean(3)) netI3 |= 2;
 		else netI3 &= ~2;
 		return null;

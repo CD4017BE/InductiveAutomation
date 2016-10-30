@@ -24,7 +24,7 @@ import net.minecraftforge.items.SlotItemHandler;
  */
 public class Trash extends AutomatedTile implements IGuiData {
 	
-	public int netI0;
+	public int mode;
 	
 	public Trash() {
 		inventory = new Inventory(2, 1, null).group(0, 0, 1, Utils.IN);
@@ -36,28 +36,28 @@ public class Trash extends AutomatedTile implements IGuiData {
 	{
 		super.update();
 		if (worldObj.isRemote) return;
-		if ((netI0 & 1) != 0) inventory.items[0] = null;
-		if ((netI0 & 2) != 0) tanks.setFluid(0, null);
+		if ((mode & 1) != 0) inventory.items[0] = null;
+		if ((mode & 2) != 0) tanks.setFluid(0, null);
 	}
 
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
 	{
-		if (cmd == 0) netI0 ^= 1;
-		else if (cmd == 1) netI0 ^= 2;
+		if (cmd == 0) mode ^= 1;
+		else if (cmd == 1) mode ^= 2;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) 
 	{
 		super.readFromNBT(nbt);
-		netI0 = nbt.getByte("active");
+		mode = nbt.getByte("active");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		nbt.setByte("active", (byte)netI0);
+		nbt.setByte("active", (byte)mode);
 		return super.writeToNBT(nbt);
 	}
 
@@ -78,12 +78,12 @@ public class Trash extends AutomatedTile implements IGuiData {
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0};
+		return new int[]{mode};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
-		netI0 = v;
+		mode = v;
 	}
 
 }
