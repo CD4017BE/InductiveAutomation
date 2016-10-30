@@ -31,7 +31,7 @@ public class GeothermalFurnace extends AutomatedTile implements IGuiData, IAcces
 
 	public static int Euse = 160;
 	private boolean melting = false;
-	public int netI0, netI1, netI2, netI3, netI4;
+	public int fuel, burn, heat, melt, progress;
 	
 	public GeothermalFurnace()
 	{
@@ -46,43 +46,43 @@ public class GeothermalFurnace extends AutomatedTile implements IGuiData, IAcces
 		if (worldObj.isRemote) return;
 		//Fuel Burn
 		int dm = 2;
-		if (netI1 > 0)
+		if (burn > 0)
 		{
-			if (netI1 - dm < 0) dm = netI1;
-			netI1 -= dm;
-			netI2 += dm;
+			if (burn - dm < 0) dm = burn;
+			burn -= dm;
+			heat += dm;
 		}
-		if (netI1 <= 0 && netI2 < 640) burnItem();
+		if (burn <= 0 && heat < 640) burnItem();
 		//Lava melt/cool 
-		dm = 18 - netI2 / 32;
+		dm = 18 - heat / 32;
 		if (!melting && dm < 0 && inventory.items[1] != null && inventory.items[1].getItem() == Item.getItemFromBlock(Blocks.STONE))
 		{
 			inventory.extractItem(1, 1, false);
 			melting = true;
-			if (netI3 >= 2000) netI3 -= 2000;
+			if (melt >= 2000) melt -= 2000;
 		} else
 		if (!melting && dm > 0 && tanks.getAmount(0) >= 100)
 		{
 			tanks.drain(0, 100, true);
 			melting = true;
-			if (netI3 <= 0) netI3 += 2000; 
+			if (melt <= 0) melt += 2000; 
 		}
-		if (melting && ((dm < 0 && netI3 < 2000) || (dm > 0 && netI3 > 0)))
+		if (melting && ((dm < 0 && melt < 2000) || (dm > 0 && melt > 0)))
 		{
-			if (netI3 - dm > 2000) dm = netI3 - 2000;
-			if (netI3 - dm < 0) dm = netI3;
-			netI2 += dm;
-			netI3 -= dm;
+			if (melt - dm > 2000) dm = melt - 2000;
+			if (melt - dm < 0) dm = melt;
+			heat += dm;
+			melt -= dm;
 		}
-		if (melting && netI3 >= 2000 && tanks.fill(0, new FluidStack(Objects.L_lava, 100), false) == 100) {
+		if (melting && melt >= 2000 && tanks.fill(0, new FluidStack(Objects.L_lava, 100), false) == 100) {
 			tanks.fill(0, new FluidStack(Objects.L_lava, 100), true);
 			melting = false;
-		} else if (melting && netI3 <= 0 && ItemFluidUtil.putInSlots(inventory, new ItemStack(Blocks.STONE), 1) == null) {
+		} else if (melting && melt <= 0 && ItemFluidUtil.putInSlots(inventory, new ItemStack(Blocks.STONE), 1) == null) {
 			melting = false;
 		}
-		if (netI2 > 640) netI2 = 640;
+		if (heat > 640) heat = 640;
 		//process Item
-		if (inventory.items[6] == null && netI2 + netI4 >= Euse && inventory.items[4] != null)
+		if (inventory.items[6] == null && heat + progress >= Euse && inventory.items[4] != null)
 		{
 			ItemStack item = FurnaceRecipes.instance().getSmeltingResult(inventory.items[4]);
 			if (item != null)
@@ -93,17 +93,17 @@ public class GeothermalFurnace extends AutomatedTile implements IGuiData, IAcces
 		}
 		if (inventory.items[6] != null)
 		{
-			if (netI4 < Euse)
+			if (progress < Euse)
 			{
-				int dp = 1 + netI2 * 7 / 320;
-				if (dp > netI2) dp = netI2;
-				netI4 += dp;
-				netI2 -= dp;
+				int dp = 1 + heat * 7 / 320;
+				if (dp > heat) dp = heat;
+				progress += dp;
+				heat -= dp;
 			}
-			if (netI4 >= Euse)
+			if (progress >= Euse)
 			{
 				inventory.items[6] = ItemFluidUtil.putInSlots(inventory, inventory.items[6], 5);
-				if (inventory.items[6] == null) netI4 -= Euse;
+				if (inventory.items[6] == null) progress -= Euse;
 			}
 		}
 	}
@@ -115,40 +115,36 @@ public class GeothermalFurnace extends AutomatedTile implements IGuiData, IAcces
 			int n = TileEntityFurnace.getItemBurnTime(inventory.items[0]);
 			if (n != 0)
 			{
-				netI0 = n;
-				netI1 = netI0;
+				fuel = n;
+				burn = fuel;
 				inventory.extractItem(0, 1, false);
 			}
 		}
 	}
-	
-	public int getMeltScaled(int s)
-	{
-		return netI3 < 0 ? 0 : netI3 > 2000 ? s : netI3 * s / 2000;
+
+	public float getMelt() {
+		return melt < 0 ? 0F : melt > 2000 ? 1F : (float)melt / 2000F;
+	}
+
+	public float getBurn() {
+		return (float)burn / (float)fuel;
+	}
+
+	public float getHeat() {
+		return (float)heat / 640F;
 	}
 	
-	public int getBurnScaled(int s)
-	{
-		return netI0 > 0 ? netI1 * s / netI0 : 0;
-	}
-	
-	public int getHeatScaled(int s)
-	{
-		return netI2 * s / 640;
-	}
-	
-	public int getProgressScaled(int s)
-	{
-		return netI4 > Euse ? s : netI4 * s / Euse;
+	public float getProgress() {
+		return (float)progress / (float)Euse;
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		nbt.setInteger("progress", netI4);
-		nbt.setInteger("heat", netI2);
-		nbt.setInteger("melt", netI3);
-		nbt.setInteger("burn", netI1);
+		nbt.setInteger("progress", progress);
+		nbt.setInteger("heat", heat);
+		nbt.setInteger("melt", melt);
+		nbt.setInteger("burn", burn);
 		nbt.setBoolean("melting", melting);
 		return super.writeToNBT(nbt);
 	}
@@ -157,11 +153,11 @@ public class GeothermalFurnace extends AutomatedTile implements IGuiData, IAcces
 	public void readFromNBT(NBTTagCompound nbt) 
 	{
 		super.readFromNBT(nbt);
-		netI4 = nbt.getInteger("progress");
-		netI2 = nbt.getInteger("heat");
-		netI3 = nbt.getInteger("melt");
-		netI1 = nbt.getInteger("burn");
-		netI0 = netI1;
+		progress = nbt.getInteger("progress");
+		heat = nbt.getInteger("heat");
+		melt = nbt.getInteger("melt");
+		burn = nbt.getInteger("burn");
+		fuel = burn;
 		melting = nbt.getBoolean("melting");
 	}
 
@@ -201,17 +197,17 @@ public class GeothermalFurnace extends AutomatedTile implements IGuiData, IAcces
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, netI2, netI3, netI4};
+		return new int[]{fuel, burn, heat, melt, progress};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netI1 = v; break;
-		case 2: netI2 = v; break;
-		case 3: netI3 = v; break;
-		case 4: netI4 = v; break;
+		case 0: fuel = v; break;
+		case 1: burn = v; break;
+		case 2: heat = v; break;
+		case 3: melt = v; break;
+		case 4: progress = v; break;
 		}
 	}
 

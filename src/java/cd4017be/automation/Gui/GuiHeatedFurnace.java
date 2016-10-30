@@ -1,21 +1,20 @@
 package cd4017be.automation.Gui;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import cd4017be.automation.TileEntity.HeatedFurnace;
 import cd4017be.lib.Gui.GuiMachine;
 import cd4017be.lib.Gui.TileContainer;
 
 public class GuiHeatedFurnace extends GuiMachine {
 
+	private final float TempOffset = 273.15F;
 	private final HeatedFurnace tile;
-	
+
 	public GuiHeatedFurnace(HeatedFurnace tile, EntityPlayer player) {
 		super(new TileContainer(tile, player));
 		this.tile = tile;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/heatedFurnace.png");
 	}
 
 	@Override
@@ -23,32 +22,21 @@ public class GuiHeatedFurnace extends GuiMachine {
 		this.xSize = 176;
 		this.ySize = 150;
 		super.initGui();
+		guiComps.add(new ProgressBar(1, 36, 19, 32, 10, 176, 8, (byte)0));
+		guiComps.add(new ProgressBar(2, 17, 38, 70, 8, 176, 0, (byte)0));
+		guiComps.add(new Text(3, 61, 25, 0, 8, "am").center().font(0xffc04040, 8));
+		guiComps.add(new Text(4, 133, 38, 0, 8, "temp").center().font(0xff808040, 8));
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mx, int my) {
-		super.drawGuiContainerForegroundLayer(mx, my);
-		
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/heatedFurnace.png"));
-		this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-		int n = tile.getProgressScaled(32);
-		this.drawTexturedModalRect(this.guiLeft + 36, this.guiTop + 19, 176, 8, n, 10);
-		n = (int)(tile.netF1 - 300F) * 70 / 2500;
-		if (n > 70) n = 70;
-		if (n > 0) this.drawTexturedModalRect(guiLeft + 17, guiTop + 38, 176, 0, n, 8);
-		n = (int)(HeatedFurnace.NeededTemp - 300F) * 70 / 2500;
-		this.drawTexturedModalRect(guiLeft + 15 + n, guiTop + 34, 251, 0, 5, 16);
-		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-		if (tile.netI0 > 1) this.drawCenteredString(fontRendererObj, "x" + tile.netI0, guiLeft + 61, guiTop + 25, 0xc04040);
-		this.drawStringCentered(String.format("%.1f / %.0f °C", tile.netF1 - 273.15F, HeatedFurnace.NeededTemp - 273.15F), guiLeft + 133, guiTop + 38, 0x808040);
-		//this.drawStringCentered(TooltipInfo.format("gui.cd4017be.", args), x, y, c);
-		this.drawStringCentered(tile.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-		this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 54, 0x404040);
+	protected Object getDisplVar(int id) {
+		switch(id) {
+		case 1: return tile.getProgress();
+		case 2: return (tile.temp - TempOffset) / (HeatedFurnace.NeededTemp - TempOffset) * 2F;
+		case 3: return tile.num;
+		case 4: return new Object[]{tile.temp - TempOffset, HeatedFurnace.NeededTemp - TempOffset};
+		default: return null;
+		}
 	}
 
 }

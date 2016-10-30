@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.jeiPlugin;
 
 import cd4017be.api.recipes.AutomationRecipes.CmpRecipe;
@@ -12,8 +8,7 @@ import mezz.jei.api.recipe.IRecipeWrapper;
  *
  * @author CD4017BE
  */
-public class AssemblerRecipeHandler implements IRecipeHandler<CmpRecipe>
-{
+public class AssemblerRecipeHandler implements IRecipeHandler<CmpRecipe> {
 
 	@Override
 	public Class<CmpRecipe> getRecipeClass() {
@@ -41,5 +36,5 @@ public class AssemblerRecipeHandler implements IRecipeHandler<CmpRecipe>
 	public String getRecipeCategoryUid(CmpRecipe arg0) {
 		return this.getRecipeCategoryUid();
 	}
-	
+
 }

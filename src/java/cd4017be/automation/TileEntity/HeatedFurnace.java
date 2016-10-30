@@ -22,8 +22,8 @@ public class HeatedFurnace extends AutomatedTile implements IHeatStorage, IGuiDa
 	public static final float NeededTemp = 1200F, TRwork = 20, Energy = 250000F;
 	public HeatReservoir heat;
 	private boolean done = true;
-	public int netI0;
-	public float netF0, netF1;
+	public int num;
+	public float progress, temp;
 
 	public HeatedFurnace() {
 		inventory = new Inventory(3, 2, null).group(0, 0, 1, Utils.IN).group(1, 1, 2, Utils.OUT);
@@ -44,15 +44,15 @@ public class HeatedFurnace extends AutomatedTile implements IHeatStorage, IGuiDa
 			if (!done){
 				int sz = inventory.items[2].stackSize;
 				float req = (float)sz * Energy;
-				if (netF0 < req && e > 0) {
+				if (progress < req && e > 0) {
 					float dQ = e / TRwork;
-					netF0 += dQ;
+					progress += dQ;
 					heat.addHeat(-dQ);
 				}
-				if (netF0 >= req) {
+				if (progress >= req) {
 					ItemStack item = FurnaceRecipes.instance().getSmeltingResult(inventory.items[2]);
 					if (item != null) {
-						netF0 -= req;
+						progress -= req;
 						inventory.items[2] = item.copy();
 						inventory.items[2].stackSize *= sz;
 					}
@@ -66,26 +66,26 @@ public class HeatedFurnace extends AutomatedTile implements IHeatStorage, IGuiDa
 				else if (inventory.items[1].isItemEqual(inventory.items[2]) && (n -= inventory.items[1].stackSize) > 0) 
 					inventory.items[1].stackSize += inventory.extractItem(2, n, false).stackSize;
 			}
-		} else if (netF0 > 0) {
-			heat.addHeat(netF0);
-			netF0 = 0;
+		} else if (progress > 0) {
+			heat.addHeat(progress);
+			progress = 0;
 		}
-		netF1 = heat.T;
-		netI0 = inventory.items[2] == null ? 0 : inventory.items[2].stackSize;
+		temp = heat.T;
+		num = inventory.items[2] == null ? 0 : inventory.items[2].stackSize;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		heat.load(nbt, "heat");
-		netF0 = nbt.getFloat("progress");
+		progress = nbt.getFloat("progress");
 		done = nbt.getBoolean("done");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		heat.save(nbt, "heat");
-		nbt.setFloat("progress", netF0);
+		nbt.setFloat("progress", progress);
 		nbt.setBoolean("done", done);
 		return super.writeToNBT(nbt);
 	}
@@ -126,22 +126,21 @@ public class HeatedFurnace extends AutomatedTile implements IHeatStorage, IGuiDa
 		return (side^1) == this.getOrientation() ? HeatReservoir.def_con : HeatReservoir.def_discon;
 	}
 
-	public int getProgressScaled(int s) {
-		int i = netI0 == 0 ? 0 : (int)((float)s * netF0 / Energy / (float)netI0);
-		return i < s ? i : s;
+	public float getProgress() {
+		return progress / Energy / (float)num;
 	}
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, Float.floatToIntBits(netF0), Float.floatToIntBits(netF1)};
+		return new int[]{num, Float.floatToIntBits(progress), Float.floatToIntBits(temp)};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netF0 = Float.intBitsToFloat(v); break;
-		case 2: netF1 = Float.intBitsToFloat(v); break;
+		case 0: num = v; break;
+		case 1: progress = Float.intBitsToFloat(v); break;
+		case 2: temp = Float.intBitsToFloat(v); break;
 		}
 	}
 

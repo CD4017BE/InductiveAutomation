@@ -61,7 +61,7 @@ public class LavaCooler extends AutomatedTile implements IGuiData {
 		
 	}
 	
-	public int netI0, netI1;
+	public int cfg, progress;
 	
 	public LavaCooler()
 	{
@@ -74,48 +74,47 @@ public class LavaCooler extends AutomatedTile implements IGuiData {
 	{
 		super.update();
 		if (this.worldObj.isRemote) return;
-		Mode mode = Mode.get(netI0 & 0xf);
+		Mode mode = Mode.get(cfg & 0xf);
 		if (mode == null) {
-			Mode m = Mode.get(netI0 >> 4 & 0x3);
+			Mode m = Mode.get(cfg >> 4 & 0x3);
 			if (tanks.getAmount(0) >= m.water && tanks.getAmount(1) >= m.lava) {
 				tanks.drain(0, m.water, true);
 				tanks.drain(1, m.lava, true);
 				mode = m;
-				netI0 = (netI0 & 0x30) | m.ordinal();
-				netI1 = m.time;
+				cfg = (cfg & 0x30) | m.ordinal();
+				progress = m.time;
 			}
 		}
 		if (mode == null || worldObj.isBlockPowered(getPos())) return;
-		if (netI1 > 0) {
+		if (progress > 0) {
 			tanks.fill(2, new FluidStack(Objects.L_steam, SteamOut), true);
-			netI1--;
+			progress--;
 		}
-		if (netI1 <= 0) {
+		if (progress <= 0) {
 			if (ItemFluidUtil.putInSlots(inventory, mode.getOutput(), 0, 1) == null) {
-				netI0 = (netI0 & 0x30) | 4;
+				cfg = (cfg & 0x30) | 4;
 			}
 		}
 	}
 
-	public int getCoolScaled(int s)
-	{
-		Mode m = Mode.get(netI0 & 0xf);
-		return m == null ? 0 : netI1 * s / m.time;
+	public float getCool() {
+		Mode m = Mode.get(cfg & 0xf);
+		return m == null ? Float.NaN : (float)progress / (float)m.time;
 	}
 	
 	public String getOutputName()
 	{
-		Mode m = Mode.get(netI0 & 0xf);
+		Mode m = Mode.get(cfg & 0xf);
 		if (m == null) return "Inactive";
 		ItemStack i = m.getOutput();
-		return (i == null ? "Default" : i.getDisplayName()).concat("\n" + String.format("%d", (m.time - netI1) * 100 / m.time) + " %");
+		return (i == null ? "Default" : i.getDisplayName()).concat("\n" + String.format("%d", (m.time - progress) * 100 / m.time) + " %");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		nbt.setInteger("mode", netI0);
-		nbt.setInteger("cool", netI1);
+		nbt.setInteger("mode", cfg);
+		nbt.setInteger("cool", progress);
 		return super.writeToNBT(nbt);
 	}
 
@@ -123,15 +122,15 @@ public class LavaCooler extends AutomatedTile implements IGuiData {
 	public void readFromNBT(NBTTagCompound nbt) 
 	{
 		super.readFromNBT(nbt);
-		netI0 = nbt.getInteger("mode");
-		netI1 = nbt.getInteger("cool");
+		cfg = nbt.getInteger("mode");
+		progress = nbt.getInteger("cool");
 	}
 	
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
 	{
 		if (cmd >= 0 && cmd < 4) {
-			netI0 = (netI0 & 0xf) | cmd << 4;
+			cfg = (cfg & 0xf) | cmd << 4;
 		}
 	}
 

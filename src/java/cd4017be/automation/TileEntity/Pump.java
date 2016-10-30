@@ -56,7 +56,7 @@ public class Pump extends AutomatedTile implements IGuiData, IAccessHandler, IOp
 	private GameProfile lastUser = defaultUser;
 	private boolean disabled = false;
 	private CachedChunkProtection prot;
-	public int netI0, netI1;
+	public int cfg, netI1;
 
 	@Override
 	public void onPlaced(EntityLivingBase entity, ItemStack item)  
@@ -252,14 +252,14 @@ public class Pump extends AutomatedTile implements IGuiData, IAccessHandler, IOp
 	{
 		if (cmd == 0) {
 			blockNotify = !blockNotify;
-			netI0 = (netI0 & 0xff) | (blockNotify ? 0x100 : 0);
+			cfg = (cfg & 0xff) | (blockNotify ? 0x100 : 0);
 		} else if (cmd == 1) {
 			byte l = dis.readByte();
 			if (l < 0) l = 0;
 			else if (l > 127) l = 127;
 			blocks = new int[l * 3];
 			dist = -1;
-			netI0 = (netI0 & 0x100) | (l & 0xff);
+			cfg = (cfg & 0x100) | (l & 0xff);
 		}
 	}
 
@@ -273,9 +273,9 @@ public class Pump extends AutomatedTile implements IGuiData, IAccessHandler, IOp
 		py = nbt.getInteger("py");
 		pz = nbt.getInteger("pz");
 		storage = nbt.getFloat("storage");
-		netI0 = nbt.getInteger("mode");
-		blockNotify = (netI0 & 0x100) != 0;
-		blocks = new int[(netI0 & 0x7f) * 3];
+		cfg = nbt.getInteger("mode");
+		blockNotify = (cfg & 0x100) != 0;
+		blocks = new int[(cfg & 0x7f) * 3];
 		dist = -1;
 		try {lastUser = new GameProfile(new UUID(nbt.getLong("lastUserID0"), nbt.getLong("lastUserID1")), nbt.getString("lastUser"));
 		} catch (Exception e) {lastUser = defaultUser;}
@@ -291,7 +291,7 @@ public class Pump extends AutomatedTile implements IGuiData, IAccessHandler, IOp
 		nbt.setInteger("py", py);
 		nbt.setInteger("pz", pz);
 		nbt.setFloat("storage", storage);
-		nbt.setInteger("mode", netI0);
+		nbt.setInteger("mode", cfg);
 		nbt.setString("lastUser", lastUser.getName());
 		nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
 		nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
@@ -370,13 +370,13 @@ public class Pump extends AutomatedTile implements IGuiData, IAccessHandler, IOp
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1};
+		return new int[]{cfg, netI1};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
+		case 0: cfg = v; break;
 		case 1: netI1 = v; break;
 		}
 	}

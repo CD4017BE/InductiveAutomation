@@ -24,8 +24,8 @@ public class GraviCond extends AutomatedTile implements IGuiData
 	public static float energyCost = 2.0F;
 	public static float forceEnergy = 4.0F;
 	public static int maxVoltage = 16000;
-	public int netI0, netI1;
-	public float netF0;
+	public int matter, need;
+	public float Estor;
 	
 	public GraviCond()
 	{
@@ -43,10 +43,10 @@ public class GraviCond extends AutomatedTile implements IGuiData
 		super.update();
 		if (worldObj.isRemote) return;
 		int add = 0;
-		netF0 = (float)energy.getEnergy(0, 1);
-		int max = (int)Math.floor(netF0 / forceEnergy);
-		if (netI0 > max) {
-			add -= netI0 - max;
+		Estor = (float)energy.getEnergy(0, 1);
+		int max = (int)Math.floor(Estor / forceEnergy);
+		if (matter > max) {
+			add -= matter - max;
 		}
 		if (inventory.items[0] != null) {
 			if (inventory.items[0].getItem() instanceof ItemBlock) add += inventory.items[0].stackSize * blockWeight;
@@ -60,16 +60,16 @@ public class GraviCond extends AutomatedTile implements IGuiData
 		if (add != 0) {
 			max = (int)Math.floor(energy.getEnergy(0, 1) / energyCost);
 			if (add > max) add = max;
-			netI0 += add;
+			matter += add;
 			energy.addEnergy(-add * energyCost);
 		}
-		netI1 = 0;
+		need = 0;
 		if (inventory.items[1] != null) {
 			GCRecipe rcp = AutomationRecipes.getRecipeFor(inventory.items[1]);
 			if (rcp != null) {
-				netI1 = rcp.matter;
-				if (netI0 >= netI1 && (inventory.items[2] == null || (Utils.itemsEqual(rcp.output, inventory.items[2]) && rcp.output.stackSize + inventory.items[2].stackSize <= rcp.output.getMaxStackSize()))) {
-					netI0 -= netI1;
+				need = rcp.matter;
+				if (matter >= need && (inventory.items[2] == null || (Utils.itemsEqual(rcp.output, inventory.items[2]) && rcp.output.stackSize + inventory.items[2].stackSize <= rcp.output.getMaxStackSize()))) {
+					matter -= need;
 					inventory.items[1].stackSize -= rcp.input.stackSize;
 					if (inventory.items[1].stackSize <= 0) inventory.items[1] = null;
 					if (inventory.items[2] == null) inventory.items[2] = rcp.output.copy();
@@ -80,22 +80,21 @@ public class GraviCond extends AutomatedTile implements IGuiData
 	}
 
 	@Override
-	public int redstoneLevel(int s, boolean str) 
-	{
-		return this.getMatterScaled(16);
+	public int redstoneLevel(int s, boolean str) {
+		return 256 - (int)(this.getMatter() * 256F);
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) 
 	{
 		super.readFromNBT(nbt);
-		netI0 = nbt.getInteger("matter");
+		matter = nbt.getInteger("matter");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		nbt.setInteger("matter", netI0);
+		nbt.setInteger("matter", matter);
 		return super.writeToNBT(nbt);
 	}
 
@@ -109,39 +108,30 @@ public class GraviCond extends AutomatedTile implements IGuiData
 		container.addItemSlot(new SlotItemType(inventory, 2, 152, 34));
 		container.addItemSlot(new SlotTank(inventory, 3, 8, 16));
 	}
-	
-	public int getEnergyScaled(int s)
-	{
-		int n = (int)(netF0 * (float)s / (energy.Umax * energy.Umax));
-		return n > s ? s : n;
+
+	public float getEnergy() {
+		return Estor / (energy.Umax * energy.Umax);
 	}
-	
-	public int getMatterScaled(int s)
-	{
-		long max = (long)Math.floor(netF0 / forceEnergy);
-		if (max == 0) return 0;
-		long n = (long)netI0 * (long)s / (long)max;
-		return (int)(n > s ? s : n);
+
+	public float getMatter() {
+		return (float)matter / Estor * forceEnergy;
 	}
-	
-	public int getProgressScaled(int s)
-	{
-		if (netI1 == 0) return 0;
-		long n = (long)netI0 * (long)s / (long)netI1;
-		return (int)(n > s ? s : n);
+
+	public float getProgress() {
+		return (float)matter / (float)need;
 	}
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, Float.floatToIntBits(netF0)};
+		return new int[]{matter, need, Float.floatToIntBits(Estor)};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netI1 = v; break;
-		case 2: netF0 = Float.intBitsToFloat(v); break;
+		case 0: matter = v; break;
+		case 1: need = v; break;
+		case 2: Estor = Float.intBitsToFloat(v); break;
 		}
 	}
 

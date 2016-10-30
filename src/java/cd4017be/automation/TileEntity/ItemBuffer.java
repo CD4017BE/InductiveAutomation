@@ -16,7 +16,7 @@ import cd4017be.lib.util.Utils;
 
 public class ItemBuffer extends AutomatedTile implements IGuiData {
 
-	public int netI0, netI1, netI2;
+	public int mode, amA, amB;
 
 	public ItemBuffer() {
 		inventory = new Inventory(21, 4, null).group(0, 0, 18, Utils.IN).group(1, 18, 19, Utils.OUT).group(2, 19, 20, Utils.OUT).group(3, 20, 21, Utils.OUT);
@@ -27,15 +27,15 @@ public class ItemBuffer extends AutomatedTile implements IGuiData {
 	{
 		super.update();
 		if (worldObj.isRemote) return;
-		boolean bigStack = (netI0 & 0x100) != 0;
-		int ovflSlots = netI0 & 0xff;
-		int min = netI1 + netI2;
+		boolean bigStack = (mode & 0x100) != 0;
+		int ovflSlots = mode & 0xff;
+		int min = amA + amB;
 		if (min > 0 && inventory.items[18] == null && inventory.items[19] == null) {
 			Obj2<ItemStack, Integer> out = this.getItem(min, bigStack);
 			if (out.objA != null) {
 				int n = out.objA.stackSize / min;
-				inventory.items[18] = netI1 == 0 ? null : out.objA.splitStack(n * netI1);
-				inventory.items[19] = netI2 == 0 ? null : out.objA.splitStack(n * netI2);
+				inventory.items[18] = amA == 0 ? null : out.objA.splitStack(n * amA);
+				inventory.items[19] = amB == 0 ? null : out.objA.splitStack(n * amB);
 				if (out.objA.stackSize > 0) inventory.items[out.objB] = out.objA;
 			}
 		}
@@ -78,25 +78,25 @@ public class ItemBuffer extends AutomatedTile implements IGuiData {
 	public void readFromNBT(NBTTagCompound nbt) 
 	{
 		super.readFromNBT(nbt);
-		netI0 = nbt.getInteger("mode");
-		netI1 = nbt.getInteger("n1");
-		netI2 = nbt.getInteger("n2");
+		mode = nbt.getInteger("mode");
+		amA = nbt.getInteger("n1");
+		amB = nbt.getInteger("n2");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		nbt.setInteger("mode", netI0);
-		nbt.setInteger("n1", netI1);
-		nbt.setInteger("n2", netI2);
+		nbt.setInteger("mode", mode);
+		nbt.setInteger("n1", amA);
+		nbt.setInteger("n2", amB);
 		return super.writeToNBT(nbt);
 	}
 
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) {
-		if (cmd == 0) netI0 = dis.readInt();
-		else if (cmd == 1) netI1 = dis.readInt();
-		else if (cmd == 2) netI2 = dis.readInt();
+		if (cmd == 0) mode = dis.readInt();
+		else if (cmd == 1) amA = dis.readInt();
+		else if (cmd == 2) amB = dis.readInt();
 	}
 
 	@Override
@@ -121,15 +121,15 @@ public class ItemBuffer extends AutomatedTile implements IGuiData {
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, netI2};
+		return new int[]{mode, amA, amB};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netI1 = v; break;
-		case 2: netI2 = v; break;
+		case 0: mode = v; break;
+		case 1: amA = v; break;
+		case 2: amB = v; break;
 		}
 	}
 

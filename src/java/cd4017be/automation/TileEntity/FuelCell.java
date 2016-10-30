@@ -23,19 +23,13 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class FuelCell extends AutomatedTile implements IEnergyAccess, IGuiData {
 
-	public int netI0, netI1, netI2, netI3;
-	public float netF0;
+	public int Uref, power, fracH2, fracO2;
+	public float Estor;
 	
 	public FuelCell() {
 		energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
 		inventory = new Inventory(3, 0, null);
 		tanks = new TankContainer(3, 3).tank(0, Config.tankCap[1], Utils.IN, 0, -1, Objects.L_hydrogenG).tank(1, Config.tankCap[1], Utils.IN, 1, -1, Objects.L_oxygenG).tank(2, Config.tankCap[1], Utils.OUT, -1, 2, Objects.L_waterG);
-		/**
-		 * long: tanks
-		 * int: voltage, power, mlHydrogen, mlOxygen
-		 * float: storage
-		 * fluid: Red, Ox
-		 */	
 	}
 	
 	@Override
@@ -43,45 +37,43 @@ public class FuelCell extends AutomatedTile implements IEnergyAccess, IGuiData {
 	{
 		super.update();
 		if (worldObj.isRemote) return;
-		float e = energy.getEnergy(netI0, 1);
+		float e = energy.getEnergy(Uref, 1);
 		float e1 = this.addEnergy(e);
 		if (e1 != e) energy.addEnergy(-e1);
-		else energy.Ucap = netI0;
-		int p = (int)Math.ceil((1F - netF0 / (Config.Ecap[0] * 1000F) * 2F) * Config.PfuelCell * 0.5F);
+		else energy.Ucap = Uref;
+		int p = (int)Math.ceil((1F - Estor / (Config.Ecap[0] * 1000F) * 2F) * Config.PfuelCell * 0.5F);
 		if (p * 2 > tanks.getAmount(0)) p = tanks.getAmount(0) / 2;
 		if (p > tanks.getAmount(1)) p = tanks.getAmount(1);
 		if (p > 0) {
 			tanks.drain(0, p * 2, true);
 			tanks.drain(1, p, true);
 			tanks.fill(2, new FluidStack(Objects.L_waterG, p * 3), true);
-			netF0 += p * 2000F;
+			Estor += p * 2000F;
 		} else p = 0;
-		netI1 = p * 2;
+		power = p * 2;
 	}
-	
-	public int getStorageScaled(int s)
-	{
-		return (int)(netF0 * s / (Config.Ecap[0] * 1000));
+
+	public float storage() {
+		return Estor / (float)Config.Ecap[0] / 1000F;
 	}
-	
-	public int getPowerScaled(int s)
-	{
-		return netI1 * s / Config.PfuelCell;
+
+	public float getPower() {
+		return (float)power / (float)Config.PfuelCell;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbt) 
 	{
 		super.readFromNBT(nbt);
-	netF0 = nbt.getFloat("storage");
-	netI0 = nbt.getInteger("voltage");
+		Estor = nbt.getFloat("storage");
+		Uref = nbt.getInteger("voltage");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		nbt.setFloat("storage", netF0);
-		nbt.setInteger("voltage", netI0);
+		nbt.setFloat("storage", Estor);
+		nbt.setInteger("voltage", Uref);
 		return super.writeToNBT(nbt);
 	}
 
@@ -89,7 +81,7 @@ public class FuelCell extends AutomatedTile implements IEnergyAccess, IGuiData {
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
 	{
 		if (cmd == 0) {
-			netI0 = dis.readShort();
+			Uref = dis.readShort();
 		}
 	}
 
@@ -111,7 +103,7 @@ public class FuelCell extends AutomatedTile implements IEnergyAccess, IGuiData {
 	@Override
 	public float getStorage() 
 	{
-		return netF0;
+		return Estor;
 	}
 
 	@Override
@@ -122,30 +114,28 @@ public class FuelCell extends AutomatedTile implements IEnergyAccess, IGuiData {
 	@Override
 	public float addEnergy(float e) 
 	{
-		netF0 += e;
-		if (netF0 < 0) {
-			e -= netF0;
-			netF0 = 0;
-		} else if (netF0 > Config.Ecap[0] * 1000) {
-			e -= netF0 - Config.Ecap[0] * 1000;
-			netF0 = Config.Ecap[0] * 1000;
+		Estor += e;
+		if (Estor < 0) {
+			e -= Estor;
+			Estor = 0;
+		} else if (Estor > Config.Ecap[0] * 1000) {
+			e -= Estor - Config.Ecap[0] * 1000;
+			Estor = Config.Ecap[0] * 1000;
 		}
 		return e;
 	}
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, netI2, netI3, Float.floatToIntBits(netF0)};
+		return new int[]{Uref, power, Float.floatToIntBits(Estor)};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netI1 = v; break;
-		case 2: netI2 = v; break;
-		case 3: netI3 = v; break;
-		case 4: netF0 = Float.intBitsToFloat(v); break;
+		case 0: Uref = v; break;
+		case 1: power = v; break;
+		case 2: Estor = Float.intBitsToFloat(v); break;
 		}
 	}
 

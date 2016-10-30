@@ -98,10 +98,8 @@ public class EnergyFurnace extends AutomatedTile implements IGuiData {
 		}
 	}
 	
-	public int getProgressScaled(int s)
-	{
-		int i = (int)((float)s * netF0 / Euse);
-		return i < s ? i : s;
+	public float getProgress() {
+		return netF0 / Euse;
 	}
 
 	public float getPower() {

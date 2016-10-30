@@ -43,7 +43,7 @@ public class FluidVent extends AutomatedTile implements IGuiData
 	private Block blockId;
 	public boolean blockNotify;
 	private CachedChunkProtection prot;
-	public int netI0, netI1;
+	public int mode, netI1;
 	
 	public FluidVent()
 	{
@@ -172,21 +172,21 @@ public class FluidVent extends AutomatedTile implements IGuiData
 		prot = null;
 		if (cmd == 0) {
 			blockNotify = !blockNotify;
-			netI0 = (netI0 & 0xff) | (blockNotify ? 0x100 : 0);
+			mode = (mode & 0xff) | (blockNotify ? 0x100 : 0);
 		} else if (cmd == 1) {
 			byte l = dis.readByte();
 			if (l < 0) l = 0;
 			else if (l > 127) l = 127;
 			blocks = new int[l * 3];
 			dist = -1;
-			netI0 = (netI0 & 0xf00) | (l & 0xff);
+			mode = (mode & 0xf00) | (l & 0xff);
 		}
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		nbt.setInteger("mode", netI0);
+		nbt.setInteger("mode", mode);
 		nbt.setString("lastUser", lastUser.getName());
 		nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
 		nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
@@ -200,9 +200,9 @@ public class FluidVent extends AutomatedTile implements IGuiData
 		try {lastUser = new GameProfile(new UUID(nbt.getLong("lastUserID0"), nbt.getLong("lastUserID1")), nbt.getString("lastUser"));
 		} catch (Exception e) {lastUser = defaultUser;}
 		prot = null;
-		netI0 = nbt.getInteger("mode");
-		blocks = new int[(netI0 & 0x7f) * 3];
-		blockNotify = (netI0 & 0x100) != 0;
+		mode = nbt.getInteger("mode");
+		blocks = new int[(mode & 0x7f) * 3];
+		blockNotify = (mode & 0x100) != 0;
 		dist = -1;
 	}
 
@@ -219,13 +219,13 @@ public class FluidVent extends AutomatedTile implements IGuiData
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1};
+		return new int[]{mode, netI1};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
+		case 0: mode = v; break;
 		case 1: netI1 = v; break;
 		}
 	}

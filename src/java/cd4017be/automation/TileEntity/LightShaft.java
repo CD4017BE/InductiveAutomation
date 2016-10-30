@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.TileEntity;
 
 import net.minecraft.util.math.BlockPos;
@@ -16,20 +12,17 @@ import net.minecraft.world.EnumSkyBlock;
  *
  * @author CD4017BE
  */
-public class LightShaft extends ModTileEntity implements ITickable
-{
+public class LightShaft extends ModTileEntity implements ITickable {
 
 	private int counter = 0;
-	
+
 	@Override
-	public void onNeighborBlockChange(Block b) 
-	{
+	public void onNeighborBlockChange(Block b) {
 		if (worldObj.getBlockState(pos.down()) == Blocks.AIR.getDefaultState()) worldObj.setBlockState(pos.down(), BlockSkyLight.ID.getDefaultState());
 	}
 
 	@Override
-	public void update() 
-	{
+	public void update() {
 		if (counter == 0) this.onNeighborBlockChange(Blocks.AIR);
 		if (++counter > 20){
 			counter = 1;
@@ -40,5 +33,5 @@ public class LightShaft extends ModTileEntity implements ITickable
 			}
 		}
 	}
-	
+
 }

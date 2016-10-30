@@ -31,8 +31,8 @@ import net.minecraftforge.items.SlotItemHandler;
 public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess {
 
 	public int type = 0;
-	public int netI0;
-	public float netF0, netF1;
+	public int Uref;
+	public float Estor, power;
 
 	public ESU() {
 		energy = new PipeEnergy(0, 0);
@@ -54,13 +54,13 @@ public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess {
 		}
 		super.update();
 		if (worldObj.isRemote) return;
-		netF0 -= EnergyAPI.get(inventory.items[0], 0).addEnergy(getStorage() - getCapacity());
-		netF0 -= EnergyAPI.get(inventory.items[1], 0).addEnergy(getStorage());
-		float d = energy.getEnergy(netI0, 1);
+		Estor -= EnergyAPI.get(inventory.items[0], 0).addEnergy(getStorage() - getCapacity());
+		Estor -= EnergyAPI.get(inventory.items[1], 0).addEnergy(getStorage());
+		float d = energy.getEnergy(Uref, 1);
 		float d1 = addEnergy(d);
-		if (d1 == d) energy.Ucap = netI0;
+		if (d1 == d) energy.Ucap = Uref;
 		else if (d1 != 0) energy.addEnergy(-d1);
-		netF1 = (float)d1;
+		power = (float)d1;
 	}
 
 	public int getMaxStorage() {
@@ -70,27 +70,27 @@ public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess {
 	@Override
 	public float addEnergy(float e) {
 		if (energy.Umax == 0) return 0;
-		if (netF0 + e < 0) {
-			e = -netF0;
-			netF0 = 0;
-		} else if (netF0 + e > getCapacity()) {
-			e = getCapacity() - netF0;
-			netF0 = getCapacity();
+		if (Estor + e < 0) {
+			e = -Estor;
+			Estor = 0;
+		} else if (Estor + e > getCapacity()) {
+			e = getCapacity() - Estor;
+			Estor = getCapacity();
 		} else {
-			netF0 += e;
+			Estor += e;
 		}
 		return e;
 	}
 
 	@Override
 	public void onPlaced(EntityLivingBase entity, ItemStack item) {
-		netF0 = (float)EnergyAPI.get(item, -1).getStorage();
+		Estor = (float)EnergyAPI.get(item, -1).getStorage();
 	}
 
 	@Override
 	public ArrayList<ItemStack> dropItem(IBlockState state, int fortune) {
 		ItemStack item = new ItemStack(this.getBlockType());
-		netF0 -= EnergyAPI.get(item, -1).addEnergy(netF0);
+		Estor -= EnergyAPI.get(item, -1).addEnergy(Estor);
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		list.add(item);
 		return list;
@@ -99,21 +99,21 @@ public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess {
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
 		if (cmd == 0) {
-			netI0 = dis.readInt();
-			if (netI0 < 0) netI0 = 0;
-			if (netI0 > Config.Umax[type]) netI0 = Config.Umax[type];
+			Uref = dis.readInt();
+			if (Uref < 0) Uref = 0;
+			if (Uref > Config.Umax[type]) Uref = Config.Umax[type];
 		}
 	}
 
-	public int getStorageScaled(int s) {
-		return (int)(netF0 / getCapacity() * (float)s);
+	public float storage() {
+		return Estor / getCapacity();
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setByte("type", (byte)type);
-		nbt.setFloat("storage", netF0);
-		nbt.setInteger("voltage", netI0);
+		nbt.setFloat("storage", Estor);
+		nbt.setInteger("voltage", Uref);
 		return super.writeToNBT(nbt);
 	}
 
@@ -122,15 +122,12 @@ public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess {
 		type = nbt.getByte("type");
 		energy = new PipeEnergy(Config.Umax[type], Config.Rcond[type]);
 		super.readFromNBT(nbt);
-		netF0 = nbt.getFloat("storage");
-		netI0 = nbt.getInteger("voltage");
+		Estor = nbt.getFloat("storage");
+		Uref = nbt.getInteger("voltage");
 	}
 
-	public int getDiff(int max) {
-		int d = (int)(netF1 / this.getCapacity() * (float)max * 400F);
-		if (d < -max) d = -max;
-		if (d > max) d = max;
-		return d;
+	public float getDiff() {
+		return power / this.getCapacity() * 400F;
 	}
 
 	@Override
@@ -145,7 +142,7 @@ public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess {
 
 	@Override
 	public float getStorage() {
-		return netF0;
+		return Estor;
 	}
 
 	@Override
@@ -155,15 +152,15 @@ public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess {
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, Float.floatToIntBits(netF0), Float.floatToIntBits(netF1)};
+		return new int[]{Uref, Float.floatToIntBits(Estor), Float.floatToIntBits(power)};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netF0 = Float.intBitsToFloat(v); break;
-		case 2: netF1 = Float.intBitsToFloat(v); break;
+		case 0: Uref = v; break;
+		case 1: Estor = Float.intBitsToFloat(v); break;
+		case 2: power = Float.intBitsToFloat(v); break;
 		}
 	}
 

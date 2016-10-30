@@ -29,7 +29,7 @@ public class GuiAntimatterAnihilator extends GuiMachine {
 		this.xSize = 176;
 		this.ySize = 168;
 		super.initGui();
-		guiComps.add(new NumberSel(5, 98, 16, 70, 16, "%dV", 0, Config.Umax[2], 10).setup(8, 0xff404040, 2, true).setTooltip("voltage"));
+		guiComps.add(new NumberSel(5, 98, 16, 70, 16, "%dV", 0, Config.Umax[2], 10).setup(30, 0xff404040, 2, true).setTooltip("voltage"));
 		guiComps.add(new ProgressBar(6, 48, 16, 8, 52, 176, 0, (byte)1).setTooltip("x*100+0;heat"));
 		guiComps.add(new ProgressBar(7, 98, 52, 70, 16, 170, 0, (byte)4));
 		guiComps.add(new Text(8, 98, 52, 70, 16, "gui.cd4017be.energy").center());

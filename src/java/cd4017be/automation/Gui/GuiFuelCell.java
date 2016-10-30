@@ -1,100 +1,56 @@
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
-
-import org.lwjgl.opengl.GL11;
-
 import cd4017be.automation.Config;
 import cd4017be.automation.TileEntity.FuelCell;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.Gui.GuiMachine;
 import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 
-public class GuiFuelCell extends GuiMachine 
-{
-	
-protected FuelCell tileEntity;
-	
-	public GuiFuelCell(FuelCell tileEntity, EntityPlayer player)
-	{
+public class GuiFuelCell extends GuiMachine {
+
+	protected FuelCell tile;
+
+	public GuiFuelCell(FuelCell tileEntity, EntityPlayer player) {
 		super(new TileContainer(tileEntity, player));
-		this.tileEntity = tileEntity;
-	}
-	
-	@Override
-	public void initGui() 
-	{
-		this.xSize = 176;
-		this.ySize = 168;
-		super.initGui();
+		this.tile = tileEntity;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/fuelCell.png");
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mx, int my) 
-	{
-		super.drawGuiContainerForegroundLayer(mx, my);
-		this.drawInfo(118, 16, 30, 16, "\\i", "voltage");
+	public void initGui() {
+		this.xSize = 176;
+		this.ySize = 168;
+		super.initGui();
+		guiComps.add(new NumberSel(5, 98, 16, 70, 16, "%dV", 0, Config.Umax[2], 10).setup(30, 0xff404040, 2, true).setTooltip("voltage"));
+		guiComps.add(new ProgressBar(6, 84, 16, 8, 52, 176, 0, (byte)1));
+		guiComps.add(new ProgressBar(7, 98, 52, 70, 16, 170, 0, (byte)4));
+		guiComps.add(new Text(8, 98, 52, 70, 16, "gui.cd4017be.energy").center());
+		guiComps.add(new Text(9, 98, 34, 70, 16, "gui.cd4017be.fuelCell.power"));
 	}
-	
+
 	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
-	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/fuelCell.png"));
-		this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-		int n = tileEntity.getStorageScaled(70);
-		this.drawTexturedModalRect(this.guiLeft + 98, this.guiTop + 52, 184, 0, n, 16);
-		n = tileEntity.getPowerScaled(52);
-		this.drawTexturedModalRect(this.guiLeft + 84, this.guiTop + 68 - n, 176, 52 - n, 8, n);
-		this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-		this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 72, 0x404040);
-		this.drawStringCentered(tileEntity.netI0 + "V", this.guiLeft + 133, this.guiTop + 20, 0x404040);
-		this.drawStringCentered("P = " + tileEntity.netI1 + " " + TooltipInfo.getPowerUnit(), this.guiLeft + 133, this.guiTop + 38, 0x804040);
-		this.drawStringCentered((int)(tileEntity.netF0 / 1000F) + " " + TooltipInfo.getEnergyUnit(), this.guiLeft + 133, this.guiTop + 56, 0x404040);
-		super.drawGuiContainerBackgroundLayer(var1, var2, var3);
+	protected Object getDisplVar(int id) {
+		switch(id) {
+		case 5: return tile.Uref;
+		case 6: return tile.getPower();
+		case 7: return tile.storage();
+		case 8: return tile.Estor / 1000F;
+		case 9: return tile.power;
+		default: return null;
+		}
 	}
-	
+
 	@Override
-	protected void mouseClicked(int x, int y, int b) throws IOException 
-	{
-		byte a = -1;
-		if (this.isPointInRegion(98, 16, 10, 16, x, y))
-		{
-			tileEntity.netI0 -= b == 0 ? 10 : 1000;
-			a = 0;
-		} else
-		if (this.isPointInRegion(108, 16, 10, 16, x, y))
-		{
-			tileEntity.netI0 -= b == 0 ? 1 : 100;
-			a = 0;
-		} else
-		if (this.isPointInRegion(148, 16, 10, 16, x, y))
-		{
-			tileEntity.netI0 += b == 0 ? 1 : 100;
-			a = 0;
-		} else
-		if (this.isPointInRegion(158, 16, 10, 16, x, y))
-		{
-			tileEntity.netI0 += b == 0 ? 10 : 1000;
-			a = 0;
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		PacketBuffer dos = tile.getPacketTargetData();
+		switch(id) {
+		case 5: dos.writeByte(AutomatedTile.CmdOffset).writeShort(tile.Uref = (Integer)obj);
 		}
-		if (a >= 0)
-		{
-			if (tileEntity.netI0 < 0) tileEntity.netI0 = 0;
-			if (tileEntity.netI0 > Config.Umax[2]) tileEntity.netI0 = Config.Umax[2];
-			PacketBuffer dos = tileEntity.getPacketTargetData();
-			dos.writeByte(AutomatedTile.CmdOffset);
-			dos.writeShort(tileEntity.netI0);
-			BlockGuiHandler.sendPacketToServer(dos);
-		}
-		super.mouseClicked(x, y, b);
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
 	}
-	
+
 }

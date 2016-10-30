@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package cd4017be.automation.jeiPlugin;
 
 import net.minecraft.item.ItemStack;
@@ -32,8 +28,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferRegistry;
  * @author CD4017BE
  */
 @JEIPlugin
-public class InductiveAutomationPlugin extends BlankModPlugin
-{
+public class InductiveAutomationPlugin extends BlankModPlugin {
 
 	@Override
 	public void register(IModRegistry registry) {
@@ -93,4 +88,5 @@ public class InductiveAutomationPlugin extends BlankModPlugin
 		recipeTransferRegistry.addRecipeTransferHandler(new AssemblerTransferHandler(transferHelper));
 		recipeTransferRegistry.addRecipeTransferHandler(new PortableCraftingHandler(transferHelper));
 	}
+
 }

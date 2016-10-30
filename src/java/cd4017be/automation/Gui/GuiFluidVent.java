@@ -1,20 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cd4017be.automation.Gui;
-
-import java.io.IOException;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
-
-import org.lwjgl.opengl.GL11;
-
 import cd4017be.automation.TileEntity.FluidVent;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.Gui.GuiMachine;
@@ -25,69 +13,44 @@ import cd4017be.lib.templates.AutomatedTile;
  *
  * @author CD4017BE
  */
-public class GuiFluidVent extends GuiMachine
-{
-	private final FluidVent tileEntity;
-	
-	public GuiFluidVent(FluidVent tileEntity, EntityPlayer player)
-	{
+public class GuiFluidVent extends GuiMachine {
+
+	private final FluidVent tile;
+
+	public GuiFluidVent(FluidVent tileEntity, EntityPlayer player) {
 		super(new TileContainer(tileEntity, player));
-		this.tileEntity = tileEntity;
+		this.tile = tileEntity;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/fluidVent.png");
 	}
-	
+
 	@Override
-	public void initGui() 
-	{
+	public void initGui() {
 		this.xSize = 226;
 		this.ySize = 98;
 		super.initGui();
+		guiComps.add(new Button(2, 183, 73, 18, 18, 0).texture(226, 0).setTooltip("pump.update"));
+		guiComps.add(new NumberSel(3, 201, 73, 18, 18, "%d", 0, 127, 8).setTooltip("vent.range"));
+		guiComps.add(new Text(4, 0, ySize, xSize, 8, "gui.cd4017be.vent.pos").font(0xffffffff, 8).center());
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(int mx, int my) 
-	{
-		super.drawGuiContainerForegroundLayer(mx, my);
-		this.drawInfo(183, 73, 18, 18, "\\i", "pump.update");
-		this.drawInfo(201, 73, 18, 18, "\\i", "vent.range");
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
-	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/fluidVent.png"));
-		this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-		if ((tileEntity.netI0 & 0x100) != 0) this.drawTexturedModalRect(this.guiLeft + 183, this.guiTop + 73, 226, 0, 18, 18);
-		this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + 88, this.guiTop + 4, 0x404040);
-		this.drawStringCentered(tileEntity.getName(), this.guiLeft + 201, this.guiTop + 4, 0x404040);
-		int n = tileEntity.netI0 & 0xff;
-		this.drawStringCentered(n == 0 ? "off" : "" + n, this.guiLeft + 210, this.guiTop + 78, 0x404040);
-		this.drawStringCentered(String.format("X= %d , Y= %d , Z= %d", (byte)tileEntity.netI1, (byte)(tileEntity.netI1 >> 8), (byte)(tileEntity.netI1 >> 16)), this.guiLeft + this.xSize / 2, this.guiTop + this.ySize, 0xffffff);
-		super.drawGuiContainerBackgroundLayer(var1, var2, var3);
-	}
-
-	@Override
-	protected void mouseClicked(int x, int y, int b) throws IOException 
-	{
-		super.mouseClicked(x, y, b);
-		int i = -1, n = 0;
-		if (this.isPointInRegion(183, 73, 18, 18, x, y)) {
-			i = 0;
-		} else if (this.isPointInRegion(201, 73, 18, 8, x, y)) {
-			i = 1;
-			n = (tileEntity.netI0 & 0xff) + (b == 0 ? 1 : 8);
-			if (n > 127) n = 127;
-		} else if (this.isPointInRegion(201, 83, 18, 8, x, y)) {
-			i = 1;
-			n = (tileEntity.netI0 & 0xff) - (b == 0 ? 1 : 8);
-			if (n < 0) n = 0;
-		}
-		if (i >= 0)
-		{
-			PacketBuffer dos = tileEntity.getPacketTargetData();
-			dos.writeByte(AutomatedTile.CmdOffset + i);
-			if (i == 1) dos.writeByte((byte)n);
-			BlockGuiHandler.sendPacketToServer(dos);
+	protected Object getDisplVar(int id) {
+		switch(id) {
+		case 2: return tile.mode >> 8 & 1;
+		case 3: return tile.mode & 0xff;
+		case 4: return new Object[]{(byte)tile.netI1, (byte)(tile.netI1 >> 8), (byte)(tile.netI1 >> 16)};
+		default: return null;
 		}
 	}
+
+	@Override
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		PacketBuffer dos = tile.getPacketTargetData();
+		switch(id) {
+		case 2: dos.writeByte(AutomatedTile.CmdOffset); break;
+		case 3: dos.writeByte(AutomatedTile.CmdOffset + 1).writeByte(tile.mode = (tile.mode & 0x100) | ((Integer)obj & 0xff));
+		}
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
+	}
+
 }

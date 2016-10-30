@@ -31,7 +31,7 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 	public int type = 0;
 	public float energyDemand = 0, energyMoved = 0;
 	public int Umin, Umax, rstCtr;
-	public float netF0, netF1, netF2, netF3;
+	public float Uref, netF1, netF2, netF3;
 	
 	public ELink() {
 		energy = new PipeEnergy(0, 0);
@@ -55,7 +55,7 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 		boolean active = ((rstCtr & 2) != 0 ? worldObj.isBlockPowered(getPos()) : false) ^ (rstCtr & 1) != 0;
 		int s = this.getOrientation();
 		IEnergyAccess storage = EnergyAPI.get(Utils.getTileOnSide(this, (byte)s), EnumFacing.VALUES[this.getOrientation()^1]);
-		netF0 = (float)energy.Ucap;
+		Uref = (float)energy.Ucap;
 		netF1 = (float)storage.getStorage();
 		netF2 = (float)storage.getCapacity();
 		float Uref = netF2 > 0 ? Umin + (Umax - Umin) * (netF1 / netF2) : (Umin + Umax) / 2F;
@@ -71,26 +71,16 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 		netF3 = (float)energyMoved; energyMoved = 0;
 	}
 
-	public int getStorageScaled(int s)
-	{
-		if (netF1 <= 0 || netF2 <= 0) return 0;
-		else if (netF1 >= netF2) return s;
-		return (int)(netF1 / netF2 * s);
+	public float getStorage() {
+		return netF1 / netF2;
 	}
-	
-	public int getVoltageScaled(int s)
-	{
-		float f = 0;
-		if (Umin < Umax) {
-			f = (netF0 - Umin) / (Umax - Umin);
-		} else if (Umin > Umax) {
-			f = 1F - (netF0 - Umax) / (Umin - Umax);
-		}
-		if (f > 1) f = 1F;
-		if (f < 0) f = 0F;
-		return (int)(s * f);
+
+	public float getVoltage() {
+		if (Umin < Umax) return Uref < Umin ? 0 : (Uref - Umin) / (Umax - Umin);
+		else if (Umin > Umax) return Uref > Umax ? 0 : (Uref - Umax) / (Umax - Umin);
+		else return Uref > Umax ? -0.5F : 0.5F;
 	}
-	
+
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
 		if (cmd == 0) Umin = dis.readInt();
@@ -173,7 +163,7 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{Umin, Umax, rstCtr, Float.floatToIntBits(netF0), Float.floatToIntBits(netF1), Float.floatToIntBits(netF2), Float.floatToIntBits(netF3)};
+		return new int[]{Umin, Umax, rstCtr, Float.floatToIntBits(Uref), Float.floatToIntBits(netF1), Float.floatToIntBits(netF2), Float.floatToIntBits(netF3)};
 	}
 
 	@Override
@@ -182,7 +172,7 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 		case 0: Umin = v; break;
 		case 1: Umax = v; break;
 		case 2: rstCtr = v; break;
-		case 3: netF0 = Float.intBitsToFloat(v); break;
+		case 3: Uref = Float.intBitsToFloat(v); break;
 		case 4: netF1 = Float.intBitsToFloat(v); break;
 		case 5: netF2 = Float.intBitsToFloat(v); break;
 		case 6: netF3 = Float.intBitsToFloat(v); break;
