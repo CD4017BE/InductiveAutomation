@@ -1,13 +1,8 @@
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import cd4017be.automation.TileEntity.SolidFuelHeater;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.Gui.GuiMachine;
@@ -16,11 +11,12 @@ import cd4017be.lib.templates.AutomatedTile;
 
 public class GuiSolidFuelHeater extends GuiMachine {
 
-	private final SolidFuelHeater tileEntity;
-	
+	private final SolidFuelHeater tile;
+
 	public GuiSolidFuelHeater(SolidFuelHeater tileEntity, EntityPlayer player) {
 		super(new TileContainer(tileEntity, player));
-		this.tileEntity = tileEntity;
+		this.tile = tileEntity;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/heater.png");
 	}
 
 	@Override
@@ -28,61 +24,36 @@ public class GuiSolidFuelHeater extends GuiMachine {
 		this.xSize = 176;
 		this.ySize = 150;
 		super.initGui();
-		this.guiComps.add(new Slider(0, 80, 24, 70, 198, 8, 4, 12, true));
+		guiComps.add(new Slider(2, 80, 24, 70, 198, 8, 4, 12, true));
+		guiComps.add(new ProgressBar(3, 54, 31-14, 14, 14, 184, 22-14, (byte)1));
+		guiComps.add(new ProgressBar(4, 53, 50-16, 8, 16, 176, 24-16, (byte)1).setTooltip("x*8+0;boiler.burnUp"));
+		guiComps.add(new ProgressBar(5, 80, 16, 70, 8, 176, 0, (byte)0));
+		guiComps.add(new Text(6, 115, 38, 0, 8, "temp").center().font(0x808040, 8));
+		guiComps.add(new Button(7, 62, 35, 6, 6, -1));
+		guiComps.add(new Button(8, 62, 43, 6, 6, -1));
 	}
 
 	@Override
 	protected Object getDisplVar(int id) {
-		return (tileEntity.netF0 - 300F) / 2500F;
+		switch(id) {
+		case 2: return (tile.Tref - 300F) / 2500F;
+		case 3: return (float)tile.burn / (float)tile.fuel;
+		case 4: return (float)tile.speed / 8F;
+		case 5: return (tile.temp - 300F) / 2500F;
+		case 6: return new Object[]{tile.temp - 273.15F, tile.Tref - 273.15F};
+		default: return null;
+		}
 	}
 
 	@Override
 	protected void setDisplVar(int id, Object obj, boolean send) {
-		tileEntity.netF0 = (Float)obj * 2500F + 300F;
-		if (send) {
-			PacketBuffer dos = tileEntity.getPacketTargetData();
-			dos.writeByte(AutomatedTile.CmdOffset);
-			dos.writeFloat(tileEntity.netF0);
-			BlockGuiHandler.sendPacketToServer(dos);
+		PacketBuffer dos = tile.getPacketTargetData();
+		switch(id) {
+		case 2: dos.writeByte(AutomatedTile.CmdOffset).writeFloat(tile.Tref = (Float)obj * 2500F + 300F); break;
+		case 7: dos.writeByte(AutomatedTile.CmdOffset + 1); break;
+		case 8: dos.writeByte(AutomatedTile.CmdOffset + 2); break;
 		}
-	}
-
-	@Override
-	protected void drawGuiContainerForegroundLayer(int mx, int my) {
-		super.drawGuiContainerForegroundLayer(mx, my);
-		this.drawFormatInfo(54, 17, 14, 14, "fuelHeat", tileEntity.netI1);
-		this.drawFormatInfo(53, 34, 16, 16, "boiler.burnUp", tileEntity.netI2);
-	}
-
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/heater.png"));
-		this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
-		int n = tileEntity.netI0 == 0 ? 0 : tileEntity.netI1 * 14 / tileEntity.netI0;
-		this.drawTexturedModalRect(this.guiLeft + 54, this.guiTop + 31 - n, 184, 22 - n, 14, n);
-		n = this.tileEntity.netI2 * 2;
-		this.drawTexturedModalRect(this.guiLeft + 53, this.guiTop + 50 - n, 176, 24 - n, 8, n);
-		n = (int)(tileEntity.netF1 - 300F) * 70 / 2500;
-		if (n > 70) n = 70;
-		if (n > 0) this.drawTexturedModalRect(guiLeft + 80, guiTop + 16, 176, 0, n, 8);
-		super.drawGuiContainerBackgroundLayer(partialTicks, mouseX, mouseY);
-		this.drawStringCentered(String.format("%.1f / %.0f °C", tileEntity.netF1 - 273.15F, tileEntity.netF0 - 273.15F), guiLeft + 115, guiTop + 38, 0x808040);
-		this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-		this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 54, 0x404040);
-	}
-
-	@Override
-	protected void mouseClicked(int x, int y, int b) throws IOException {
-		super.mouseClicked(x, y, b);
-		byte cmd = -1;
-		if (this.isPointInRegion(62, 35, 6, 6, x, y)) cmd = 1;
-		else if (this.isPointInRegion(62, 43, 6, 6, x, y)) cmd = 2;
-		if (cmd >= 0) {
-			PacketBuffer dos = tileEntity.getPacketTargetData();
-			dos.writeByte(AutomatedTile.CmdOffset + cmd);
-			BlockGuiHandler.sendPacketToServer(dos);
-		}
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
 	}
 
 }

@@ -29,12 +29,12 @@ import net.minecraftforge.items.SlotItemHandler;
 public class SteamBoiler extends AutomatedTile implements IGuiData {
 
 	public byte waterType;
-	public int netI0, netI1, netI2, netI3, netI4;
+	public int fuel, burn, temp, cook, blow;
 
 	public SteamBoiler() {
 		inventory = new Inventory(5, 1, null).group(0, 0, 3, Utils.IN);
 		tanks = new TankContainer(2, 2).tank(0, Config.tankCap[1], Utils.IN, 3, -1, Objects.L_water, Objects.L_biomass).tank(1, Config.tankCap[1], Utils.OUT, -1, 4, Objects.L_steam);
-		netI4 = 1;
+		blow = 1;
 	}
 
 	@Override
@@ -42,34 +42,34 @@ public class SteamBoiler extends AutomatedTile implements IGuiData {
 		super.update();
 		if (this.worldObj.isRemote) return;
 		int steamOut = 0;
-		if (netI1 > 0)
+		if (burn > 0)
 		{
-			int d = Math.min(netI4, netI1);
-			netI1 -= d;
-			netI2 += d;
-			steamOut += Config.Lsteam_Kfuel_burning * netI4;
-			if (netI2 > Config.maxK_steamBoiler) netI2 = Config.maxK_steamBoiler;
+			int d = Math.min(blow, burn);
+			burn -= d;
+			temp += d;
+			steamOut += Config.Lsteam_Kfuel_burning * blow;
+			if (temp > Config.maxK_steamBoiler) temp = Config.maxK_steamBoiler;
 		}
-		if (netI1 <= 0 && netI2 < Config.maxK_steamBoiler)
+		if (burn <= 0 && temp < Config.maxK_steamBoiler)
 		{
 			burnItem();
 		}
 		int nw = tanks.fluids[0] == null || tanks.fluids[0].getFluid().equals(Objects.L_water) ? Config.get_LWater_Cooking() : Config.get_LBiomass_Cooking();
-		if (netI2 >= Config.K_Cooking_steamBoiler && tanks.getAmount(0) >= nw)
+		if (temp >= Config.K_Cooking_steamBoiler && tanks.getAmount(0) >= nw)
 		{
-			netI3++;
-			if (netI3 >= getCookTime())
+			cook++;
+			if (cook >= getCookTime())
 			{
 				if (tanks.fluids[0].getFluid().equals(Objects.L_water))
 				{
-					netI2 -= Config.K_Cooking_steamBoiler;
+					temp -= Config.K_Cooking_steamBoiler;
 				} else
 				{
 					steamOut += Config.steam_biomass_burning;
 				}
 				tanks.drain(0, nw, true);
 				steamOut += Config.get_LSteam_Cooking();
-				netI3 = 0;
+				cook = 0;
 			}
 		}
 		tanks.fill(1, new FluidStack(Objects.L_steam, steamOut), true);
@@ -84,45 +84,38 @@ public class SteamBoiler extends AutomatedTile implements IGuiData {
 			int n = TileEntityFurnace.getItemBurnTime(inventory.items[i]);
 			if (n != 0)
 			{
-				netI0 = n;
-				netI1 += netI0;
+				fuel = n;
+				burn += fuel;
 				inventory.extractItem(i, 1, false);
 				return;
 			}
 		}
 	}
-	
-	public int getBurnScaled(int s)
-	{
-		if (netI0 == 0) return 0;
-		return netI1 * s / netI0;
+
+	public float getBurn() {
+		return (float)burn / (float)fuel;
 	}
-	
-	public int getCookScaled(int s)
-	{
-		int i = netI3 * s / getCookTime();
-		if (i > s) i = s;
-		return i;
+
+	public float getCook() {
+		return (float)cook / (float)getCookTime();
 	}
-	
-	private int getCookTime()
-	{
-		if (netI2 == 0) return Integer.MAX_VALUE;
-		return 40000 / netI2;
+
+	private int getCookTime() {
+		if (temp == 0) return Integer.MAX_VALUE;
+		return 40000 / temp;
 	}
-	
-	public int getTempScaled(int s)
-	{
-		return netI2 * s / Config.maxK_steamBoiler;
+
+	public float getTemp() {
+		return (float)temp / (float)Config.maxK_steamBoiler;
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
-		nbt.setInteger("burn", netI1);
-		nbt.setInteger("cook", netI3);
-		nbt.setInteger("temp", netI2);
-		nbt.setInteger("blow", netI4);
+		nbt.setInteger("burn", burn);
+		nbt.setInteger("cook", cook);
+		nbt.setInteger("temp", temp);
+		nbt.setInteger("blow", blow);
 		return super.writeToNBT(nbt);
 	}
 
@@ -130,22 +123,22 @@ public class SteamBoiler extends AutomatedTile implements IGuiData {
 	public void readFromNBT(NBTTagCompound nbt) 
 	{
 		super.readFromNBT(nbt);
-		netI1 = nbt.getInteger("burn");
-		netI3 = nbt.getInteger("cook");
-		netI2 = nbt.getInteger("temp");
-		netI4 = nbt.getInteger("blow");
-		netI0 = netI1;
+		burn = nbt.getInteger("burn");
+		cook = nbt.getInteger("cook");
+		temp = nbt.getInteger("temp");
+		blow = nbt.getInteger("blow");
+		fuel = burn;
 	}
 	
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
 	{
 		if (cmd == 0) {
-			netI4--;
-			if (netI4 < 1) netI4 = 1;
+			blow--;
+			if (blow < 1) blow = 1;
 		} else if (cmd == 1) {
-			netI4++;
-			if (netI4 > 8) netI4 = 8;
+			blow++;
+			if (blow > 8) blow = 8;
 		}
 	}
 
@@ -172,17 +165,17 @@ public class SteamBoiler extends AutomatedTile implements IGuiData {
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, netI2, netI3, netI4};
+		return new int[]{fuel, burn, temp, cook, blow};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netI1 = v; break;
-		case 2: netI2 = v; break;
-		case 3: netI3 = v; break;
-		case 4: netI4 = v; break;
+		case 0: fuel = v; break;
+		case 1: burn = v; break;
+		case 2: temp = v; break;
+		case 3: cook = v; break;
+		case 4: blow = v; break;
 		}
 	}
 

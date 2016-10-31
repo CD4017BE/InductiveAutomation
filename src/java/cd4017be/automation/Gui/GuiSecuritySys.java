@@ -22,7 +22,6 @@ import cd4017be.lib.Gui.TileContainer;
  */
 public class GuiSecuritySys extends GuiMachine {
 
-	private GuiTextField name;
 	private final SecuritySys tile;
 	private int scroll;
 	private int listS;
@@ -40,6 +39,23 @@ public class GuiSecuritySys extends GuiMachine {
 		this.ySize = 201;
 		super.initGui();
 		guiComps.add(new TextField(1, 137, 117, 34, 16, 32));
+	}
+
+	@Override
+	protected Object getDisplVar(int id) {
+		switch(id) {
+		case 1: return "";
+		default: return null;
+		}
+	}
+
+	@Override
+	protected void setDisplVar(int id, Object obj, boolean send) {
+		PacketBuffer dos = tile.getPacketTargetData();
+		switch(id) {
+		case 1: dos.writeByte(2).writeByte(listN<0 ? 0:listN); dos.writeString((String)obj); break;
+		}
+		BlockGuiHandler.sendPacketToServer(dos);
 	}
 
 	@Override
@@ -91,7 +107,6 @@ public class GuiSecuritySys extends GuiMachine {
 			String s = tile.prot.getPlayer(i + scroll, listN<0 ? 0:listN);
 			this.fontRendererObj.drawString(s, this.guiLeft + 27, this.guiTop + 146 + i * 8, 0x404040);
 		}
-		name.drawTextBox();
 		super.drawGuiContainerBackgroundLayer(var1, var2, var3);
 	}
 	
@@ -125,7 +140,6 @@ public class GuiSecuritySys extends GuiMachine {
 	protected void mouseClicked(int x, int y, int b) throws IOException 
 	{
 		super.mouseClicked(x, y, b);
-		name.mouseClicked(x, y, b);
 		if (this.isPointInRegion(155, 16, 16, 10, x, y)) this.sendButtonClick(b==0 ? 5 : 7);//+10
 		else if (this.isPointInRegion(155, 26, 16, 10, x, y)) this.sendButtonClick(b==0 ? 4 : 6);//++
 		else if (this.isPointInRegion(155, 48, 16, 10, x, y)) this.sendButtonClick(b==0 ? 0 : 2);//--
@@ -141,7 +155,7 @@ public class GuiSecuritySys extends GuiMachine {
 			if (this.scroll > listS - 6) this.scroll = listS - 6;
 			if (this.scroll < 0) this.scroll = 0;
 		} else if (this.isPointInRegion(136, 134, 36, 10, x, y)) {
-			sendPlayerAdd(name.getText(), listN<0 ? 0:listN);
+			
 		} else if (this.isPointInRegion(18, 145, 8, 48, x, y)) {
 			int n = (y - this.guiTop - 145) / 8 + scroll;
 			if (n >= 0 && n < listS) sendPlayerDelete(n, listN<0 ? 0:listN);
@@ -153,13 +167,6 @@ public class GuiSecuritySys extends GuiMachine {
 		}
 	}
 
-	@Override
-	protected void keyTyped(char c, int k) throws IOException 
-	{
-		if (name.isFocused()) name.textboxKeyTyped(c, k);
-		else super.keyTyped(c, k);
-	}
-	
 	private void sendButtonClick(int b) throws IOException
 	{
 			PacketBuffer dos = tile.getPacketTargetData();
@@ -174,18 +181,9 @@ public class GuiSecuritySys extends GuiMachine {
 			dos.writeByte(1);
 			dos.writeByte(g);
 			dos.writeByte(p);
-			BlockGuiHandler.sendPacketToServer(dos);
+		BlockGuiHandler.sendPacketToServer(dos);
 	}
-	
-	private void sendPlayerAdd(String name, int g) throws IOException
-	{
-		PacketBuffer dos = tile.getPacketTargetData();
-			dos.writeByte(2);
-			dos.writeByte(g);
-			dos.writeString(name);
-			BlockGuiHandler.sendPacketToServer(dos);
-	}
-	
+
 	private void sendAreaChange(int i, int g) throws IOException
 	{
 		PacketBuffer dos = tile.getPacketTargetData();

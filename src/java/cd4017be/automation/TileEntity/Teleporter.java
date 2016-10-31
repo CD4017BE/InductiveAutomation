@@ -62,8 +62,8 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	
 	private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "#Teleporter");
 	private GameProfile lastUser = defaultUser;
-	public int tgX, tgY, tgZ, netI3;
-	public float netF0, netF1;
+	public int tgX, tgY, tgZ, mode;
+	public float Estor, Eneed;
 	
 	public Teleporter() {
 		inventory = new Inventory(16, 1, null).group(0, 1, 2, 0);
@@ -88,37 +88,37 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	{
 		super.update();
 		if (worldObj.isRemote) return;
-		if ((netI3 & 1) == 1) {
+		if ((mode & 1) == 1) {
 			boolean r = worldObj.isBlockIndirectlyGettingPowered(pos) > 0;
-			if (r && (netI3 & 4) == 0 && isInWorldBounds()) {
-				netI3 ^= 4;
+			if (r && (mode & 4) == 0 && isInWorldBounds()) {
+				mode ^= 4;
 				initTeleportation();
-			} else if (!r && (netI3 & 4) == 4) {
-				netI3 ^= 4;
-				netI3 &= ~8;
+			} else if (!r && (mode & 4) == 4) {
+				mode ^= 4;
+				mode &= ~8;
 			}
 		}
-		if ((netI3 & 8) != 0) {
-			if (netF0 < netF1) {
-				netF0 += energy.getEnergy(0, resistor);
+		if ((mode & 8) != 0) {
+			if (Estor < Eneed) {
+				Estor += energy.getEnergy(0, resistor);
 				energy.Ucap *= eScale;
 			} else {
-				netF0 -= netF1;
-				netF1 = 0;
+				Estor -= Eneed;
+				Eneed = 0;
 				teleport();
 			}
-		} else if (node != null && netF0 < 1000F) {
-			netF0 += energy.getEnergy(0, resistor);
+		} else if (node != null && Estor < 1000F) {
+			Estor += energy.getEnergy(0, resistor);
 			energy.Ucap *= eScale;
 		}
-		netF0 -= ComputerAPI.update(this, node, (netI3 & 8) == 0 ? netF0 : 0);
+		Estor -= ComputerAPI.update(this, node, (mode & 8) == 0 ? Estor : 0);
 	}
 	
 	public boolean isInWorldBounds()
 	{
 		int yn = area[1] + tgY;
 		int yp = area[4] + tgY;
-		if ((netI3 & 2) == 0) {yn -= pos.getY(); yp -= pos.getY();}
+		if ((mode & 2) == 0) {yn -= pos.getY(); yp -= pos.getY();}
 		return area[1] >= 0 && area[4] < 256 && yn >= 0 && yp < 256;
 	}
 	
@@ -130,7 +130,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 		int dx = tgX;
 		int dy = tgY;
 		int dz = tgZ;
-		if ((netI3 & 2) == 0)
+		if ((mode & 2) == 0)
 		{
 			dx -= pos.getX();
 			dy -= pos.getY();
@@ -140,25 +140,25 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 		int[] maxS = Handler.maxSize(this);
 		if ((dx != 0 || dy != 0 || dz != 0) && (sx <= maxS[0] && sy <= maxS[1] && sz <= maxS[2]))
 		{
-			netI3 |= 8;
-			netF1 = (float)sx * (float)sy * (float)sz * (float)Math.sqrt((double)dx * (double)dx + (double)dy * (double)dy + (double)dz * (double)dz) * Energy;
+			mode |= 8;
+			Eneed = (float)sx * (float)sy * (float)sz * (float)Math.sqrt((double)dx * (double)dx + (double)dy * (double)dy + (double)dz * (double)dz) * Energy;
 			TileEntity te = worldObj.getTileEntity(pos.add(dx, dy, dz));
 			if (te != null && te instanceof InterdimHole) {
 				InterdimHole idwh = (InterdimHole)te;
-				netF1 += (float)(sx * sy * sz) * 256D * Energy;
+				Eneed += (float)(sx * sy * sz) * 256D * Energy;
 				dx = idwh.linkX - idwh.getPos().getX();
 				dy = idwh.linkY - idwh.getPos().getY();
 				dz = idwh.linkZ - idwh.getPos().getZ();
 				world = DimensionManager.getWorld(idwh.linkD);
 				if (world == null){
-					netI3 &= ~8;
+					mode &= ~8;
 					return;
 				}
 			}
 		} else return;
 		if (!AreaProtect.operationAllowed(lastUser, worldObj, area[0] >> 4, (area[3] + 15) >> 4, area[2] >> 4, (area[5] + 15) >> 4) ||
 			!AreaProtect.operationAllowed(lastUser, world, (area[0] + dx) >> 4, (area[3] + dx + 15) >> 4, (area[2]+ dz) >> 4, (area[5] + dz + 15) >> 4)) 
-			netI3 &= ~8;
+			mode &= ~8;
 		target = new int[]{area[0] + dx, area[1] + dy, area[2] + dz, world.provider.getDimension()};
 	}
 	
@@ -168,7 +168,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 			ComputerAPI.sendEvent(context, "teleport_done");
 			context = null;
 		}
-		netI3 &= ~8;
+		mode &= ~8;
 		int[] pos = {area[0], area[1], area[2], area[3] - area[0], area[4] - area[1], area[5] - area[2]};
 		World world = DimensionManager.getWorld(target[3]);
 		if (world == null) return;
@@ -207,7 +207,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 					pos1 = new BlockPos(target[0] + x, target[1] + y, target[2] + z);
 					MovedBlock b0 = MovedBlock.get(worldObj, pos0);
 					MovedBlock b1 = MovedBlock.get(world, pos1);
-					if ((netI3 & 16) != 0) {
+					if ((mode & 16) != 0) {
 						b0.set(world, pos1);
 					} else {
 						b0.set(world, pos1);
@@ -216,9 +216,8 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 				}
 	}
 	
-	public int getStorageScaled(int s)
-	{
-		return netF1 <= 0 ? 0 : (int)(netF0 * (float)s / netF1);
+	public float getStorage() {
+		return Estor / Eneed;
 	}
 
 	@Override
@@ -230,24 +229,24 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 			byte b = dis.readByte();
 			if (b == 0)
 			{
-				netI3 ^= 4;
-				if ((netI3 & 4) == 4)
+				mode ^= 4;
+				if ((mode & 4) == 4)
 				{
 					initTeleportation();
 				} else
 				{
-					netI3 &= ~8;
+					mode &= ~8;
 				}
 				return;
 			} else
 			if (b == 1)
 			{
-				netI3 ^= 1;
+				mode ^= 1;
 			} else
 			if (b == 2)
 			{
-				netI3 ^= 2;
-				if ((netI3 & 2) == 0) {
+				mode ^= 2;
+				if ((mode & 2) == 0) {
 					tgX += pos.getX();
 					tgY += pos.getY();
 					tgZ += pos.getZ();
@@ -261,7 +260,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 			{
 				if (inventory.items[0] == null && inventory.items[1] == null)
 				{
-					if ((netI3 & 2) == 0){
+					if ((mode & 2) == 0){
 						tgX = pos.getX();
 						tgY = pos.getY();
 						tgZ = pos.getZ();
@@ -284,8 +283,8 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 			} else
 			if (b == 4)
 			{
-				if (player.capabilities.isCreativeMode) netI3 ^= 16;
-				else netI3 &= ~16;
+				if (player.capabilities.isCreativeMode) mode ^= 16;
+				else mode &= ~16;
 			}
 		} else
 		if (cmd == 1)
@@ -304,19 +303,19 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 		{
 			inventory.items[0].getTagCompound().setString("name", dis.readStringFromBuffer(64));
 		}
-		netI3 &= ~8;
+		mode &= ~8;
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
 		if (node != null) ComputerAPI.saveNode(node, nbt);
-		nbt.setByte("mode", (byte)netI3);
+		nbt.setByte("mode", (byte)mode);
 		nbt.setInteger("px", tgX);
 		nbt.setInteger("py", tgY);
 		nbt.setInteger("pz", tgZ);
 		nbt.setIntArray("area", area);
-		nbt.setFloat("storage", netF0);
+		nbt.setFloat("storage", Estor);
 		nbt.setString("lastUser", lastUser.getName());
 		nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
 		nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());	
@@ -328,14 +327,14 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	{
 		super.readFromNBT(nbt);
 		if (node != null) ComputerAPI.readNode(node, nbt);
-		netI3 = nbt.getByte("mode");
+		mode = nbt.getByte("mode");
 		tgX = nbt.getInteger("px");
 		tgY = nbt.getInteger("py");
 		tgZ = nbt.getInteger("pz");
 		area = nbt.getIntArray("area");
 		if (area == null || area.length != 6) area = new int[6];
-		netF0 = nbt.getFloat("storage");
-		netI3 &= ~8;
+		Estor = nbt.getFloat("storage");
+		mode &= ~8;
 		try {lastUser = new GameProfile(new UUID(nbt.getLong("lastUserID0"), nbt.getLong("lastUserID1")), nbt.getString("lastUser"));
 		} catch (Exception e) {lastUser = defaultUser;}
 		this.setSlot(0, 14, inventory.items[14]);
@@ -354,7 +353,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 		for (int i = 0; i < this.area.length && !b;i++){b = area[i] != this.area[i];}
 		if (b) {
 			this.area = area;
-			netI3 &= ~8;
+			mode &= ~8;
 		}
 		this.markUpdate();
 	}
@@ -428,7 +427,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{tgX, tgY, tgZ, netI3, Float.floatToIntBits(netF0), Float.floatToIntBits(netF1)};
+		return new int[]{tgX, tgY, tgZ, mode, Float.floatToIntBits(Estor), Float.floatToIntBits(Eneed)};
 	}
 
 	@Override
@@ -437,9 +436,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 		case 0: tgX = v; break;
 		case 1: tgY = v; break;
 		case 2: tgZ = v; break;
-		case 3: netI3 = v; break;
-		case 4: netF0 = Float.intBitsToFloat(v); break;
-		case 5: netF1 = Float.intBitsToFloat(v); break;
+		case 3: mode = v; break;
+		case 4: Estor = Float.intBitsToFloat(v); break;
+		case 5: Eneed = Float.intBitsToFloat(v); break;
 		}
 	}
 
@@ -499,12 +498,12 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	@Callback(doc = "function(x:int, y:int, z:int, rel:bool) --sets the teleporter target position in relative (rel=true) or absolute (rel=false) coordinates", direct = true)
 	public Object[] setCoords(Context cont, Arguments args)
 	{
-		netI3 &= ~8;
+		mode &= ~8;
 		tgX = args.checkInteger(0);
 		tgY = args.checkInteger(1);
 		tgZ = args.checkInteger(2);
-		if (args.checkBoolean(3)) netI3 |= 2;
-		else netI3 &= ~2;
+		if (args.checkBoolean(3)) mode |= 2;
+		else mode &= ~2;
 		return null;
 	}
 	
@@ -513,9 +512,9 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	public Object[] teleport(Context cont, Arguments args) throws Exception
 	{
 		if (!isInWorldBounds()) throw new Exception("Area out of world bounds! For safety reasons this teleport was denied!");
-		if ((netI3 & 8) == 0) {
+		if ((mode & 8) == 0) {
 			initTeleportation();
-			if ((netI3 & 8) != 0) {
+			if ((mode & 8) != 0) {
 				context = cont;
 				return new Object[]{true};
 			}

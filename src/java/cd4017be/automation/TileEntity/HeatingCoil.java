@@ -20,14 +20,14 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IGuiData
 
 	public HeatReservoir heat;
 	private float powerScale = 0;
-	public int netI0, netI1;
-	public float netF0, netF1, netF2;
+	public int Rw, rstCtr;
+	public float Tref, Uc, temp;
 
 	public HeatingCoil() {
 		heat = new HeatReservoir(10000F);
 		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
-		netF0 = 300F;
-		netI0 = Config.Rmin;
+		Tref = 300F;
+		Rw = Config.Rmin;
 		powerScale = Config.Pscale;
 	}
 	
@@ -36,10 +36,10 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IGuiData
 		super.update();
 		if (worldObj.isRemote) return;
 		heat.update(this);
-		netF2 = heat.T;
-		netF1 = (float)energy.Ucap;
-		if (heat.T < netF0 && ((netI1 & 1) != 0 ^ ((netI1 & 2) != 0 && worldObj.getStrongPower(pos) > 0))) {
-			heat.addHeat((float)energy.getEnergy(0, netI0));
+		temp = heat.T;
+		Uc = (float)energy.Ucap;
+		if (heat.T < Tref && ((rstCtr & 1) != 0 ^ ((rstCtr & 2) != 0 && worldObj.getStrongPower(pos) > 0))) {
+			heat.addHeat((float)energy.getEnergy(0, Rw));
 			energy.Ucap *= powerScale;
 		}
 	}
@@ -69,11 +69,11 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IGuiData
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
 		if (cmd == 0) {
-			netI0 = dis.readShort();
-			if (netI0 < Config.Rmin) netI0 = Config.Rmin;
-			powerScale = (float)Math.sqrt(1.0D - 1.0D / (double)netI0);
-		} else if (cmd == 1) netF0 = dis.readFloat();
-		else if (cmd == 2) netI1 = dis.readByte();
+			Rw = dis.readShort();
+			if (Rw < Config.Rmin) Rw = Config.Rmin;
+			powerScale = (float)Math.sqrt(1.0D - 1.0D / (double)Rw);
+		} else if (cmd == 1) Tref = dis.readFloat();
+		else if (cmd == 2) rstCtr = dis.readByte();
 	}
 
 	@Override
@@ -86,8 +86,8 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IGuiData
 		return side == this.getOrientation() ? HeatReservoir.def_con : HeatReservoir.def_discon;
 	}
 
-	public int getPowerScaled(int s) {
-		return (int)(s * netF1 * netF1 / (float)netI0) / 200000;
+	public float getPower() {
+		return Uc * Uc / (float)Rw / 200000F;
 	}
 
 	@Override
@@ -97,17 +97,17 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IGuiData
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, Float.floatToIntBits(netF0), Float.floatToIntBits(netF1), Float.floatToIntBits(netF1)};
+		return new int[]{Rw, rstCtr, Float.floatToIntBits(Tref), Float.floatToIntBits(Uc), Float.floatToIntBits(Uc)};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netI1 = v; break;
-		case 2: netF0 = Float.intBitsToFloat(v); break;
-		case 3: netF1 = Float.intBitsToFloat(v); break;
-		case 4: netF2 = Float.intBitsToFloat(v); break;
+		case 0: Rw = v; break;
+		case 1: rstCtr = v; break;
+		case 2: Tref = Float.intBitsToFloat(v); break;
+		case 3: Uc = Float.intBitsToFloat(v); break;
+		case 4: temp = Float.intBitsToFloat(v); break;
 		}
 	}
 

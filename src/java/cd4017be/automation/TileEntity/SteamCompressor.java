@@ -27,7 +27,7 @@ public class SteamCompressor extends AutomatedTile implements IGuiData, IAccessH
 
 	public static int Euse = 160;
 	private boolean craftInvChange = true;
-	public int netI0, netI1;
+	public int Estor, netI1;
 
 	public SteamCompressor() {
 		inventory = new Inventory(7, 5, null).group(0, 0, 1, Utils.IN).group(1, 1, 2, Utils.IN).group(2, 2, 3, Utils.IN).group(3, 3, 4, Utils.IN).group(4, 4, 5, Utils.OUT);
@@ -40,15 +40,15 @@ public class SteamCompressor extends AutomatedTile implements IGuiData, IAccessH
 		super.update();
 		if(worldObj.isRemote) return;
 		//steam netI0
-		int dp = 16 - netI0 / 40;
+		int dp = 16 - Estor / 40;
 		if (tanks.getAmount(0) < 5 * dp) dp = tanks.getAmount(0) / 5;
 		if (dp > 0)
 		{
 			tanks.drain(0, dp * 5, true);
-			netI0 += dp;
+			Estor += dp;
 		}
 		//Item process
-		if (netI0 >= Euse && inventory.items[5] == null && craftInvChange)
+		if (Estor >= Euse && inventory.items[5] == null && craftInvChange)
 		{
 			CmpRecipe recipe = AutomationRecipes.getRecipeFor(inventory.items, 0, 4);
 			if (recipe != null)
@@ -64,9 +64,9 @@ public class SteamCompressor extends AutomatedTile implements IGuiData, IAccessH
 		{
 			if (netI1 < Euse)
 			{
-				dp = 1 + netI0 * 7 / 320;
-				if (dp > netI0) dp = netI0;
-				netI0 -= dp;
+				dp = 1 + Estor * 7 / 320;
+				if (dp > Estor) dp = Estor;
+				Estor -= dp;
 				netI1 += dp;
 			}
 			if (netI1 >= Euse)
@@ -83,21 +83,19 @@ public class SteamCompressor extends AutomatedTile implements IGuiData, IAccessH
 		craftInvChange = true;
 	}
 
-	public int getPressureScaled(int s)
-	{
-		return netI0 * s / 640;
+	public float getPressure() {
+		return (float)Estor / 640F;
 	}
 
-	public int getProgressScaled(int s)
-	{
-		return netI1 > Euse ? 160 : netI1 * s / Euse;
+	public float getProgress() {
+		return (float)netI1 / (float)Euse;
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
 	{
 		nbt.setInteger("progress", netI1);
-		nbt.setInteger("pressure", netI0);
+		nbt.setInteger("pressure", Estor);
 		return super.writeToNBT(nbt);
 	}
 
@@ -106,7 +104,7 @@ public class SteamCompressor extends AutomatedTile implements IGuiData, IAccessH
 	{
 		super.readFromNBT(nbt);
 		netI1 = nbt.getInteger("progress");
-		netI0 = nbt.getInteger("pressure");
+		Estor = nbt.getInteger("pressure");
 		craftInvChange = true;
 	}
 	
@@ -134,13 +132,13 @@ public class SteamCompressor extends AutomatedTile implements IGuiData, IAccessH
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, };
+		return new int[]{Estor, netI1, };
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
+		case 0: Estor = v; break;
 		case 1: netI1 = v; break;
 		}
 	}

@@ -24,16 +24,16 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage, IGui
 
 	private static final float FuelEnergy = 10000F;
 	private static final int BurnRate = 8;
-	public int netI0, netI1, netI2;
-	public float netF0, netF1;
+	public int fuel, burn, speed;
+	public float Tref, temp;
 	HeatReservoir heat;
 
 	public SolidFuelHeater() {
 		//ints: maxFuel, curFuel, burn; floats: targetTemp, Temp
 		heat = new HeatReservoir(10000F);
 		inventory = new Inventory(2, 1, null).group(0, 0, 2, Utils.IN);
-		netI2 = 1;
-		netF0 = 300F;
+		speed = 1;
+		Tref = 300F;
 	}
 
 	@Override
@@ -41,30 +41,30 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage, IGui
 		super.update();
 		if (worldObj.isRemote) return;
 		heat.update(this);
-		if (netI1 < netI2 && heat.T < netF0 && !worldObj.isBlockPowered(pos)) {
+		if (burn < speed && heat.T < Tref && !worldObj.isBlockPowered(pos)) {
 			for (int i = 0; i < 2; i++) {
 				int n = TileEntityFurnace.getItemBurnTime(inventory.items[i]);
 				if (n != 0) {
-					netI0 = n;
-					netI1 += netI0;
+					fuel = n;
+					burn += fuel;
 					inventory.extractItem(i, 1, false);
 					break;
 				}
 			}
 		}
-		if (netI1 != 0) {
-			int p = Math.min(netI2, netI1);
-			netI1 -= p;
+		if (burn != 0) {
+			int p = Math.min(speed, burn);
+			burn -= p;
 			heat.T += p * FuelEnergy / heat.C;
 		}
-		netF1 = heat.T;
+		temp = heat.T;
 	}
 
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
-		if (cmd == 0) netF0 = dis.readFloat();
-		else if (cmd == 1 && netI2 < BurnRate) netI2++;
-		else if (cmd == 2 && netI2 > 1) netI2--;
+		if (cmd == 0) Tref = dis.readFloat();
+		else if (cmd == 1 && speed < BurnRate) speed++;
+		else if (cmd == 2 && speed > 1) speed--;
 	}
 
 	@Override
@@ -91,18 +91,18 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage, IGui
 	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		heat.load(nbt, "heat");
-		netF0 = nbt.getFloat("refT");
-		netI1 = nbt.getInteger("fuel");
-		netI0 = netI1;
-		netI2 = nbt.getInteger("burn");
+		Tref = nbt.getFloat("refT");
+		burn = nbt.getInteger("fuel");
+		fuel = burn;
+		speed = nbt.getInteger("burn");
 	}
 
 	@Override
 	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		heat.save(nbt, "heat");
-		nbt.setFloat("refT", netF0);
-		nbt.setInteger("fuel", netI1);
-		nbt.setInteger("burn", netI2);
+		nbt.setFloat("refT", Tref);
+		nbt.setInteger("fuel", burn);
+		nbt.setInteger("burn", speed);
 		return super.writeToNBT(nbt);
 	}
 
@@ -124,17 +124,17 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage, IGui
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, netI2, Float.floatToIntBits(netF0), Float.floatToIntBits(netF1)};
+		return new int[]{fuel, burn, speed, Float.floatToIntBits(Tref), Float.floatToIntBits(temp)};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netI1 = v; break;
-		case 2: netI2 = v; break;
-		case 3: netF0 = Float.intBitsToFloat(v); break;
-		case 4: netF1 = Float.intBitsToFloat(v); break;
+		case 0: fuel = v; break;
+		case 1: burn = v; break;
+		case 2: speed = v; break;
+		case 3: Tref = Float.intBitsToFloat(v); break;
+		case 4: temp = Float.intBitsToFloat(v); break;
 		}
 	}
 

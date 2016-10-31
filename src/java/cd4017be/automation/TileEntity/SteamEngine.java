@@ -51,9 +51,8 @@ public class SteamEngine extends AutomatedTile implements IGuiData {
 		}
 	}
 
-	public int getPowerScaled(int s)
-	{
-		return (int)(this.getEnergyOut() * s / this.getPower());
+	public float power() {
+		return this.getEnergyOut() / this.getPower();
 	}
 
 	public float getEnergyOut()
