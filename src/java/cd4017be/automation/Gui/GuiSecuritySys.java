@@ -1,18 +1,11 @@
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
 import cd4017be.automation.TileEntity.SecuritySys;
 import cd4017be.lib.BlockGuiHandler;
-import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.Gui.GuiMachine;
 import cd4017be.lib.Gui.TileContainer;
 
@@ -38,14 +31,42 @@ public class GuiSecuritySys extends GuiMachine {
 		this.xSize = 179;
 		this.ySize = 201;
 		super.initGui();
-		guiComps.add(new TextField(1, 137, 117, 34, 16, 32));
+		guiComps.add(new TextField(1, 137, 117, 34, 16, 32).setTooltip("security.add"));
+		guiComps.add(new NumberSel(2, 155, 16, 16, 52, "%d", 0, tile.energy.Umax, 10).setTooltip("voltage"));
+		guiComps.add(new ProgressBar(3, 137, 16, 16, 52, 180, 0, (byte)1));
+		guiComps.add(new Button(4, 136, 69, 18, 18, 0).texture(195, 0).setTooltip("security.rstL"));
+		guiComps.add(new Button(5, 154, 69, 18, 18, 0).texture(213, 0).setTooltip("security.rstP"));
+		guiComps.add(new Text(6, 137, 88, 34, 27, "security.power").setTooltip("security.cost"));
+		guiComps.add(new Slider(7, 8, 145, 48, 179, 52, 8, 12, false));
+		guiComps.add(new Button(8, 137, 145, 34, 12, 0).setTooltip("security.load"));
+		guiComps.add(new Button(9, 137, 157, 34, 12, 0).setTooltip("security.admin"));
+		guiComps.add(new Button(10, 137, 169, 34, 12, 0).setTooltip("security.special"));
+		guiComps.add(new Button(11, 137, 181, 34, 12, 0).setTooltip("security.special"));
+		for (int i = 0; i < 6; i++)
+			guiComps.add(new Button(12 + i, 18, 45 + i * 8, 8, 8, 0).texture(187, 52));
+		for (int i = 0; i < 6; i++)
+			guiComps.add(new Text(18 + i, 27, 145 + i * 8, 108, 8, "\\%s"));
+		guiComps.add(new Text(24, 137, 145, 34, 48, "security.lists").center().font(0x404040, 12));
+		guiComps.add(new Matrix(25, 8, 16, 128, 128));
+		guiComps.add(new Tooltip(26, 137, 16, 16, 52, "energy"));
 	}
 
 	@Override
 	protected Object getDisplVar(int id) {
+		listS = tile.prot.getGroupSize(listN<0 ? 0:listN);
 		switch(id) {
 		case 1: return "";
-		default: return null;
+		case 2: return tile.Uref;
+		case 3: return tile.getStorage();
+		case 4: return tile.rstCtr >> 2 & 3;
+		case 5: return tile.rstCtr & 3;
+		case 6: return new Object[]{tile.EuseL, tile.EuseP};
+		case 7: return listS <= 6 ? 0F : (float)scroll / (float)(listS - 6);
+		case 26: return tile.Estor;
+		default: if (id < 12) return listN == id - 9 ? 0 : 1;
+			else if (id < 18) return listS >= 6 || id - 12 < listS ? 0 : 1;
+			else if (id < 24) return id - 18 + scroll < listS ? tile.prot.getPlayer(id - 18 + scroll, listN<0 ? 0:listN) : "";
+			else return null;
 		}
 	}
 
@@ -54,143 +75,61 @@ public class GuiSecuritySys extends GuiMachine {
 		PacketBuffer dos = tile.getPacketTargetData();
 		switch(id) {
 		case 1: dos.writeByte(2).writeByte(listN<0 ? 0:listN); dos.writeString((String)obj); break;
+		case 2: dos.writeByte(4).writeInt(tile.Uref = (Integer)obj); break;
+		case 4: dos.writeByte(0).writeByte(tile.rstCtr ^= (Integer)obj == 0 ? 0x4 : 0x8); break;
+		case 5: dos.writeByte(0).writeByte(tile.rstCtr ^= (Integer)obj == 0 ? 0x1 : 0x2); break;
+		case 7: scroll = (int)((Float)obj * (float)(listS - 6)); return;
+		case 25: dos.writeByte(3).writeByte(listN).writeByte((Integer)obj); break;
+		default: if (id < 12) {
+				listN = id - 9;
+				listS = tile.prot.groups[listN<0 ? 0:listN].members.size();
+				scroll = Math.max(0, Math.min(listS - 6, scroll));
+				return;
+			} else if(id < 18) {
+				int n = id - 12 + scroll;
+				if (n < listS) dos.writeByte(1).writeByte(listN<0 ? 0:listN).writeByte(n);
+				else return;
+			}
 		}
-		BlockGuiHandler.sendPacketToServer(dos);
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
 	}
 
-	@Override
-	protected void drawGuiContainerForegroundLayer(int mx, int my) {
-		super.drawGuiContainerForegroundLayer(mx, my);
-		this.drawInfo(136, 134, 36, 10, "\\i", "security.add");
-		this.drawInfo(136, 69, 18, 18, "\\i", "security.rstL");
-		this.drawInfo(154, 69, 18, 18, "\\i", "security.rstP");
-		this.drawInfo(155, 36, 16, 12, "\\i", "voltage");
-		this.drawInfo(137, 145, 34, 12, "\\i", "security.load");
-		this.drawInfo(137, 157, 34, 12, "\\i", "security.admin");
-		this.drawInfo(137, 169, 34, 24, "\\i", "security.special");
-		this.drawInfo(137, 96, 34, 8, "\\i", "security.costL");
-		this.drawInfo(137, 105, 34, 8, "\\i", "security.costP");
-		this.drawInfo(137, 16, 16, 52, "Energy:", (int)tile.netF0 + TooltipInfo.getEnergyUnit());
-	}
+	class Matrix extends GuiComp {
 
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) {
-		listS = tile.prot.getGroupSize(listN<0 ? 0:listN);
-		int n = tile.getStorageScaled(52);
-		this.drawTexturedModalRect(this.guiLeft + 137, this.guiTop + 68 - n, 179, 52 - n, 16, n);
-		n = tile.netI2 & 3;
-		this.drawTexturedModalRect(this.guiLeft + 154, this.guiTop + 69, 213, 18 * n, 18, 18);
-		n = tile.netI2 >> 2 & 3;
-		this.drawTexturedModalRect(this.guiLeft + 136, this.guiTop + 69, 195, 18 * n, 18, 18);
-		n = listN;
-		this.drawTexturedModalRect(this.guiLeft + 137, this.guiTop + 157 + 12 * n, 179, 72, 34, 12);
-		n = listS <= 6 ? 0 : scroll * 36 / (listS - 6);
-		this.drawTexturedModalRect(this.guiLeft + 8, this.guiTop + 145 + n, 179, 52, 8, 12);
-		n = listS > 6 ? 6 : listS;
-		for (int i = 0; i < n; i++) this.drawTexturedModalRect(this.guiLeft + 18, this.guiTop + 145 + i * 8, 187, 52, 8, 8);
-		drawArea(this.guiLeft + 8, this.guiTop + 16);
-		this.drawTexturedModalRect(this.guiLeft + 62 + ((tile.getPos().getX() + 8) & 15), this.guiTop + 70 + ((tile.getPos().getZ() + 8) & 15), 179, 64, 4, 4);
-		this.drawStringCentered(tile.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-		this.drawStringCentered(tile.netI0 + "V", this.guiLeft + 163, this.guiTop + 38, 0x404040);
-		this.drawStringCentered("Power:", this.guiLeft + 154, this.guiTop + 89, 0x404040);
-		this.drawStringCentered("L:" + tile.netI3 + TooltipInfo.getPowerUnit(), this.guiLeft + 154, this.guiTop + 97, 0x405757);
-		this.drawStringCentered("P:" + tile.netI1 + TooltipInfo.getPowerUnit(), this.guiLeft + 154, this.guiTop + 106, 0x604040);
-		this.drawStringCentered("Load", this.guiLeft + 154, this.guiTop + 147, 0x404040);
-		this.drawStringCentered("Owner", this.guiLeft + 154, this.guiTop + 159, 0x404040);
-		this.drawStringCentered("List 1", this.guiLeft + 154, this.guiTop + 171, 0x404040);
-		this.drawStringCentered("List 2", this.guiLeft + 154, this.guiTop + 183, 0x404040);
-		this.drawStringCentered("N", this.guiLeft + 72, this.guiTop + 16, 0x404040);
-		this.drawStringCentered("S", this.guiLeft + 72, this.guiTop + 136, 0x404040);
-		this.fontRendererObj.drawString("W", this.guiLeft + 8, this.guiTop + 76, 0x404040);
-		this.fontRendererObj.drawString("E", this.guiLeft + 130, this.guiTop + 76, 0x404040);
-		for (int i = 0; i < n; i++) {
-			String s = tile.prot.getPlayer(i + scroll, listN<0 ? 0:listN);
-			this.fontRendererObj.drawString(s, this.guiLeft + 27, this.guiTop + 146 + i * 8, 0x404040);
+		public Matrix(int id, int px, int py, int w, int h) {
+			super(id, px, py, w, h);
 		}
-		super.drawGuiContainerBackgroundLayer(var1, var2, var3);
-	}
-	
-	private void drawArea(int x, int y)
-	{
-		if (listN >= 0) {
-			byte[] area = tile.prot.groups[listN].area;
-			for (int i = 0; i < 8; i++)
-				for (int j = 0; j < 8; j++) {
-					byte n = area[i + j * 8];
-					if (n > 0 && n < 4) this.drawTexturedModalRect(x + i * 16, y + j * 16, 240, n * 16 - 16, 16, 16);
-				}
-		} else {
-			for (int i = 0; i < 64; i++) 
-				if ((tile.prot.loadedChunks >> i & 1) != 0)
-					this.drawTexturedModalRect(x + (i % 8) * 16, y + (i / 8) * 16, 240, 48, 16, 16);
+
+		@Override
+		public void draw() {
+			mc.renderEngine.bindTexture(MAIN_TEX);
+			if (listN >= 0) {
+				byte[] area = tile.prot.groups[listN].area;
+				for (int i = 0; i < 8; i++)
+					for (int j = 0; j < 8; j++) {
+						byte n = area[i + j * 8];
+						if (n > 0 && n < 4) drawTexturedModalRect(px + i * 16, py + j * 16, 240, n * 16 - 16, 16, 16);
+					}
+			} else {
+				for (int i = 0; i < 64; i++) 
+					if ((tile.prot.loadedChunks >> i & 1) != 0)
+						drawTexturedModalRect(px + (i % 8) * 16, py + (i / 8) * 16, 240, 48, 16, 16);
+			}
+			drawTexturedModalRect(px + 54 + (tile.getPos().getX() + 8 & 15), py + 54 + (tile.getPos().getZ() + 8 & 15), 179, 64, 4, 4);
+			drawTexturedModalRect(px + 124, py, 231, 0, 7, 7);
+			drawTexturedModalRect(px + 124, py + 248, 231, 7, 7, 7);
+			drawTexturedModalRect(px, py + 124, 231, 14, 7, 7);
+			drawTexturedModalRect(px + 248, py + 124, 231, 21, 7, 7);
 		}
-		
-	}
-	
-	@Override
-	public void handleMouseInput() throws IOException 
-	{
-		this.scroll -= Mouse.getDWheel() / 120;
-		if (this.scroll > listS - 6) this.scroll = listS - 6;
-		if (this.scroll < 0) this.scroll = 0;
-		super.handleMouseInput();
-	}
 
-	@Override
-	protected void mouseClicked(int x, int y, int b) throws IOException 
-	{
-		super.mouseClicked(x, y, b);
-		if (this.isPointInRegion(155, 16, 16, 10, x, y)) this.sendButtonClick(b==0 ? 5 : 7);//+10
-		else if (this.isPointInRegion(155, 26, 16, 10, x, y)) this.sendButtonClick(b==0 ? 4 : 6);//++
-		else if (this.isPointInRegion(155, 48, 16, 10, x, y)) this.sendButtonClick(b==0 ? 0 : 2);//--
-		else if (this.isPointInRegion(155, 58, 16, 10, x, y)) this.sendButtonClick(b==0 ? 1 : 3);//-10
-		else if (this.isPointInRegion(154, 69, 18, 18, x, y)) this.sendButtonClick(8);//mode Prot
-		else if (this.isPointInRegion(136, 69, 18, 18, x, y)) this.sendButtonClick(9);//mode Load
-		else if (this.isPointInRegion(137, 145, 34, 48, x, y)) {
-			int n = (y - this.guiTop - 145) / 12;
-			listN = n - 1;
-			if (listN > 2) listN = 2;
-			if (listN < -1) listN = -1;
-			listS = tile.prot.groups[listN<0 ? 0:listN].members.size();
-			if (this.scroll > listS - 6) this.scroll = listS - 6;
-			if (this.scroll < 0) this.scroll = 0;
-		} else if (this.isPointInRegion(136, 134, 36, 10, x, y)) {
-			
-		} else if (this.isPointInRegion(18, 145, 8, 48, x, y)) {
-			int n = (y - this.guiTop - 145) / 8 + scroll;
-			if (n >= 0 && n < listS) sendPlayerDelete(n, listN<0 ? 0:listN);
-		} else if (this.isPointInRegion(8, 16, 128, 128, x, y)) {
-			int dx = (x - this.guiLeft - 8) / 16;
-			int dy = (y - this.guiTop - 16) / 16;
-			int n = dx + dy * 8;
-			if (n >= 0 && n < 64) sendAreaChange(n, listN);
+		@Override
+		public boolean mouseIn(int x, int y, int b, int d) {
+			if (d != 0) return false;
+			int n = (x - px) / 16 + (y - py) / 16 * 8;
+			if (n >= 0 && n < 64) setDisplVar(id, n, true);
+			return true;
 		}
+
 	}
 
-	private void sendButtonClick(int b) throws IOException
-	{
-			PacketBuffer dos = tile.getPacketTargetData();
-			dos.writeByte(0);
-			dos.writeByte(b);
-			BlockGuiHandler.sendPacketToServer(dos);
-	}
-	
-	private void sendPlayerDelete(int p, int g) throws IOException
-	{
-		PacketBuffer dos = tile.getPacketTargetData();
-			dos.writeByte(1);
-			dos.writeByte(g);
-			dos.writeByte(p);
-		BlockGuiHandler.sendPacketToServer(dos);
-	}
-
-	private void sendAreaChange(int i, int g) throws IOException
-	{
-		PacketBuffer dos = tile.getPacketTargetData();
-			dos.writeByte(3);
-			dos.writeByte(g);
-			dos.writeByte(i);
-			BlockGuiHandler.sendPacketToServer(dos);
-	}
-	
 }

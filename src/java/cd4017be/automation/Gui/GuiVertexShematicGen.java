@@ -9,7 +9,6 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.translation.I18n;
 import cd4017be.automation.TileEntity.VertexShematicGen;
 import cd4017be.automation.TileEntity.VertexShematicGen.Polygon;
 import cd4017be.lib.BlockGuiHandler;
@@ -84,7 +83,7 @@ public class GuiVertexShematicGen extends GuiMachine
 		if (!tfT.isFocused()) tfT.setText(isSel1 ? "" + p.thick : "");
 		if (!name.isFocused()) name.setText(tile.name);
 	}
-
+/*
 	@Override
 	protected void drawGuiContainerForegroundLayer(int mx, int my) 
 	{
@@ -108,7 +107,7 @@ public class GuiVertexShematicGen extends GuiMachine
 		this.drawInfo(87, 16, 8, 63, "\\i", "vertex.pol");
 		this.drawInfo(49, 16, 8, 32, "\\i", "vertex.vert");
 	}
-	
+*/
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
 	{
@@ -144,8 +143,6 @@ public class GuiVertexShematicGen extends GuiMachine
 			int c = colors[p.texId & 0x7];
 			this.fontRendererObj.drawString(i + ": " + p.vert.length + "V", this.guiLeft + 97, this.guiTop + 16 + 8 * (i - scroll1), c);
 		}
-		this.drawStringCentered(tile.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-		this.drawStringCentered(I18n.translateToLocal("container.inventory"), this.guiLeft + this.xSize / 2, this.guiTop + 83, 0x404040);
 	}
 
 	@Override

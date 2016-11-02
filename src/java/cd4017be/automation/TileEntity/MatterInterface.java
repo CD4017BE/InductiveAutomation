@@ -1,38 +1,19 @@
 package cd4017be.automation.TileEntity;
 
-import net.minecraft.network.PacketBuffer;
-
-import java.io.IOException;
-
-import cd4017be.api.automation.MatterOrbItemHandler;
-import cd4017be.lib.TileEntityData;
-import cd4017be.lib.Gui.DataContainer;
-import cd4017be.lib.Gui.SlotItemType;
-import cd4017be.lib.Gui.SlotOutput;
-import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
-import cd4017be.lib.templates.IAutomatedInv;
 import cd4017be.lib.templates.Inventory;
-import cd4017be.lib.templates.Inventory.Group;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.items.SlotItemHandler;
+import cd4017be.lib.util.Utils;
 
 /**
  *
  * @author CD4017BE
  */
-public class MatterInterface extends AutomatedTile implements IAutomatedInv
-{
-	
-	public MatterInterface()
-	{
-		inventory = new Inventory(this, 5, new Group(1, 2, -1), new Group(2, 3, 1), new Group(0, 1, 0));
-		netData = new TileEntityData(1, 1, 0, 0);
-	}
+public class MatterInterface extends AutomatedTile {
 
+	public MatterInterface() {
+		inventory = new Inventory(5, 3, null).group(0, 1, 2, Utils.IN).group(1, 2, 3, Utils.OUT).group(2, 0, 1, Utils.ACC);
+	}
+/*
 	@Override
 	public void update() 
 	{
@@ -55,7 +36,7 @@ public class MatterInterface extends AutomatedTile implements IAutomatedInv
 			inventory.items[2] = null;
 		}
 	}
-	
+
 	private void updateOutput()
 	{
 		inventory.items[2] = MatterOrbItemHandler.getItem(inventory.items[0], 0);
@@ -180,5 +161,5 @@ public class MatterInterface extends AutomatedTile implements IAutomatedInv
 		nbt.setByte("mode", (byte)netI0);
 		return super.writeToNBT(nbt);
 	}
-	
+	*/
 }

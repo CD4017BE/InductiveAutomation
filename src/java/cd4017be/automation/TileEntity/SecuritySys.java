@@ -37,8 +37,8 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 	public boolean enabled = false;
 	public boolean enabledC = false;
 	private byte perm = 0;
-	public int netI0, netI1, netI2, netI3;
-	public float netF0;
+	public int Uref, EuseP, rstCtr, EuseL;
+	public float Estor;
 	public String mainOwner = "";
 	
 	public SecuritySys()
@@ -56,39 +56,38 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 	{
 		super.update();
 		if (worldObj.isRemote) return;
-		float e = (energy.Ucap * energy.Ucap - (float)(netI0 * netI0)) * 0.001F;
+		float e = (energy.Ucap * energy.Ucap - (float)(Uref * Uref)) * 0.001F;
 		if (e > 0) {
-			energy.Ucap = netI0;
-			if (netF0 + e < Config.Ecap[0])
+			energy.Ucap = Uref;
+			if (Estor + e < Config.Ecap[0])
 			{
-				netF0 += e;
+				Estor += e;
 			} else
 			{
-				e -= Config.Ecap[0] - netF0;
-				netF0 = Config.Ecap[0];
+				e -= Config.Ecap[0] - Estor;
+				Estor = Config.Ecap[0];
 				energy.addEnergy(e * 1000F);
 			}
 		}
-		if (perm == 1) netI2 &= 12;
-		else if (perm == 2) netI2 &= 3;
-		else if (perm == 3) netI2 = 0;
+		if (perm == 1) rstCtr &= 12;
+		else if (perm == 2) rstCtr &= 3;
+		else if (perm == 3) rstCtr = 0;
 		boolean rst = worldObj.isBlockPowered(getPos());
-		if ((netI2 & 2) == 0) enabled = (netI2 & 1) != 0;
-		else enabled = (netI2 & 1) != 0 ^ rst;
-		if (netF0 < netI1) enabled = false;
-		else if (enabled) netF0 -= netI1;
+		if ((rstCtr & 2) == 0) enabled = (rstCtr & 1) != 0;
+		else enabled = (rstCtr & 1) != 0 ^ rst;
+		if (Estor < EuseP) enabled = false;
+		else if (enabled) Estor -= EuseP;
 		boolean enabledCl = enabledC;
-		if ((netI2 & 8) == 0) enabledC = (netI2 & 4) != 0;
-		else enabledC = (netI2 & 4) != 0 ^ rst;
-		if (netF0 < netI3 || (!enabledCl && netF0 < Config.Ecap[0] / 2)) enabledC = false;
-		else if (enabledC) netF0 -= netI3;
+		if ((rstCtr & 8) == 0) enabledC = (rstCtr & 4) != 0;
+		else enabledC = (rstCtr & 4) != 0 ^ rst;
+		if (Estor < EuseL || (!enabledCl && Estor < Config.Ecap[0] / 2)) enabledC = false;
+		else if (enabledC) Estor -= EuseL;
 		prot.update |= enabledC ^ enabledCl;
 		prot.tick();
 	}
-	
-	public int getStorageScaled(int s)
-	{
-		return ((int)netF0 * s) / Config.Ecap[0];
+
+	public float getStorage() {
+		return Estor / (float)Config.Ecap[0];
 	}
 
 	@Override
@@ -96,13 +95,13 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 	{
 		super.readFromNBT(nbt);
 		prot.readFromNbt(nbt);
-		netF0 = nbt.getFloat("storage");
-		netI0 = nbt.getInteger("voltage");
-		netI2 = nbt.getByte("mode");
+		Estor = nbt.getFloat("storage");
+		Uref = nbt.getInteger("voltage");
+		rstCtr = nbt.getByte("mode");
 		perm = nbt.getByte("access");
 		mainOwner = nbt.getString("owner");
-		netI1 = (int)prot.getEnergyCost();
-		netI3 = (int)prot.getLoadEnergyCost();
+		EuseP = (int)prot.getEnergyCost();
+		EuseL = (int)prot.getLoadEnergyCost();
 		prot.px = ((this.pos.getX() + 8) >> 4) - 4;
 		prot.pz = ((this.pos.getZ() + 8) >> 4) - 4;
 		itemStorage.clear();
@@ -119,9 +118,9 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 	{
 		energy.writeToNBT(nbt, "Wire");
 		prot.writeToNbt(nbt);
-		nbt.setFloat("storage", netF0);
-		nbt.setInteger("voltage", netI0);
-		nbt.setByte("mode", (byte)netI2);
+		nbt.setFloat("storage", Estor);
+		nbt.setInteger("voltage", Uref);
+		nbt.setByte("mode", (byte)rstCtr);
 		nbt.setByte("access", perm);
 		nbt.setString("owner", mainOwner);
 		NBTTagCompound stor = new NBTTagCompound();
@@ -160,12 +159,12 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 	{
 		NBTTagCompound nbt = pkt.getNbtCompound();
 		prot.readFromNbt(nbt);
-		netI1 = (int)prot.getEnergyCost();
-		netI3 = (int)prot.getLoadEnergyCost();
+		EuseP = (int)prot.getEnergyCost();
+		EuseL = (int)prot.getLoadEnergyCost();
 	}
 
 	@Override
-	public void onPlayerCommand(PacketBuffer dis, EntityPlayerMP player) throws IOException 
+	public void onPlayerCommand(PacketBuffer dis, EntityPlayerMP player) throws IOException //TODO new data protocol
 	{
 		boolean update = false;
 		if (!prot.isPlayerOwner(player.getName())) return;
@@ -173,15 +172,15 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 		if (cmd == 0) {
 			byte btn = dis.readByte();
 			if (btn >= 0 && btn < 4) {
-				netI0 -= btn == 0 ? 1 : btn == 1 ? 10 : btn == 2 ? 100 : 1000;
-				if (netI0 < 0) netI0 = 0;
+				Uref -= btn == 0 ? 1 : btn == 1 ? 10 : btn == 2 ? 100 : 1000;
+				if (Uref < 0) Uref = 0;
 			} else if (btn >= 4 && btn < 8) {
-				netI0 += btn == 4 ? 1 : btn == 5 ? 10 : btn == 6 ? 100 : 1000;
-				if (netI0 > energy.Umax) netI0 = energy.Umax;
+				Uref += btn == 4 ? 1 : btn == 5 ? 10 : btn == 6 ? 100 : 1000;
+				if (Uref > energy.Umax) Uref = energy.Umax;
 			} else if (btn == 8) {
-				netI2 = (netI2 & 12) | (netI2 + 1 & 3);
+				rstCtr = (rstCtr & 12) | (rstCtr + 1 & 3);
 			} else if (btn == 9) {
-				netI2 = (netI2 + 4 & 12) | (netI2 & 3);
+				rstCtr = (rstCtr + 4 & 12) | (rstCtr & 3);
 			}
 		} else if (cmd == 1) {
 			byte g = dis.readByte();
@@ -198,11 +197,11 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 			int i = dis.readByte() % 64;
 			if (g < 0) {
 				prot.loadedChunks ^= 1L << i;
-				netI3 = (int)prot.getLoadEnergyCost();
+				EuseL = (int)prot.getLoadEnergyCost();
 				prot.update = true;
 			} else {
 				prot.setProtection(i, g, prot.getProtection(i, g) + 1);
-				netI1 = (int)prot.getEnergyCost();
+				EuseP = (int)prot.getEnergyCost();
 			}
 			update = true;
 		}
@@ -261,17 +260,17 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, netI2, netI3, Float.floatToIntBits(netF0)};
+		return new int[]{Uref, EuseP, rstCtr, EuseL, Float.floatToIntBits(Estor)};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netI1 = v; break;
-		case 2: netI2 = v; break;
-		case 3: netI3 = v; break;
-		case 4: netF0 = Float.intBitsToFloat(v); break;
+		case 0: Uref = v; break;
+		case 1: EuseP = v; break;
+		case 2: rstCtr = v; break;
+		case 3: EuseL = v; break;
+		case 4: Estor = Float.intBitsToFloat(v); break;
 		}
 	}
 

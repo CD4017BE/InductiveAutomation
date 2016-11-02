@@ -39,7 +39,7 @@ public class GuiTeleporter extends GuiMachine {
 		guiComps.add(new Button(9, 7, 33, 90, 18, -1));
 		guiComps.add(new ProgressBar(10, 8, 34, 88, 16, 176, 0, (byte)4));
 		guiComps.add(new Tooltip(11, 7, 33, 90, 18, "storage"));
-		guiComps.add(new Text(12, 8, 38, 88, 8, "teleport.do#"));//TODO make text support '#'
+		guiComps.add(new Text(12, 8, 38, 88, 8, "teleport.do#"));
 		guiComps.add(new Text(13, 121, 4, 48, 8, "teleport.copy#"));
 		guiComps.add(new Text(14, 0, ySize, xSize, 0, "teleport.warning#"));
 		guiComps.add(new Button(15, 121, 4, 48, 8, -1));

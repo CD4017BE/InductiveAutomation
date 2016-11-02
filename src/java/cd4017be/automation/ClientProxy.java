@@ -185,7 +185,6 @@ public class ClientProxy extends CommonProxy {
 	public void registerBlocks() {
 		super.registerBlocks();
 		//register GUIs
-		/*TODO fix all the GUIs
 		TileBlockRegistry.registerGui(steamEngine, GuiSteamEngine.class);
 		TileBlockRegistry.registerGui(steamGenerator, GuiSteamGenerator.class);
 		TileBlockRegistry.registerGui(steamBoiler, GuiSteamBoiler.class);
@@ -201,7 +200,6 @@ public class ClientProxy extends CommonProxy {
 		TileBlockRegistry.registerGui(texMaker, GuiTextureMaker.class);
 		TileBlockRegistry.registerGui(builder, GuiBuilder.class);
 		TileBlockRegistry.registerGui(algaePool, GuiAlgaePool.class);
-		TileBlockRegistry.registerGui(voltageTransformer, GuiVoltageTransformer.class);
 		TileBlockRegistry.registerGui(teslaTransmitter, GuiTeslaTransmitter.class);
 		TileBlockRegistry.registerGui(teslaTransmitterLV, GuiTeslaTransmitterLV.class);
 		TileBlockRegistry.registerGui(teleporter, GuiTeleporter.class);
@@ -223,9 +221,7 @@ public class ClientProxy extends CommonProxy {
 		TileBlockRegistry.registerGui(trash, GuiTrash.class);
 		TileBlockRegistry.registerGui(electrolyser, GuiElectrolyser.class);
 		TileBlockRegistry.registerGui(fuelCell, GuiFuelCell.class);
-		TileBlockRegistry.registerGui(detector, GuiDetector.class);
 		TileBlockRegistry.registerGui(itemSorter, GuiItemSorter.class);
-		TileBlockRegistry.registerGui(matterInterfaceB, GuiMatterInterface.class);
 		TileBlockRegistry.registerGui(fluidPacker, GuiFluidPacker.class);
 		TileBlockRegistry.registerGui(hugeTank, GuiHugeTank.class);
 		TileBlockRegistry.registerGui(fluidVent, GuiFluidVent.class);
@@ -242,7 +238,6 @@ public class ClientProxy extends CommonProxy {
 		TileBlockRegistry.registerGui(solidFuelHeater, GuiSolidFuelHeater.class);
 		TileBlockRegistry.registerGui(electricHeater, GuiElectricHeater.class);
 		TileBlockRegistry.registerGui(heatedFurnace, GuiHeatedFurnace.class);
-		*/
 		//set block transparencies
 		Objects.itemPipe.setBlockLayer(BlockRenderLayer.CUTOUT);
 		Objects.liquidPipe.setBlockLayer(BlockRenderLayer.CUTOUT);

@@ -78,14 +78,14 @@ public class CommonProxy {
 		TileBlockRegistry.register(electrolyser, Electrolyser.class, TileContainer.class);
 		TileBlockRegistry.register(fuelCell, FuelCell.class, TileContainer.class);
 		TileBlockRegistry.register(itemSorter, ItemSorter.class, TileContainer.class);
-		//TODO TileBlockRegistry.register(matterInterfaceB, MatterInterface.class, TileContainer.class);
+		TileBlockRegistry.register(matterInterfaceB, MatterInterface.class, TileContainer.class);
 		TileBlockRegistry.register(fluidPacker, FluidPacker.class, TileContainer.class);
 		TileBlockRegistry.register(hugeTank, HugeTank.class, TileContainer.class);
 		TileBlockRegistry.register(fluidVent, FluidVent.class, TileContainer.class);
 		TileBlockRegistry.register(gravCond, GraviCond.class, TileContainer.class);
 		TileBlockRegistry.register(itemBuffer, ItemBuffer.class, TileContainer.class);
 		TileBlockRegistry.register(quantumTank, QuantumTank.class, TileContainer.class);
-		//TODO TileBlockRegistry.register(vertShemGen, VertexShematicGen.class, TileContainer.class);
+		TileBlockRegistry.register(vertShemGen, VertexShematicGen.class, TileContainer.class);
 		TileBlockRegistry.register(solarpanel, Solarpanel.class, null);
 		TileBlockRegistry.register(teslaTransmitterLV, TeslaTransmitterLV.class, TileContainer.class);
 		TileBlockRegistry.register(teslaTransmitter, TeslaTransmitter.class, TileContainer.class);

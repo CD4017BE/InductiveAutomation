@@ -30,7 +30,7 @@ public class TextureMaker extends AutomatedTile implements IGuiData {
 	public byte[] drawing = new byte[0];
 	public byte width = 0;
 	public byte height = 0;
-	public int netI0, netI1, netI2;
+	public int extMode, ofsX, ofsY;
 
 	public TextureMaker() {
 		inventory = new Inventory(16, 0, null);
@@ -66,7 +66,7 @@ public class TextureMaker extends AutomatedTile implements IGuiData {
 			byte id = dis.readByte();
 			if (id == 0) load();
 			else if (id == 1) save();
-			else if (id == 6) netI0 = (netI0 + 1) % 4;
+			else if (id == 6) extMode = (extMode + 1) % 4;
 			else if (id < 6) {
 				byte x0 = dis.readByte();
 				byte y0 = dis.readByte();
@@ -122,8 +122,8 @@ public class TextureMaker extends AutomatedTile implements IGuiData {
 			if (i < 2 && v > 32) v = 32;
 			if (i == 0) this.resize(v, height);
 			else if (i == 1) this.resize(width, v);
-			else if (i == 2) netI1 = v;
-			else if (i == 3) netI2 = v;
+			else if (i == 2) ofsX = v;
+			else if (i == 3) ofsY = v;
 		} else if (cmd == GuiTextureMaker.CMD_Name) {
 			String name = dis.readStringFromBuffer(64);
 			if (inventory.items[0] != null && inventory.items[0].getItem() instanceof ItemBuilderTexture && inventory.items[0].getTagCompound() != null)
@@ -141,18 +141,18 @@ public class TextureMaker extends AutomatedTile implements IGuiData {
 			drawing = new byte[0];
 			width = 0;
 			height = 0;
-			netI0 = 0;
-			netI1 = 0;
-			netI2 = 0;
+			extMode = 0;
+			ofsX = 0;
+			ofsY = 0;
 			for (int i = 1; i < inventory.items.length; i++) inventory.items[i] = null;
 			this.markUpdate();
 		} else if (validItem && inventory.items[0].getTagCompound() != null) {
 			NBTTagCompound nbt = inventory.items[0].getTagCompound();
 			drawing = nbt.getByteArray("data");
 			width = nbt.getByte("width");
-			netI0 = nbt.getByte("mode");
-			netI1 = nbt.getShort("ofsX");
-			netI2 = nbt.getShort("ofsY");
+			extMode = nbt.getByte("mode");
+			ofsX = nbt.getShort("ofsX");
+			ofsY = nbt.getShort("ofsY");
 			if (drawing.length == 0) width = 0;
 			height = (byte)(width == 0 ? 0 : drawing.length / width);
 			ItemStack item = inventory.items[0];
@@ -172,9 +172,9 @@ public class TextureMaker extends AutomatedTile implements IGuiData {
 		nbt.setString("name", name);
 		nbt.setByteArray("data", drawing);
 		nbt.setByte("width", width);
-		nbt.setByte("mode", (byte)netI0);
-		nbt.setShort("ofsX", (short)netI1);
-		nbt.setShort("ofsY", (short)netI2);
+		nbt.setByte("mode", (byte)extMode);
+		nbt.setShort("ofsX", (short)ofsX);
+		nbt.setShort("ofsY", (short)ofsY);
 		nbt.setTag("def", ItemFluidUtil.saveInventory(inventory.items));
 		inventory.items[0] = new ItemStack(Objects.builderTexture, n);
 		inventory.items[0].setTagCompound(nbt);
@@ -295,9 +295,9 @@ public class TextureMaker extends AutomatedTile implements IGuiData {
 		super.readFromNBT(nbt);
 		drawing = nbt.getByteArray("drawing");
 		width = nbt.getByte("width");
-		netI0 = nbt.getByte("mode");
-		netI1 = nbt.getShort("ofsX");
-		netI2 = nbt.getShort("ofsY");
+		extMode = nbt.getByte("mode");
+		ofsX = nbt.getShort("ofsX");
+		ofsY = nbt.getShort("ofsY");
 		if (drawing.length == 0) width = 0;
 		height = (byte)(width == 0 ? 0 : drawing.length / width);
 	}
@@ -307,9 +307,9 @@ public class TextureMaker extends AutomatedTile implements IGuiData {
 	{
 		nbt.setByteArray("drawing", drawing);
 		nbt.setByte("width", width);
-		nbt.setByte("mode", (byte)netI0);
-		nbt.setShort("ofsX", (short)netI1);
-		nbt.setShort("ofsY", (short)netI2);
+		nbt.setByte("mode", (byte)extMode);
+		nbt.setShort("ofsX", (short)ofsX);
+		nbt.setShort("ofsY", (short)ofsY);
 		return super.writeToNBT(nbt);
 	}
 
@@ -325,15 +325,15 @@ public class TextureMaker extends AutomatedTile implements IGuiData {
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{netI0, netI1, netI2};
+		return new int[]{extMode, ofsX, ofsY};
 	}
 
 	@Override
 	public void setSyncVariable(int i, int v) {
 		switch(i) {
-		case 0: netI0 = v; break;
-		case 1: netI1 = v; break;
-		case 2: netI2 = v; break;
+		case 0: extMode = v; break;
+		case 1: ofsX = v; break;
+		case 2: ofsY = v; break;
 		}
 	}
 

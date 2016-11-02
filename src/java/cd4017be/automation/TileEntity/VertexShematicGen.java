@@ -15,21 +15,18 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.AxisAlignedBB;
-import cd4017be.lib.TileEntityData;
 import cd4017be.lib.Gui.DataContainer;
+import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.Gui.SlotItemType;
 import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.util.VecN;
 
-public class VertexShematicGen extends AutomatedTile
-{
+public class VertexShematicGen extends AutomatedTile implements IGuiData {
 
-	public VertexShematicGen() 
-	{
-		netData = new TileEntityData(1, 0, 0, 0);
-		inventory = new Inventory(this, 1);
+	public VertexShematicGen() {
+		inventory = new Inventory(1, 0, null);
 	}
 
 	public ArrayList<Polygon> polygons = new ArrayList<Polygon>();
