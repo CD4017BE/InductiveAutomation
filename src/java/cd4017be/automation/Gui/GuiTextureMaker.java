@@ -68,7 +68,7 @@ public class GuiTextureMaker extends GuiMachine {
 	@Override
 	protected Object getDisplVar(int id) {
 		switch(id) {
-		case 0: return "";
+		case 0: return tile.texName();
 		case 1: return tile.extMode;
 		case 2: return (int)tile.width;
 		case 3: return (int)tile.height;
@@ -86,10 +86,10 @@ public class GuiTextureMaker extends GuiMachine {
 		switch(id) {
 		case 0: dos.writeByte(CMD_Name); dos.writeString((String)obj); break;
 		case 1: dos.writeByte(CMD_Button).writeByte(6); break;
-		case 2: dos.writeByte(CMD_Value).writeByte(0).writeInt(tile.width = ((Integer)obj).byteValue());
-		case 3: dos.writeByte(CMD_Value).writeByte(1).writeInt(tile.height = ((Integer)obj).byteValue());
-		case 4: dos.writeByte(CMD_Value).writeByte(2).writeInt(tile.ofsX = (Integer)obj);
-		case 5: dos.writeByte(CMD_Value).writeByte(3).writeInt(tile.ofsY = (Integer)obj);
+		case 2: dos.writeByte(CMD_Value).writeByte(0).writeInt(((Integer)obj).byteValue()); break;
+		case 3: dos.writeByte(CMD_Value).writeByte(1).writeInt(((Integer)obj).byteValue()); break;
+		case 4: dos.writeByte(CMD_Value).writeByte(2).writeInt(tile.ofsX = (Integer)obj); break;
+		case 5: dos.writeByte(CMD_Value).writeByte(3).writeInt(tile.ofsY = (Integer)obj); break;
 		default: if (id < 12) {
 				dos.writeByte(CMD_Button).writeByte(id - 6);
 				if (id >= 8) dos.writeByte(sx0).writeByte(sy0).writeByte(sx1).writeByte(sy1);
@@ -223,6 +223,11 @@ public class GuiTextureMaker extends GuiMachine {
 				spx = ox; spy = oy;
 				sendToolUse(ox, oy, b == 0 ? block + 1 : 0);
 			}
+			return true;
+		}
+
+		@Override
+		public boolean focus() {
 			return true;
 		}
 

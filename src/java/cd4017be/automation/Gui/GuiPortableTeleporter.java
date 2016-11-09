@@ -21,7 +21,7 @@ public class GuiPortableTeleporter extends GuiMachine {
 	private static final int size = 8;
 	private final InventoryPlayer inv;
 	private int scroll = 0;
-	private int sel = -1;
+	private int sel = 0;
 	private Entry[] list = new Entry[0];
 	private double maxDist = 0;
 	private boolean isFull = false;
@@ -35,15 +35,15 @@ public class GuiPortableTeleporter extends GuiMachine {
 	@Override
 	public void initGui() {
 		this.xSize = 176;
-		this.ySize = 216;
+		this.ySize = 115;
 		super.initGui();
 		for (int i = 0; i < 8; i++)
-			guiComps.add(new Button(i, 18, 16 + i * 8, 7, 7, 0).texture(176, 12).setTooltip("teleporter.add#"));
+			guiComps.add(new Button(i, 18, 16 + i * 8, 7, 7, 0).texture(176, 12));
 		for (int i = 0; i < 8; i++)
 			guiComps.add(new Button(i + 8, 26, 16 + i * 8, 106, 8, 0).texture(0, 115));
 		for (int i = 0; i < 8; i++)
-			guiComps.add(new Button(i + 16, 134, 16, 34, 8, -1).setTooltip("teleporter.move"));
-		guiComps.add(new Slider(24, 8, 16, 64, 176, 0, 8, 12, false));
+			guiComps.add(new Button(i + 16, 134, 16 + i * 8, 34, 8, -1).setTooltip("teleporter.move"));
+		guiComps.add(new Slider(24, 8, 22, 52, 176, 0, 8, 12, false));
 		guiComps.add(new Button(25, 152, 82, 16, 16, -1).setTooltip("teleporter.move"));
 		guiComps.add(new Button(26, 134, 82, 16, 16, -1).setTooltip("teleporter.pos"));
 		guiComps.add(new TextField(27, 26, 82, 106, 7, 20));
@@ -51,7 +51,6 @@ public class GuiPortableTeleporter extends GuiMachine {
 		guiComps.add(new TextField(29, 98, 91, 34, 7, 5));
 		guiComps.add(new TextField(30, 26, 100, 52, 7, 8));
 		guiComps.add(new TextField(31, 98, 100, 34, 7, 5));
-		guiComps.add(new Text(32, 0, 4, xSize, 0, "gui.cd4017be.teleporter.name"));
 	}
 
 	@Override
@@ -72,7 +71,7 @@ public class GuiPortableTeleporter extends GuiMachine {
 			int n = 0;
 			for (int i = 0; i < list.length; i++)
 				list[i] = new Entry(data.getCompoundTagAt(i), x, y, z, d);
-			if (n < list.length) list = Arrays.copyOf(list, n);
+			//if (n < list.length) list = Arrays.copyOf(list, n);
 			maxDist = EnergyAPI.get(item, 0).getStorage() / (double)ItemPortableTeleporter.energyUse / 1000D;
 		}
 		if (list.length != l) scroll = 0;
@@ -99,7 +98,7 @@ public class GuiPortableTeleporter extends GuiMachine {
 		case 31: return sel < list.length ? "" + list[sel].dim : "0";
 		default:
 			if (id < 8) return scroll + id < list.length ? 0 : scroll + id == list.length && !isFull ? 1 : 2;
-			if (id < 16) return scroll + id == sel ? 1 : 0;
+			if (id < 16) return scroll + id - 8 == sel ? 1 : 0;
 			return null;
 		}
 	}
@@ -107,69 +106,31 @@ public class GuiPortableTeleporter extends GuiMachine {
 	@Override
 	protected void setDisplVar(int id, Object obj, boolean send) {
 		PacketBuffer dos = BlockGuiHandler.getPacketTargetData(((TileContainer)inventorySlots).data.pos());
-		switch(id) {
-		case 24: scroll = (int)((Float)obj * (float)(list.length + 1 - size)); return;
-		case 25: dos.writeByte(0); dos.writeByte(sel); break;
-		case 26: {
+		if(id == 24){scroll = Math.max(0, Math.round((Float)obj * (float)(list.length + 1 - size))); return;}
+		else if(id == 25){dos.writeByte(0); dos.writeByte(sel);}
+		else if (id < 8) {
+			if (scroll + id >= list.length) dos.writeByte(1);
+			else dos.writeByte(3).writeByte(scroll + id);
+		} else if (id < 16) {
+			sel = scroll + id - 8; return;
+		} else if (id < 24) dos.writeByte(0).writeByte(scroll + id - 16);
+		else if(id < 32) {
 			if (sel >= list.length) return;
 			dos.writeByte(2);
 			dos.writeByte(sel);
 			Entry e = list[sel];
-			e.x = MathHelper.floor_double(inv.player.posX);
-			e.y = MathHelper.floor_double(inv.player.posY) - 1;
-			e.z = MathHelper.floor_double(inv.player.posZ);
-			e.dim = inv.player.worldObj.provider.getDimension();
+			if (id == 26) {
+				e.x = MathHelper.floor_double(inv.player.posX);
+				e.y = MathHelper.floor_double(inv.player.posY) - 1;
+				e.z = MathHelper.floor_double(inv.player.posZ);
+				e.dim = inv.player.worldObj.provider.getDimension();
+			} else if (id == 27) e.name = (String)obj;
+			else if (id == 28) e.x = Integer.parseInt((String)obj);
+			else if(id == 29) e.y = Integer.parseInt((String)obj);
+			else if(id == 30) e.z = Integer.parseInt((String)obj);
+			else if (id == 31) e.dim = Integer.parseInt((String)obj);
 			e.write(dos);
-		} break;
-		case 27: {
-			if (sel >= list.length) return;
-			dos.writeByte(2);
-			dos.writeByte(sel);
-			Entry e = list[sel];
-			e.name = (String)obj;
-			e.write(dos);
-		} break;
-		case 28: {
-			if (sel >= list.length) return;
-			dos.writeByte(2);
-			dos.writeByte(sel);
-			Entry e = list[sel];
-			e.x = Integer.parseInt((String)obj);
-			e.write(dos);
-		} break;
-		case 29: {
-			if (sel >= list.length) return;
-			dos.writeByte(2);
-			dos.writeByte(sel);
-			Entry e = list[sel];
-			e.y = Integer.parseInt((String)obj);
-			e.write(dos);
-		} break;
-		case 30: {
-			if (sel >= list.length) return;
-			dos.writeByte(2);
-			dos.writeByte(sel);
-			Entry e = list[sel];
-			e.z = Integer.parseInt((String)obj);
-			e.write(dos);
-		} break;
-		case 31: {
-			if (sel >= list.length) return;
-			dos.writeByte(2);
-			dos.writeByte(sel);
-			Entry e = list[sel];
-			e.dim = Integer.parseInt((String)obj);
-			e.write(dos);
-		} break;
-		default:
-			if (id < 8) {
-				if (scroll + id >= list.length) dos.writeByte(1);
-				else dos.writeByte(3).writeByte(scroll + id);
-			} else if (id < 16) {
-				sel = scroll + id - 8; return;
-			} else if (id < 24) dos.writeByte(0).writeByte(scroll + id - 16);
-			else return;
-		}
+		} else return;
 		if (send) BlockGuiHandler.sendPacketToServer(dos);
 	}
 

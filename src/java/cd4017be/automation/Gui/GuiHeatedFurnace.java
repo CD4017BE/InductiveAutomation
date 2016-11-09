@@ -24,16 +24,16 @@ public class GuiHeatedFurnace extends GuiMachine {
 		super.initGui();
 		guiComps.add(new ProgressBar(1, 36, 19, 32, 10, 176, 8, (byte)0));
 		guiComps.add(new ProgressBar(2, 17, 38, 70, 8, 176, 0, (byte)0));
-		guiComps.add(new Text(3, 61, 25, 0, 8, "am").center().font(0xffc04040, 8));
-		guiComps.add(new Text(4, 133, 38, 0, 8, "temp").center().font(0xff808040, 8));
+		guiComps.add(new Text(3, 61, 25, 0, 8, "\\%s").center().font(0xffc04040, 8));
+		guiComps.add(new Text(4, 133, 38, 0, 8, "Temp2").center().font(0xff808040, 8));
 	}
 
 	@Override
 	protected Object getDisplVar(int id) {
 		switch(id) {
 		case 1: return tile.getProgress();
-		case 2: return (tile.temp - TempOffset) / (HeatedFurnace.NeededTemp - TempOffset) * 2F;
-		case 3: return tile.num;
+		case 2: return (tile.temp - TempOffset) / (HeatedFurnace.NeededTemp - TempOffset) / 2F;
+		case 3: return tile.num > 0 ? "x" + tile.num : "";
 		case 4: return new Object[]{tile.temp - TempOffset, HeatedFurnace.NeededTemp - TempOffset};
 		default: return null;
 		}

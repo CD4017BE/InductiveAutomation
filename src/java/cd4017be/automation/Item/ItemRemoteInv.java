@@ -185,11 +185,11 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem, IItemInvento
 	public static final IFilter<ItemStack, IItemHandler> notMe = new IFilter<ItemStack, IItemHandler>(){
 		@Override
 		public int insertAmount(ItemStack obj, IItemHandler inv) {
-			return obj != null && !(obj.getItem() instanceof ItemRemoteInv || obj.getItem() instanceof ItemFilteredSubInventory) ? obj.stackSize : null;
+			return obj == null || obj.getItem() instanceof ItemRemoteInv || obj.getItem() instanceof ItemFilteredSubInventory ? 0 : obj.stackSize;
 		}
 		@Override
 		public ItemStack getExtract(ItemStack obj, IItemHandler inv) {
-			return obj != null && !(obj.getItem() instanceof ItemRemoteInv || obj.getItem() instanceof ItemFilteredSubInventory) ? obj : null;
+			return obj == null || obj.getItem() instanceof ItemRemoteInv || obj.getItem() instanceof ItemFilteredSubInventory ? null : obj;
 		}
 		@Override
 		public boolean transfer(ItemStack obj) {

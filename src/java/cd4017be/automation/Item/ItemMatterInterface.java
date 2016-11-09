@@ -94,7 +94,6 @@ public class ItemMatterInterface extends DefaultItem implements IGuiItem {
 		@Override
 		public void initContainer(DataContainer container) {
 			TileContainer cont = (TileContainer)container;
-			cont.refInts = new int[2];
 			inv = new Access(cont.player.inventory);
 			cont.addItemSlot(new GlitchSaveSlot(inv, 0, 62, 66));
 			cont.addItemSlot(new GlitchSaveSlot(inv, 1, 80, 66));

@@ -241,14 +241,16 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
 		public float amMult;
 		public int Euse;
 		public Enchantments(ItemStack item) {
-			Map<Enchantment, Integer> list = EnchantmentHelper.getEnchantments(item);
-			this.silktouch = list.containsKey(net.minecraft.init.Enchantments.SILK_TOUCH);
-			Integer lvl = list.get(net.minecraft.init.Enchantments.FORTUNE);
-			if (lvl != null) fortune = lvl.shortValue();
-			lvl = list.get(net.minecraft.init.Enchantments.EFFICIENCY);
-			if (lvl != null) efficiency = lvl.shortValue();
-			lvl = list.get(net.minecraft.init.Enchantments.UNBREAKING);
-			if (lvl != null) unbreaking = lvl.shortValue();
+			if (item != null) {
+				Map<Enchantment, Integer> list = EnchantmentHelper.getEnchantments(item);
+				this.silktouch = list.containsKey(net.minecraft.init.Enchantments.SILK_TOUCH);
+				Integer lvl = list.get(net.minecraft.init.Enchantments.FORTUNE);
+				if (lvl != null) fortune = lvl.shortValue();
+				lvl = list.get(net.minecraft.init.Enchantments.EFFICIENCY);
+				if (lvl != null) efficiency = lvl.shortValue();
+				lvl = list.get(net.minecraft.init.Enchantments.UNBREAKING);
+				if (lvl != null) unbreaking = lvl.shortValue();
+			}
 			Euse = EnergyUsage * 3 / (3 + unbreaking);
 			amMult = AmUsage * 0.5F / (float)(4 + efficiency) * (silktouch ? 2.0F : 1F + 0.5F * (float)fortune);
 		}
@@ -371,8 +373,9 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
 		public void initContainer(DataContainer container) {
 			TileContainer cont = (TileContainer)container;
 			inv = new InventoryItem(cont.player);
-			cont.addItemSlot(new SlotItemType(inv, 0, 8, 16, new ItemStack(Items.ENCHANTED_BOOK)));
-			cont.addItemSlot(new SlotItemType(inv, 1, 26, 16, new ItemStack(Items.ENCHANTED_BOOK)));
+			cont.addItemSlot(new SlotItemType(inv, 0, 26, 16, new ItemStack(Items.ENCHANTED_BOOK)));
+			cont.addItemSlot(new SlotItemType(inv, 1, 44, 16, new ItemStack(Items.ENCHANTED_BOOK)));
+			cont.addPlayerInventory(8, 50, false, true);
 		}
 
 	}

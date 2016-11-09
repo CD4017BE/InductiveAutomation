@@ -31,7 +31,7 @@ public class GuiAutoCrafting extends GuiMachine {
 		for (int j = 0; j < 3; j++)
 			for (int i = 0; i < 3; i++)
 				guiComps.add(new NumberSel(1 + i + j * 3, 79 + i * 18, 15 + j * 18, 18, 18, "%d", -1, 9, 1));
-		guiComps.add(new Button(10, 151, 15, 18, 18, 0).setTooltip("autoCrafting.mode#"));
+		guiComps.add(new Button(10, 151, 15, 18, 18, 0).texture(176, 0).setTooltip("autoCrafting.mode#"));
 		guiComps.add(new GuiComp(11, 67, 31, 7, 8).setTooltip("autoCrafting"));
 	}
 

@@ -35,7 +35,6 @@ public class GuiItemUpgrade extends GuiMachine {
 		guiComps.add(new Button(5, 151, 33, 18, 18, 0).texture(212, 18).setTooltip("filter.targetI#"));
 		guiComps.add(new Button(6, 115, 15, 9, 18, 0).texture(230, 0).setTooltip("rstCtr"));
 		guiComps.add(new TextField(7, 144, 16, 24, 7, 4).setTooltip("filter.priority"));
-		guiComps.add(new Text(8, 0, 4, xSize, 0, "item.cd4017be.itemFilter.name").center());
 	}
 
 	@Override

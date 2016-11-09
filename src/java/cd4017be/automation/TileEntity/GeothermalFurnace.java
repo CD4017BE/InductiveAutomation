@@ -175,9 +175,8 @@ public class GeothermalFurnace extends AutomatedTile implements IGuiData, IAcces
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[5];
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 62, 52));
-		container.addItemSlot(new SlotItemType(inventory, 1, 62, 16, new ItemStack[]{new ItemStack(Blocks.STONE)}));
+		container.addItemSlot(new SlotItemType(inventory, 1, 62, 16, new ItemStack[]{new ItemStack(Blocks.STONE, 64)}));
 		container.addItemSlot(new SlotTank(inventory, 2, 8, 34));
 		container.addItemSlot(new SlotTank(inventory, 3, 26, 34));
 		container.addItemSlot(new SlotItemHandler(inventory, 4, 98, 34));

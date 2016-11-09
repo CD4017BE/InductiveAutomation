@@ -29,8 +29,7 @@ public class GuiPortableTesla extends GuiMachine {
 		guiComps.add(new Button(2, 133, 24, 18, 9, 0).texture(194, 0).setTooltip("teslaP.invH"));
 		guiComps.add(new Button(3, 151, 24, 18, 9, 0).texture(212, 0).setTooltip("teslaP.invM"));
 		guiComps.add(new Button(4, 169, 24, 18, 9, 0).texture(230, 0).setTooltip("teslaP.invA"));
-		guiComps.add(new Text(5, 8, 16, 120, 10, "tesla.stor").center());
-		guiComps.add(new Text(6, 0, 4, xSize, 0, "gui.cd4017be.portableTesla.name").center());
+		guiComps.add(new Text(5, 8, 17, 120, 10, "tesla.stor").center());
 	}
 
 	@Override
@@ -58,7 +57,10 @@ public class GuiPortableTesla extends GuiMachine {
 			ItemStack item = inv.mainInventory[inv.currentItem];
 			short mode = item != null && item.hasTagCompound() ? item.getTagCompound().getShort("mode") : 0;
 			if (id == 1) mode ^= 1;
-			else mode ^= 1 << (id * 2 + 4);
+			else {
+				int p = id * 2 + 4;
+				mode = (short)(mode & ~(3 << p) | (((mode >> p & 3) + ((Integer)obj == 0 ? 1 : 2)) % 3) << p);
+			}
 			dos.writeByte(0).writeShort(mode);
 		} else return;
 		if (send) BlockGuiHandler.sendPacketToServer(dos);

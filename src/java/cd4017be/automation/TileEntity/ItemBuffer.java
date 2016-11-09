@@ -102,7 +102,6 @@ public class ItemBuffer extends AutomatedTile implements IGuiData {
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[3];
 		container.addPlayerInventory(8, 86);
 		for (int j = 0; j < 2; j++)
 			for (int i = 0; i < 9; i++)

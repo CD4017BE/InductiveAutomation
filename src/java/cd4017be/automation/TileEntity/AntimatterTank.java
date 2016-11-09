@@ -105,4 +105,14 @@ public class AntimatterTank extends AutomatedTile implements IGuiData
 		container.addPlayerInventory(8, 84);
 	}
 
+	@Override
+	public int[] getSyncVariables() {
+		return new int[]{tanks.getAmount(0)};
+	}
+
+	@Override
+	public void setSyncVariable(int i, int v) {
+		tanks.fluids[0].amount = v;
+	}
+
 }

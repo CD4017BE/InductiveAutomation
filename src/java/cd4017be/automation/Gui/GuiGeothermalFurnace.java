@@ -29,9 +29,9 @@ public class GuiGeothermalFurnace extends GuiMachine {
 		guiComps.add(new ProgressBar(4, 63, 35, 14, 14, 192, 10, (byte)1));
 		guiComps.add(new ProgressBar(5, 84, 16, 8, 52, 184, 0, (byte)1));
 		guiComps.add(new ProgressBar(6, 48, 16, 8, 52, 176, 0, (byte)3));
-		guiComps.add(new Tooltip(7, 63, 35, 14, 14, "gui.cd4017be.fuelHeat"));
-		guiComps.add(new Tooltip(8, 84, 16, 8, 52, "gui.cd4017be.heat"));
-		guiComps.add(new Tooltip(9, 48, 16, 8, 52, "gui.cd4017be.lavaHeat"));
+		guiComps.add(new Tooltip(7, 63, 35, 14, 14, "fuelHeat"));
+		guiComps.add(new Tooltip(8, 84, 16, 8, 52, "heat"));
+		guiComps.add(new Tooltip(9, 48, 16, 8, 52, "lavaHeat"));
 	}
 
 	@Override

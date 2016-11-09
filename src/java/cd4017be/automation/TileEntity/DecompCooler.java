@@ -109,7 +109,6 @@ public class DecompCooler extends AutomatedTile implements IGuiData
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[4];
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 44, 34));
 		container.addItemSlot(new SlotItemHandler(inventory, 1, 116, 34));
 		container.addItemSlot(new SlotItemHandler(inventory, 2, 80, 34));

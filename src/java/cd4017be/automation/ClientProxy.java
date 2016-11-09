@@ -121,7 +121,7 @@ public class ClientProxy extends CommonProxy {
 		//Items
 		// TODO use Lib template instead BlockItemRegistry.registerRender(material, new MaterialTextures("automation:"));
 		BlockItemRegistry.registerRender(fluidDummy);
-		BlockItemRegistry.registerRender(selectionTool);
+		BlockItemRegistry.registerRender(selectionTool, null);
 		BlockItemRegistry.registerRender(voltMeter);
 		BlockItemRegistry.registerRender(energyCell);
 		BlockItemRegistry.registerRender(chisle);
@@ -156,7 +156,7 @@ public class ClientProxy extends CommonProxy {
 		BlockItemRegistry.registerRender(translocator);
 		BlockItemRegistry.registerRender(portableTesla);
 		BlockItemRegistry.registerRender(placement);
-		BlockItemRegistry.registerRender(synchronizer);
+		BlockItemRegistry.registerRender(synchronizer, null);
 		BlockItemRegistry.registerRender(remBlockType);
 		BlockItemRegistry.registerRender(vertexSel);
 		//Tiles

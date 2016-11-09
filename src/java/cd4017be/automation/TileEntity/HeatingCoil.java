@@ -91,13 +91,12 @@ public class HeatingCoil extends AutomatedTile implements IHeatStorage, IGuiData
 	}
 
 	@Override
-	public void initContainer(DataContainer container) {
-		container.refInts = new int[5];
+	public void initContainer(DataContainer container) {
 	}
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{Rw, rstCtr, Float.floatToIntBits(Tref), Float.floatToIntBits(Uc), Float.floatToIntBits(Uc)};
+		return new int[]{Rw, rstCtr, Float.floatToIntBits(Tref), Float.floatToIntBits(Uc), Float.floatToIntBits(temp)};
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package cd4017be.automation.Item;
 
 import cd4017be.lib.util.IFilter;
+import cd4017be.lib.util.ItemFluidUtil;
 import cd4017be.lib.util.Utils.ItemType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -29,8 +30,8 @@ public class PipeUpgradeItem implements IFilter<ItemStack, IItemHandler> {
 		PipeUpgradeItem upgrade = new PipeUpgradeItem();
 		upgrade.mode = nbt.getByte("mode");
 		upgrade.priority = nbt.getByte("prior");
-		if (nbt.hasKey("list")) {
-			NBTTagList list = nbt.getTagList("list", 10);
+		if (nbt.hasKey(ItemFluidUtil.Tag_ItemList)) {
+			NBTTagList list = nbt.getTagList(ItemFluidUtil.Tag_ItemList, 10);
 			upgrade.list = new ItemStack[list.tagCount()];
 			for (int i = 0; i < list.tagCount(); i++) {
 				upgrade.list[i] = ItemStack.loadItemStackFromNBT(list.getCompoundTagAt(i));
@@ -49,7 +50,7 @@ public class PipeUpgradeItem implements IFilter<ItemStack, IItemHandler> {
 				item.writeToNBT(tag);
 				tlist.appendTag(tag);
 			}
-			nbt.setTag("list", tlist);
+			nbt.setTag(ItemFluidUtil.Tag_ItemList, tlist);
 		}
 	}
 

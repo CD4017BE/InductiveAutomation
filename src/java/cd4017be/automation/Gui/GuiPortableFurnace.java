@@ -31,14 +31,13 @@ public class GuiPortableFurnace extends GuiMachine {
 		this.ySize = 132;
 		super.initGui();
 		guiComps.add(new Button(0, 61, 19, 18, 10, 0).texture(176, 16).setTooltip("inputFilter"));
-		guiComps.add(new ProgressBar(1, 116, 16, 34, 16, 176, 0, (byte)0).setTooltip("x*" + capacity + "+0;storage"));
-		guiComps.add(new Text(2, 0, 4, xSize, 0, "item.cd4017be.portableFurnace.name").center());
+		guiComps.add(new ProgressBar(1, 116, 16, 34, 16, 176, 0, (byte)0).setTooltip("x*" + capacity + "+0;Estor1"));
 	}
 
 	@Override
 	protected Object getDisplVar(int id) {
 		ItemStack item = inv.mainInventory[inv.currentItem];
-		if (id == 0) return ItemFilteredSubInventory.isFilterOn(item, true);
+		if (id == 0) return ItemFilteredSubInventory.isFilterOn(item, true) ? 0 : 1;
 		else if (id == 1) return EnergyAPI.get(item, -1).getStorage() / 1000F / (float)capacity;
 		else return null;
 	}

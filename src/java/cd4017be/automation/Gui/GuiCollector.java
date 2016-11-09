@@ -28,7 +28,7 @@ public class GuiCollector extends GuiMachine {
 		this.xSize = 226;
 		this.ySize = 98;
 		super.initGui();
-		guiComps.add(new Button(2, 183, 73, 18, 18, 0).texture(238, 0).setTooltip("collect.m"));
+		guiComps.add(new Button(2, 183, 73, 18, 18, 0).texture(238, 0).setTooltip("collect.m#"));
 	}
 
 	@Override

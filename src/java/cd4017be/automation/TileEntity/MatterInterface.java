@@ -1,5 +1,6 @@
 package cd4017be.automation.TileEntity;
 
+import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.util.Utils;
@@ -8,7 +9,7 @@ import cd4017be.lib.util.Utils;
  *
  * @author CD4017BE
  */
-public class MatterInterface extends AutomatedTile {
+public class MatterInterface extends AutomatedTile implements IGuiData {
 
 	public MatterInterface() {
 		inventory = new Inventory(5, 3, null).group(0, 1, 2, Utils.IN).group(1, 2, 3, Utils.OUT).group(2, 0, 1, Utils.ACC);

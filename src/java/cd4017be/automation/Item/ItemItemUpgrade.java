@@ -87,7 +87,7 @@ public class ItemItemUpgrade extends DefaultItem implements IGuiItem, IItemInven
 		else item.setTagCompound(nbt = new NBTTagCompound());
 		byte cmd = dis.readByte();
 		if (cmd == 0) nbt.setByte("mode", dis.readByte());
-		else if (cmd == 1) nbt.setInteger("maxAm", dis.readInt());
+		else if (cmd == 1) nbt.setByte("prior", dis.readByte());
 		else if (cmd == 2) nbt.removeTag(ItemFluidUtil.Tag_ItemIndex);
 	}
 

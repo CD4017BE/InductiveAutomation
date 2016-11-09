@@ -108,8 +108,7 @@ public class SolidFuelHeater extends AutomatedTile implements IHeatStorage, IGui
 
 	@Override
 	public void initContainer(DataContainer cont) {
-		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[5];
+		TileContainer container = (TileContainer)cont;
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 26, 16));
 		container.addItemSlot(new SlotItemHandler(inventory, 1, 26, 34));
 		container.addPlayerInventory(8, 68);

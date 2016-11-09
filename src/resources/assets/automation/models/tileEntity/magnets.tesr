@@ -6,13 +6,13 @@ Ta = [0, 0, 16, 8];
 Tb = [16, 0, 32, 8];
 Tc = [32, 0, 40, 8];
 #create quads
-mag = model(){
-	draw(rect(Q, Tb, "+uv"));
-	draw(rect(Q, Tc, "V-U"));
-	draw(rect(Q, Tc, "V+u"));
-	draw(rect(Q, Ta, "VU-"));
-	draw(rect(Q, Ta, "Vu+"));
-};
+mag = [
+	rect(Q, Tb, "+uv"),
+	rect(Q, Tc, "V-U"),
+	rect(Q, Tc, "V+u"),
+	rect(Q, Ta, "VU-"),
+	rect(Q, Ta, "Vu+")
+];
 #render
 for(0 < i < N){
 	rotate([0, 1, 0, /(360, N)]);

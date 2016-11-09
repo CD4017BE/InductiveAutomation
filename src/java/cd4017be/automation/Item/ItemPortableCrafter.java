@@ -214,7 +214,7 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem, IItemI
 				for (int i = 0; i < 3; i++) 
 					cont.addItemSlot(new SlotHolo(inv, i + 3 * j, 17 + i * 18, 16 + j * 18, false, false));
 			cont.addItemSlot(new SlotHolo(inv, 9, 89, 34, true, true));
-			cont.addPlayerInventory(8, 68, false, true);
+			cont.addPlayerInventory(8, 86, false, true);
 		}
 
 	}

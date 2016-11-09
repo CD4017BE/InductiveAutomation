@@ -144,9 +144,8 @@ public class AdvancedFurnace extends AutomatedTile implements IGuiData, ISlotCli
 	@Override
 	public void initContainer(DataContainer container) {
 		TileContainer cont = (TileContainer)container;
-		cont.refInts = new int[4];
-		cont.addItemSlot(new SlotTank(inventory, 0, 62, 34));
-		cont.addItemSlot(new SlotTank(inventory, 1, 152, 34));
+		cont.addItemSlot(new SlotTank(inventory, 0, 53, 34));
+		cont.addItemSlot(new SlotTank(inventory, 1, 143, 34));
 		for (int i = 0; i < 3; i++)
 			cont.addItemSlot(new SlotItemHandler(inventory, 2 + i, 80, 16 + 18 * i));
 		for (int i = 0; i < 3; i++)

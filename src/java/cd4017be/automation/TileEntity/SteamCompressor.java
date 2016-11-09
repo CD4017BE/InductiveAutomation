@@ -111,7 +111,6 @@ public class SteamCompressor extends AutomatedTile implements IGuiData, IAccessH
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[2];
 		for (int j = 0; j < 2; j++)
 			for (int i = 0; i < 2; i++)
 				container.addItemSlot(new SlotItemType(inventory, i + 2 * j, 71 + 18 * i, 25 + 18 * j));

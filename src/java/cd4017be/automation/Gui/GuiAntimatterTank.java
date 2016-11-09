@@ -27,7 +27,7 @@ public class GuiAntimatterTank extends GuiMachine {
 		this.ySize = 166;
 		super.initGui();
 		guiComps.add(new ProgressBar(2, 8, 16, 160, 50, 0, 206, (byte)4));
-		guiComps.add(new Text(3, 8, 28, 160, 16, "gui.cd4017be.antimTank.am"));
+		guiComps.add(new Text(3, 8, 28, 160, 16, "antimTank.am").center());
 	}
 
 	@Override

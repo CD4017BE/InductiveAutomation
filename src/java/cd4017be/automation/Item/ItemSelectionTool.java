@@ -44,6 +44,7 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem {
 		super(id);
 		this.setCreativeTab(Automation.tabAutomation);
 		this.setMaxStackSize(1);
+		this.setHasSubtypes(true);
 	}
 
 	@Override

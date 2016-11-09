@@ -140,7 +140,7 @@ public class Wire extends AutomatedTile implements IPipe {
 	{
 		if (s < 0) return 0;
 		TileEntity p = Utils.getTileOnSide(this, s);
-		return energy.isConnected(s) && p.hasCapability(Capabilities.ELECTRIC_CAPABILITY, EnumFacing.VALUES[s^1]) ? 0 : -1;
+		return energy.isConnected(s) && p != null && p.hasCapability(Capabilities.ELECTRIC_CAPABILITY, EnumFacing.VALUES[s^1]) ? 0 : -1;
 	}
 	
 	@Override

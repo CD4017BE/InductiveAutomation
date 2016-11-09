@@ -121,7 +121,6 @@ public class AntimatterAnihilator extends AutomatedTile implements IGuiData, IEn
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[5];
 		container.addItemSlot(new SlotTank(inventory, 0, 8, 34));
 		container.addItemSlot(new SlotTank(inventory, 1, 26, 34));
 		container.addItemSlot(new SlotTank(inventory, 2, 69, 34));
@@ -130,7 +129,7 @@ public class AntimatterAnihilator extends AutomatedTile implements IGuiData, IEn
 		
 		container.addTankSlot(new TankSlot(tanks, 0, 8, 16, (byte)0x13));
 		container.addTankSlot(new TankSlot(tanks, 1, 26, 16, (byte)0x13));
-		container.addTankSlot(new TankSlot(tanks, 2, 62, 16, (byte)0x23));
+		container.addTankSlot(new TankSlot(tanks, 2, 58, 16, (byte)0x23));
 	}
 
 	@Override

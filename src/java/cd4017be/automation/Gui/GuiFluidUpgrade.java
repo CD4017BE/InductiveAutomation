@@ -34,7 +34,6 @@ public class GuiFluidUpgrade extends GuiMachine {
 		guiComps.add(new Button(7, 161, 15, 8, 18, 0).texture(194, 0).setTooltip("rstCtr"));
 		guiComps.add(new TextField(8, 116, 16, 44, 7, 8).setTooltip("filter.targetF"));
 		guiComps.add(new TextField(9, 136, 25, 24, 7, 4).setTooltip("filter.priority"));
-		guiComps.add(new Text(10, 0, 4, xSize, 0, "item.cd4017be.fluidFilter.name").center());
 	}
 
 	@Override
@@ -52,7 +51,7 @@ public class GuiFluidUpgrade extends GuiMachine {
 	protected void setDisplVar(int id, Object obj, boolean send) {
 		PacketBuffer dos = BlockGuiHandler.getPacketTargetData(((TileContainer)inventorySlots).data.pos());
 		ItemStack item = inv.mainInventory[inv.currentItem];
-		if (id < 5) {dos.writeByte(id); dos.writeString(obj == null ? "" : ((Fluid)obj).getName());}
+		if (id < 5) {dos.writeByte(id); dos.writeString(obj == null ? "" : ((Fluid)obj).getName()); send = true;}
 		else if (id < 8) {
 			byte mode = item != null && item.hasTagCompound() ? item.getTagCompound().getByte("mode") : 0;
 			if (id != 7) mode ^= id == 5 ? 2 : 1;

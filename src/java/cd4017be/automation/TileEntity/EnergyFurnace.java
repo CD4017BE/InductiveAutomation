@@ -127,7 +127,6 @@ public class EnergyFurnace extends AutomatedTile implements IGuiData {
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[3];
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 44, 34));
 		container.addItemSlot(new SlotItemHandler(inventory, 1, 62, 34));
 		

@@ -29,16 +29,15 @@ public class GuiPlacement extends GuiMachine {
 		this.ySize = 150;
 		super.initGui();
 		for (int i = 0; i < 8; i++)
-			guiComps.add(new Button(i, 8, 16, 16, 16, 0));
+			guiComps.add(new Button(i, 8 + i * 18, 16, 16, 16, 0).texture(212, 0));
 		guiComps.add(new TextField(8, 42, 36, 34, 12, 5).setTooltip("place.aim"));
 		guiComps.add(new TextField(9, 96, 36, 34, 12, 5).setTooltip("place.aim"));
-		guiComps.add(new Button(10, 7, 33, 18, 18, 2).setTooltip("place.dir"));
-		guiComps.add(new Button(11, 133, 33, 18, 18, 0).setTooltip("place.sneak"));
-		guiComps.add(new Button(12, 151, 33, 18, 18, 0).setTooltip("filter.meta"));
-		guiComps.add(new Button(13, 151, 15, 18, 18, 0).setTooltip("filter.raytrace"));
-		guiComps.add(new ProgressBar(14, 25, 34, 16, 16, 176, 16, (byte)3));
-		guiComps.add(new ProgressBar(15, 79, 34, 16, 16, 176, 16, (byte)3));
-		guiComps.add(new Text(16, 0, 4, xSize, 0, "item.cd4017be.placement.name").center());
+		guiComps.add(new Button(10, 7, 33, 18, 18, 2).texture(194, 0).setTooltip("place.dir"));
+		guiComps.add(new Button(11, 133, 33, 18, 18, 0).texture(212, 36).setTooltip("place.sneak"));
+		guiComps.add(new Button(12, 151, 33, 18, 18, 0).texture(230, 36).setTooltip("filter.meta#"));
+		guiComps.add(new Button(13, 151, 15, 18, 18, 0).texture(230, 0).setTooltip("place.raytrace#"));
+		guiComps.add(new ProgressBar(14, 25, 34, 16, 16, 176, 0, (byte)3));
+		guiComps.add(new ProgressBar(15, 79, 34, 16, 16, 176, 0, (byte)3));
 	}
 
 	@Override
@@ -75,7 +74,8 @@ public class GuiPlacement extends GuiMachine {
 		case 11: mode ^= 0x1000; break;
 		case 12: mode ^= 0x2000; break;
 		case 13: mode ^= 0x4000; break;
-		default: return;
+		default: if (id < 8) sel = id;
+			return;
 		}
 		dos.writeInt(mode);
 		if (send) BlockGuiHandler.sendPacketToServer(dos);

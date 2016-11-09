@@ -29,21 +29,21 @@ public class GuiBuilder extends GuiMachine {
 		this.xSize = 176;
 		this.ySize = 240;
 		super.initGui();
-		String[] s = TooltipInfo.getLocFormat("gui.cd4017be.builder.state").split("\\n");
+		String[] s = TooltipInfo.getLocFormat("builder.state").split("\\n");
 		if (s.length >= steps.length) steps = s;
 		for (int i = 0; i < 8; i++)
-			guiComps.add(new NumberSel(2 + i, 7 + i * 18, 69, 18, 18, "%d", 0, 256, 8).setTooltip("builder.size"));
-		guiComps.add(new Text(10, 120, 15, 54, 8, "gui.cd4017be.builder.state_").center());
-		guiComps.add(new Button(11, 151, 69, 18, 18, 0).setTooltip("builder.dir"));
+			guiComps.add(new NumberSel(2 + i, 25 + i * 18, 69, 18, 18, "%d", 0, 256, 8).setTooltip("builder.size"));
+		guiComps.add(new Text(10, 115, 20, 54, 8, "\\%s").center());
+		guiComps.add(new Button(11, 7, 69, 18, 18, 0).texture(176, 0).setTooltip("builder.dir"));
 		guiComps.add(new Button(12, 115, 15, 54, 18, -1).setTooltip("builder.run"));
 		guiComps.add(new GuiComp(13, 7, 15, 54, 18).setTooltip("builder.frame"));
 		guiComps.add(new GuiComp(13, 61, 15, 54, 18).setTooltip("builder.wall"));
-		guiComps.add(new GuiComp(13, 7, 15, 18, 18).setTooltip("builder.stack"));
+		guiComps.add(new GuiComp(13, 7, 51, 18, 18).setTooltip("builder.stack"));
 	}
 
 	@Override
 	protected Object getDisplVar(int id) {
-		if (id < 10) return tile.thick[id - 1];
+		if (id < 10) return tile.thick[id - 2];
 		else if (id == 10) return steps[tile.thick[8]];
 		else if (id == 11) return tile.thick[9];
 		else return null;
@@ -54,14 +54,14 @@ public class GuiBuilder extends GuiMachine {
 		PacketBuffer dos = tile.getPacketTargetData();
 		if (id < 10) {
 			dos.writeByte(AutomatedTile.CmdOffset + id - 2);
-			dos.writeShort((Integer)obj);
+			dos.writeShort(tile.thick[id - 2] = (Integer)obj);
 		} else if (id == 11) {
 			dos.writeByte(AutomatedTile.CmdOffset + 9);
-			dos.writeByte(tile.thick[8] = (tile.thick[8] + 1) % 3);
+			dos.writeShort(tile.thick[9] = (tile.thick[9] + 1) % 3);
 		} else if (id == 12) {
 			dos.writeByte(AutomatedTile.CmdOffset + 8);
 		}
-		BlockGuiHandler.sendPacketToServer(dos);
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
 	}
 
 }

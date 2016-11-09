@@ -41,7 +41,7 @@ public class LiquidPipe extends AutomatedTile implements IPipe {
 
 	public LiquidPipe() {
 		tanks = new TankContainer(1, 1).tank(0, Config.tankCap[0], Utils.ACC, -1, -1);
-		tanks.sideCfg = 0x555;
+		tanks.sideCfg = 0x030303030303L;
 	}
 
 	@Override
@@ -78,7 +78,7 @@ public class LiquidPipe extends AutomatedTile implements IPipe {
 				d = d == 1 ? 2 : d == 2 ? 1 : (byte)0;
 				setFlowBit(i, d);
 				nHasIO |= d;
-			} else if (type != BlockLiquidPipe.ID_Transport && te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite())) {
+			} else if (type != BlockLiquidPipe.ID_Transport && te != null && te.hasCapability(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, dir.getOpposite())) {
 				setFlowBit(i, type);
 				nHasIO |= type;
 			} else setFlowBit(i, 0);
@@ -101,7 +101,7 @@ public class LiquidPipe extends AutomatedTile implements IPipe {
 		else if (type == BlockLiquidPipe.ID_Extraction) {
 			for (int i = 0; i < 6; i++) {
 				d = this.getFlowBit(i);
-				if (d != 1) continue;
+				if (d != 2) continue;
 				dir = EnumFacing.VALUES[i];
 				ICapabilityProvider te = this.getTileOnSide(dir);
 				if (te == null || te instanceof LiquidPipe) continue;
@@ -112,7 +112,7 @@ public class LiquidPipe extends AutomatedTile implements IPipe {
 		} else if (tanks.fluids[0] != null) {
 			for (int i = 0; i < 6; i++) {
 				d = this.getFlowBit(i);
-				if (d != 2) continue;
+				if (d != 1) continue;
 				dir = EnumFacing.VALUES[i];
 				ICapabilityProvider te = this.getTileOnSide(dir);
 				if (te == null || te instanceof LiquidPipe) continue;
@@ -128,13 +128,13 @@ public class LiquidPipe extends AutomatedTile implements IPipe {
 		ArrayList<TankContainer> flowList = new ArrayList<TankContainer>(5);
 		int n = tanks.getAmount(0), max = 0;
 		for (int i = 0; i < 6; i++)
-			if ((d = this.getFlowBit(i)) == 2) {
+			if ((d = this.getFlowBit(i)) == 1) {
 				dir = EnumFacing.VALUES[i];
 				TileEntity te = worldObj.getTileEntity(pos.offset(dir));
 				if (te != null && te instanceof LiquidPipe) {
 					TankContainer dst = ((LiquidPipe)te).tanks;
 					int f = dst.getSpace(0);
-					if (f > 0 && fluid.isFluidEqual(dst.fluids[0])) {
+					if (f > 0 && (dst.fluids[0] == null || fluid.isFluidEqual(dst.fluids[0]))) {
 						flowList.add(dst);
 						max += f;
 					}

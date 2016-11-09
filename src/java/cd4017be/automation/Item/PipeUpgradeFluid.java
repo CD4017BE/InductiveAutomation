@@ -104,7 +104,7 @@ public class PipeUpgradeFluid implements IFilter<FluidStack, IFluidHandler> {
 			NBTTagList list = new NBTTagList();
 			for (Fluid fluid : this.list)
 				list.appendTag(new NBTTagString(fluid.getName()));
-			nbt.setTag("list", list);
+			nbt.setTag(ItemFluidUtil.Tag_FluidList, list);
 		}
 	}
 

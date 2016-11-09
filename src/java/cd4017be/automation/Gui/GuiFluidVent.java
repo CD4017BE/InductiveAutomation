@@ -30,7 +30,7 @@ public class GuiFluidVent extends GuiMachine {
 		super.initGui();
 		guiComps.add(new Button(2, 183, 73, 18, 18, 0).texture(226, 0).setTooltip("pump.update"));
 		guiComps.add(new NumberSel(3, 201, 73, 18, 18, "%d", 0, 127, 8).setTooltip("vent.range"));
-		guiComps.add(new Text(4, 0, ySize, xSize, 8, "gui.cd4017be.vent.pos").font(0xffffffff, 8).center());
+		guiComps.add(new Text(4, 0, ySize, xSize, 8, "vent.pos").font(0xffffffff, 8).center());
 	}
 
 	@Override

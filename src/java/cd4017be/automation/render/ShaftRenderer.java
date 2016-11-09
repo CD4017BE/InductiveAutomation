@@ -1,6 +1,5 @@
 package cd4017be.automation.render;
 
-import java.nio.ByteBuffer;
 import org.lwjgl.opengl.GL11;
 import cd4017be.automation.TileEntity.Shaft;
 import cd4017be.automation.jetpack.TickHandler;

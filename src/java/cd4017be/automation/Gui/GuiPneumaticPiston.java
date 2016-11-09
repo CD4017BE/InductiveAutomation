@@ -1,11 +1,8 @@
 package cd4017be.automation.Gui;
 
-import java.io.IOException;
-
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
 import cd4017be.automation.TileEntity.PneumaticPiston;
 import cd4017be.lib.BlockGuiHandler;
@@ -15,99 +12,55 @@ import cd4017be.lib.templates.AutomatedTile;
 
 public class GuiPneumaticPiston extends GuiMachine {
 
-	private final PneumaticPiston tileEntity;
-	
-	public GuiPneumaticPiston(PneumaticPiston tileEntity, EntityPlayer player)
-	{
+	private final PneumaticPiston tile;
+
+	public GuiPneumaticPiston(PneumaticPiston tileEntity, EntityPlayer player) {
 		super(new TileContainer(tileEntity, player));
-		this.tileEntity = tileEntity;
+		this.tile = tileEntity;
+		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/tesla.png");
+		this.bgTexY = 144;
 	}
 
 	@Override
-	public void initGui() 
-	{
+	public void initGui() {
 		this.xSize = 122;
 		this.ySize = 58;
 		super.initGui();
-		this.guiComps.add(new Slider(0, 81, 16, 34, 212, 54, 12, 4, false));
-	}
-
-	@Override
-	protected void drawGuiContainerForegroundLayer(int mx, int my) 
-	{
-		super.drawGuiContainerForegroundLayer(mx, my);
-		if (this.isPointInRegion(62, 43, 16, 7, mx, my)) {
-			boolean d = mx - this.guiLeft > 70;
-			this.drawSideCube(-64, 8, ((tileEntity.netI0 >> (d ? 4 : 0) & 0xf) + tileEntity.getOrientation()) % 6, d ? (byte)3 : (byte)2);
-		}
-		//this.drawInfo(28, 16, 30, 16, "\\i", "transf");
-		//this.drawInfo(97, 15, 92, 18, "\\i", "rstCtr");
-	}
-	
-	@Override
-	protected void drawGuiContainerBackgroundLayer(float var1, int var2, int var3) 
-	{
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.renderEngine.bindTexture(new ResourceLocation("automation", "textures/gui/tesla.png"));
-		this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 144, this.xSize, this.ySize);
-		this.drawTexturedModalRect(guiLeft + 61, guiTop + 42, 122, 144 + ((tileEntity.netI0 & 0xf) + tileEntity.getOrientation()) % 6 * 9, 9, 9);
-		this.drawTexturedModalRect(guiLeft + 70, guiTop + 42, 122, 144 + ((tileEntity.netI0 >> 4 & 0xf) + tileEntity.getOrientation()) % 6 * 9, 9, 9);
-		this.drawTexturedModalRect(guiLeft + 7, guiTop + 15, 176 + (tileEntity.netI0 >> 8 & 2) * 9, 54, 18, 18);
-		this.drawTexturedModalRect(guiLeft + 7, guiTop + 33, 176 + (tileEntity.netI0 >> 8 & 3) * 18, 36, 18, 18);
-		this.drawTexturedModalRect(guiLeft + 93, guiTop + 16, 131, 144 + (int)(31F * tileEntity.netF1 / PneumaticPiston.Amax), 20, 34);
-		super.drawGuiContainerBackgroundLayer(var1, var2, var3);
-		this.drawStringCentered(tileEntity.getName(), this.guiLeft + this.xSize / 2, this.guiTop + 4, 0x404040);
-		fontRendererObj.drawString(String.format("in : %.0fL/r", tileEntity.netF0 * 1000F), guiLeft + 26, guiTop + 16, 0x808040);
-		fontRendererObj.drawString(String.format("out: %.0fL/r", tileEntity.netF1 * 1000F), guiLeft + 26, guiTop + 24, 0x808040);
-		fontRendererObj.drawString(String.format("P: %.1f kW", tileEntity.netF2 / 1000F), guiLeft + 26, guiTop + 32, 0x808040);
-	}
-
-	@Override
-	protected void mouseClicked(int x, int y, int b) throws IOException 
-	{
-		super.mouseClicked(x, y, b);
-		byte a = -1;
-		if (this.isPointInRegion(8, 16, 16, 16, x, y)) {
-			tileEntity.netI0 ^= 0x200;
-			a = 1;
-		} else if (this.isPointInRegion(8, 34, 16, 16, x, y)) {
-			tileEntity.netI0 ^= 0x100;
-			a = 1;
-		} else if (this.isPointInRegion(62, 43, 7, 7, x, y)) {
-			int s = tileEntity.netI0 & 0xf;
-			s = (s + (b == 0 ? 1 : 5)) % 6;
-			tileEntity.netI0 &= ~0x0f;
-			tileEntity.netI0 |= s;
-			a = 1;
-		} else if (this.isPointInRegion(71, 43, 7, 7, x, y)) {
-			int s = tileEntity.netI0 >> 4 & 0xf;
-			s = (s + (b == 0 ? 1 : 5)) % 6;
-			tileEntity.netI0 &= ~0xf0;
-			tileEntity.netI0 |= s << 4;
-			a = 1;
-		}
-		if (a >= 0) {
-			PacketBuffer dos = tileEntity.getPacketTargetData();
-			dos.writeByte(AutomatedTile.CmdOffset + a);
-			if (a == 1) dos.writeInt(tileEntity.netI0);
-			BlockGuiHandler.sendPacketToServer(dos);
-		}
+		guiComps.add(new Slider(0, 81, 16, 34, 212, 54, 12, 4, false));
+		guiComps.add(new Button(1, 61, 42, 9, 9, 1).texture(122, 144));
+		guiComps.add(new Button(2, 70, 42, 9, 9, 2).texture(122, 144));
+		guiComps.add(new Button(3, 7, 15, 18, 18, 0).texture(194, 0).setTooltip("rstCtr"));
+		guiComps.add(new Button(4, 7, 33, 18, 18, 0).texture(176, 0).setTooltip("rstCtr"));
+		guiComps.add(new ProgressBar(5, 93, 16, 20, 34, 131, 144, (byte)3));
+		guiComps.add(new Text(6, 26, 16, 64, 24, "piston.stat"));
 	}
 
 	@Override
 	protected Object getDisplVar(int id) {
-		return 1F - tileEntity.netF0 / PneumaticPiston.Amax;
+		switch(id) {
+		case 0: return 1F - tile.Ain / PneumaticPiston.Amax;
+		case 1: return EnumFacing.VALUES[((tile.cfg & 0xf) + tile.getOrientation()) % 6];
+		case 2: return EnumFacing.VALUES[((tile.cfg >> 4 & 0xf) + tile.getOrientation()) % 6];
+		case 3: return tile.cfg >> 9 & 1;
+		case 4: return tile.cfg >> 8 & 3;
+		case 5: return tile.Aout / PneumaticPiston.Amax;
+		case 6: return new Object[]{tile.Ain * 1000F, tile.Aout * 1000F, tile.power / 1000F};
+		default: return null;
+		}
+		
 	}
 
 	@Override
 	protected void setDisplVar(int id, Object obj, boolean send) {
-		tileEntity.netF0 = (1F - (Float)obj) * PneumaticPiston.Amax;
-		if (send) {
-			PacketBuffer dos = tileEntity.getPacketTargetData();
-			dos.writeByte(AutomatedTile.CmdOffset);
-			dos.writeFloat(tileEntity.netF0);
-			BlockGuiHandler.sendPacketToServer(dos);
+		PacketBuffer dos = tile.getPacketTargetData();
+		switch(id) {
+		case 0: dos.writeByte(AutomatedTile.CmdOffset).writeFloat(tile.Ain = (1F - (Float)obj) * PneumaticPiston.Amax); break;
+		case 1: dos.writeByte(AutomatedTile.CmdOffset + 1).writeInt(tile.cfg = tile.cfg & ~0x0f | ((tile.cfg & 0xf) + ((Integer)obj == 0 ? 1 : 5)) % 6); break;
+		case 2: dos.writeByte(AutomatedTile.CmdOffset + 1).writeInt(tile.cfg = tile.cfg & ~0xf0 | (((tile.cfg >> 4 & 0xf) + ((Integer)obj == 0 ? 1 : 5)) % 6) << 4); break;
+		case 3: dos.writeByte(AutomatedTile.CmdOffset + 1).writeInt(tile.cfg ^= 0x200); break;
+		case 4: dos.writeByte(AutomatedTile.CmdOffset + 1).writeInt(tile.cfg ^= 0x100); break;
 		}
+		if (send) BlockGuiHandler.sendPacketToServer(dos);
 	}
 
 }

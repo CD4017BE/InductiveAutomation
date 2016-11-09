@@ -27,9 +27,9 @@ public class GuiFuelCell extends GuiMachine {
 		super.initGui();
 		guiComps.add(new NumberSel(5, 98, 16, 70, 16, "%dV", 0, Config.Umax[2], 10).setup(30, 0xff404040, 2, true).setTooltip("voltage"));
 		guiComps.add(new ProgressBar(6, 84, 16, 8, 52, 176, 0, (byte)1));
-		guiComps.add(new ProgressBar(7, 98, 52, 70, 16, 170, 0, (byte)4));
-		guiComps.add(new Text(8, 98, 52, 70, 16, "gui.cd4017be.energy").center());
-		guiComps.add(new Text(9, 98, 34, 70, 16, "gui.cd4017be.fuelCell.power"));
+		guiComps.add(new ProgressBar(7, 98, 52, 70, 16, 184, 0, (byte)4));
+		guiComps.add(new Text(8, 98, 56, 70, 16, "Estor1").center());
+		guiComps.add(new Text(9, 98, 38, 70, 16, "antimFab.power"));
 	}
 
 	@Override
@@ -39,7 +39,7 @@ public class GuiFuelCell extends GuiMachine {
 		case 6: return tile.getPower();
 		case 7: return tile.storage();
 		case 8: return tile.Estor / 1000F;
-		case 9: return tile.power;
+		case 9: return (float)tile.power;
 		default: return null;
 		}
 	}

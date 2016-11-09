@@ -283,10 +283,15 @@ public class TextureMaker extends AutomatedTile implements IGuiData {
 			}
 	}
 	
-	public byte getPixel(int x, int y)
-	{
-		if (x < 0 || y < 0 || x >= width || y >= height) return 0;
-		else return drawing[x + y * width];
+	public byte getPixel(int x, int y) {
+		if (x < 0 || y < 0 || x >= width || y >= height || drawing.length == 0) return 0;
+		int p = x + y * width;
+		return p < drawing.length ? drawing[p] : 0;
+	}
+
+	public String texName() {
+		ItemStack item = inventory.items[0];
+		return item != null && item.hasTagCompound() ? item.getTagCompound().getString("name") : "";
 	}
 
 	@Override
@@ -316,7 +321,6 @@ public class TextureMaker extends AutomatedTile implements IGuiData {
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[3];
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 178, 302));
 		for (int i = 0; i < 15; i++)
 			container.addItemSlot(new SlotHolo(inventory, i + 1, 264, 8 + i * 16, false, false));

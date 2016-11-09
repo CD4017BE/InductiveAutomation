@@ -101,7 +101,6 @@ public class GraviCond extends AutomatedTile implements IGuiData
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[3];
 		container.addPlayerInventory(8, 86);
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 8, 52));
 		container.addItemSlot(new SlotItemHandler(inventory, 1, 116, 34));

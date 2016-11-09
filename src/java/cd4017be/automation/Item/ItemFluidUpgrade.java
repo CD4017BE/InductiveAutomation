@@ -105,8 +105,8 @@ public class ItemFluidUpgrade extends DefaultItem implements IGuiItem {
 		default: if (cmd < 0 || cmd >= 5) return;
 			String name = dis.readStringFromBuffer(32);
 			NBTTagList list;
-			if (nbt.hasKey("types", 9)) list = nbt.getTagList("types", 9);
-			else nbt.setTag("types", list = new NBTTagList());
+			if (nbt.hasKey(ItemFluidUtil.Tag_FluidList, 9)) list = nbt.getTagList(ItemFluidUtil.Tag_FluidList, 8);
+			else nbt.setTag(ItemFluidUtil.Tag_FluidList, list = new NBTTagList());
 			if (!name.isEmpty()) {
 				if (cmd < list.tagCount()) list.set(cmd, new NBTTagString(name));
 				else list.appendTag(new NBTTagString(name));

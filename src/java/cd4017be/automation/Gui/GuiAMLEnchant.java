@@ -24,13 +24,12 @@ public class GuiAMLEnchant extends GuiMachine {
 		this.xSize = 176;
 		this.ySize = 132;
 		super.initGui();
-		guiComps.add(new Text(0, 62, 16, 88, 16, "gui.cd4017be.amLaser.EUse").setTooltip("amlE.info"));
-		guiComps.add(new Text(1, 0, 4, xSize, 0, "gui.cd4017be.amLaser.name").center());
+		guiComps.add(new Text(0, 62, 16, 88, 16, "amlE.use").setTooltip("amlE.info"));//
 	}
 
 	@Override
 	protected Object getDisplVar(int id) {
-		return new Object[]{AMuse, Euse};
+		return new Object[]{AMuse * 100F, Euse};
 	}
 
 	@Override

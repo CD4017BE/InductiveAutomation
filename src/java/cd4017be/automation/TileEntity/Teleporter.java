@@ -366,7 +366,6 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[6];
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 116, 52));
 		container.addItemSlot(new SlotItemHandler(inventory, 1, 152, 52));
 		for (int i = 0; i < 9; i++)

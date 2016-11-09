@@ -88,7 +88,6 @@ public class FuelCell extends AutomatedTile implements IEnergyAccess, IGuiData {
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[5];
 		container.addItemSlot(new SlotTank(inventory, 0, 8, 34));
 		container.addItemSlot(new SlotTank(inventory, 1, 26, 34));
 		container.addItemSlot(new SlotTank(inventory, 2, 62, 34));

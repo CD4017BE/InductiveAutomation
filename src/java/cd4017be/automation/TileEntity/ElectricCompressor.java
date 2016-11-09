@@ -115,7 +115,6 @@ public class ElectricCompressor extends AutomatedTile implements IGuiData, IAcce
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[3];
 		for (int j = 0; j < 2; j++)
 			for (int i = 0; i < 2; i++)
 				container.addItemSlot(new SlotItemHandler(inventory, i + 2 * j, 62 + 18 * i, 25 + 18 * j));

@@ -1,5 +1,6 @@
 package cd4017be.automation;
 
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -9,12 +10,16 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.util.ArrayList;
 
+import cd4017be.api.Capabilities.*;
 import cd4017be.api.automation.AreaProtect;
 import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.api.recipes.RecipeAPI;
 import cd4017be.automation.Block.BlockOre.Ore;
 import cd4017be.automation.jetpack.JetPackConfig;
 import cd4017be.automation.jetpack.PacketHandler;
+import cd4017be.automation.pipes.BasicWarpPipe;
+import cd4017be.automation.shaft.GasContainer;
+import cd4017be.automation.shaft.ShaftComponent;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.ConfigurationFile;
 import cd4017be.lib.DefaultBlock;
@@ -63,6 +68,7 @@ public class Automation {
 		Config.loadConfig(ConfigurationFile.init(event, "inductiveAutomation.cfg", "/assets/automation/config/preset.cfg", true));
 		tabAutomation = new CreativeTabAutomation("automation");
 		tabFluids = new CreativeTabFluids("fluids");
+		initCapabilities();
 		initFluids();
 		initItems();
 		initBlocks();
@@ -95,6 +101,12 @@ public class Automation {
 	public void postInit(FMLPostInitializationEvent event) {
 		for (String s : Config.data.getStringArray("rcp.Pulverize.oreIn")) AutomationRecipes.addItemCrushingRecipes(s);
 		this.cleanConfig();
+	}
+
+	private void initCapabilities() {
+		CapabilityManager.INSTANCE.register(BasicWarpPipe.class, new EmptyStorage<BasicWarpPipe>(), new EmptyCallable<BasicWarpPipe>());
+		CapabilityManager.INSTANCE.register(ShaftComponent.class, new EmptyStorage<ShaftComponent>(), new EmptyCallable<ShaftComponent>());
+		CapabilityManager.INSTANCE.register(GasContainer.class, new EmptyStorage<GasContainer>(), new EmptyCallable<GasContainer>());
 	}
 
 	private void initItems() {

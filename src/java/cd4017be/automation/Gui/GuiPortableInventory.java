@@ -24,15 +24,14 @@ public class GuiPortableInventory extends GuiMachine {
 		this.xSize = 176;
 		this.ySize = 168;
 		super.initGui();
-		guiComps.add(new Button(0, 7, 34, 18, 18, 0).texture(176, 0).setTooltip("inputFilter"));
-		guiComps.add(new Button(1, 7, 42, 18, 8, 0).texture(176, 8).setTooltip("outputFilter"));
-		guiComps.add(new Text(2, 0, 4, xSize, 0, "item.cd4017be.portableInventory.name"));
+		guiComps.add(new Button(0, 7, 34, 18, 8, 0).texture(176, 0).setTooltip("inputFilter"));
+		guiComps.add(new Button(1, 7, 42, 18, 8, 0).texture(176, 16).setTooltip("outputFilter"));
 	}
 
 	@Override
 	protected Object getDisplVar(int id) {
 		ItemStack item = inv.mainInventory[inv.currentItem];
-		if (id < 2) return ItemFilteredSubInventory.isFilterOn(item, id == 0);
+		if (id < 2) return ItemFilteredSubInventory.isFilterOn(item, id == 0) ? 1 : 0;
 		else return null;
 	}
 

@@ -108,7 +108,7 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 		if (update) ItemGuiData.updateInventory(player, s);
 	}
 
-	protected boolean autoInput(ItemStack item, InventoryPlayer inv, PipeUpgradeItem in) {
+	protected boolean autoInput(ItemStack item, InventoryPlayer inv, PipeUpgradeItem in) {//TODO fix this
 		IItemHandler acc = new InvWrapper(inv);
 		in.mode |= 64;
 		if ((in.mode & 128) == 0) return false;
@@ -118,7 +118,7 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 		}
 		while(InventoryItemHandler.hasEmptySlot(item)) {
 			ItemStack search = in.getExtract(null, acc);
-			if (extract(item, inv, search)) return true;
+			if (!extract(item, inv, search)) return true;
 		}
 		return true;
 	}
@@ -134,10 +134,10 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 				if (stack != null) {
 					if (inv.mainInventory[i] == null) inv.mainInventory[i] = stack;
 					else inv.mainInventory[i].stackSize += stack.stackSize;
-					return true;
+					return false;
 				}
 			}
-		return false;
+		return true;
 	}
 
 	protected boolean autoOutput(ItemStack item, InventoryPlayer inv, PipeUpgradeItem out) {

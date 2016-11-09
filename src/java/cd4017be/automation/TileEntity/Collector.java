@@ -77,7 +77,6 @@ public class Collector extends AutomatedTile implements IGuiData {
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[3];
 		container.addItemSlot(new SlotTank(inventory, 0, 202, 74));
 		container.addPlayerInventory(8, 16);
 		

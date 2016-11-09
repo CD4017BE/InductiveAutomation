@@ -169,20 +169,8 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 		boolean update = false;
 		if (!prot.isPlayerOwner(player.getName())) return;
 		byte cmd = dis.readByte();
-		if (cmd == 0) {
-			byte btn = dis.readByte();
-			if (btn >= 0 && btn < 4) {
-				Uref -= btn == 0 ? 1 : btn == 1 ? 10 : btn == 2 ? 100 : 1000;
-				if (Uref < 0) Uref = 0;
-			} else if (btn >= 4 && btn < 8) {
-				Uref += btn == 4 ? 1 : btn == 5 ? 10 : btn == 6 ? 100 : 1000;
-				if (Uref > energy.Umax) Uref = energy.Umax;
-			} else if (btn == 8) {
-				rstCtr = (rstCtr & 12) | (rstCtr + 1 & 3);
-			} else if (btn == 9) {
-				rstCtr = (rstCtr + 4 & 12) | (rstCtr & 3);
-			}
-		} else if (cmd == 1) {
+		if (cmd == 0) rstCtr = dis.readByte();
+		else if (cmd == 1) {
 			byte g = dis.readByte();
 			byte p = dis.readByte();
 			prot.removePLayer(p, g);
@@ -204,6 +192,10 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 				EuseP = (int)prot.getEnergyCost();
 			}
 			update = true;
+		} else if (cmd == 4) {
+			Uref = dis.readInt();
+			if (Uref < 0) Uref = 0;
+			else if (Uref > energy.Umax) Uref = energy.Umax;
 		}
 		if (update) this.markUpdate();
 	}
@@ -255,7 +247,6 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 
 	@Override
 	public void initContainer(DataContainer container) {
-		container.refInts = new int[5];
 	}
 
 	@Override

@@ -204,7 +204,6 @@ public class TeslaTransmitter extends ModTileEntity implements ITeslaTransmitter
 
 	@Override
 	public void initContainer(DataContainer container) {
-		container.refInts = new int[2];
 	}
 
 	@Override

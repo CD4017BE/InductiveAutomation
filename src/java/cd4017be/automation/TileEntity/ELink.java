@@ -31,7 +31,7 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 	public int type = 0;
 	public float energyDemand = 0, energyMoved = 0;
 	public int Umin, Umax, rstCtr;
-	public float Uref, netF1, netF2, netF3;
+	public float Uref, Estor, Ecap, power;
 	
 	public ELink() {
 		energy = new PipeEnergy(0, 0);
@@ -56,9 +56,9 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 		int s = this.getOrientation();
 		IEnergyAccess storage = EnergyAPI.get(Utils.getTileOnSide(this, (byte)s), EnumFacing.VALUES[this.getOrientation()^1]);
 		Uref = (float)energy.Ucap;
-		netF1 = (float)storage.getStorage();
-		netF2 = (float)storage.getCapacity();
-		float Uref = netF2 > 0 ? Umin + (Umax - Umin) * (netF1 / netF2) : (Umin + Umax) / 2F;
+		Estor = (float)storage.getStorage();
+		Ecap = (float)storage.getCapacity();
+		float Uref = Ecap > 0 ? Umin + (Umax - Umin) * (Estor / Ecap) : (Umin + Umax) / 2F;
 		if (active) {
 			float e = energy.getEnergy(Uref, 1);
 			energyMoved = storage.addEnergy(e);
@@ -68,11 +68,11 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 		} else {
 			energyDemand = energyMoved = 0;
 		}
-		netF3 = (float)energyMoved; energyMoved = 0;
+		power = (float)energyMoved; energyMoved = 0;
 	}
 
 	public float getStorage() {
-		return netF1 / netF2;
+		return Estor / Ecap;
 	}
 
 	public float getVoltage() {
@@ -83,9 +83,9 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 
 	@Override
 	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException {
-		if (cmd == 0) Umin = dis.readInt();
-		else if (cmd == 1) Umax = dis.readInt();
-		else if (cmd == 2) rstCtr = dis.readInt();
+		if (cmd == 0) Umin = dis.readShort();
+		else if (cmd == 1) Umax = dis.readShort();
+		else if (cmd == 2) rstCtr = dis.readByte();
 	}
 
 	@Override
@@ -112,7 +112,6 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 	
 	@Override
 	public void initContainer(DataContainer container) {
-		container.refInts = new int[7];
 		((TileContainer)container).addPlayerInventory(8, 86);
 	}
 
@@ -163,7 +162,7 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 
 	@Override
 	public int[] getSyncVariables() {
-		return new int[]{Umin, Umax, rstCtr, Float.floatToIntBits(Uref), Float.floatToIntBits(netF1), Float.floatToIntBits(netF2), Float.floatToIntBits(netF3)};
+		return new int[]{Umin, Umax, rstCtr, Float.floatToIntBits(Uref), Float.floatToIntBits(Estor), Float.floatToIntBits(Ecap), Float.floatToIntBits(power)};
 	}
 
 	@Override
@@ -173,9 +172,9 @@ public class ELink extends AutomatedTile implements IGuiData, IEnergyReceiver, I
 		case 1: Umax = v; break;
 		case 2: rstCtr = v; break;
 		case 3: Uref = Float.intBitsToFloat(v); break;
-		case 4: netF1 = Float.intBitsToFloat(v); break;
-		case 5: netF2 = Float.intBitsToFloat(v); break;
-		case 6: netF3 = Float.intBitsToFloat(v); break;
+		case 4: Estor = Float.intBitsToFloat(v); break;
+		case 5: Ecap = Float.intBitsToFloat(v); break;
+		case 6: power = Float.intBitsToFloat(v); break;
 		}
 	}
 

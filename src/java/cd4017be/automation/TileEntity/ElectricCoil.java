@@ -163,8 +163,7 @@ public class ElectricCoil extends AutomatedTile implements IKineticComp, IGuiDat
 	}
 
 	@Override
-	public void initContainer(DataContainer container) {
-		container.refInts = new int[4];
+	public void initContainer(DataContainer container) {
 	}
 
 	@Override

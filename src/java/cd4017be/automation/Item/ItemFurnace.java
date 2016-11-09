@@ -107,6 +107,7 @@ public class ItemFurnace extends ItemFilteredSubInventory implements IEnergyItem
 					if (!inv.addItemStackToInventory(stack)) {
 						player.dropItem(stack, true);
 					}
+					ItemGuiData.updateInventory(player, s);
 				}
 			}
 		}

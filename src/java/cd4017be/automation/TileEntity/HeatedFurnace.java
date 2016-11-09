@@ -102,8 +102,7 @@ public class HeatedFurnace extends AutomatedTile implements IHeatStorage, IGuiDa
 
 	@Override
 	public void initContainer(DataContainer container) {
-		TileContainer cont = (TileContainer)container;
-		cont.refInts = new int[3];
+		TileContainer cont = (TileContainer)container;
 		cont.addItemSlot(new SlotItemHandler(inventory, 0, 17, 16));
 		cont.addItemSlot(new SlotItemType(inventory, 1, 71, 16));
 		cont.addPlayerInventory(8, 68);

@@ -28,8 +28,8 @@ public class GuiElectricCoil extends GuiMachine {
 		this.guiComps.add(new Slider(1, 81, 18, 32, 212, 54, 12, 4, false));
 		this.guiComps.add(new Button(2, 7, 15, 18, 18, 0).texture(176, 0).setTooltip("rstCtr"));
 		this.guiComps.add(new Button(3, 7, 33, 18, 18, 0).texture(194, 0).setTooltip("rstCtr"));
-		this.guiComps.add(new Text(4, 26, 16, 52, 16, "gui.cd4017be.elCoil.stat"));
-		this.guiComps.add(new Text(5, 30, 38, 48, 8, "gui.cd4017be.elCoil.N"));
+		this.guiComps.add(new Text(4, 26, 16, 52, 16, "elCoil.stat"));
+		this.guiComps.add(new Text(5, 30, 38, 48, 8, "elCoil.N"));
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.DataContainer.IGuiData;
-import cd4017be.lib.Gui.SlotHolo;
+import cd4017be.lib.Gui.SlotStaticItem;
 import cd4017be.lib.Gui.SlotTank;
 import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.Gui.TileContainer.TankSlot;
@@ -91,7 +91,7 @@ public class LavaCooler extends AutomatedTile implements IGuiData {
 			progress--;
 		}
 		if (progress <= 0) {
-			if (ItemFluidUtil.putInSlots(inventory, mode.getOutput(), 0, 1) == null) {
+			if (mode.getOutput() == null || ItemFluidUtil.putInSlots(inventory, mode.getOutput(), 0, 1) == null) {
 				cfg = (cfg & 0x30) | 4;
 			}
 		}
@@ -144,10 +144,10 @@ public class LavaCooler extends AutomatedTile implements IGuiData {
 		container.addItemSlot(new SlotTank(inventory, 3, 107, 34));
 		container.addItemSlot(new SlotTank(inventory, 4, 143, 34));
 		
-		container.addItemSlot(new SlotHolo(inventory, 5, 8, 16, true, false));
-		container.addItemSlot(new SlotHolo(inventory, 6, 26, 16, true, false));
-		container.addItemSlot(new SlotHolo(inventory, 7, 8, 34, true, false));
-		container.addItemSlot(new SlotHolo(inventory, 8, 26, 34, true, false));
+		container.addItemSlot(new SlotStaticItem(8, 16, Mode.nothing.getOutput()));
+		container.addItemSlot(new SlotStaticItem(26, 16, Mode.cobblestone.getOutput()));
+		container.addItemSlot(new SlotStaticItem(8, 34, Mode.stone.getOutput()));
+		container.addItemSlot(new SlotStaticItem(26, 34, Mode.obsidian.getOutput()));
 		
 		container.addPlayerInventory(8, 86);
 		
@@ -161,6 +161,19 @@ public class LavaCooler extends AutomatedTile implements IGuiData {
 		if (s < container.invPlayerS) container.mergeItemStack(item, container.invPlayerS, container.invPlayerE, false);
 		else container.mergeItemStack(item, 0, 2, false);
 		return true;
+	}
+
+	@Override
+	public int[] getSyncVariables() {
+		return new int[]{cfg, progress};
+	}
+
+	@Override
+	public void setSyncVariable(int i, int v) {
+		switch(i) {
+		case 0: cfg = v;
+		case 1: progress = v;
+		}
 	}
 
 }

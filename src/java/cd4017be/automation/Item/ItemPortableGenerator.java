@@ -74,6 +74,7 @@ public class ItemPortableGenerator extends ItemFilteredSubInventory implements I
 					e += (float)h * 1000F;
 					cont[0].stackSize = 1;
 					InventoryItemHandler.extractItemStack(item, cont[0]);
+					ItemGuiData.updateInventory(player, s);
 				}
 			}
 		}

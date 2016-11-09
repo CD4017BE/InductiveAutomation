@@ -28,13 +28,13 @@ public class GuiElectricHeater extends GuiMachine {
 		this.ySize = 76;
 		super.initGui();
 		guiComps.add(new NumberSel(1, 8, 16, 16, 52, "%d", Config.Rmin, 1000, 5).setTooltip("resistor"));
-		guiComps.add(new ProgressBar(2, 26, 16, 8, 52, 176, 0, (byte)1));
+		guiComps.add(new ProgressBar(2, 26, 16, 8, 52, 248, 0, (byte)1));
 		guiComps.add(new Tooltip(3, 26, 16, 8, 52, "energyFlow"));
 		guiComps.add(new Slider(4, 45, 24, 70, 198, 8, 4, 12, true));
 		guiComps.add(new ProgressBar(5, 45, 16, 70, 8, 176, 0, (byte)0));
-		guiComps.add(new Button(6, 43, 51, 18, 18, 0).texture(212, 8));
+		guiComps.add(new Button(6, 43, 51, 18, 18, 0).texture(194, 26));
 		guiComps.add(new Button(7, 61, 51, 18, 18, 0).texture(176, 26));
-		guiComps.add(new Text(8, 80, 38, 0, 8, "temp").center().font(0x808040, 8));
+		guiComps.add(new Text(8, 80, 38, 0, 8, "Temp2").center().font(0x808040, 8));
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class GuiElectricHeater extends GuiMachine {
 		PacketBuffer dos = tile.getPacketTargetData();
 		switch(id) {
 		case 1: dos.writeByte(AutomatedTile.CmdOffset).writeInt(tile.Rw = (Integer)obj); break;
-		case 2: dos.writeByte(AutomatedTile.CmdOffset + 1).writeFloat(tile.Tref = (Float)obj * 2500F + 300F); break;
+		case 4: dos.writeByte(AutomatedTile.CmdOffset + 1).writeFloat(tile.Tref = (Float)obj * 2500F + 300F); break;
 		case 6: dos.writeByte(AutomatedTile.CmdOffset + 2).writeByte(tile.rstCtr ^= 2); break;
 		case 7: dos.writeByte(AutomatedTile.CmdOffset + 2).writeByte(tile.rstCtr ^= 1); break;
 		}

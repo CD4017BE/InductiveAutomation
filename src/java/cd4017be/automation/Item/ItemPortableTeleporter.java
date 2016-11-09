@@ -92,6 +92,7 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem {
 			tag.setInteger("x", MathHelper.floor_double(player.posX));
 			tag.setInteger("y", MathHelper.floor_double(player.posY));
 			tag.setInteger("z", MathHelper.floor_double(player.posZ));
+			tag.setByte("d", (byte)player.worldObj.provider.getDimension());
 			tag.setString("n", "P" + points.tagCount());
 			points.appendTag(tag);
 		} else if (cmd == 2) {//edit Point
@@ -101,13 +102,14 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem {
 			tag.setInteger("x", dis.readInt());
 			tag.setInteger("y", dis.readInt());
 			tag.setInteger("z", dis.readInt());
+			tag.setByte("d", dis.readByte());
 			tag.setString("n", dis.readStringFromBuffer(32));
 		} else if (cmd == 3) {//delete Point
 			int i = dis.readByte();
 			if (i >= 0 && i < points.tagCount()) points.removeTag(i);
 		}
 		item.getTagCompound().setTag("points", points);
-		player.setHeldItem(player.getActiveHand(), item);
+		player.setHeldItem(player.getActiveHand(), item);//TODO fix client sync
 	}
 
 	@Override

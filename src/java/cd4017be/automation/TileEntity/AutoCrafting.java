@@ -178,7 +178,6 @@ public class AutoCrafting extends AutomatedTile implements IGuiData, IAccessHand
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[2];
 		for (int j = 0; j < 3; j++)
 		for (int i = 0; i < 3; i++)
 		container.addItemSlot(new SlotItemHandler(inventory, i + j * 3, 8 + i * 18, 16 + j * 18));

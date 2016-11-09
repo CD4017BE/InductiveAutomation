@@ -26,7 +26,7 @@ public class GuiGraviCond extends GuiMachine {
 		guiComps.add(new ProgressBar(3, 26, 16, 70, 12, 176, 0, (byte)4).setTooltip("grav.energy"));
 		guiComps.add(new ProgressBar(4, 26, 34, 70, 12, 176, 12, (byte)4).setTooltip("grav.trash"));
 		guiComps.add(new Tooltip(5, 133, 37, 18, 10, "grav.need"));
-		guiComps.add(new Text(6, 26, 18, 70, 8, "energy").center());
+		guiComps.add(new Text(6, 26, 18, 70, 8, "Estor1").center());
 		guiComps.add(new Text(7, 26, 36, 70, 8, "percent").center());
 		guiComps.add(new Text(8, 26, 52, 70, 16, "grav.matter"));
 	}

@@ -145,7 +145,6 @@ public class SteamBoiler extends AutomatedTile implements IGuiData {
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[5];
 		for (int i = 0; i < 3; i++)
 			container.addItemSlot(new SlotItemHandler(inventory, i, 8, 16 + 18 * i));
 		container.addItemSlot(new SlotTank(inventory, 3, 71, 34));

@@ -30,13 +30,12 @@ public class GuiAreaUpgrade extends GuiMachine {
 		for (int i = 0; i < 2; i++)
 			for (int j = 0; j < 3; j++)
 				guiComps.add(new TextField(i * 3 + j, 110 + i * 33, 36 + j * 12, 25, 8, 5));
-		guiComps.add(new Text(6, 26, 16, 88, 16, "gui.cd4017be.areaCfg.size_").setTooltip("areaCfg.size"));
-		guiComps.add(new Text(7, 26, 34, 88, 16, "gui.cd4017be.areaCfg.dist_").setTooltip("areaCfg.dist"));
-		guiComps.add(new Text(8, 26, 52, 88, 16, "gui.cd4017be.areaCfg.Umax_").setTooltip("areaCfg.Umax"));
+		guiComps.add(new Text(6, 26, 16, 88, 16, "areaCfg.size_").setTooltip("areaCfg.size"));
+		guiComps.add(new Text(7, 26, 34, 88, 16, "areaCfg.dist_").setTooltip("areaCfg.dist"));
+		guiComps.add(new Text(8, 26, 52, 88, 16, "areaCfg.Umax_").setTooltip("areaCfg.Umax"));
 		guiComps.add(new Button(9, 115, 15, 18, 18, -1).setTooltip("areaCfg.copy"));
 		guiComps.add(new GuiComp(10, 152, 16, 16, 16).setTooltip("areaCfg.dspl"));
 		guiComps.add(new GuiComp(11, 134, 16, 16, 16).setTooltip("areaCfg.synch"));
-		guiComps.add(new Text(99, 0, 4, xSize, 0, "gui.cd4017be.selectionTool.name").center());
 	}
 
 	@Override

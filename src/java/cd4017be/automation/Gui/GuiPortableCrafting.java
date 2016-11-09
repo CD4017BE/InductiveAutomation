@@ -28,11 +28,10 @@ public class GuiPortableCrafting extends GuiMachine {
 		super.initGui();
 		guiComps.add(new Button(0, 89, 34, 16, 16, -1));
 		guiComps.add(new NumberSel(1, 106, 33, 18, 18, "%d", 0, 64, 8));
-		guiComps.add(new Button(2, 124, 33, 18, 18, 0).setTooltip("startCraft"));
-		guiComps.add(new Button(3, 142, 33, 18, 18, 0).setTooltip("autoCraft#"));
+		guiComps.add(new Button(2, 124, 33, 18, 18, 0).texture(176, 0).setTooltip("startCraft"));
+		guiComps.add(new Button(3, 142, 33, 18, 18, 0).texture(194, 0).setTooltip("autoCraft#"));
 		guiComps.add(new Button(4, 74, 55, 10, 10, -1).setTooltip("clearRecipe"));
 		guiComps.add(new GuiComp(5, 92, 55, 10, 10).setTooltip("directCraft"));
-		guiComps.add(new Text(6, 0, 4, xSize, 0, "item.cd4017be.portableCrafter.name").center());
 	}
 
 	@Override
@@ -57,7 +56,7 @@ public class GuiPortableCrafting extends GuiMachine {
 		case 3: dos.writeByte(1); break;
 		case 4: 
 			for (int i = 0; i < 9; i++) 
-				this.mc.playerController.windowClick(this.inventorySlots.windowId, i + 36, 0, ClickType.PICKUP, this.mc.thePlayer);
+				this.mc.playerController.windowClick(this.inventorySlots.windowId, i, 0, ClickType.PICKUP, this.mc.thePlayer);
 		default: return;
 		}
 		if (send) BlockGuiHandler.sendPacketToServer(dos);

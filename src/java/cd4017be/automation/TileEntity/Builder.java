@@ -2,7 +2,6 @@ package cd4017be.automation.TileEntity;
 
 import net.minecraft.network.PacketBuffer;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -13,9 +12,7 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
-
 import com.mojang.authlib.GameProfile;
-
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.computers.ComputerAPI;
@@ -28,7 +25,6 @@ import cd4017be.automation.Item.ItemMachineSynchronizer;
 import cd4017be.automation.Item.ItemPlacement;
 import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.DataContainer.IGuiData;
-import cd4017be.lib.Gui.SlotItemType;
 import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
@@ -43,7 +39,6 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -631,20 +626,9 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 	}
 
 	@Override
-	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
-	{
-		if (cmd < 16) {
-			int n = (cmd & 1) == 1 ? 1 : -1;
-			thick[cmd >> 1] += n;
-			stackIterSum += n;
-			if (thick[cmd >> 1] < 0) {
-				stackIterSum -= thick[cmd >> 1];
-				thick[cmd >> 1] = 0;
-			}
-		} else if (cmd == 16) {
-			thick[9]++;
-			if (thick[9] >= 3) thick[9] = 0;
-		} else if (cmd == 17) {
+	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) {
+		if (cmd >= thick.length) return;
+		if (cmd == 8) {
 			if (thick[8] != 0) {
 				thick[8] = 0;
 				this.setupData();
@@ -652,7 +636,7 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 				thick[8] = 0;
 				nextStep();
 			}
-		}
+		} else thick[cmd] = dis.readShort();
 	}
 	
 	@Override
@@ -722,28 +706,14 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[thick.length];
-		for (int i = 0; i < 3; i++)
-		{
-			container.addItemSlot(new SlotItemHandler(inventory, i, 62 + i * 18, 16));
-		}
-		for (int i = 0; i < 6; i++)
-		{
-			container.addItemSlot(new SlotItemHandler(inventory, 3 + i, 8 + i * 18, 34));
-		}
+		for (int i = 0; i < 9; i++)
+			container.addItemSlot(new SlotItemHandler(inventory, i, 8 + i * 18, 34));
 		for (int i = 0; i < 8; i++)
-		{
-			container.addItemSlot(new SlotItemHandler(inventory, 9 + i, 8 + i * 18, 52));
-		}
-		
+			container.addItemSlot(new SlotItemHandler(inventory, 9 + i, 26 + i * 18, 52));
 		for (int i = 0; i < 3; i++)
-		{
 			for (int j = 0; j < 9; j++)
-			{
 				container.addItemSlot(new SlotItemHandler(inventory, 17 + i * 9 + j, 8 + j * 18, 88 + i * 18));
-			}
-		}
-		container.addItemSlot(new SlotItemType(inventory, 49, 152, 52, new ItemStack(Items.PAPER)));
+		//container.addItemSlot(new SlotItemType(inventory, 49, 152, 52, new ItemStack(Items.PAPER)));
 		container.addPlayerInventory(8, 158);
 	}
 

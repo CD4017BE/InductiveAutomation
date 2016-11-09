@@ -111,7 +111,7 @@ public class ItemPortableTesla extends DefaultItem implements IGuiItem {
 		@Override
 		public void initContainer(DataContainer container) {
 			TileContainer cont = (TileContainer)container;
-			cont.addPlayerInventory(8, 50, true, true);
+			cont.addPlayerInventory(26, 50, true, true);
 		}
 
 	}

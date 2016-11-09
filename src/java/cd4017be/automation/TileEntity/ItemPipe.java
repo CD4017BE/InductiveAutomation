@@ -40,7 +40,7 @@ public class ItemPipe extends AutomatedTile implements IPipe {
 
 	public ItemPipe() {
 		inventory = new Inventory(1, 1, null).group(0, 0, 1, Utils.ACC);
-		inventory.sideCfg = 0x555;
+		inventory.sideCfg = 0x00c0300c0300c03L;
 	}
 
 	@Override
@@ -77,7 +77,7 @@ public class ItemPipe extends AutomatedTile implements IPipe {
 				d = d == 1 ? 2 : d == 2 ? 1 : (byte)0;
 				setFlowBit(i, d);
 				nHasIO |= d;
-			} else if (type != BlockItemPipe.ID_Transport && te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite())) {
+			} else if (type != BlockItemPipe.ID_Transport && te != null && te.hasCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, dir.getOpposite())) {
 				setFlowBit(i, type);
 				nHasIO |= type;
 			} else setFlowBit(i, 0);
@@ -100,7 +100,7 @@ public class ItemPipe extends AutomatedTile implements IPipe {
 		else if (type == BlockItemPipe.ID_Extraction) {
 			for (int i = 0; i < 6; i++) {
 				d = this.getFlowBit(i);
-				if (d != 1) continue;
+				if (d != 2) continue;
 				dir = EnumFacing.VALUES[i];
 				ICapabilityProvider te = this.getTileOnSide(dir);
 				if (te == null || te instanceof ItemPipe) continue;
@@ -111,7 +111,7 @@ public class ItemPipe extends AutomatedTile implements IPipe {
 		} else if (inventory.items[0] != null) {
 			for (int i = 0; i < 6; i++) {
 				d = this.getFlowBit(i);
-				if (d != 2) continue;
+				if (d != 1) continue;
 				dir = EnumFacing.VALUES[i];
 				ICapabilityProvider te = this.getTileOnSide(dir);
 				if (te == null || te instanceof ItemPipe) continue;
@@ -123,7 +123,7 @@ public class ItemPipe extends AutomatedTile implements IPipe {
 		if (inventory.items[0] == null || (type == BlockItemPipe.ID_Injection && filter != null && !filter.transfer(inventory.items[0]))) return;
 		ArrayList<Inventory> flowList = new ArrayList<Inventory>(5);
 		for (int i = 0; i < 6; i++)
-			if ((d = this.getFlowBit(i)) == 2) {
+			if ((d = this.getFlowBit(i)) == 1) {
 				dir = EnumFacing.VALUES[i];
 				TileEntity te = worldObj.getTileEntity(pos.offset(dir));
 				if (te != null && te instanceof ItemPipe) flowList.add(((ItemPipe)te).inventory);
@@ -148,9 +148,9 @@ public class ItemPipe extends AutomatedTile implements IPipe {
 			extr = item.copy();
 			extr.stackSize = item.getMaxStackSize() - item.stackSize;
 		} else if ((extr = filter.getExtract(item, inv)) == null) return item;
-		else extr.stackSize = Math.min(extr.stackSize, item.getMaxStackSize() - item.stackSize);
-		int n = ItemFluidUtil.drain(inv, extr);
-		return n == 0 ? null : ItemHandlerHelper.copyStackWithSize(item, n);
+		else extr.stackSize = Math.min(extr.stackSize, extr.getMaxStackSize() - (item != null ? item.stackSize : 0));
+		extr.stackSize = ItemFluidUtil.drain(inv, extr) + (item != null ? item.stackSize : 0);
+		return extr;
 	}
 
 	private ItemStack insert(IItemHandler inv, ItemStack item) {

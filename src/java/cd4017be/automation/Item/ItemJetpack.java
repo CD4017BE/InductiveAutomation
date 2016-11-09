@@ -190,11 +190,6 @@ public class ItemJetpack extends ItemArmor implements ISpecialArmor {
 	}
 
 	@Override
-	public String getUnlocalizedName(ItemStack item) {
-		return super.getUnlocalizedName().replaceFirst("item.", "item.cd4017be.");
-	}
-
-	@Override
 	public String getItemStackDisplayName(ItemStack item) {
 		return I18n.translateToLocal(this.getUnlocalizedName(item) + ".name");
 	}

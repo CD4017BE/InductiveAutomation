@@ -209,7 +209,6 @@ public class FluidVent extends AutomatedTile implements IGuiData
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		cont.refInts = new int[2];
 		container.addItemSlot(new SlotTank(inventory, 0, 202, 34));
 		
 		container.addPlayerInventory(8, 16);
