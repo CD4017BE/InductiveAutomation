@@ -42,7 +42,7 @@ public class GuiPortableTesla extends GuiMachine {
 		case 2: return nbt.getShort("mode") >> 8 & 3;
 		case 3: return nbt.getShort("mode") >> 10 & 3;
 		case 4: return nbt.getShort("mode") >> 12 & 3;
-		case 5: {double u = nbt.getDouble("voltage"); return (int)(u * u * 0.001D);}
+		case 5: {double u = nbt.getDouble("voltage"); return (float)(u * u * 0.001D);}
 		default: return null;
 		}
 	}

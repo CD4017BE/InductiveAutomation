@@ -30,6 +30,7 @@ public class GuiMassstorageChest extends GuiMachine {
 		super.initGui();
 		guiComps.add(new Button(1, 181, 209, 18, 18, -1).setTooltip("autoSort"));
 		guiComps.add(new GuiComp(2, 182, 174, 16, 16).setTooltip("massstorage"));
+		guiComps.add(new GuiComp(3, 186, 196, 7, 8).setTooltip("specialSlot"));
 	}
 
 	@Override

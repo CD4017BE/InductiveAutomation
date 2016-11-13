@@ -92,7 +92,6 @@ public class Objects {
 	public static BlockPipe liquidPipe;
 	public static BlockPipe itemPipe;
 	public static BlockPipe warpPipe;
-	public static TileBlock voltageTransformer;
 	public static TileBlock SCSU;
 	public static TileBlock OCSU;
 	public static TileBlock CCSU;
@@ -132,7 +131,6 @@ public class Objects {
 	public static TileBlock trash;
 	public static TileBlock electrolyser;
 	public static TileBlock fuelCell;
-	public static TileBlock detector;
 	public static TileBlock itemSorter;
 	public static TileBlock matterInterfaceB;
 	public static TileBlock fluidPacker;
@@ -158,7 +156,6 @@ public class Objects {
 	//Materials
 	public static Material M_thermIns;
 
-	//TODO init Capabilities
 	@CapabilityInject(BasicWarpPipe.class)
 	public static Capability<BasicWarpPipe> WARP_PIPE_CAP;
 	@CapabilityInject(ShaftComponent.class)

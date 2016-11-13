@@ -1,6 +1,7 @@
 package cd4017be.automation.TileEntity;
 
 import java.util.ArrayList;
+
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.Gui.DataContainer;
@@ -9,7 +10,7 @@ import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.TankContainer;
-import cd4017be.lib.util.Obj2;
+import cd4017be.lib.util.ItemFluidUtil.StackedFluidAccess;
 import cd4017be.lib.util.Utils;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,7 +18,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.items.SlotItemHandler;
 
 /**
@@ -36,34 +36,24 @@ public class AntimatterTank extends AutomatedTile implements IGuiData
 	}
 	
 	@Override
-	public void update() 
-	{
+	public void update() {
 		super.update();
 		if (worldObj.isRemote) return;
 		boolean f = false;
-		if (inventory.items[0] != null && inventory.items[0].getItem() instanceof IFluidContainerItem)//TODO use fluid capabilities
-		{
+		StackedFluidAccess acc;
+		int am;
+		if ((am = tanks.getAmount(0)) > 0 && (acc = new StackedFluidAccess(inventory.items[0])).valid()) {
 			if (fillRate < 5) fillRate = 5;
-			int am = tanks.getAmount(0);
 			if (am - fillRate < 0) fillRate = am;
-			Obj2<ItemStack, Integer> obj = Utils.fillFluid(inventory.items[0], new FluidStack(Objects.L_antimatter, fillRate));
-			tanks.drain(0, obj.objB, true);
-			inventory.items[0] = obj.objA;
-			f = true;
+			f |= (am = acc.fill(new FluidStack(Objects.L_antimatter, fillRate), true)) > 0;
+			tanks.drain(0, am, true);
+			inventory.items[0] = acc.result();
 		}
-		if (inventory.items[1] != null && inventory.items[1].getItem() instanceof IFluidContainerItem)
-		{
-			IFluidContainerItem fc = (IFluidContainerItem)inventory.items[1].getItem();
+		if ((am = tanks.getSpace(0)) > 0 && (acc = new StackedFluidAccess(inventory.items[1])).valid()) {
 			if (fillRate < 5) fillRate = 5;
-			int am = tanks.getSpace(0);
 			if (am - fillRate < 0) fillRate = am;
-			FluidStack cont = fc.getFluid(inventory.items[1]);
-			if (cont != null && cont.getFluid() == Objects.L_antimatter) {
-				Obj2<ItemStack, FluidStack> obj = Utils.drainFluid(inventory.items[1], fillRate);
-				tanks.fill(0, obj.objB, true);
-				inventory.items[1] = obj.objA;
-				f = true;
-			}
+			f |= tanks.fill(0, acc.drain(new FluidStack(Objects.L_antimatter, fillRate), true), true) > 0;
+			inventory.items[1] = acc.result();
 		}
 		if (!f) fillRate = 0;
 		else fillRate += 5;

@@ -10,14 +10,15 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import cd4017be.api.Capabilities;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.automation.shaft.ShaftComponent;
 import cd4017be.automation.shaft.ShaftPhysics;
-import cd4017be.automation.shaft.ShaftPhysics.IShaft;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.templates.IPipe;
 import cd4017be.lib.templates.MutiblockTile;
@@ -63,7 +64,7 @@ public class Shaft extends MutiblockTile<ShaftComponent, ShaftPhysics> implement
 		float mass = comp.m;
 		if (player == null || (player.isSneaking() && item == null)) {
 			switch (comp.type) {
-			case 1: dropStack(BlockItemRegistry.stack("RstMetall", 1)); break;
+			case 1: dropStack(BlockItemRegistry.stack("m.magnet", 1)); break;
 			case 2: dropStack(new ItemStack(Objects.electricCoilC)); break;
 			case 3: dropStack(new ItemStack(Objects.electricCoilA)); break;
 			case 4: dropStack(new ItemStack(Objects.electricCoilH)); break;
@@ -74,7 +75,7 @@ public class Shaft extends MutiblockTile<ShaftComponent, ShaftPhysics> implement
 			mass = 1000F;
 		} else if (comp.type == 0 && !player.isSneaking() && item != null) {
 			Item i = item.getItem();
-			if (item.isItemEqual(BlockItemRegistry.stack("RstMetall", 1))) {comp.type = 1; mass = 2000F;}
+			if (item.isItemEqual(BlockItemRegistry.stack("m.magnet", 1))) {comp.type = 1; mass = 2000F;}
 			else if (i == Item.getItemFromBlock(Objects.electricCoilC)) {comp.type = 2; mass = 2000F;}
 			else if (i == Item.getItemFromBlock(Objects.electricCoilA)) {comp.type = 3; mass = 2000F;}
 			else if (i == Item.getItemFromBlock(Objects.electricCoilH)) {comp.type = 4; mass = 2000F;}
@@ -178,6 +179,19 @@ public class Shaft extends MutiblockTile<ShaftComponent, ShaftPhysics> implement
 
 	public ShaftPhysics physics() {
 		return comp.network;
+	}
+
+	@Override
+	public boolean hasCapability(Capability<?> cap, EnumFacing s) {
+		if (cap == Capabilities.ELECTRIC_CAPABILITY) return energy != null;
+		else return super.hasCapability(cap, s);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> T getCapability(Capability<T> cap, EnumFacing s) {
+		if (cap == Capabilities.ELECTRIC_CAPABILITY) return (T)energy;
+		else return super.getCapability(cap, s);
 	}
 
 	@SideOnly(Side.CLIENT)

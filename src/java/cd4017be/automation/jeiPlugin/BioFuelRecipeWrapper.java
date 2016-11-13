@@ -49,7 +49,7 @@ public class BioFuelRecipeWrapper extends BlankRecipeWrapper {
 					}
 			}
 		} else this.inputs = Collections.emptyList();
-		this.fullContainer = BlockItemRegistry.stack("LCAlgae", 1);
+		this.fullContainer = BlockItemRegistry.stack("m.LCAlgae", 1);
 		if (recipe.algae > MaxAlgae) MaxAlgae = recipe.algae;
 		if (recipe.nutrients > MaxAlgae) MaxAlgae = recipe.nutrients;
 	}

@@ -95,8 +95,8 @@ public class PipeUpgradeItem implements IFilter<ItemStack, IItemHandler> {
 				for (int s = 0; s < inv.getSlots(); s++) {
 					ItemStack item = inv.getStackInSlot(s);
 					if (filter.matches(item)) n += item.stackSize;
-					if (n >= 64) {
-						n = 64;
+					if (n >= obj.stackSize) {
+						n = obj.stackSize;
 						break;
 					}
 				}
@@ -107,7 +107,6 @@ public class PipeUpgradeItem implements IFilter<ItemStack, IItemHandler> {
 				} else return null;
 			} else if (i >= 0 ^ (mode & 1) != 0) {
 				ItemStack item = obj.copy();
-				item.stackSize = 64;
 				return item;
 			} else return null;
 		} else {

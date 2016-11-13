@@ -50,6 +50,7 @@ import static cd4017be.lib.BlockItemRegistry.stack;
  *
  * @author CD4017BE
  */
+@SuppressWarnings("deprecation")
 @Mod(modid="Automation", useMetadata=true)
 public class Automation {
 
@@ -61,7 +62,6 @@ public class Automation {
 
 	public static CreativeTabs tabAutomation;
 	public static CreativeTabs tabFluids;
-	private static final String recipeFile = "inductiveAutomation.rcp";
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -73,7 +73,7 @@ public class Automation {
 		initItems();
 		initBlocks();
 		//initOres();
-		RecipeAPI.registerScript(event, recipeFile, "/assets/automation/config/recipes.rcp");
+		RecipeAPI.registerScript(event, "inductiveAutomation.rcp", "/assets/automation/config/recipes.rcp");
 		if (event.getSide().isClient()) JetPackConfig.loadData();
 	}
 
@@ -84,11 +84,11 @@ public class Automation {
 		AreaProtect.register(this);
 		
 		//TODO change to container Items
-		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_biomass, FluidContainerRegistry.BUCKET_VOLUME), stack("LCBiomass", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_nitrogenL, 100), stack("LCNitrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_hydrogenL, 100), stack("LCHydrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_heliumL, 100), stack("LCHelium", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_oxygenL, 100), stack("LCOxygen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
+		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_biomass, FluidContainerRegistry.BUCKET_VOLUME), stack("m.LCBiomass", 1), FluidContainerRegistry.EMPTY_BOTTLE));
+		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_nitrogenL, 100), stack("m.LCNitrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
+		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_hydrogenL, 100), stack("m.LCHydrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
+		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_heliumL, 100), stack("m.LCHelium", 1), FluidContainerRegistry.EMPTY_BOTTLE));
+		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_oxygenL, 100), stack("m.LCOxygen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
 		
 		System.out.println("Automation: Set Explosion-Resistance of Bedrock to: " + Block.getBlockFromName("bedrock").setResistance(2000000.0F).getExplosionResistance(null));
 		
@@ -110,7 +110,7 @@ public class Automation {
 	}
 
 	private void initItems() {
-		material = new ItemMaterial("material");//TODO replace by template
+		material = new ItemMaterial("material");
 		selectionTool = new ItemSelectionTool("selectionTool");
 		voltMeter = new ItemVoltMeter("voltMeter");
 		energyCell = new ItemEnergyCell("energyCell", Config.Ecap[0]);
@@ -172,7 +172,6 @@ public class Automation {
 		new ItemLiquidPipe((liquidPipe = new BlockLiquidPipe("liquidPipe", SoundType.GLASS, Material.GLASS, 0x20)).setHardness(0.5F).setCreativeTab(tabAutomation).setResistance(10F));
 		new ItemItemPipe((itemPipe = new BlockItemPipe("itemPipe", Material.WOOD, SoundType.WOOD, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F));
 		new DefaultItemBlock((warpPipe = new BlockPipe("warpPipe", Material.IRON, SoundType.METAL, 0x20)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(20F));
-		new DefaultItemBlock((voltageTransformer = TileBlock.create("voltageTransformer", Material.IRON, SoundType.METAL, 2)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new ItemESU((SCSU = TileBlock.create("SCSU", Material.IRON, SoundType.METAL, 0x40)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new ItemESU((OCSU = TileBlock.create("OCSU", Material.IRON, SoundType.METAL, 0x40)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new ItemESU((CCSU = TileBlock.create("CCSU", Material.IRON, SoundType.METAL, 0x40)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
@@ -212,7 +211,7 @@ public class Automation {
 		new DefaultItemBlock((trash = TileBlock.create("trash", Material.ROCK, SoundType.STONE, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new DefaultItemBlock((electrolyser = TileBlock.create("electrolyser", Material.IRON, SoundType.METAL, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new DefaultItemBlock((fuelCell = TileBlock.create("fuelCell", Material.IRON, SoundType.METAL, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
-		new DefaultItemBlock((detector = TileBlock.create("detector", Material.ROCK, SoundType.STONE, 0x12)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F));//TODO replace with sensor modules
+		//new DefaultItemBlock((detector = TileBlock.create("detector", Material.ROCK, SoundType.STONE, 0x12)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F));//TODO replace with sensor modules
 		new DefaultItemBlock((itemSorter = TileBlock.create("itemSorter", Material.WOOD, SoundType.WOOD, 0)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F));
 		new DefaultItemBlock((matterInterfaceB = TileBlock.create("matterInterfaceB", Material.IRON, SoundType.METAL, 0)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F));
 		new DefaultItemBlock((fluidPacker = TileBlock.create("fluidPacker", Material.IRON, SoundType.METAL, 1)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F));
@@ -226,8 +225,6 @@ public class Automation {
 		new DefaultItemBlock((pool = TileBlock.create("pool", Material.GLASS, SoundType.STONE, 0x20)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F).setLightOpacity(5));
 		new ItemBlockUnbreakable(unbrStone = new BlockUnbreakable("unbrStone"));
 		new DefaultItemBlock(unbrGlass = new GlassUnbreakable("unbrGlass"));
-		light = new BlockSkyLight("light");//TODO try remove
-		placementHelper = new GhostBlock("placementHelper");//TODO try remove
 		new DefaultItemBlock((solarpanel = TileBlock.create("solarpanel", Material.GLASS, SoundType.GLASS, 0x20)).setBlockBounds(new AxisAlignedBB(0, 0, 0, 1, 0.125, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new DefaultItemBlock((teslaTransmitterLV = TileBlock.create("teslaTransmitterLV", Material.IRON, SoundType.METAL, 0x60)).setBlockBounds(new AxisAlignedBB(0.1875, 0, 0.1875, 0.8125, 1, 0.8125)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(15F));
 		new DefaultItemBlock((teslaTransmitter = TileBlock.create("teslaTransmitter", Material.IRON, SoundType.METAL, 0x60)).setBlockBounds(new AxisAlignedBB(0.25, 0, 0.25, 0.75, 1, 0.75)).setCreativeTab(tabAutomation).setHardness(2.5F).setResistance(20F));

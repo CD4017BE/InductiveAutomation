@@ -12,7 +12,9 @@ import li.cil.oc.api.machine.Context;
 import li.cil.oc.api.network.Environment;
 import li.cil.oc.api.network.Message;
 import li.cil.oc.api.network.Node;
+
 import com.mojang.authlib.GameProfile;
+
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
 import cd4017be.api.computers.ComputerAPI;
@@ -31,7 +33,7 @@ import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.Inventory.IAccessHandler;
 import cd4017be.lib.util.CachedChunkProtection;
 import cd4017be.lib.util.ItemFluidUtil;
-import cd4017be.lib.util.Obj2;
+import cd4017be.lib.util.ItemFluidUtil.StackedFluidAccess;
 import cd4017be.lib.util.Utils;
 import cd4017be.lib.util.Vec2;
 import cd4017be.lib.util.Vec3;
@@ -50,7 +52,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.SlotItemHandler;
@@ -515,7 +516,7 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 			id = block.block;
 			m = block.getMetadata(item.getItemDamage());
 		} else if (item.getItem() instanceof ItemFluidDummy) {
-			FluidStack fluid = ((ItemFluidDummy)item.getItem()).getFluid(item);
+			FluidStack fluid = ItemFluidDummy.getFluid(item);
 			if (fluid != null) id = fluid.getFluid().getBlock();
 		} else if (item.getItem() instanceof ItemPlacement) {
 			if (comp == 0) {
@@ -605,14 +606,13 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 	private ItemStack remove(ItemStack item, boolean meta)
 	{
 		if (item.getItem() instanceof ItemFluidDummy) {
-			FluidStack fluid = ((ItemFluidDummy)item.getItem()).getFluid(item);
+			FluidStack fluid = ItemFluidDummy.getFluid(item);
 			for (int i = 17; i < 44; i++) {
-				if (inventory.items[i] != null && inventory.items[i].getItem() instanceof IFluidContainerItem) {//TODO use fluid capability
-					Obj2<ItemStack, FluidStack> obj = Utils.drainFluid(inventory.items[i], fluid.amount);
-					if (fluid.isFluidStackIdentical(obj.objB)) {
-						inventory.items[i] = obj.objA;
-						return item.copy();
-					}
+				StackedFluidAccess acc = new StackedFluidAccess(inventory.items[i]);
+				if (acc.valid() && fluid.isFluidStackIdentical(acc.drain(fluid, false))) {
+					acc.drain(fluid, true);
+					inventory.items[i] = acc.result();
+					return item.copy();
 				}
 			}
 			return null;

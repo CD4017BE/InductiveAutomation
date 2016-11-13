@@ -15,6 +15,7 @@ import net.minecraft.world.EnumSkyBlock;
 public class LightShaft extends ModTileEntity implements ITickable {
 
 	private int counter = 0;
+	private int delay = 10;
 
 	@Override
 	public void onNeighborBlockChange(Block b) {
@@ -23,15 +24,19 @@ public class LightShaft extends ModTileEntity implements ITickable {
 
 	@Override
 	public void update() {
-		if (counter == 0) this.onNeighborBlockChange(Blocks.AIR);
-		if (++counter > 20){
-			counter = 1;
-			worldObj.setLightFor(EnumSkyBlock.SKY, getPos(), EnumSkyBlock.SKY.defaultLightValue);
-			BlockPos y = new BlockPos(pos);
-			while (worldObj.getBlockState(y = y.down()) == BlockSkyLight.ID.getDefaultState()) {
-				worldObj.setLightFor(EnumSkyBlock.SKY, y, EnumSkyBlock.SKY.defaultLightValue);
+		if (++counter < delay) return;
+		counter = 0;
+		int l = EnumSkyBlock.SKY.defaultLightValue;
+		worldObj.setLightFor(EnumSkyBlock.SKY, getPos(), l);
+		BlockPos y = new BlockPos(pos);
+		boolean inactive = true;
+		while ((y = y.down()).getY() >= 0 && worldObj.isAirBlock(y)) 
+			if (worldObj.getLightFor(EnumSkyBlock.SKY, y) < l) {
+				worldObj.setLightFor(EnumSkyBlock.SKY, y, l);
+				inactive = false;
 			}
-		}
+		if (inactive) delay++;
+		else if (delay-- < 1) delay = 1;
 	}
 
 }

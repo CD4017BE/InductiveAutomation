@@ -95,9 +95,8 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem, IItemI
 	public void onUpdate(ItemStack item, World world, Entity entity, int s, boolean b) {
 		if (entity instanceof EntityPlayer) {
 			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
-			int t = item.getTagCompound().getByte("t") + 1;
-			if (t >= 20) {
-				t = 0;
+			long t = world.getTotalWorldTime();
+			if ((t - (long)item.getTagCompound().getByte("t") & 0xff) >= 20) {
 				EntityPlayer player = (EntityPlayer)entity;
 				InventoryPlayer inv = player.inventory;
 				int n = item.getTagCompound().getByte("amount");
@@ -111,8 +110,8 @@ public class ItemPortableCrafter extends DefaultItem implements IGuiItem, IItemI
 						if (n <= 0) item.getTagCompound().setBoolean("active", false);
 					} else item.getTagCompound().setBoolean("active", false);
 				}
+				item.getTagCompound().setByte("t", (byte)t);
 			}
-			item.getTagCompound().setByte("t", (byte)t);
 		}
 	}
 

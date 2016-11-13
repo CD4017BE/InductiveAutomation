@@ -104,7 +104,7 @@ public class TeslaTransmitter extends ModTileEntity implements ITeslaTransmitter
 	{
 		if (!interdim && item != null)
 		{
-			if (item.isItemEqual(BlockItemRegistry.stack("EMatrix", 1)))
+			if (item.isItemEqual(BlockItemRegistry.stack("m.EMatrix", 1)))
 			{
 				interdim = true;
 			} else return false;
@@ -115,7 +115,7 @@ public class TeslaTransmitter extends ModTileEntity implements ITeslaTransmitter
 		} else
 		if (interdim && item == null && player.isSneaking())
 		{
-			player.inventory.addItemStackToInventory(BlockItemRegistry.stack("EMatrix", 1));
+			player.inventory.addItemStackToInventory(BlockItemRegistry.stack("m.EMatrix", 1));
 			interdim = false;
 			return true;
 		} else

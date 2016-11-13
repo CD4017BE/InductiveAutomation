@@ -10,6 +10,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import cd4017be.api.automation.IFluidPipeCon;
 import cd4017be.api.automation.IItemPipeCon;
+import cd4017be.automation.Objects;
 import cd4017be.automation.pipes.BasicWarpPipe;
 import cd4017be.automation.pipes.ConComp;
 import cd4017be.automation.pipes.IWarpPipe;
@@ -111,10 +112,10 @@ public class WarpPipe extends MutiblockTile<BasicWarpPipe, WarpPipePhysics> impl
 	@Override
 	public int textureForSide(byte s) {
 		if (s < 0 || s > 5) return 0;
-		byte t = comp.con[s];//TODO use actual connectivity for neighbors
+		byte t = comp.con[s];
 		if (t > 0) return t == 1 ? -1 : t - 1;
 		TileEntity te = Utils.getTileOnSide(this, s);
-		return te != null && te instanceof IWarpPipe ? 0 : -1;
+		return te != null && te.hasCapability(Objects.WARP_PIPE_CAP, EnumFacing.VALUES[s^1]) ? 0 : -1;
 	}
 
 	@Override

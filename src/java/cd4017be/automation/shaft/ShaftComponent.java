@@ -58,7 +58,7 @@ public class ShaftComponent extends MultiblockComp<ShaftComponent, ShaftPhysics>
 	}
 
 	public boolean supports(IKineticComp con2, byte i) {
-		return (con >> i & 1) == 0;
+		return true;//(con >> i & 1) == 0;
 	}
 
 	private static final double[] loss = {Math.sqrt(0.99F), Math.sqrt(0.999F), 1};
@@ -72,5 +72,4 @@ public class ShaftComponent extends MultiblockComp<ShaftComponent, ShaftPhysics>
 		return Objects.SHAFT_CAP;
 	}
 
-	public byte axis() {return (byte)((TileEntity)tile).getBlockMetadata();}
 }

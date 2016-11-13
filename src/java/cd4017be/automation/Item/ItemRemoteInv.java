@@ -16,7 +16,6 @@ import cd4017be.lib.templates.InventoryItem;
 import cd4017be.lib.templates.InventoryItem.IItemInventory;
 import cd4017be.lib.util.IFilter;
 import cd4017be.lib.util.ItemFluidUtil;
-import cd4017be.lib.util.Utils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -27,7 +26,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -73,6 +72,10 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem, IItemInvento
 				tag.setByte("mode", m);
 				ItemGuiData.updateInventory(player, player.inventory.currentItem);
 			}
+		} else if (cmd == 2 && player.openContainer != null) {//set all reference ItemStacks to null, so the server thinks they changed and sends the data again.
+			for (Slot slot : player.openContainer.inventorySlots)
+				if (slot instanceof GlitchSaveSlot)
+					player.openContainer.inventoryItemStacks.set(slot.slotNumber, null);
 		}
 	}
 
@@ -80,7 +83,8 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem, IItemInvento
 	public EnumActionResult onItemUse(ItemStack item, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing s, float X, float Y, float Z) {
 		if (!world.isRemote && player.isSneaking()) {
 			TileEntity te = world.getTileEntity(pos);
-			if (te == null || !(te instanceof IInventory)) {
+			IItemHandler acc = te != null ? te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, s) : null;
+			if (acc == null) {
 				player.addChatMessage(new TextComponentString("Block has no inventory!"));
 				return EnumActionResult.SUCCESS;
 			}
@@ -90,7 +94,7 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem, IItemInvento
 			item.getTagCompound().setInteger("z", pos.getZ());
 			item.getTagCompound().setByte("s", (byte)s.getIndex());
 			item.getTagCompound().setInteger("d", player.dimension);
-			item.getTagCompound().setInteger("size", Utils.accessibleSlots((IInventory)te, s.getIndex()).length);
+			item.getTagCompound().setInteger("size", acc.getSlots());
 			player.addChatMessage(new TextComponentString("Block inventory linked"));
 			return EnumActionResult.SUCCESS;
 		}
@@ -99,7 +103,7 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem, IItemInvento
 
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(ItemStack item, World world, EntityPlayer player, EnumHand hand) {
-		if (!player.isSneaking()) BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
+		if (!player.isSneaking() && !world.isRemote) BlockGuiHandler.openItemGui(player, world, 0, -1, 0);
 		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, item);
 	}
 
@@ -108,9 +112,8 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem, IItemInvento
 		if (world.isRemote) return;
 		if (entity instanceof EntityPlayer) {
 			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
-			int t = item.getTagCompound().getByte("t") + 1;
-			if (t >= 20) {
-				t = 0;
+			long t = world.getTotalWorldTime();
+			if ((t - (long)item.getTagCompound().getByte("t") & 0xff) >= 20) {
 				EntityPlayer player = (EntityPlayer)entity;
 				InventoryPlayer inv = player.inventory;
 				TileEntity te = getLink(item);
@@ -121,8 +124,8 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem, IItemInvento
 					this.updateTransfer(link, inv, in, out);
 					item.getTagCompound().setInteger("size", link.getSlots());
 				} else item.getTagCompound().setInteger("size", 0);
+				item.getTagCompound().setByte("t", (byte)t);
 			}
-			item.getTagCompound().setByte("t", (byte)t);
 		}
 	}
 
@@ -215,7 +218,13 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem, IItemInvento
 			if (!cont.player.worldObj.isRemote) {
 				link = getLink(item);
 				linkedInv = link != null ? link.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, EnumFacing.VALUES[(item.getTagCompound().getByte("s") & 0xff) % 6]) : null;
-			} else if (item != null && item.hasTagCompound() && (size = item.getTagCompound().getInteger("size")) > 0) linkedInv = new BasicInventory(size);
+			} else if (item != null && item.hasTagCompound() && (size = item.getTagCompound().getInteger("size")) > 0) {
+				linkedInv = new BasicInventory(size);
+				//Workaround to fix an inventory sync bug. Sends a request to server that it should send the inventory data again.
+				PacketBuffer dos = BlockGuiHandler.getPacketTargetData(pos());
+				dos.writeByte(2);
+				BlockGuiHandler.sendPacketToServer(dos);
+			}
 			if (linkedInv == null) linkedInv = new BasicInventory(0); 
 			size = linkedInv.getSlots();
 			if (size > 0) {

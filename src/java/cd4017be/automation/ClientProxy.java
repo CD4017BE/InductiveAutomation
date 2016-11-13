@@ -56,7 +56,6 @@ public class ClientProxy extends CommonProxy {
 		BlockItemRegistry.registerRender(liquidPipe, 0, 2);
 		BlockItemRegistry.registerRender(itemPipe, 0, 2);
 		BlockItemRegistry.registerRender(warpPipe);
-		BlockItemRegistry.registerRender(voltageTransformer);
 		BlockItemRegistry.registerRender(SCSU);
 		BlockItemRegistry.registerRender(OCSU);
 		BlockItemRegistry.registerRender(CCSU);
@@ -96,7 +95,6 @@ public class ClientProxy extends CommonProxy {
 		BlockItemRegistry.registerRender(trash);
 		BlockItemRegistry.registerRender(electrolyser);
 		BlockItemRegistry.registerRender(fuelCell);
-		BlockItemRegistry.registerRender(detector);
 		BlockItemRegistry.registerRender(itemSorter);
 		BlockItemRegistry.registerRender(matterInterfaceB);
 		BlockItemRegistry.registerRender(fluidPacker);
@@ -119,7 +117,6 @@ public class ClientProxy extends CommonProxy {
 		BlockItemRegistry.registerRender(gasVent);
 		BlockItemRegistry.registerRender(heatedFurnace);
 		//Items
-		// TODO use Lib template instead BlockItemRegistry.registerRender(material, new MaterialTextures("automation:"));
 		BlockItemRegistry.registerRender(fluidDummy);
 		BlockItemRegistry.registerRender(selectionTool, null);
 		BlockItemRegistry.registerRender(voltMeter);

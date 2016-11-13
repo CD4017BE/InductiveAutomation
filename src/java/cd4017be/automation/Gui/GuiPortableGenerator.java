@@ -32,7 +32,7 @@ public class GuiPortableGenerator extends GuiMachine {
 	@Override
 	protected Object getDisplVar(int id) {
 		ItemStack item = inv.mainInventory[inv.currentItem];
-		if (id == 0) return ItemFilteredSubInventory.isFilterOn(item, true) ? 0 : 1;
+		if (id == 0) return ItemFilteredSubInventory.isFilterOn(item, true) ? 1 : 0;
 		else if (id < 3) {
 			float e = item != null && item.hasTagCompound() ? item.getTagCompound().getInteger("buff") / 1000F : 0;
 			return id == 1 ? (float)Math.min(e, 80) / 80F : e;

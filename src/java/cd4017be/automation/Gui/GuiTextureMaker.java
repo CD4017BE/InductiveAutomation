@@ -34,7 +34,7 @@ public class GuiTextureMaker extends GuiMachine {
 		super(new TileContainer(tileEntity, player));
 		this.tile = tileEntity;
 		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/texMaker.png");
-		this.drawBG = false;
+		this.drawBG = 0;
 	}
 
 	@Override

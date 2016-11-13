@@ -10,14 +10,15 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 /**
  *
  * @author CD4017BE
  */
-public class ItemTank extends DefaultItemBlock implements IFluidContainerItem {
+public class ItemTank extends DefaultItemBlock {
 
 	public ItemTank(Block id) {
 		super(id);
@@ -25,7 +26,8 @@ public class ItemTank extends DefaultItemBlock implements IFluidContainerItem {
 
 	@Override
 	public void addInformation(ItemStack item, EntityPlayer player, List<String> list, boolean par4) {
-		FluidStack fluid = this.getFluid(item);
+		NBTTagCompound nbt = item.getTagCompound();
+		FluidStack fluid = nbt != null && nbt.hasKey(FluidHandlerItemStack.FLUID_NBT_KEY) ? FluidStack.loadFluidStackFromNBT(nbt.getCompoundTag(FluidHandlerItemStack.FLUID_NBT_KEY)) : null;
 		if (fluid != null) {
 			list.add(String.format("%s/%s %s %s", 
 					Utils.formatNumber((float)fluid.amount / 1000F, 3), 
@@ -37,52 +39,12 @@ public class ItemTank extends DefaultItemBlock implements IFluidContainerItem {
 	}
 
 	@Override
-	public FluidStack getFluid(ItemStack item) {
-		if (item.getTagCompound() == null) return null;
-		else return FluidStack.loadFluidStackFromNBT(item.getTagCompound());
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new FluidHandlerItemStack(stack, getCapacity(stack));
 	}
 
-	@Override
 	public int getCapacity(ItemStack item) {
 		return Config.tankCap[2];
-	}
-
-	@Override
-	public int fill(ItemStack item, FluidStack resource, boolean doFill) {
-		if (resource == null) return 0;
-		int n;
-		FluidStack fluid = this.getFluid(item);
-		if (fluid != null) {
-			if (!fluid.isFluidEqual(resource)) return 0;
-			n = Math.min(this.getCapacity(item) - fluid.amount, resource.amount);
-			if (doFill){
-				fluid.amount += n;
-				fluid.writeToNBT(item.getTagCompound());
-			}
-		} else {
-			n = Math.min(this.getCapacity(item), resource.amount);
-			if (doFill) {
-				item.setTagCompound(new NBTTagCompound());
-				fluid = resource.copy();
-				fluid.amount = n;
-				fluid.writeToNBT(item.getTagCompound());
-			}
-		}
-		return n;
-	}
-
-	@Override
-	public FluidStack drain(ItemStack item, int maxDrain, boolean doDrain) {
-		FluidStack fluid = this.getFluid(item);
-		if (fluid == null || maxDrain == 0) return null;
-		FluidStack ret = fluid.copy();
-		ret.amount = Math.min(fluid.amount, maxDrain);
-		if (doDrain) {
-			fluid.amount -= ret.amount;
-			if (fluid.amount <= 0) item.setTagCompound(null);
-			else fluid.writeToNBT(item.getTagCompound());
-		}
-		return ret;
 	}
 
 }

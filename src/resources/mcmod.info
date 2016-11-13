@@ -3,9 +3,9 @@
   "modid": "Automation",
   "name": "Inductive Automation",
   "description": "Provides many helpful machines and tools. And allows automated building of even huge complicated structures.",
-  "version": "5.2.0",
-  "acceptableRemoteVersions": "[5.1.0,5.3.0)",
-  "acceptableSaveVersions": "[5.0.0,5.3.0)",
+  "version": "5.3.0",
+  "acceptableRemoteVersions": "[5.3.0,5.4.0)",
+  "acceptableSaveVersions": "[5.0.0,5.4.0)",
   "acceptedMinecraftVersions": "1.9.4",
   "url": "https://github.com/CD4017BE/InductiveAutomation",
   "updateUrl": "https://github.com/CD4017BE/InductiveAutomation/releases",
@@ -13,6 +13,8 @@
   "credits": "",
   "logoFile": "",
   "screenshots": [],
-  "dependencies": []
+  "useDependencyInformation": true,
+  "requiredMods": ["CD4017BE_lib@[4.3.2,4.4.0)"],
+  "dependencies": ["CD4017BE_lib@[4.3.2,4.4.0)"]
 }
 ]

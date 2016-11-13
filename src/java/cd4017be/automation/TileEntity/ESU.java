@@ -22,6 +22,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.items.SlotItemHandler;
 
 /**
@@ -84,6 +85,8 @@ public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess {
 
 	@Override
 	public void onPlaced(EntityLivingBase entity, ItemStack item) {
+		item = item.copy();
+		item.stackSize = 1;
 		Estor = (float)EnergyAPI.get(item, -1).getStorage();
 	}
 

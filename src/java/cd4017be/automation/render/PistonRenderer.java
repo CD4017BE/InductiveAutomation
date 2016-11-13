@@ -12,8 +12,8 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import cd4017be.automation.TileEntity.PneumaticPiston;
+import cd4017be.automation.TileEntity.Shaft;
 import cd4017be.automation.shaft.ShaftPhysics;
-import cd4017be.automation.shaft.ShaftPhysics.IShaft;
 import cd4017be.lib.render.TESRModelParser;
 import cd4017be.lib.util.Utils;
 
@@ -34,11 +34,11 @@ public class PistonRenderer extends TileEntitySpecialRenderer<PneumaticPiston> {
 		byte dir = te.getOrientation();
 		TileEntity te2 = Utils.getTileOnSide(te, dir); 
 		float f;
-		if (te2 != null && te2 instanceof IShaft) {
-			ShaftPhysics sp = ((IShaft)te2).getShaft().network;
+		if (te2 != null && te2 instanceof Shaft) {
+			ShaftPhysics sp = ((Shaft)te2).physics();
 			f = sp.s + t * 0.05F * sp.v;
 			f -= Math.floor(f);
-			if (f < 0.5F) {
+			if (f < 0.5F) {//parabolic approximated sin() function
 				f -= 0.25F;
 				f = offset + f * f * 8F * size;
 			} else {

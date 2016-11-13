@@ -59,13 +59,13 @@ public class AlgaePool extends AutomatedTile implements IGuiData, ISlotClickHand
 			if (list.size() > 0) midBrightness /= list.size();
 			cap = list.size() * Config.tankCap[1];
 		}
-		if (inventory.items[0] != null && inventory.items[0].isItemEqual(BlockItemRegistry.stack("LCAlgae", 1))) {
+		if (inventory.items[0] != null && inventory.items[0].isItemEqual(BlockItemRegistry.stack("m.LCAlgae", 1))) {
 			algae += inventory.items[0].stackSize * 1000;
 			inventory.items[0] = new ItemStack(Items.GLASS_BOTTLE, inventory.items[0].stackSize);
 		}
 		if (inventory.items[1] != null && inventory.items[1].isItemEqual(new ItemStack(Items.GLASS_BOTTLE)) && algae >= inventory.items[1].stackSize * 1000) {
 			algae -= inventory.items[1].stackSize * 1000;
-			inventory.items[1] = BlockItemRegistry.stack("LCAlgae", inventory.items[1].stackSize);
+			inventory.items[1] = BlockItemRegistry.stack("m.LCAlgae", inventory.items[1].stackSize);
 		}
 		if (algae > 0) updateAlgaeGrowing();
 		int[] n = Automation.proxy.getLnutrients(inventory.items[4]);

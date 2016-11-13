@@ -8,6 +8,7 @@ import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.automation.TileEntity.AntimatterBomb;
 import cd4017be.lib.DefaultItemBlock;
+import cd4017be.lib.templates.SingleFluidItemHandler;
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -15,14 +16,13 @@ import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
  *
  * @author CD4017BE
  */
-public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterItem, IFluidContainerItem {
+public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterItem {
 
 	public static double explFaktor;
 	public static int BombMaxCap = 160000000;
@@ -74,26 +74,8 @@ public class ItemAntimatterTank extends DefaultItemBlock implements IAntimatterI
 	}
 
 	@Override
-	public FluidStack getFluid(ItemStack item) {
-		return new FluidStack(Objects.L_antimatter, AntimatterItemHandler.getAntimatter(item));
-	}
-
-	@Override
-	public int getCapacity(ItemStack item) {
-		return getAmCapacity(item);
-	}
-
-	@Override
-	public int fill(ItemStack item, FluidStack resource, boolean doFill) {
-		if (resource == null || resource.getFluid() != Objects.L_antimatter) return 0;
-		if (doFill) return AntimatterItemHandler.addAntimatter(item, resource.amount);
-		else return Math.min(resource.amount, getAmCapacity(item) - AntimatterItemHandler.getAntimatter(item));
-	}
-
-	@Override
-	public FluidStack drain(ItemStack item, int maxDrain, boolean doDrain) {
-		if (doDrain) return new FluidStack(Objects.L_antimatter, -AntimatterItemHandler.addAntimatter(item, -maxDrain));
-		else return new FluidStack(Objects.L_antimatter, Math.min(maxDrain, AntimatterItemHandler.getAntimatter(item)));
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new SingleFluidItemHandler(stack, getAmCapacity(stack), Objects.L_antimatter, getAntimatterTag(stack));
 	}
 
 }

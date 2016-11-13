@@ -12,15 +12,21 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.FluidTankProperties;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidTankProperties;
 import cd4017be.api.energy.EnergyAutomation.EnergyItem;
 
 /**
  *
  * @author CD4017BE
  */
-public class ItemJetpackFuel extends DefaultItem implements IFluidContainerItem {
+public class ItemJetpackFuel extends DefaultItem {
 
 	public static float electricEmult = 0.000005F;
 	public static float H2Mult = 0.005F, O2Mult = 0.01F;
@@ -87,32 +93,74 @@ public class ItemJetpackFuel extends DefaultItem implements IFluidContainerItem 
 	}
 
 	@Override
-	public FluidStack getFluid(ItemStack item) {
-		return null;
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new FluidProvider(stack, Config.tankCap[2]);
 	}
 
-	@Override
-	public int getCapacity(ItemStack item) {
-		return Config.tankCap[2];
-	}
+	class FluidProvider implements IFluidHandler, ICapabilityProvider {
 
-	@Override
-	public int fill(ItemStack item, FluidStack fluid, boolean doFill) {
-		if (!item.hasTagCompound()) item.setTagCompound(new NBTTagCompound());
-		float max = Config.tankCap[2];
-		boolean O = false;
-		if (fluid.getFluid() == Objects.L_oxygenG) O = true;
-		else if (fluid.getFluid() == Objects.L_hydrogenG) max *= 2F;
-		else return 0;
-		float n = item.getTagCompound().getFloat(O ? "O2" : "H2");
-		int m = Math.min(fluid.amount, (int)Math.floor(max - n));
-		if (doFill) item.getTagCompound().setFloat(O ? "O2" : "H2", n + (float)m);
-		return m;
-	}
+		final ItemStack item;
+		final int cap;
 
-	@Override
-	public FluidStack drain(ItemStack item, int maxDrain, boolean doDrain) {
-		return null;
+		FluidProvider(ItemStack item, int cap) {
+			this.item = item;
+			this.cap = cap;
+		}
+
+		@Override
+		public boolean hasCapability(Capability<?> cap, EnumFacing facing) {
+			return cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public <T> T getCapability(Capability<T> cap, EnumFacing facing) {
+			return cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY ? (T)this : null;
+		}
+
+		@Override
+		public IFluidTankProperties[] getTankProperties() {
+			NBTTagCompound nbt = item.getTagCompound();
+			return new IFluidTankProperties[]{
+				new FluidTankProperties(new FluidStack(Objects.L_hydrogenG, nbt != null ? (int)nbt.getFloat("H2") : 0), cap * 2, true, true),
+				new FluidTankProperties(new FluidStack(Objects.L_oxygenG, nbt != null ? (int)nbt.getFloat("O2") : 0), cap, true, true)
+			};
+		}
+
+		@Override
+		public int fill(FluidStack fluid, boolean doFill) {
+			NBTTagCompound nbt = item.getTagCompound();
+			if (nbt == null) item.setTagCompound(nbt = new NBTTagCompound());
+			float max = Config.tankCap[2];
+			boolean O = false;
+			if (fluid.getFluid() == Objects.L_oxygenG) O = true;
+			else if (fluid.getFluid() == Objects.L_hydrogenG) max *= 2F;
+			else return 0;
+			float n = nbt.getFloat(O ? "O2" : "H2");
+			int m = Math.min(fluid.amount, (int)Math.floor(max - n));
+			if (doFill) nbt.setFloat(O ? "O2" : "H2", n + (float)m);
+			return m;
+		}
+
+		@Override
+		public FluidStack drain(FluidStack type, boolean doDrain) {
+			NBTTagCompound nbt = item.getTagCompound();
+			if (nbt == null) return null;
+			boolean O = false;
+			if (type.getFluid() == Objects.L_oxygenG) O = true;
+			else if (type.getFluid() != Objects.L_hydrogenG) return null;
+			float n = nbt.getFloat(O ? "O2" : "H2");
+			int m = Math.min(type.amount, (int)Math.floor(n));
+			if (doDrain) nbt.setFloat(O ? "O2" : "H2", n - (float)m);
+			return m > 0 ? new FluidStack(type, m) : null;
+		}
+
+		@Override
+		public FluidStack drain(int maxDrain, boolean doDrain) {
+			NBTTagCompound nbt = item.getTagCompound();
+			if (nbt == null) return null;
+			return this.drain(new FluidStack(nbt.getFloat("O2") > nbt.getFloat("H2") ? Objects.L_oxygenG : Objects.L_hydrogenG, maxDrain), doDrain);
+		}
 	}
 
 }

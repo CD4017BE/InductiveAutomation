@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 /**
  *
@@ -73,9 +74,8 @@ public class Tank extends AutomatedTile implements IGuiData {
 	}
 
 	@Override
-	public void onPlaced(EntityLivingBase entity, ItemStack item) 
-	{
-		tanks.setFluid(0, FluidStack.loadFluidStackFromNBT(item.getTagCompound()));
+	public void onPlaced(EntityLivingBase entity, ItemStack item) {
+		tanks.setFluid(0, item.hasTagCompound() ? FluidStack.loadFluidStackFromNBT(item.getTagCompound().getCompoundTag(FluidHandlerItemStack.FLUID_NBT_KEY)) : null);
 	}
 
 	@Override
@@ -84,7 +84,9 @@ public class Tank extends AutomatedTile implements IGuiData {
 		ItemStack item = new ItemStack(this.getBlockType());
 		if (tanks.getAmount(0) > 0) {
 			item.setTagCompound(new NBTTagCompound());
-			tanks.fluids[0].writeToNBT(item.getTagCompound());
+			NBTTagCompound nbt = new NBTTagCompound();
+			tanks.fluids[0].writeToNBT(nbt);
+			item.getTagCompound().setTag(FluidHandlerItemStack.FLUID_NBT_KEY, nbt);
 		}
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		list.add(item);

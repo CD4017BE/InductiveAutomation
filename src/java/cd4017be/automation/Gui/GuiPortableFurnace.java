@@ -37,7 +37,7 @@ public class GuiPortableFurnace extends GuiMachine {
 	@Override
 	protected Object getDisplVar(int id) {
 		ItemStack item = inv.mainInventory[inv.currentItem];
-		if (id == 0) return ItemFilteredSubInventory.isFilterOn(item, true) ? 0 : 1;
+		if (id == 0) return ItemFilteredSubInventory.isFilterOn(item, true) ? 1 : 0;
 		else if (id == 1) return EnergyAPI.get(item, -1).getStorage() / 1000F / (float)capacity;
 		else return null;
 	}

@@ -71,7 +71,7 @@ public class ConComp {
 	}
 
 	public static boolean createFromItem(ItemStack item, BasicWarpPipe pipe, byte side) {
-		if (item == null || pipe.con[side] < 2) return false;
+		if (item == null || pipe.con[side] >= 2) return false;
 		pipe.setConnect(side, false);
 		Item type = item.getItem();
 		ConComp con;

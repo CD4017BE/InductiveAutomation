@@ -32,7 +32,7 @@ public class MassstorageChest extends AutomatedTile implements IGuiData, IAccess
 	public static final int StackLimit = 4096;
 
 	public MassstorageChest() {
-		inventory = new Inventory(65, 2, null).group(0, 0, 1, Utils.IN).group(1, 1, 65, Utils.OUT);
+		inventory = new Inventory(65, 2, this).group(0, 0, 1, Utils.IN).group(1, 1, 65, Utils.OUT);
 	}
 
 	@Override

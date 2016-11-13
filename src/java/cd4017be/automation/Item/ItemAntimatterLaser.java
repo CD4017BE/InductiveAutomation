@@ -3,6 +3,7 @@ package cd4017be.automation.Item;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import cd4017be.api.automation.AntimatterItemHandler;
@@ -23,6 +24,7 @@ import cd4017be.lib.Gui.SlotItemType;
 import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.InventoryItem;
 import cd4017be.lib.templates.InventoryItem.IItemInventory;
+import cd4017be.lib.templates.SingleFluidItemHandler;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.enchantment.Enchantment;
@@ -51,14 +53,12 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidContainerItem;
 
 /**
  *
  * @author CD4017BE
  */
-public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterItem, IMatterOrb, IFluidContainerItem, IGuiItem, IScrollHandlerItem, IItemInventory {
+public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterItem, IMatterOrb, IGuiItem, IScrollHandlerItem, IItemInventory {
 
 	public static int EnergyUsage = 16;
 	public static float AmUsage = 1F;
@@ -277,26 +277,8 @@ public class ItemAntimatterLaser extends ItemEnergyCell implements IAntimatterIt
 	}
 
 	@Override
-	public FluidStack getFluid(ItemStack item) {
-		return new FluidStack(Objects.L_antimatter, AntimatterItemHandler.getAntimatter(item));
-	}
-
-	@Override
-	public int getCapacity(ItemStack item) {
-		return getAmCapacity(item);
-	}
-
-	@Override
-	public int fill(ItemStack item, FluidStack resource, boolean doFill) {
-		if (resource == null || resource.getFluid() != Objects.L_antimatter) return 0;
-		if (doFill) return AntimatterItemHandler.addAntimatter(item, resource.amount);
-		else return Math.min(resource.amount, getAmCapacity(item) - AntimatterItemHandler.getAntimatter(item));
-	}
-
-	@Override
-	public FluidStack drain(ItemStack item, int maxDrain, boolean doDrain) {
-		if (doDrain) return new FluidStack(Objects.L_antimatter, -AntimatterItemHandler.addAntimatter(item, -maxDrain));
-		else return new FluidStack(Objects.L_antimatter, Math.min(maxDrain, AntimatterItemHandler.getAntimatter(item)));
+	public ICapabilityProvider initCapabilities(ItemStack stack, NBTTagCompound nbt) {
+		return new SingleFluidItemHandler(stack, getAmCapacity(stack), Objects.L_antimatter, getAntimatterTag(stack));
 	}
 
 	@SideOnly(Side.CLIENT)

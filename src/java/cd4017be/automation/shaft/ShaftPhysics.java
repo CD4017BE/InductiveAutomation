@@ -38,7 +38,6 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 		super(core);
 		m = core.m;
 		pos = ((TileEntity)core.tile).getPos();
-		axis = core.axis();
 	}
 	
 	public ShaftPhysics(HashMap<Long, ShaftComponent> comps) {
@@ -104,6 +103,7 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 	
 	@Override
 	public void updateCompCon(ShaftComponent comp) {
+		if (axis < 0) axis = (byte)((TileEntity)comp.tile).getBlockMetadata(); 
 		IKineticComp con;
 		super.updateCompCon(comp);
 		for (byte i = 0; i < 6; i++) {
@@ -199,5 +199,5 @@ public class ShaftPhysics extends SharedNetwork<ShaftComponent, ShaftPhysics> {
 	/** reference location for cached model */
 	public BlockPos pos;
 	/** structure orientation */
-	public byte axis;
+	public byte axis = -1;
 }

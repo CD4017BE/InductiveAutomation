@@ -14,6 +14,7 @@ import cd4017be.lib.util.ItemFluidUtil;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
@@ -86,18 +87,16 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 	@Override
 	public void onUpdate(ItemStack item, World world, Entity entity, int s, boolean b) {
 		if (world.isRemote) return;
-		if (entity instanceof EntityPlayer) {
-			if (item.getTagCompound() == null) item.setTagCompound(new NBTTagCompound());
-			int t = item.getTagCompound().getByte("t") + 1;
-			if (t >= this.tickTime()) {
-				t = 0;
+		if (entity instanceof EntityPlayer && item.hasTagCompound()) {
+			long t = world.getTotalWorldTime();
+			if ((t - (long)item.getTagCompound().getByte("t") & 0xff) >= tickTime()) {
 				EntityPlayer player = (EntityPlayer)entity;
 				InventoryPlayer inv = player.inventory;
 				PipeUpgradeItem in = item.getTagCompound().hasKey("fin") ? PipeUpgradeItem.load(item.getTagCompound().getCompoundTag("fin")) : null;
 				PipeUpgradeItem out = item.getTagCompound().hasKey("fout") ? PipeUpgradeItem.load(item.getTagCompound().getCompoundTag("fout")) : null;
 				this.updateItem(item, player, inv, s, in, out);
+				item.getTagCompound().setByte("t", (byte)t);
 			}
-			item.getTagCompound().setByte("t", (byte)t);
 		}
 	}
 
@@ -108,36 +107,24 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 		if (update) ItemGuiData.updateInventory(player, s);
 	}
 
-	protected boolean autoInput(ItemStack item, InventoryPlayer inv, PipeUpgradeItem in) {//TODO fix this
+	protected boolean autoInput(ItemStack item, InventoryPlayer inv, PipeUpgradeItem in) {
 		IItemHandler acc = new InvWrapper(inv);
+		ItemStack stack, stack1;
 		in.mode |= 64;
 		if ((in.mode & 128) == 0) return false;
-		for (ItemStack search : InventoryItemHandler.getItemList(item)) {
-			search = in.getExtract(search, acc);
-			if (extract(item, inv, search)) return true;
-		}
-		while(InventoryItemHandler.hasEmptySlot(item)) {
-			ItemStack search = in.getExtract(null, acc);
-			if (!extract(item, inv, search)) return true;
-		}
-		return true;
-	}
-	
-	private boolean extract(ItemStack item, InventoryPlayer inv, ItemStack search) {
-		if (search == null || search.getItem() == item.getItem()) return false;
-		int n = search.stackSize;
-		for (int i = 0; i < inv.mainInventory.length && n > 0; i++)
-			if (ItemStack.areItemStacksEqual(item, inv.mainInventory[i])) {
-				ItemStack stack = inv.decrStackSize(i, n);
-				n -= stack.stackSize;
-				stack = InventoryItemHandler.insertItemStack(item, stack);
-				if (stack != null) {
-					if (inv.mainInventory[i] == null) inv.mainInventory[i] = stack;
-					else inv.mainInventory[i].stackSize += stack.stackSize;
-					return false;
-				}
+		boolean update = false;
+		for (int i = 0; i < inv.mainInventory.length; i++)
+			if ((stack = inv.mainInventory[i]) != null && itemAllowed(stack.getItem()) && (stack1 = in.getExtract(stack, acc)) != null) {
+				stack.stackSize -= stack1.stackSize;
+				if ((stack1 = InventoryItemHandler.insertItemStack(item, stack1)) != null) stack.stackSize += stack1.stackSize;
+				else if (stack.stackSize <= 0) inv.mainInventory[i] = null;
+				update = true;
 			}
-		return true;
+		return update;
+	}
+
+	private boolean itemAllowed(Item item) {
+		return !(item instanceof ItemFilteredSubInventory || item instanceof ItemRemoteInv);
 	}
 
 	protected boolean autoOutput(ItemStack item, InventoryPlayer inv, PipeUpgradeItem out) {
@@ -177,7 +164,7 @@ public abstract class ItemFilteredSubInventory extends DefaultItem implements II
 
 	public static boolean isFilterOn(ItemStack item, boolean in) {
 		if (item != null && item.hasTagCompound() && item.getTagCompound().hasKey(in ? "fin" : "fout", 10))
-			return (item.getTagCompound().getCompoundTag(in ? "fin" : "fout").getByte("mode") & 128) != 0;
+			return (item.getTagCompound().getCompoundTag(in ? "fin" : "fout").getByte("mode") & 192) == 192;
 		return false;
 	}
 

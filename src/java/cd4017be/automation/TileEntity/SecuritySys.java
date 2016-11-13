@@ -164,8 +164,7 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 	}
 
 	@Override
-	public void onPlayerCommand(PacketBuffer dis, EntityPlayerMP player) throws IOException //TODO new data protocol
-	{
+	public void onPlayerCommand(PacketBuffer dis, EntityPlayerMP player) {
 		boolean update = false;
 		if (!prot.isPlayerOwner(player.getName())) return;
 		byte cmd = dis.readByte();

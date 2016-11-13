@@ -75,7 +75,7 @@ public class PneumaticPiston extends AutomatedTile implements IKineticComp, IGas
 	@Override
 	public float estimatedForce(float ds) {
 		if (input != null && ((TileEntity)input.tile).isInvalid()) {input = null; updateCon = true;}
-		if (output != null && ((TileEntity)input.tile).isInvalid()) {output = null; updateCon = true;}
+		if (output != null && ((TileEntity)output.tile).isInvalid()) {output = null; updateCon = true;}
 		if (input == null || output == null || Ain == 0 || input.network.gas.P() < LIMIT || ((cfg & 0x100) == 0 ^ ((cfg & 0x200) != 0 && worldObj.getStrongPower(pos) > 0))) {
 			run = false;
 			return 0;

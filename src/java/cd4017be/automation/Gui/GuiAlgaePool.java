@@ -27,7 +27,7 @@ public class GuiAlgaePool extends GuiMachine {
 		this.ySize = 168;
 		super.initGui();
 		guiComps.add(new ProgressBar(4, 62, 16, 16, 52, 210, 0, (byte)1).setTooltip("x*100+0;algae.nutr"));
-		guiComps.add(new ProgressBar(5, 80, 16, 34, 52, 178, 0, (byte)1));
+		guiComps.add(new ProgressBar(5, 80, 16, 34, 52, 176, 0, (byte)1));
 		guiComps.add(new Tooltip(6, 80, 16, 34, 52, "algae.algae"));
 	}
 
