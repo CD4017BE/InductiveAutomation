@@ -60,11 +60,11 @@ public class ItemInventory extends ItemFilteredSubInventory implements IItemStor
 		public void initContainer(DataContainer container) {
 			TileContainer cont = (TileContainer)container;
 			this.inv = new InventoryItem(cont.player);
+			cont.addItemSlot(new SlotItemType(inv, 24, 8, 16, new ItemStack(Objects.itemUpgrade)));
+			cont.addItemSlot(new SlotItemType(inv, 25, 8, 52, new ItemStack(Objects.itemUpgrade)));
 			for (int j = 0; j < 3; j++)
 				for (int i = 0; i < 8; i++)
 					cont.addItemSlot(new SlotItemHandler(inv, j * 8 + i, 26 + i * 18, 16 + j * 18));
-			cont.addItemSlot(new SlotItemType(inv, 24, 8, 16, new ItemStack(Objects.itemUpgrade)));
-			cont.addItemSlot(new SlotItemType(inv, 25, 8, 52, new ItemStack(Objects.itemUpgrade)));
 			cont.addPlayerInventory(8, 86, false, true);
 		}
 

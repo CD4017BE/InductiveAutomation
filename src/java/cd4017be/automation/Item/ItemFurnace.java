@@ -124,8 +124,8 @@ public class ItemFurnace extends ItemFilteredSubInventory implements IEnergyItem
 		public void initContainer(DataContainer container) {
 			TileContainer cont = (TileContainer)container;
 			this.inv = new InventoryItem(cont.player);
-			cont.addItemSlot(new SlotItemHandler(inv, 0, 80, 16));
 			cont.addItemSlot(new SlotItemType(inv, 1, 44, 16, new ItemStack(Objects.itemUpgrade)));
+			cont.addItemSlot(new SlotItemHandler(inv, 0, 80, 16));
 			cont.addPlayerInventory(8, 50, false, true);
 		}
 

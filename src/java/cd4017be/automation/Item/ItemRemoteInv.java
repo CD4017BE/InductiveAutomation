@@ -229,16 +229,16 @@ public class ItemRemoteInv extends DefaultItem implements IGuiItem, IItemInvento
 			size = linkedInv.getSlots();
 			if (size > 0) {
 				ofsY = (size - 1) / 12 * 18 - 18;
+				cont.addItemSlot(new SlotItemType(inv, 0, 8, 86 + ofsY, new ItemStack(Objects.itemUpgrade)));
+				cont.addItemSlot(new SlotItemType(inv, 1, 26, 86 + ofsY, new ItemStack(Objects.itemUpgrade)));
 				int h = size / 12;
 				int w = size % 12;
 				for (int j = 0; j < h; j++)
 					for (int i = 0; i < 12; i++)
-						cont.addItemSlot(new GlitchSaveSlot(linkedInv, i + 12 * j, 8 + i * 18, 16 + j * 18));
+						cont.addItemSlot(new GlitchSaveSlot(linkedInv, i + 12 * j, 8 + i * 18, 16 + j * 18, false));
 				for (int i = 0; i < w; i++)
-					cont.addItemSlot(new GlitchSaveSlot(linkedInv, i + 12 * h, 8 + i * 18, 16 + h * 18));
+					cont.addItemSlot(new GlitchSaveSlot(linkedInv, i + 12 * h, 8 + i * 18, 16 + h * 18, false));
 			} else ofsY = -18;
-			cont.addItemSlot(new SlotItemType(inv, 0, 8, 86 + ofsY, new ItemStack(Objects.itemUpgrade)));
-			cont.addItemSlot(new SlotItemType(inv, 1, 26, 86 + ofsY, new ItemStack(Objects.itemUpgrade)));
 			cont.addPlayerInventory(62, 68 + ofsY, false, true);
 		}
 

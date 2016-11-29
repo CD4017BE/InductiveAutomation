@@ -1,6 +1,7 @@
 package cd4017be.automation.Gui;
 
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -20,7 +21,7 @@ import cd4017be.lib.Gui.TileContainer;
 public class GuiItemMatterInterface extends GuiMachine {
 
 	private GuiData data;
-	private int amount = 0, target = -1, scroll = 0, size = 0;
+	private int amount = 10000000, target = -1, scroll = 0, size = 0;
 
 	public GuiItemMatterInterface(GuiData tile, EntityPlayer player) {
 		super(new TileContainer(tile, player));
@@ -33,7 +34,7 @@ public class GuiItemMatterInterface extends GuiMachine {
 		this.xSize = 176;
 		this.ySize = 182;
 		super.initGui();
-		guiComps.add(new TextField(0, 116, 66, 34, 8, 6));
+		guiComps.add(new TextField(0, 98, 66, 52, 8, 8));
 		guiComps.add(new Button(1, 115, 74, 36, 9, -1));
 		guiComps.add(new Slider(2, 160, 22, 36, 248, 0, 8, 12, false));
 		guiComps.add(new SlotSel(3, 7, 99, 162, 76));
@@ -82,6 +83,7 @@ public class GuiItemMatterInterface extends GuiMachine {
 			GlStateManager.pushMatrix();
 			GlStateManager.translate(px, py, 0);
 			GlStateManager.scale(0.5F, 0.5F, 0.5F);
+			RenderHelper.enableGUIStandardItemLighting();
 			for (int i = 0; i < 12 && i < list.length - scr; i++)
 				drawItemStack(ItemHandlerHelper.copyStackWithSize(list[i + scr], 1), (i % 2) * w, i / 2 * 16, null);
 			GlStateManager.disableLighting();

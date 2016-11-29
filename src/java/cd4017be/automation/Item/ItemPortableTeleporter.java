@@ -8,8 +8,8 @@ import cd4017be.automation.Gui.GuiPortableTeleporter;
 import cd4017be.lib.BlockGuiHandler;
 import cd4017be.lib.IGuiItem;
 import cd4017be.lib.MovedBlock;
+import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.ItemGuiData;
-import cd4017be.lib.Gui.TileContainer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -51,13 +51,13 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem {
 
 	@Override
 	public Container getContainer(World world, EntityPlayer player, int x, int y, int z) {
-		return new TileContainer(new ItemGuiData(this), player);
+		return new DataContainer(new ItemGuiData(this), player);
 	}
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public GuiContainer getGui(World world, EntityPlayer player, int x, int y, int z) {
-		return new GuiPortableTeleporter(new TileContainer(new ItemGuiData(this), player));
+		return new GuiPortableTeleporter(new DataContainer(new ItemGuiData(this), player));
 	}
 
 	@Override
@@ -73,7 +73,8 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem {
 			int x = tag.getInteger("x");
 			int y = tag.getInteger("y");
 			int z = tag.getInteger("z");
-			if (y < 0 || y > 256) {
+			int d = tag.getByte("d");
+			if (y < 0 || y > 256 || d != player.worldObj.provider.getDimension()) {
 				player.addChatMessage(new TextComponentString("Destination outside the world!"));
 				return;
 			} else if (player.worldObj.getBlockState(new BlockPos(x, y, z)).getMaterial().blocksMovement() || player.worldObj.getBlockState(new BlockPos(x, y + 1, z)).getMaterial().blocksMovement()) {

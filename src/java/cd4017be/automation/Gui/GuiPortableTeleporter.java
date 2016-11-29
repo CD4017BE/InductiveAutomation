@@ -1,12 +1,10 @@
 package cd4017be.automation.Gui;
 
-import java.util.Arrays;
-
 import cd4017be.api.energy.EnergyAPI;
 import cd4017be.automation.Item.ItemPortableTeleporter;
 import cd4017be.lib.BlockGuiHandler;
+import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.GuiMachine;
-import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.util.Utils;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
@@ -26,9 +24,9 @@ public class GuiPortableTeleporter extends GuiMachine {
 	private double maxDist = 0;
 	private boolean isFull = false;
 
-	public GuiPortableTeleporter(TileContainer container) {
-		super(container);
-		this.inv = container.player.inventory;
+	public GuiPortableTeleporter(DataContainer dataContainer) {
+		super(dataContainer);
+		this.inv = dataContainer.player.inventory;
 		this.MAIN_TEX = new ResourceLocation("automation", "textures/gui/portableTeleporter.png");
 	}
 
@@ -68,10 +66,8 @@ public class GuiPortableTeleporter extends GuiMachine {
 			NBTTagList data = item.getTagCompound().getTagList("points", 10);
 			list = new Entry[data.tagCount()];
 			isFull = list.length >= 64;
-			int n = 0;
 			for (int i = 0; i < list.length; i++)
 				list[i] = new Entry(data.getCompoundTagAt(i), x, y, z, d);
-			//if (n < list.length) list = Arrays.copyOf(list, n);
 			maxDist = EnergyAPI.get(item, 0).getStorage() / (double)ItemPortableTeleporter.energyUse / 1000D;
 		}
 		if (list.length != l) scroll = 0;
@@ -105,7 +101,7 @@ public class GuiPortableTeleporter extends GuiMachine {
 
 	@Override
 	protected void setDisplVar(int id, Object obj, boolean send) {
-		PacketBuffer dos = BlockGuiHandler.getPacketTargetData(((TileContainer)inventorySlots).data.pos());
+		PacketBuffer dos = BlockGuiHandler.getPacketTargetData(((DataContainer)inventorySlots).data.pos());
 		if(id == 24){scroll = Math.max(0, Math.round((Float)obj * (float)(list.length + 1 - size))); return;}
 		else if(id == 25){dos.writeByte(0); dos.writeByte(sel);}
 		else if (id < 8) {
