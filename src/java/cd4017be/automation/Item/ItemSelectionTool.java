@@ -244,9 +244,9 @@ public class ItemSelectionTool extends DefaultItem implements IGuiItem {
 			TileContainer cont = (TileContainer)container;
 			IItemHandler inv = tile.getUpgradeSlots();
 			cont.addItemSlot(new SlotItemType(inv, 0, 152, 16, new ItemStack(Items.GLOWSTONE_DUST)));
-			cont.addItemSlot(new SlotItemType(inv, 1, 8, 16, BlockItemRegistry.stack("m.AreaFrame", 1)));
-			cont.addItemSlot(new SlotItemType(inv, 2, 8, 34, BlockItemRegistry.stack("m.EMatrix", 1)));
-			cont.addItemSlot(new SlotItemType(inv, 3, 8, 52, new ItemStack(Objects.electricCoilH)));
+			cont.addItemSlot(new SlotItemType(inv, 1, 8, 16, BlockItemRegistry.stack("m.AreaFrame", 64)));
+			cont.addItemSlot(new SlotItemType(inv, 2, 8, 34, BlockItemRegistry.stack("m.EMatrix", 64)));
+			cont.addItemSlot(new SlotItemType(inv, 3, 8, 52, new ItemStack(Objects.electricCoilH, 64)));
 			cont.addItemSlot(new SlotItemType(inv, 4, 134, 16, new ItemStack(Objects.synchronizer, 1, 1), new ItemStack(Objects.synchronizer, 1, 2), new ItemStack(Objects.synchronizer, 1, 3), new ItemStack(Objects.synchronizer, 1, 4)));
 			cont.addPlayerInventory(8, 86, false, true);
 		}

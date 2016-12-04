@@ -110,7 +110,6 @@ public class ItemPortableTeleporter extends ItemEnergyCell implements IGuiItem {
 			if (i >= 0 && i < points.tagCount()) points.removeTag(i);
 		}
 		item.getTagCompound().setTag("points", points);
-		player.setHeldItem(player.getActiveHand(), item);//TODO fix client sync
 	}
 
 	@Override
