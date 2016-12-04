@@ -59,6 +59,7 @@ public class ClientProxy extends CommonProxy {
 		BlockItemRegistry.registerRender(SCSU);
 		BlockItemRegistry.registerRender(OCSU);
 		BlockItemRegistry.registerRender(CCSU);
+		BlockItemRegistry.registerRender(CEU);
 		BlockItemRegistry.registerRender(steamEngine);
 		BlockItemRegistry.registerRender(steamTurbine);
 		BlockItemRegistry.registerRender(steamGenerator);
@@ -120,6 +121,9 @@ public class ClientProxy extends CommonProxy {
 		BlockItemRegistry.registerRender(fluidDummy);
 		BlockItemRegistry.registerRender(selectionTool, null);
 		BlockItemRegistry.registerRender(voltMeter);
+		BlockItemRegistry.registerRender(rotationSensor);
+		BlockItemRegistry.registerRender(thermometer);
+		BlockItemRegistry.registerRender(manometer);
 		BlockItemRegistry.registerRender(energyCell);
 		BlockItemRegistry.registerRender(chisle);
 		BlockItemRegistry.registerRender(cutter);
@@ -190,6 +194,7 @@ public class ClientProxy extends CommonProxy {
 		TileBlockRegistry.registerGui(SCSU, GuiESU.class);
 		TileBlockRegistry.registerGui(OCSU, GuiESU.class);
 		TileBlockRegistry.registerGui(CCSU, GuiESU.class);
+		TileBlockRegistry.registerGui(CEU, GuiCEU.class);
 		TileBlockRegistry.registerGui(farm, GuiFarm.class);
 		TileBlockRegistry.registerGui(miner, GuiMiner.class);
 		TileBlockRegistry.registerGui(link, GuiELink.class);
@@ -235,6 +240,7 @@ public class ClientProxy extends CommonProxy {
 		TileBlockRegistry.registerGui(solidFuelHeater, GuiSolidFuelHeater.class);
 		TileBlockRegistry.registerGui(electricHeater, GuiElectricHeater.class);
 		TileBlockRegistry.registerGui(heatedFurnace, GuiHeatedFurnace.class);
+		TileBlockRegistry.registerGui(matterInterfaceB, GuiMatterInterface.class);
 		//set block transparencies
 		Objects.itemPipe.setBlockLayer(BlockRenderLayer.CUTOUT);
 		Objects.liquidPipe.setBlockLayer(BlockRenderLayer.CUTOUT);

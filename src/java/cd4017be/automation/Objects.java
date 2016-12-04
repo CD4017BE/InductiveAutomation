@@ -36,6 +36,9 @@ public class Objects {
 	public static ItemMaterial material;
 	public static ItemSelectionTool selectionTool;
 	public static ItemVoltMeter voltMeter;
+	public static ItemRotationSensor rotationSensor;
+	public static ItemThermometer thermometer;
+	public static ItemManometer manometer;
 	public static ItemEnergyCell energyCell;
 	public static ItemEnergyTool chisle;
 	public static ItemCutter cutter;
@@ -95,6 +98,7 @@ public class Objects {
 	public static TileBlock SCSU;
 	public static TileBlock OCSU;
 	public static TileBlock CCSU;
+	public static TileBlock CEU;
 	public static TileBlock steamEngine;
 	public static TileBlock steamTurbine;
 	public static TileBlock steamGenerator;

@@ -113,6 +113,9 @@ public class Automation {
 		material = new ItemMaterial("material");
 		selectionTool = new ItemSelectionTool("selectionTool");
 		voltMeter = new ItemVoltMeter("voltMeter");
+		rotationSensor = new ItemRotationSensor("rotationSensor");
+		thermometer = new ItemThermometer("thermometer");
+		manometer = new ItemManometer("manometer");
 		energyCell = new ItemEnergyCell("energyCell", Config.Ecap[0]);
 		chisle = new ItemEnergyTool("chisle", Config.Ecap[0], Config.data.getInt("Tool.Chisle.Euse", 25), Config.data.getFloat("Tool.Chisle.digSpeed", 16F), 4).setToolClass(new String[]{"pickaxe", "shovel"}, Config.data.getShort("item.chisle.harvestLvl", (short)3));
 		cutter = new ItemCutter("cutter", Config.Ecap[0], Config.data.getInt("Tool.Cutter.Euse", 25), 7);
@@ -163,7 +166,6 @@ public class Automation {
 			}
 		}
 		M_thermIns = new TIMaterial();
-		
 		new DefaultItemBlock((heatRadiator = TileBlock.create("heatRadiator", Material.IRON, SoundType.METAL, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new DefaultItemBlock((lightShaft = TileBlock.create("lightShaft", Material.GLASS, SoundType.GLASS, 0)).setCreativeTab(tabAutomation).setHardness(1.0F).setResistance(10F));
 		new DefaultItemBlock((wireC = new BlockPipe("wireC", Material.IRON, SoundType.METAL, 0x20)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F));
@@ -211,7 +213,6 @@ public class Automation {
 		new DefaultItemBlock((trash = TileBlock.create("trash", Material.ROCK, SoundType.STONE, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new DefaultItemBlock((electrolyser = TileBlock.create("electrolyser", Material.IRON, SoundType.METAL, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new DefaultItemBlock((fuelCell = TileBlock.create("fuelCell", Material.IRON, SoundType.METAL, 0)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
-		//new DefaultItemBlock((detector = TileBlock.create("detector", Material.ROCK, SoundType.STONE, 0x12)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F));//TODO replace with sensor modules
 		new DefaultItemBlock((itemSorter = TileBlock.create("itemSorter", Material.WOOD, SoundType.WOOD, 0)).setCreativeTab(tabAutomation).setHardness(0.5F).setResistance(10F));
 		new DefaultItemBlock((matterInterfaceB = TileBlock.create("matterInterfaceB", Material.IRON, SoundType.METAL, 0)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F));
 		new DefaultItemBlock((fluidPacker = TileBlock.create("fluidPacker", Material.IRON, SoundType.METAL, 1)).setCreativeTab(tabAutomation).setHardness(2.0F).setResistance(10F));
@@ -240,6 +241,7 @@ public class Automation {
 		new DefaultItemBlock((solidFuelHeater = TileBlock.create("solidFuelHeater", Material.ROCK, SoundType.STONE, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new DefaultItemBlock((gasVent = TileBlock.create("gasVent", Material.GLASS, SoundType.GLASS, 0x22)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
 		new DefaultItemBlock((heatedFurnace = TileBlock.create("heatedFurnace", Material.ROCK, SoundType.STONE, 1)).setCreativeTab(tabAutomation).setHardness(1.5F).setResistance(10F));
+		new DefaultItemBlock((CEU = TileBlock.create("CEU", Material.IRON, SoundType.METAL, 1)).setCreativeTab(tabAutomation).setBlockUnbreakable().setResistance(Float.POSITIVE_INFINITY));
 		gasPipe.size = 0.5F;
 		ore.setHarvestLevel("pickaxe", 1, ore.getStateFromMeta(Ore.Copper.ordinal()));
 		ore.setHarvestLevel("pickaxe", 2, ore.getStateFromMeta(Ore.Silver.ordinal()));

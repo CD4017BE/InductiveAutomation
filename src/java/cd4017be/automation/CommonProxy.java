@@ -41,6 +41,7 @@ public class CommonProxy {
 		TileBlockRegistry.register(SCSU, ESU.class, TileContainer.class);
 		TileBlockRegistry.register(OCSU, ESU.class, TileContainer.class);
 		TileBlockRegistry.register(CCSU, ESU.class, TileContainer.class);
+		TileBlockRegistry.register(CEU, CEU.class, TileContainer.class);
 		TileBlockRegistry.register(steamEngine, SteamEngine.class, TileContainer.class);
 		TileBlockRegistry.register(steamTurbine, SteamTurbine.class, TileContainer.class);
 		TileBlockRegistry.register(steamGenerator, SteamGenerator.class, TileContainer.class);

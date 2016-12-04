@@ -1,4 +1,4 @@
-#V:0010E
+#V:00201
 #To prevent your changes in this file being overidden with the next mod update, change the version number above to '99999'.
 #To force restore the preset, just delete this file from your config folder.
 
@@ -97,7 +97,10 @@ add("shaped", it("item.jetpackSteel"), "010", "AIcasingSteel", it("item.jetpack"
 add("shaped", it("item.jetpackGraphite"), "010", "AIcasingGraphite", it("item.jetpack"));
 add("shaped", it("item.jetpackUnbr"), "010", "AIcasingUnbr", it("item.jetpack"));
 add("shaped", it("item.selectionTool"), "0/1", it("minecraft:compass"), it("m.Circuit"));
-add("shapeless", it("item.voltMeter"), it("minecraft:compass"), it("tile.electricCoilC"));
+add("shaped", it("item.voltMeter"), "0/1", it("minecraft:compass"), it("tile.electricCoilC"));
+add("shaped", it("item.manometer"), "323/ 1 / 0 ", it("minecraft:glass_bottle"), it("minecraft:leather"), it("minecraft:stick"), it("minecraft:paper"));
+add("shaped", it("item.rotationSensor"), "012", "dustGlowstone", it("tile.shaft"), it("minecraft:daylight_detector"));
+add("shaped", it("item.thermometer"), "323/00 /11 ", "ingotIron", "ingotCopper", it("minecraft:stick"), it("minecraft:paper"));
 add("shapedNBT", "+energy", it("item.chisle"), " 00/120/31 ", "gemDiamond", it("tile.electricCoilA"), it("m.magnet"), it("item.energyCell", 1, WILDCARD));
 add("shapedNBT", "+energy", it("item.cutter"), "20/10/3 ", "gemDiamond", it("m.Motor"), "ingotIron", it("item.energyCell", 1, WILDCARD));
 add("shapedNBT", "+energy", it("item.portableMagnet"), "0/1", it("tile.magnet", 1), it("item.energyCell", 1, WILDCARD));

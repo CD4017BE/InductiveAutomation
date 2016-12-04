@@ -1,0 +1,11 @@
+{
+	"parent": "automation:block/base",
+	"textures": {
+		"top": "automation:blocks/CEU0",
+		"bot": "automation:blocks/advancedFurnace1",
+		"front": "automation:blocks/CEU2",
+		"back": "automation:blocks/CEU3",
+		"left": "automation:blocks/CEU1",
+		"right": "automation:blocks/CEU1"
+	}
+}

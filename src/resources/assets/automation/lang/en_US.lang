@@ -34,10 +34,10 @@ tile.cd4017be.itemPipe\:0.name=Item Transport Pipe
 tile.cd4017be.itemPipe\:1.name=Item Injection Pipe
 tile.cd4017be.itemPipe\:2.name=Item Extraction Pipe
 tile.cd4017be.warpPipe.name=Warp Pipe
-tile.cd4017be.voltageTransformer.name=Voltage Transformer (DEPRECATED)
 tile.cd4017be.SCSU.name=Single-Cell Storage Unit
 tile.cd4017be.OCSU.name=Octa-Cell Storage Unit
 tile.cd4017be.CCSU.name=Crystall-Cell Storage Unit
+tile.cd4017be.CEU.name=Laboratory Power Supply (§dCreative§f)
 tile.cd4017be.steamEngine.name=Steam Engine
 tile.cd4017be.steamTurbine.name=Steam Turbine
 tile.cd4017be.steamGenerator.name=Steam Generator
@@ -123,6 +123,7 @@ tile.cd4017be.voltageTransformer.tip=replaced by Electric Coils
 tile.cd4017be.SCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:0> V\nRcond = \\<AF.EnergyTiers.Rcond:0> Ohm
 tile.cd4017be.OCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
 tile.cd4017be.CCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm
+tile.cd4017be.CEU.tip=Infinite energy source (or sink)\nfor experimenting in creative mode.\nCan be set to any voltage you want.\nAlso measures transfered energy.
 tile.cd4017be.steamEngine.tip=Converts Steam into Water and Energy.\nPmax = \\<AF.SteamGen.Pmax:0> kW\nUmax = \\<AI.EnergyTiers.Umax:0> V\nRcond = \\<AF.EnergyTiers.Rcond:0> Ohm
 tile.cd4017be.steamTurbine.tip=Converts Steam into Water and Energy.\nPmax = \\<AF.SteamGen.Pmax:2> kW\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
 tile.cd4017be.steamGenerator.tip=Converts Steam into Water and Energy.\nPmax = \\<AF.SteamGen.Pmax:1> kW\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
@@ -165,7 +166,7 @@ tile.cd4017be.fuelCell.tip=Lets Hydrogen & Oxygen react into\nSteam to produce e
 tile.cd4017be.detector.tip=Emits redstone signals depending on configurable triggers for:\nitem storage, fluid storage and energy storage (also MJ,RF,EU).\nUse as Computercraft peripheral for more detailed control.
 tile.cd4017be.itemSorter.tip=Routes items into 5 different slots with 4 Item Filters + else.
 tile.cd4017be.wormhole.tip=Creates an interdimensional link between two points being anywhere.\nWalk into this block to get teleported to its link.\nCan transfer entities, items, fluids & energy (also RF).\nCan be used by Teleporters to teleport between dimensions:\nClick this block with paper to get the coordinates.\nAlso acts as warp pipe.
-tile.cd4017be.matterInterfaceB.tip=Used to automatically insert/extract items from a Matterorb.
+tile.cd4017be.matterInterfaceB.tip=Used to automatically insert/extract\nitems from a Matter Orb item.
 tile.cd4017be.fluidPacker.tip=Converts fluids into an item-version that can be stored in chests etc.\nNeeds 1 ng antimatter per 1000 L fluid.
 tile.cd4017be.hugeTank.tip=A bigger tank with 4.096 m³ capacity.
 tile.cd4017be.fluidVent.tip=Can fill liquids into valleys or holes in landscape.
@@ -294,7 +295,10 @@ item.cd4017be.selectionTool\:2.name=Area Configuration Tool (Expand)
 item.cd4017be.selectionTool\:3.name=Area Configuration Tool (Contract)
 item.cd4017be.selectionTool\:4.name=Area Configuration Tool (Move)
 item.cd4017be.selectionTool\:5.name=Area Configuration Tool (Config GUI)
-item.cd4017be.voltMeter.name=Volt Meter
+item.cd4017be.voltMeter.name=Volt Meter §e(%.2fV)
+item.cd4017be.rotationSensor.name=Rotation Sensor §e(%.2fr/s)
+item.cd4017be.thermometer.name=Thermometer §e(%.1fK)
+item.cd4017be.manometer.name=Pressure Sensor §e(%,.0fPa)
 item.cd4017be.energyCell.name=Energy Cell
 item.cd4017be.chisle.name=Electric Chisel
 item.cd4017be.cutter.name=Electric Cutter
@@ -338,7 +342,10 @@ item.cd4017be.remBlockType.name=Remove Block Pattern
 item.cd4017be.vertexSel.name=Vertex Selection Tool
 # tooltips
 item.cd4017be.selectionTool.tip=Used to define the working-area of machines.\nSneak-click on machine to link/unlink.\nSneak-click in air to change mode.\nClick block/air to perform selected action.\nUse configure mode to install upgrades.
-item.cd4017be.voltMeter.tip=Displays cable-voltage.\nClick on machine/cable to link.
+item.cd4017be.voltMeter.tip=Used to measure cable voltage.\nSneak-click on machine/cable to link.\n(§bAutomatedRedstone§7 compatible)
+item.cd4017be.rotationSensor.tip=Measures shaft rotations per second.\nSneak-click on §3Shaft§7 to link.\n(§bAutomatedRedstone§7 compatible)
+item.cd4017be.thermometer.tip=Measures temperatures in Kelvin.\nSneak-click on machine or environment block to link.\n(§bAutomatedRedstone§7 compatible)
+item.cd4017be.manometer.tip=Measures gas pressure in Pascal (N/m²).\nSneak-click on §3Gas Pipe§7 to link.\n(§bAutomatedRedstone§7 compatible)
 item.cd4017be.energyCell.tip=Can be charged/discharged in storage units.
 item.cd4017be.chisle.tip=Pickaxe, Axe & Shovel in one\nUses \\<I.Tool.Chisle.Euse>kJ to break a block.
 item.cd4017be.cutter.tip=Shears & Sword in one\nHits faster than normal weapon (8 damage).\nUses \\<I.Tool.Cutter.Euse>kJ to hit an entity / break a block.\n(ignores the 1.9 combat nerf :b)
@@ -393,6 +400,7 @@ gui.cd4017be.energyFurnace.name=Electric Heated Furnace
 gui.cd4017be.SCSU.name=Energy Storage Unit
 gui.cd4017be.OCSU.name=Energy Storage Unit
 gui.cd4017be.CCSU.name=Energy Storage Unit
+gui.cd4017be.CEU.name=Laboratory Power Supply
 gui.cd4017be.farm.name=Automatic Farm
 gui.cd4017be.miner.name=Automatic Miner
 gui.cd4017be.link.name=Energy Link
@@ -489,6 +497,8 @@ gui.cd4017be.link.link=Linked storage device
 gui.cd4017be.link.int=Internal cable voltage
 gui.cd4017be.link.ref0=Reference voltage for empty storage\nLMB: +/- 1/10\nRMB: +/- 100/1000
 gui.cd4017be.link.ref1=Reference voltage for full storage\nLMB: +/- 1/10\nRMB: +/- 100/1000
+gui.cd4017be.CEU.power=min=%.1f max=%.1f kW\ncur=%.1f avg=%.1f kW\ndE=%.0f kJ
+gui.cd4017be.CEU.reset=Click to reset measurement
 gui.cd4017be.esu.energyFlow=Energy Transfer:\n%+.1f kW @ %.0f A
 gui.cd4017be.filter.tryF0=Send further if can't insert
 gui.cd4017be.filter.tryF1=Keep matching fluids here
@@ -508,9 +518,12 @@ gui.cd4017be.filter.meta1=Check metadata/damage
 gui.cd4017be.filter.targetI0=Unlimited extract/insert\nFarm: ignore block metadata
 gui.cd4017be.filter.targetI1=Stock-keep listed items\nFarm: compare block metadata with stacksize
 gui.cd4017be.filter.priority=Destination priority\n(Warp Pipes)
-gui.cd4017be.matterI.rst=Next item on redstone pulse?
-gui.cd4017be.matterI.next=Next item
-gui.cd4017be.matterI.put=Transfer
+gui.cd4017be.matterI.rst0=Ignore redstone.
+gui.cd4017be.matterI.rst1=Select next item type on pulse.
+gui.cd4017be.matterI.rst2=Select item type in list from\nreceived redstone strength.
+gui.cd4017be.matterI.sel0=Left-Click on Matter Orb item in\ninventory to view it's contents.
+gui.cd4017be.matterI.sel1=Right-Click on Matter Orb item\nto set as quick transfer target.
+gui.cd4017be.matterI.put=Transfer selected amount\nof selected item type\nto selected target Matter Orb.
 gui.cd4017be.pump.update=Cause block updates?
 gui.cd4017be.pump.range=Range to pump connected fluid-lakes\nLMB: +/- 1\nRMB: +/- 8
 gui.cd4017be.vent.range=Range to fill connected landscape\nLMB: +/- 1\nRMB: +/- 8
