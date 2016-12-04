@@ -35,10 +35,12 @@ public class GuiItemMatterInterface extends GuiMachine {
 		this.ySize = 182;
 		super.initGui();
 		guiComps.add(new TextField(0, 98, 66, 52, 8, 8));
-		guiComps.add(new Button(1, 115, 74, 36, 9, -1));
+		guiComps.add(new Button(1, 115, 74, 36, 9, -1).setTooltip("matterI.put"));
 		guiComps.add(new Slider(2, 160, 22, 36, 248, 0, 8, 12, false));
 		guiComps.add(new SlotSel(3, 7, 99, 162, 76));
 		guiComps.add(new ItemList(4, 8, 16, 150, 48));
+		guiComps.add(new GuiComp(5, 84, 70, 8, 8).setTooltip("matterI.sel0"));
+		guiComps.add(new GuiComp(5, 156, 70, 8, 8).setTooltip("matterI.sel1"));
 	}
 
 	@Override

@@ -1,166 +1,162 @@
 package cd4017be.automation.TileEntity;
 
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.items.SlotItemHandler;
+import cd4017be.api.automation.MatterOrbItemHandler;
+import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.DataContainer.IGuiData;
+import cd4017be.lib.Gui.GlitchSaveSlot;
+import cd4017be.lib.Gui.TileContainer;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
+import cd4017be.lib.templates.Inventory.IAccessHandler;
 import cd4017be.lib.util.Utils;
 
 /**
  *
  * @author CD4017BE
  */
-public class MatterInterface extends AutomatedTile implements IGuiData {
+public class MatterInterface extends AutomatedTile implements IGuiData, IAccessHandler {
+
+	private int selSlot = 0;
+	/** &3=0: no redstone, &3=1: pulse mode, &3=2: strength mode, &4: last RS */
+	public byte mode = 0;
 
 	public MatterInterface() {
-		inventory = new Inventory(5, 3, null).group(0, 1, 2, Utils.IN).group(1, 2, 3, Utils.OUT).group(2, 0, 1, Utils.ACC);
+		inventory = new Inventory(4, 3, this).group(0, 1, 2, Utils.IN).group(1, 2, 3, Utils.OUT).group(2, 0, 1, Utils.ACC);
 	}
-/*
+
 	@Override
-	public void update() 
-	{
+	public void update() {
 		super.update();
-		if (MatterOrbItemHandler.isMatterOrb(inventory.items[0])) {
-			if (inventory.items[1] != null) {
-				ItemStack[] remain = MatterOrbItemHandler.addItemStacks(inventory.items[0], inventory.items[1]);
-				inventory.items[1] = remain.length == 0 ? null : remain[0];
+		if(worldObj.isRemote) return;
+		if ((mode & 3) == 2) {
+			int rs = 0;
+			for (EnumFacing s : EnumFacing.VALUES)
+				rs |= worldObj.getRedstonePower(pos, s);
+			rs &= 0xff;
+			if (rs != selSlot) {
+				selSlot = rs;
+				updateOrb();
 			}
-			boolean rs = worldObj.isBlockPowered(getPos());
-			if (rs ^ (netI0 & 1) != 0) {
-				netI0 ^= 1;
-				if (rs && (netI0 & 2) != 0) {
-					ItemStack item = MatterOrbItemHandler.decrStackSize(inventory.items[0], 0, Integer.MAX_VALUE);
-					if (item != null) MatterOrbItemHandler.addItemStacks(inventory.items[0], item);
-				}
+		} else if ((mode & 3) == 1) {
+			boolean rs = worldObj.isBlockPowered(pos);
+			if ((mode & 4) == 0 && rs) {
+				selSlot++;
+				updateOrb();
 			}
-			this.updateOutput();
-		} else {
-			inventory.items[2] = null;
+			if(rs) mode |= 4;
+			else mode &= 3;
 		}
 	}
 
-	private void updateOutput()
-	{
-		inventory.items[2] = MatterOrbItemHandler.getItem(inventory.items[0], 0);
-		if (inventory.items[2] != null && inventory.items[2].stackSize > 64) inventory.items[2].stackSize = 64;
-		inventory.items[4] = inventory.items[2] != null ? inventory.items[2].copy() : null;
+	public int getSelSlot() {
+		return selSlot;
 	}
-	
+
 	@Override
-	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) throws IOException 
-	{
-		if (cmd == 0) { //flip Stack
-			ItemStack item = MatterOrbItemHandler.decrStackSize(inventory.items[0], 0, Integer.MAX_VALUE);
-			if (item != null) {
-				MatterOrbItemHandler.addItemStacks(inventory.items[0], item);
-				this.updateOutput();
-			}
-		} else if (cmd == 1) {
-			int n = dis.readShort();
-			if (n > 4096) n = 4096;
-			ItemStack item = MatterOrbItemHandler.getItem(inventory.items[0], 0);
+	protected void customPlayerCommand(byte cmd, PacketBuffer dis, EntityPlayerMP player) {
+		switch(cmd) {
+		case 0: 
+			selSlot = dis.readByte() & 0xff;
+			updateOrb();
+			break;
+		case 1:
+			mode &= 4;
+			mode |= dis.readByte() & 3;
+		}
+	}
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+		mode = nbt.getByte("mode");
+		selSlot = nbt.getByte("sel") & 0xff;
+		updateOrb();
+	}
+
+	@Override
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
+		nbt.setByte("mode", mode);
+		nbt.setByte("sel", (byte)selSlot);
+		return super.writeToNBT(nbt);
+	}
+
+	private void updateOrb() {
+		int n = MatterOrbItemHandler.getUsedTypes(inventory.items[0]);
+		if (n > 0) selSlot %= n;
+		ItemStack out = MatterOrbItemHandler.getItem(inventory.items[0], selSlot);
+		inventory.items[2] = out != null ? out.copy() : null;
+		inventory.items[3] = out;
+	}
+
+	@Override
+	public void setSlot(int g, int s, ItemStack item) {
+		if(worldObj.isRemote) inventory.items[s] = item;
+		else switch(s) {
+		case 0:
+			inventory.items[0] = item;
+			updateOrb();
+			return;
+		case 1:
 			if (item == null) return;
-			if (n > 0 && item.stackSize > n) item.stackSize = n;
-			else n = item.stackSize;
-			ItemStack[] remain = MatterOrbItemHandler.addItemStacks(inventory.items[3], item);
-			if (remain.length == 0) {
-				MatterOrbItemHandler.decrStackSize(inventory.items[0], 0, n);
-				this.updateOutput();
-			}
-		} else if (cmd == 2) {
-			netI0 = dis.readByte(); 
+			MatterOrbItemHandler.addItemStacks(inventory.items[0], item);
+			inventory.items[1] = null;
+			if (item.isItemEqual(inventory.items[2])) updateOrb();
+			return;
+		case 2:
+			ItemStack last = inventory.items[3];
+			if (last == null) return;
+			int n = last.stackSize - (item != null ? item.stackSize : 0);
+			MatterOrbItemHandler.decrStackSize(inventory.items[0], selSlot, n);
+			updateOrb();
 		}
 	}
 
 	@Override
-	public int[] stackTransferTarget(ItemStack item, int s, TileContainer container) 
-	{
-		int[] pi = container.getPlayerInv();
-		if (s < pi[0] || s >= pi[1]) return pi;
-		else if (MatterOrbItemHandler.isMatterOrb(item)) return new int[]{0, 1};
-		else return new int[]{1, 2};
+	public int insertAm(int g, int s, ItemStack item, ItemStack insert) {
+		switch(s) {
+		case 0: return item == null && MatterOrbItemHandler.isMatterOrb(insert) ? 1 : 0;
+		case 1: return MatterOrbItemHandler.canInsert(inventory.items[0], insert) ? insert.stackSize : 0;
+		default: return 0;
+		}
 	}
 
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		container.addItemSlot(new SlotItemHandler(inventory, 0, 44, 34));
-		container.addItemSlot(new SlotItemHandler(inventory, 1, 26, 16));
-		container.addItemSlot(new SlotItemType(inventory, 2, 26, 52));
-		container.addItemSlot(new SlotItemHandler(inventory, 3, 8, 34));
+		cont.extraRef = new NBTTagList();
+		container.addItemSlot(new SlotItemHandler(inventory, 0, 116, 66));
+		container.addItemSlot(new GlitchSaveSlot(inventory, 1, 26, 66, false));
+		container.addItemSlot(new GlitchSaveSlot(inventory, 2, 44, 66, false));
 		
-		container.addPlayerInventory(8, 86);
+		container.addPlayerInventory(8, 100);
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int n) 
-	{
-		if (i == 2) {
-			ItemStack item = MatterOrbItemHandler.decrStackSize(inventory.items[0], 0, n);
-			this.updateOutput();
-			return item;
-		} else return super.decrStackSize(i, n);
-	}
-
-	@Override
-	public void setInventorySlotContents(int i, ItemStack item) 
-	{
-		if (i == 2) {
-			inventory.items[2] = item;
-			int n = (inventory.items[4] != null ? inventory.items[4].stackSize : 0) - (inventory.items[2] != null ? inventory.items[2].stackSize : 0);
-			inventory.items[4] = inventory.items[2] != null ? inventory.items[2].copy() : null;
-			if (n > 0) MatterOrbItemHandler.decrStackSize(inventory.items[0], 0, n);
-		} super.setInventorySlotContents(i, item);
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int i) 
-	{
-		if (i == 2 || i == 4) return null;
-		else return super.removeStackFromSlot(i);
-	}
-	
-	@Override
-	public boolean canInsert(ItemStack item, int cmp, int i) 
-	{
-		return i != 2;
-	}
-
-	@Override
-	public boolean canExtract(ItemStack item, int cmp, int i) 
-	{
+	public boolean transferStack(ItemStack item, int s, TileContainer cont) {
+		if (s < cont.invPlayerS) cont.mergeItemStack(item, cont.invPlayerS, cont.invPlayerE, true);
+		else if (MatterOrbItemHandler.isMatterOrb(item)) cont.mergeItemStack(item, 0, 1, false);
+		else cont.mergeItemStack(item, 1, 2, false);
 		return true;
 	}
 
 	@Override
-	public boolean isValid(ItemStack item, int cmp, int i) 
-	{
-		return i != 2;
+	public int[] getSyncVariables() {
+		return new int[]{mode, selSlot};
 	}
 
 	@Override
-	public void slotChange(ItemStack oldItem, ItemStack newItem, int i) 
-	{
-		if (i == 0) {
-			this.updateOutput();
-		} else if (i == 2) {
-			int n = (oldItem == null ? 0 : oldItem.stackSize) - (newItem == null ? 0 : newItem.stackSize);
-			if (n > 0) MatterOrbItemHandler.decrStackSize(inventory.items[0], 0, n);
-			this.updateOutput();
+	public void setSyncVariable(int i, int v) {
+		switch(i) {
+		case 0: mode = (byte)(v & 3); break;
+		case 1: selSlot = v;
 		}
 	}
 
-	@Override
-	public void readFromNBT(NBTTagCompound nbt) 
-	{
-		super.readFromNBT(nbt);
-		netI0 = nbt.getByte("mode");
-	}
-
-	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
-	{
-		nbt.setByte("mode", (byte)netI0);
-		return super.writeToNBT(nbt);
-	}
-	*/
 }
