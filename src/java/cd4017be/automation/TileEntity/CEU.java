@@ -7,6 +7,7 @@ import cd4017be.automation.Config;
 import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.TileContainer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.PacketBuffer;
 import net.minecraftforge.items.SlotItemHandler;
@@ -101,6 +102,7 @@ public class CEU extends ESU {
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
+		container.clickHandler = this;
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 98, 16));
 		container.addItemSlot(new SlotItemHandler(inventory, 1, 134, 16));
 		

@@ -28,6 +28,7 @@ import cd4017be.lib.MovedBlock;
 import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.ISlotClickHandler;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.Inventory.IAccessHandler;
@@ -51,7 +52,7 @@ import net.minecraftforge.common.DimensionManager;
  * @author CD4017BE
  */
 @Optional.Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")
-public class Teleporter extends AutomatedTile implements IOperatingArea, Environment, IGuiData, IAccessHandler {
+public class Teleporter extends AutomatedTile implements IOperatingArea, Environment, IGuiData, IAccessHandler, ISlotClickHandler {
 
 	private static final float resistor = 50F;
 	private static final float eScale = (float)Math.sqrt(1D - 1D / resistor);
@@ -366,6 +367,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
+		container.clickHandler = this;
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 116, 52));
 		container.addItemSlot(new SlotItemHandler(inventory, 1, 152, 52));
 		for (int i = 0; i < 9; i++)

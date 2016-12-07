@@ -21,6 +21,7 @@ import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.Gui.SlotHolo;
 import cd4017be.lib.Gui.SlotItemType;
 import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.ISlotClickHandler;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory.IAccessHandler;
 import cd4017be.lib.util.CachedChunkProtection;
@@ -51,7 +52,7 @@ import net.minecraftforge.items.SlotItemHandler;
  *
  * @author CD4017BE
  */
-public class Farm extends AutomatedTile implements IOperatingArea, IGuiData, IAccessHandler {
+public class Farm extends AutomatedTile implements IOperatingArea, IGuiData, IAccessHandler, ISlotClickHandler {
 
 	public static float Energy = 25000F;
 	private static final float resistor = 20F;
@@ -367,6 +368,7 @@ public class Farm extends AutomatedTile implements IOperatingArea, IGuiData, IAc
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
+		container.clickHandler = this;
 		for (int i = 0; i < 8; i++)
 			container.addItemSlot(new SlotHolo(inventory, i, 8 + 18 * i, 16, false, true));
 		

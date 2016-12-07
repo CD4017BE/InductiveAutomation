@@ -13,6 +13,7 @@ import cd4017be.automation.Objects;
 import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.ISlotClickHandler;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.util.Utils;
@@ -29,7 +30,7 @@ import net.minecraftforge.items.SlotItemHandler;
  *
  * @author CD4017BE
  */
-public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess {
+public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess, ISlotClickHandler {
 
 	public int type = 0;
 	public int Uref;
@@ -136,10 +137,18 @@ public class ESU extends AutomatedTile implements IGuiData, IEnergyAccess {
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
+		container.clickHandler = this;
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 98, 16));
 		container.addItemSlot(new SlotItemHandler(inventory, 1, 134, 16));
 		
 		container.addPlayerInventory(8, 86);
+	}
+
+	@Override
+	public boolean transferStack(ItemStack item, int s, TileContainer container) {
+		if (s < container.invPlayerS) container.mergeItemStack(item, container.invPlayerS, container.invPlayerE, false);
+		else container.mergeItemStack(item, 0, 2, true);
+		return true;
 	}
 
 	@Override

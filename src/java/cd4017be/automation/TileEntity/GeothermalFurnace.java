@@ -7,6 +7,7 @@ import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.Gui.SlotItemType;
 import cd4017be.lib.Gui.SlotTank;
 import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.ISlotClickHandler;
 import cd4017be.lib.Gui.TileContainer.TankSlot;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
@@ -27,7 +28,7 @@ import net.minecraftforge.items.SlotItemHandler;
  *
  * @author CD4017BE
  */
-public class GeothermalFurnace extends AutomatedTile implements IGuiData, IAccessHandler {
+public class GeothermalFurnace extends AutomatedTile implements IGuiData, IAccessHandler, ISlotClickHandler {
 
 	public static int Euse = 160;
 	private boolean melting = false;
@@ -175,6 +176,7 @@ public class GeothermalFurnace extends AutomatedTile implements IGuiData, IAcces
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
+		container.clickHandler = this;
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 62, 52));
 		container.addItemSlot(new SlotItemType(inventory, 1, 62, 16, new ItemStack[]{new ItemStack(Blocks.STONE, 64)}));
 		container.addItemSlot(new SlotTank(inventory, 2, 8, 34));

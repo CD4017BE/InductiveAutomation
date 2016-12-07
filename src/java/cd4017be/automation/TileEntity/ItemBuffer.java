@@ -1,7 +1,6 @@
 package cd4017be.automation.TileEntity;
 
 import net.minecraft.network.PacketBuffer;
-
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -9,12 +8,13 @@ import net.minecraftforge.items.SlotItemHandler;
 import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.ISlotClickHandler;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.util.Obj2;
 import cd4017be.lib.util.Utils;
 
-public class ItemBuffer extends AutomatedTile implements IGuiData {
+public class ItemBuffer extends AutomatedTile implements IGuiData, ISlotClickHandler {
 
 	public int mode, amA, amB;
 
@@ -102,19 +102,21 @@ public class ItemBuffer extends AutomatedTile implements IGuiData {
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		container.addPlayerInventory(8, 86);
+		container.clickHandler = this;
 		for (int j = 0; j < 2; j++)
 			for (int i = 0; i < 9; i++)
 				container.addItemSlot(new SlotItemHandler(inventory, i + 9 * j, 8 + 18 * i, 16 + 18 * j));
 		container.addItemSlot(new SlotItemHandler(inventory, 18, 107, 52));
 		container.addItemSlot(new SlotItemHandler(inventory, 19, 152, 52));
 		container.addItemSlot(new SlotItemHandler(inventory, 20, 62, 52));
+
+		container.addPlayerInventory(8, 86);
 	}
 
 	@Override
 	public boolean transferStack(ItemStack item, int s, TileContainer container) {
 		if (s < container.invPlayerS) container.mergeItemStack(item, container.invPlayerS, container.invPlayerE, false);
-		else container.mergeItemStack(item, 36, 54, false);
+		else container.mergeItemStack(item, 0, 18, false);
 		return true;
 	}
 

@@ -28,6 +28,7 @@ import cd4017be.automation.Item.ItemPlacement;
 import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.ISlotClickHandler;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.Inventory.IAccessHandler;
@@ -61,7 +62,7 @@ import net.minecraftforge.items.SlotItemHandler;
  * @author CD4017BE
  */
 @Optional.Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")
-public class Builder extends AutomatedTile implements IOperatingArea, Environment, IGuiData, IAccessHandler {
+public class Builder extends AutomatedTile implements IOperatingArea, Environment, IGuiData, IAccessHandler, ISlotClickHandler {
 
 	public static class VectorConstruction 
 	{
@@ -706,6 +707,7 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
+		container.clickHandler = this;
 		for (int i = 0; i < 9; i++)
 			container.addItemSlot(new SlotItemHandler(inventory, i, 8 + i * 18, 34));
 		for (int i = 0; i < 8; i++)

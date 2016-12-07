@@ -1,6 +1,7 @@
 package cd4017be.automation.TileEntity;
 
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.SlotItemHandler;
 import cd4017be.api.automation.PipeEnergy;
@@ -12,13 +13,13 @@ import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.Gui.SlotItemType;
 import cd4017be.lib.Gui.SlotTank;
 import cd4017be.lib.Gui.TileContainer;
+import cd4017be.lib.Gui.TileContainer.ISlotClickHandler;
 import cd4017be.lib.templates.AutomatedTile;
 import cd4017be.lib.templates.Inventory;
 import cd4017be.lib.templates.TankContainer;
 import cd4017be.lib.util.Utils;
 
-public class GraviCond extends AutomatedTile implements IGuiData
-{
+public class GraviCond extends AutomatedTile implements IGuiData, ISlotClickHandler {
 	public static int itemWeight = 125;
 	public static int blockWeight = 1000;
 	public static float energyCost = 2.0F;
@@ -101,11 +102,20 @@ public class GraviCond extends AutomatedTile implements IGuiData
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
-		container.addPlayerInventory(8, 86);
+		container.clickHandler = this;
 		container.addItemSlot(new SlotItemHandler(inventory, 0, 8, 52));
 		container.addItemSlot(new SlotItemHandler(inventory, 1, 116, 34));
 		container.addItemSlot(new SlotItemType(inventory, 2, 152, 34));
 		container.addItemSlot(new SlotTank(inventory, 3, 8, 16));
+		
+		container.addPlayerInventory(8, 86);
+	}
+
+	@Override
+	public boolean transferStack(ItemStack item, int s, TileContainer container) {
+		if (s < container.invPlayerS) container.mergeItemStack(item, container.invPlayerS, container.invPlayerE, false);
+		else container.mergeItemStack(item, 0, 2, true);
+		return true;
 	}
 
 	public float getEnergy() {

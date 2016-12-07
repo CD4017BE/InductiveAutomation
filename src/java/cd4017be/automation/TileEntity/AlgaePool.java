@@ -165,6 +165,7 @@ public class AlgaePool extends AutomatedTile implements IGuiData, ISlotClickHand
 	@Override
 	public void initContainer(DataContainer container) {
 		TileContainer cont = (TileContainer)container;
+		cont.clickHandler = this;
 		cont.addItemSlot(new SlotItemHandler(inventory, 0, 80, 34));
 		cont.addItemSlot(new SlotItemHandler(inventory, 1, 98, 34));
 		cont.addItemSlot(new SlotTank(inventory, 2, 17, 34));
