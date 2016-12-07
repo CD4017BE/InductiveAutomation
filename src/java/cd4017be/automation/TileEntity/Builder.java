@@ -17,6 +17,7 @@ import com.mojang.authlib.GameProfile;
 
 import cd4017be.api.automation.IOperatingArea;
 import cd4017be.api.automation.PipeEnergy;
+import cd4017be.api.circuits.IQuickRedstoneHandler;
 import cd4017be.api.computers.ComputerAPI;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
@@ -62,7 +63,7 @@ import net.minecraftforge.items.SlotItemHandler;
  * @author CD4017BE
  */
 @Optional.Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")
-public class Builder extends AutomatedTile implements IOperatingArea, Environment, IGuiData, IAccessHandler, ISlotClickHandler {
+public class Builder extends AutomatedTile implements IOperatingArea, Environment, IGuiData, IAccessHandler, ISlotClickHandler, IQuickRedstoneHandler {
 
 	public static class VectorConstruction 
 	{
@@ -313,7 +314,7 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 	private VectorConstruction Vconst;
 	private CachedChunkProtection prot;
 	public int[] thick = new int[10];
-	
+
 	private GameProfile lastUser = defaultUser;
 
 	public Builder()
@@ -682,6 +683,7 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 		} catch (Exception e) {lastUser = defaultUser;}
 		prot = null;
 		this.setSlot(-1, 47, inventory.items[47]);
+		lastRedstone = nbt.getInteger("lRS");
 	}
 
 	@Override
@@ -701,6 +703,7 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 		nbt.setString("lastUser", lastUser.getName());
 		nbt.setLong("lastUserID0", lastUser.getId().getMostSignificantBits());
 		nbt.setLong("lastUserID1", lastUser.getId().getLeastSignificantBits());
+		nbt.setInteger("lRS", lastRedstone);
 		return super.writeToNBT(nbt);
 	}
 	
@@ -805,7 +808,35 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 	}
 	
 	ArrayList<BuildTask> sheduledTasks = new ArrayList<BuildTask>();
-	
+
+	//Redstone commands: 0xTTZZYYXX
+
+	private int lastRedstone = 0;
+
+	@Override
+	public void onRedstoneStateChange(EnumFacing side, int value, TileEntity src) {
+		if (value != lastRedstone && thick[8] == S_Offline) {
+			lastRedstone = value;
+			int x = area[0] + (value & 0xff);
+			int y = area[1] + (value >> 8 & 0xff);
+			int z = area[2] + (value >> 16 & 0xff);
+			int t = (value >> 26 & 0x1f) - 1;
+			if (sheduledTasks.size() < Config.taskQueueSize * 4 && x < area[3] && y < area[4] && z < area[5] && t >= 0 && t < 16)
+				sheduledTasks.add(new BuildTask(null, x, y, z, t, false));
+		}
+	}
+
+	@Override
+	public void onNeighborBlockChange(Block b) {
+		for (EnumFacing s : EnumFacing.VALUES) {
+			int rs = worldObj.getRedstonePower(pos.offset(s), s);
+			if ((rs & 0x7c000000) != 0) {
+				this.onRedstoneStateChange(s, rs, null);
+				break;
+			}
+		}
+	}
+
 	//OpenComputers:
 	
 	private Object node = ComputerAPI.newOCnode(this, "Automation-Builder", true);
