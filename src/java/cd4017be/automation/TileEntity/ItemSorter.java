@@ -53,12 +53,12 @@ public class ItemSorter extends AutomatedTile implements IGuiData, IAccessHandle
 
 	@Override
 	public int insertAm(int g, int s, ItemStack item, ItemStack insert) {
-		if (g < 4) {
+		if (g >= 0 && g < 4) {
 			if (filter[g] == null) return 0;
-			if (filter[g].getFilter().matches(item) ^ (filter[g].mode&1)== 0) return 0;
+			if (filter[g].getFilter().matches(insert) ^ (filter[g].mode&1)== 0) return 0;
 		}
 		for (int j = 0; j < g; j++)
-			if (filter[j] != null && !filter[j].transfer(item)) return 0;
+			if (filter[j] != null && !filter[j].transfer(insert)) return 0;
 		int m = Math.min(insert.getMaxStackSize() - (item == null ? 0 : item.stackSize), insert.stackSize); //TODO use stock keep function
 		return item == null || ItemHandlerHelper.canItemStacksStack(item, insert) ? m : 0;
 	}
@@ -75,16 +75,11 @@ public class ItemSorter extends AutomatedTile implements IGuiData, IAccessHandle
 	}
 
 	@Override
-	public byte getItemConnectType(int s) 
-	{
-		boolean in = false, out = false;
-		byte b;
-		for (int i = 0; i < inventory.groups.length; i++) {
-			b = inventory.getConfig(s, i);
-			out |= b == 3;
-			in |= b == 2;
-		}
-		return (byte)((out ? 1 : 0) | (in ? 2 : 0));
+	public byte getItemConnectType(int s) {
+		byte io = 0;
+		for (int i = 0; i < inventory.groups.length; i++)
+			io |= inventory.getConfig(s, i);
+		return io == 1 ? (byte)2 : io == 2 ? (byte)1 : (byte)0;
 	}
-	
+
 }

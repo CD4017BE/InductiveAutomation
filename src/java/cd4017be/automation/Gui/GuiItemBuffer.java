@@ -27,7 +27,7 @@ public class GuiItemBuffer extends GuiMachine {
 		guiComps.add(new Button(1, 7, 51, 18, 18, 0).texture(176, 0).setTooltip("buffer.stack#"));
 		guiComps.add(new NumberSel(2, 43, 51, 18, 18, "%d", 0, 18, 9).setTooltip("buffer.overfl"));
 		guiComps.add(new NumberSel(3, 88, 51, 18, 18, "%d", 0, 64, 8).setTooltip("buffer.split"));
-		guiComps.add(new NumberSel(3, 133, 51, 18, 18, "%d", 0, 64, 8).setTooltip("buffer.split"));
+		guiComps.add(new NumberSel(4, 133, 51, 18, 18, "%d", 0, 64, 8).setTooltip("buffer.split"));
 	}
 
 	@Override

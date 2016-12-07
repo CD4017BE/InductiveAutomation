@@ -40,36 +40,30 @@ public class ElectricCompressor extends AutomatedTile implements IGuiData, IAcce
 		Rw = Config.Rmin;
 		powerScale = Config.Pscale;
 	}
-	
+
 	@Override
-	public void update() 
-	{
+	public void update() {
 		super.update();
 		if(worldObj.isRemote) return;
 		//power
 		Uc = (float)energy.Ucap;
 		double power = energy.getEnergy(0, Rw) / 1000F;
 		//Item process
-		if (inventory.items[5] == null && craftInvChange)
-		{
+		if (inventory.items[5] == null && craftInvChange) {
 			CmpRecipe recipe = AutomationRecipes.getRecipeFor(inventory.items, 0, 4);
 			if (recipe != null) {
 				int n;
 				for (int i = 0; i < recipe.input.length; i++)
 					if ((n = AutomationRecipes.getStacksize(recipe.input[i])) > 0) inventory.extractItem(i, n, false);
 				inventory.items[5] = recipe.output.copy();
-			} else
-			craftInvChange = false;
+			} else craftInvChange = false;
 		}
-		if (inventory.items[5] != null)
-		{
-			if (Estor < Energy)
-			{
+		if (inventory.items[5] != null) {
+			if (Estor < Energy) {
 				Estor += power;
 				energy.Ucap *= powerScale;
 			}
-			if (Estor >= Energy)
-			{
+			if (Estor >= Energy) {
 				inventory.items[5] = ItemFluidUtil.putInSlots(inventory, inventory.items[5], 4);
 				if (inventory.items[5] == null) Estor -= Energy;
 			}
@@ -85,8 +79,7 @@ public class ElectricCompressor extends AutomatedTile implements IGuiData, IAcce
 	}
 
 	@Override
-	public NBTTagCompound writeToNBT(NBTTagCompound nbt) 
-	{
+	public NBTTagCompound writeToNBT(NBTTagCompound nbt) {
 		nbt.setFloat("progress", Estor);
 		nbt.setShort("resistor", (short)Rw);
 		nbt.setFloat("pScale", powerScale);
@@ -94,8 +87,7 @@ public class ElectricCompressor extends AutomatedTile implements IGuiData, IAcce
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbt) 
-	{
+	public void readFromNBT(NBTTagCompound nbt) {
 		super.readFromNBT(nbt);
 		Estor = nbt.getFloat("progress");
 		Rw = nbt.getShort("resistor");
@@ -111,7 +103,7 @@ public class ElectricCompressor extends AutomatedTile implements IGuiData, IAcce
 			powerScale = (float)Math.sqrt(1.0D - 1.0D / (double)Rw);
 		}
 	}
-	
+
 	@Override
 	public void initContainer(DataContainer cont) {
 		TileContainer container = (TileContainer)cont;
@@ -147,7 +139,7 @@ public class ElectricCompressor extends AutomatedTile implements IGuiData, IAcce
 	@Override
 	public void setSlot(int g, int s, ItemStack item) {
 		inventory.items[s] = item;
-		craftInvChange = true;
+		if (s < 4) craftInvChange = true;
 	}
 
 }
