@@ -54,6 +54,12 @@
 \renewcommand{\cftsecfont}{\rmfamily\mdseries\upshape}
 \renewcommand{\cftsecpagefont}{\rmfamily\mdseries\upshape} % No bold!
 
+\usepackage[
+	colorlinks=true,
+	urlcolor=blue,
+	linkcolor=red
+]{hyperref}
+
 %%% END Article customizations
 
 \newcommand{\imgtex}{\begin{tabularx}{\textwidth}{@{}c@{ }X@{}}}
@@ -62,14 +68,14 @@
 
 \title{Inductive Automation Manual}
 \author{by CD4017BE}
-\date{mod version: 4.0.3}
+\date{mod version: 5.3.2}
 
 \begin{document}
  \maketitle
  \tableofcontents
  
  \section{About this manual}  
-  Ingame there already is basic information about the blocks and items available in their tooltips if you press SHIFT. So this manual contains the more detailed information about how things work in Inductive Automation. But crafting recipes are not available here, use the Just Enough Items (JEI) mod to view them ingame. This mod contains its own JEI plug-in so recipes that are crafted using the various machines of this mod are also available. There are some things that can be changed via the config file, so all database values listed here refer to the default config settings. As the ingame tooltips refer to the client config settings, they may show wrong values when playing on a server with different settings.
+  Ingame there already is basic information about the blocks and items available in their tooltips if you press SHIFT. So this manual contains the more detailed information about how things work in Inductive Automation. But crafting recipes are not available here, use the \href{http://minecraft.curseforge.com/projects/just-enough-items-jei}{Just Enough Items (JEI) mod} to view them ingame. This mod contains its own JEI plug-in so recipes that are crafted using the various machines of this mod are also available. There are some things that can be changed via the config file, so all database values listed here refer to the default config settings. As the ingame tooltips refer to the client config settings, they may show wrong values when playing on a server with different settings.
 
 Most screenshots used here are edited to make them fit better into the document and they also could show textures of an earlier mod version, so don't worry if your ingame should look a bit different. 
 
@@ -131,38 +137,14 @@ Unlike normal item or liquid transport pipes, item/liquid warp pipes have no int
 \includegraphics[align = t]{blockFluidconverter} & The \bf fluid stabilizer \rm converts 1000L of any fluid into a stabilized fluid item which then can be used as filled fluid container in a tank or to be placed into the world. This conversion requires 1L[= 1 ng] antimatter per 1000L fluid. The machine has three tanks to convert three different fluids simultaneously. \\ \hline
 \end{tabularx}
 
-\section{Detector and redstone control}
-Some machines in this mod can be controlled by redstone signals (mostly turning them on and off). But for advanced automated systems manually switched levers may be inconvenient so there is a universal sensor block called \bf detector\rm . It's able to check inventory, fluids and energy of its connected block (side marked with 4 green squares on texture). \\
-\includegraphics[width = \textwidth]{detector} \\
-In its GUI you can set 6 detection tasks (one for each redstone output side of the block). The first button (most left) sets what should be checked: \includegraphics{detectItem} will check the amount of items in the block's inventory, \includegraphics{detectFluid} will check the amount of fluid in the block's internal tanks (counted in L or mB) and \includegraphics{detectEnergy} will check the amount of energy stored inside the connected block (counted in units of kJ) this also includes the redstone flux energy from Thermal Expansion (1kJ = 10RF) and when attached to cables it will count their internal stored energy (see energy section). 
+\newpage
+\section{Measurement and Redstone control}
+Some machines in this mod can be controlled by redstone signals (mostly turning them on and off).
+The mod \href{https://minecraft.curseforge.com/projects/automated-redstone}{\bf Automated Redstone\rm} offers a large set of components to build automated control systems. The Detector that existed in previous versions of Inductive Automation was completely moved to Automated Redstone and replaced by a more modularized system that uses sensor modules. Everything is described in \href{https://github.com/CD4017BE/AutomatedRedstone/blob/master-1.10.2/doc/manual/AutomatedRedstoneManual.pdf}{the mod's own Manual} in section 'Sensor'.
 
-The next button defines from which side the connected block should be accessed and the slot can be used to filter the item or fluid detection: Putting an \bf Item Pipe Filter \rm in makes the detector only count the items matching that filter (redstone, amount limit, priority and lock transfer settings are ignored). If you set it to whitelist nothing it will count empty slots instead of items. Accordingly you can also insert \bf Fluid Pipe Filters \rm to filter fluid measurement. Whitelisting nothing here also makes it count the remaining capacity of the tank instead of fluid amounts.
+The \bf Volt Meter \rm also implements the sensor module API and can be put into a \bf Sensor Module Container \rm for automatic Voltage measurement of the Cable block, the tool is linked to.
 
-In the text fields you can two numbers in range -2147483648 (negative values usually don't make sense but it's possible) to +2147483647 as upper and lower reference value. The redstone output strength ($15x$) will be a linear interpolation of the measurement value ($n$) within the upper ($N_{high}$) and lower ($N_{low}$) reference value as borders: \\
-If $N_{low}\leq N_{high}$ then $n\leq N_{low}\implies x = 0$ and $n>N_{high}\implies x = 1$, \\
-if $N_{low}>N_{high}$ then $n\geq N_{low}\implies x = 0$ and $n\leq N_{high}\implies x = 1$, \\
-otherwise $x=\frac{n-N_{low}}{N_{high}-N_{low}}$.
-
-When connecting normal redstone wire to the detector, it's output signal strength will be $15*x$ (range 0-15). If my \bf Automated Redstone \rm mod is installed you can also connect 8-bit redstone wires to it, which gives you a full 8-bit resolution signal of $255*x$ (range 0-255) instead.
-
-If ComputerCraft or OpenComputers are installed, the detector block can be also used as peripheral or component to directly read inventory, fluid and energy data out of the connected block:
-\begin{lstlisting}
-CC: m = peripheral.wrap("Automation-Detector_0")
-OC: m = component.proxy(component.list("Automation-Detector")())
-1: U, Umax = m.getVoltage(side) --In units of V
-2: E, Emax = m.getEnergy(side) --In units of kJ
-3: inv = m.getInventory(side)
-4: itemID = inv[slot].id
-5: damage = inv[slot].dmg
-6: stacksize = inv[slot].am
-7: tanks = m.getFluidTank(side)
-8: fluid = tanks[i].id
-9: amount = tanks[i].am
-10: capacity = tanks[i].cap
-\end{lstlisting}
-1: returns current cable voltage and maximum voltage (both 0 if not connected to a valid cable). 2: returns currently stored energy and energy storage capacity (both 0 if not connected to a valid block). 3: returns a table containing the inventory from the given side of the connected block (or nil if block has no inventory) 4:, 5: and 6: show how to access the item id, damage value and stack size of each contained item with 'slot' as the slot id where the item is stored. 7: returns a table containing all fluid tanks from the given side of the connected block (or nil if block doesn't provide fluid storage) 8: , 9: and 10: show how to access fluid name, stored amount and tank capacity for each tank with 'i' as the tank number. 'fluid' and 'amount' will be 0 for empty tanks. The 'side' parameter is a number that defines the side from which the connected block should be accessed: 0 = bottom, 1 = top, 2 = north, 3 = south, 4 = west, 5 = east.\\
-
-As complicated circuits or wiring gets very big and unhandy when using minecraft's default redstone components, it may be good to have a mod installed that offers compact redstone circuitry (like the \bf Automated Redstone \rm mod already mentioned).
+To detect the amout of energy stored in capacitors you can use the \bf Energy Sensor \rm
 
 \section{Energy}
 \subsection{Heat \& Steam}
@@ -230,10 +212,10 @@ Hydrogen & superconductor & 8kV & 64MW \\ \hline
 
 \bf Final note: Don't connect energy cables or machines in a circle! Because of negative interferences the energy won't be transported properly through the whole network anymore. \rm You can disconnect machines using their energy connection tab and cables by sneak-right-clicking them.
 
-\subsection{Voltage Transformer}
+\subsection{Voltage Transformer} \label{sec:transformer}
 Sometimes it may be necessary to connect the energy of different machines or cable networks at different voltages with each other. In this case a voltage transformer or energy link is needed: \\
 \imgtex \hline
-\includegraphics[align = t]{blockTransformer} & \bf Voltage transformers \rm have two opposite sides that connect to cables, which are indicated by 'HV' and 'LV' on texture. They will exchange energy between the connected cables so that ${U_{HV} = x * U_{LV}}$ , where x is the voltage factor that can be set in their GUI. As they have no internal cable themselves, they are not limited to a maximum voltage.\\ \hline
+\includegraphics[align = t]{blockTransformer} & The are different types of \bf Electric Coils \rm that differ in their maximum voltage and the range of coil windings you can set them to. Placing two coils touching each other with their front side gives you a transformer. The two coils will then exchange energy so that $\frac{U_1}{N_1}=\frac{U_2}{N_2}$ ,where $U$ is the coils' cable voltage and $N$ the amount of windings set in its GUI.\\ \hline
 \includegraphics[align = t]{blockELink} & \bf Energy links \rm have one side (marked with blue square dot) where you can place any block that can store energy [Cables(see above section), ESUs, RF devices]. They will function similar to ESUs but use the connected block as energy buffer and you can set two different reference voltages rather than just one: 'Umax' for full Storage and 'Umin' for empty Storage, the actual Uref results as a linear interpolation between both depending on the fill state. There are two types of energy link that differ in their maximum voltage: the basic has 1200V and the HV has 8000V.  As energy links also connect to Thermal Expansion RF storing blocks/conduits they can be used as bidirectional energy converter with a ratio of: ${1RF = 100J}$. \\ \hline
 \end{tabularx}
 All these machines can be configured in their GUI to be controlled by redstone. Turning them off means they won't transfer energy.
@@ -246,6 +228,7 @@ All these machines can be configured in their GUI to be controlled by redstone. 
 LV & 24kV & 576MJ & 14.4kW \\
 HV & 120kV & 14.4GJ & 360kW \\ \hline
 \end{tabular} \\
+\it You need an Energy Link to reach the full 24/120kV \rm
 
 \subsection{Antimatter}
 Antimatter is used for some end game machines and tools and is counted in ng(nano gram), ug(micro gram) or mg(milli gram)[1g = 1.000mg = 1.000.000ug = 1.000.000.000ng]. It can be transported as regular fluid with 1L = 1ng. \\
@@ -270,7 +253,7 @@ Antimatter is used for some end game machines and tools and is counted in ng(nan
 \bf Configure: & \rm right-click in air to open the configuration GUI of the linked machine or sneak-right-click on a machine to open its configuration GUI without linking it. \\
 \end{tabularx}
 \includegraphics[width = \textwidth]{selectionTool} \\
-Put a piece of glowstone dust into the upper-right slot to make the selected area be visible in the world as colored hologram box. The 6 text fields below can be used to set the area by editing its bounding coordinates. The button right next to the area size display is used to copy the area of one machine to another, to do this just sneak-right click the first machine in any mode except 'configure' to link it and then open the second machine's configuration GUI by sneak-right-clicking it in 'configure' mode and finally click the button to copy the first machine's area to the second machine. The slots on the left are used for upgrades: Every \bf tool motion frame \rm item put into the upper slot increases the machine's maximum area size in all 3 directions and the maximum distance between the machine and the nearest side of its area by 100\% of its original. Every \bf ender matrix \rm item put into the center slot increases the distance by another 400\% of the value that was already increased above (useful to operate from far away). And every \bf superconductor coil \rm item put into the bottom slot increases the machine's maximum cable voltage by 50\% of its original (higher voltages allow greater power supply). These upgrade items are not consumed and can be taken out or will drop when breaking the machine. However removing upgrade items may cause the selected area to be auto corrected to the allowed maximum bounds and distance (working at a place it shouldn't) or cause energy waste by a lowered maximum voltage, so take care. In the slot between copy button and glowstone you can put a \bf machine co-op synchronizer \rm linked to another machine that should be used as slave for this one (see Machine Synchronizing section).
+Put a piece of glowstone dust into the upper-right slot to make the selected area be visible in the world as colored hologram box. The 6 text fields below can be used to set the area by editing its bounding coordinates. The button right next to the area size display is used to copy the area of one machine to another, to do this just sneak-right click the first machine in any mode except 'configure' to link it and then open the second machine's configuration GUI by sneak-right-clicking it in 'configure' mode and finally click the button to copy the first machine's area to the second machine. The slots on the left are used for upgrades: Every \bf tool motion frame \rm item put into the upper slot increases the machine's maximum area size in all 3 directions and the maximum distance between the machine and the nearest side of its area by 100\% of its original. Every \bf ender matrix \rm item put into the center slot increases the distance by another 400\% of the value that was already increased above (useful to operate from far away). And every \bf superconductor coil \rm item put into the bottom slot increases the machine's maximum cable voltage by 50\% of its original (higher voltages allow greater power supply). These upgrade items are not consumed and can be taken out or will drop when breaking the machine. However removing upgrade items may cause the selected area to be auto corrected to the allowed maximum bounds and distance (working at a place it shouldn't) or cause energy waste by a lowered maximum voltage, so take care. In the slot between copy button and glowstone you can put a \bf machine co-op synchronizer \rm linked to another machine that should be used as slave for this one (see Machine Synchronizing \ref{sec:machineSync}).
 
 \subsection{Fluid collector, fluid vent \& magnet}
 \imgtex
@@ -316,9 +299,8 @@ The miner can be (re-)started with a redstone signal of min. strength 8 and will
 1200V & 25 Ohm & 16 x 64 x 16 / 8 blocks & 16 blocks/t \\ \hline
 \end{tabular}
 \end{tabularx} \\
-With ComputerCraft or OpenComputers installed you can wrap a miner as peripheral or connect it as component and control it using these commands:
+With OpenComputers installed you can connect a miner as component and control it using these commands:
 \begin{lstlisting}
-CC: m = peripheral.wrap("Automation-Miner_0")
 OC: m = component.proxy(component.list("Automation-Miner")())
 1: sX, sY, sZ = m.getAreaSize() 
 2: b = m.isBlockAt(x, y, z) 
@@ -370,9 +352,8 @@ When using the \bf vertex selection tool\rm ,sneak-right-click cycles through th
 There are two ways to save a structure: when saved on a \bf book \rm it will remain exactly the same when loaded again but it can't be put into a builder. Therefore you need to save it on \bf paper \rm which will split every polygon into triangles. When loading a structure from paper, it will still look the same but contains more polygons with only three vertices each instead. To actually build a structure just put the paper its stored on into the stack slot on the right of the builder interface and supply the intended materials or textures. The builder will then build your structure instead of the usual filling operation.\\
 \includegraphics[width = \textwidth]{vertexEx}\\
 
-And if you want to do very special things like spheres, waves, or other smooth rounded structures you can  control the builder using ComputerCraft or OpenComputers if installed:
+And if you want to do very special things like spheres, waves, or other smooth rounded structures you can  control the builder using  OpenComputers if installed:
 \begin{lstlisting}
-CC: m = peripheral.wrap("Automation-Builder_0")
 OC: m = component.proxy(component.list("Automation-Builder")())
 1: sX, sY, sZ = m.getAreaSize() 
 2: b = m.isBlockAt(x, y, z) 
@@ -387,7 +368,7 @@ Also the builder provides power supply for connected OpenComputers devices.\\
 
 Here an example program that would build a simple hollow sphere out of the material put in the Y-edge slot (at max speed of course):
 \begin{lstlisting}
-m = peripheral.wrap("Automation-Builder_0") --if modem connected
+m = component.proxy(component.list("Automation-Builder")())
 sX, sY, sZ = m.getAreaSize()
 if sX ~= sY or sY ~= sZ then return end --Area must be a cube
 radOut = sX * 0.5
@@ -400,7 +381,7 @@ for x = 0, sX - 1 do
    dZ = z + 0.5 - radOut
    sqd = dX * dX + dY * dY + dZ * dZ
    if sqd <= radOut * radOut and sqd > radIn * radIn then
-    while not m.setBlock(x, y, z, 0) do sleep(0.05) end
+    while not m.setBlock(x, y, z, 0) do os.sleep(0.05) end
    end
   end
  end
@@ -435,7 +416,7 @@ The machine can process 1 block/t but will skip air blocks much faster. Its ener
 1200V & 25 Ohm & 25kJ/block & 12 x 16 x 12 / 8 blocks \\ \hline
 \end{tabular}
 
-\subsection{Machine synchronizing}
+\subsection{Machine synchronizing} \label{sec:machineSync}
 Using a \bf machine co-op synchronizer \rm it is possible to extend the functionality of a machine by the functionality of  another machine. When connecting two machines in this way, there is always one machine being master and the other one being slave. First link the \bf machine co-op synchronizer \rm to the slave machine by sneak-right-click. Then sneak-right-click the master machine with a selection tool in configure mode to open its upgrade inventory and insert the linked machine co-op synchronizer. It's also possible to link up to three different machines in a chain (ex. Builder with Miner and Miner with Pump). The machine combinations available are shown in this table: \\
 
 \begin{tabular}{| c | c | l |} \hline
@@ -499,7 +480,7 @@ That would happen if you would release 120GJ of energy into the environment!
 \includegraphics[align = t]{blockDecompCool} & The \bf decompression cooler \rm turns cold fluids into their gases to cool down other fluids or materials to even lower temperatures. Also uses the fluid container slots for required or produced items and has recipe dependent energy requirements. \it Hint: you get required nitrogen from a collector. \rm \\ \hline
 \end{tabularx}
 \imgtex
-\includegraphics[align = t]{blockGraviCondens} & The \bf gravitational condenser \rm compacts items together with huge amounts of matter to create extremely dense materials. Matter is provided by filling any fluids or items into the red slot or tank (they get deleted). Adding matter will consume energy and the more energy is stored in the machines internal cable the more matter it can hold. If the machines matter storage is full, excess supplied materials will be deleted without providing matter. The machine outputs redstone with strength representing the matter storage state. The recipes consume matter and will be processed within one tick as soon as the machine has enougth matter stored. $U_{max} = 16kV$\\ \hline
+\includegraphics[align = t]{blockGraviCondens} & The \bf gravitational condenser \rm compacts items together with huge amounts of matter to create extremely dense materials. Matter is provided by filling any fluids or items into the red slot or tank (they get deleted). Adding matter will consume energy and the more energy is stored in the machines internal cable the more matter it can hold. If the machines matter storage is full, excess supplied materials will be deleted without providing matter. The machine outputs redstone with strength representing the matter storage state. The recipes consume matter and will be processed within one tick as soon as the machine has enougth matter stored. $U_{max} = 16kV$ (\it Energy Link needed for $>8kV$\rm\ref{sec:transformer}) \\ \hline
 \includegraphics[align = t]{blockBioreactor} & The \bf bio reactor \rm is a small multiblock machine and requires at least one and can have up to 16 \bf algae pool \rm blocks placed next to it. They can be placed in any shape touching each other and each block provides 8000L algae storage capacity to the machine. The machine requires water and organic items like food, seeds saplings and other plants to produce nutrient. Insert lilipads or leaves to get some algae which will then regrow themselves exponentially if supplied with nutrient and sunlight. The two slots in the algae tank can be used to fill them into glass bottles for storage. When the algae die they will turn into biomass filling the machine's output tank. Their fertility rate depends on the skylight level of the attached algae pools and their death rate depends on the fill state of their tank (overpopulation). $ 1L_{water} \xrightarrow{+items} 1L_{nutrient} \xrightarrow{+sunlight} 1L_{algae} \rightarrow 1L_{biomass} \rightarrow$ used to produce \bf dry biomass \rm (fuel item). \\ \hline
 \end{tabularx}
 All machine recipes are ore-dictionary compatible and will also allow other items of the same ore-dictionary type than the one shown by JEI. And although the JEI recipe for Bio Reactor nutrient won't show food items, they will still work.
@@ -570,5 +551,10 @@ When calculating the power consumption cost for chunk protection it will at firs
 Power consumption for chunk loading and chunk protection are seperate and both drain from the machine internal storage of 16000kJ. The machine has a maximum voltage of 1200V, a working resistance of 1 Ohm and its reference voltage can be set in the GUI right next to the storage bar. The buttons below are used to turn chunk loading or protection on and off independently or set them to be redstone controlled.
 
 If somebody else already set up a security system that it is turned on and supplied with energy, it is not possible to select chunks that are already protected by that machine. Also all the other world interacting machines in this mod will check if the last player that was editing the machine's settings is allowed to place or break blocks there. If the machine is processing commands from a ComputerCraft computer it will use "computer\#id" as user name, where 'id' is the ID number of the computer sending the commands. For OpenComputers the last player editing the machine is used. And an antimatter bomb that has any protected chunk within 256 blocks distance will just reset its countdown when reaching 0t instead of detonating.
+
+\section{Experimental Content}
+
+There are a few blocks and game mechanics that weren't mentioned in this Manual and aren't really part of the mod's tech tree (\it Shaft, Gas Pipe, Pneumatic Piston, Solid Fuel Heater, etc.\rm). I decided to make a different mod out of it that is still in early progress. They probably won't have much use for you, unless you've studied Physics or Thermodynamics.\\
+\it Spoiler: They can be used to build powerfull stirling engines or alternative unconventional energy storage or transport devices.\rm
 
 \end{document}
