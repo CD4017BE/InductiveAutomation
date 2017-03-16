@@ -20,10 +20,10 @@ import cd4017be.automation.shaft.IHeatReservoir.IHeatStorage;
 import cd4017be.lib.Gui.DataContainer;
 import cd4017be.lib.Gui.DataContainer.IGuiData;
 import cd4017be.lib.templates.IPipe;
-import cd4017be.lib.templates.MutiblockTile;
+import cd4017be.lib.templates.MultiblockTile;
 import cd4017be.lib.util.Utils;
 
-public class GasPipe extends MutiblockTile<GasContainer, GasPhysics> implements IHeatStorage, IGasCon, IPipe, IGuiData {
+public class GasPipe extends MultiblockTile<GasContainer, GasPhysics> implements IHeatStorage, IGasCon, IPipe, IGuiData {
 
 	public static final float size = 0.25F;
 	private Cover cover = null;

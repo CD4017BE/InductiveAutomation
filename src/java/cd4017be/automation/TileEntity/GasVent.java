@@ -9,9 +9,9 @@ import cd4017be.automation.shaft.GasPhysics.IGasCon;
 import cd4017be.automation.shaft.HeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir;
 import cd4017be.automation.shaft.IHeatReservoir.IHeatStorage;
-import cd4017be.lib.templates.MutiblockTile;
+import cd4017be.lib.templates.MultiblockTile;
 
-public class GasVent extends MutiblockTile<GasContainer, GasPhysics> implements IGasCon, IHeatStorage, ITickable {
+public class GasVent extends MultiblockTile<GasContainer, GasPhysics> implements IGasCon, IHeatStorage, ITickable {
 
 	public GasVent() {
 		comp = new GasContainer(this, 5F);

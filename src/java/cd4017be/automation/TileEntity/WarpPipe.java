@@ -13,13 +13,12 @@ import cd4017be.api.automation.IItemPipeCon;
 import cd4017be.automation.Objects;
 import cd4017be.automation.pipes.BasicWarpPipe;
 import cd4017be.automation.pipes.ConComp;
-import cd4017be.automation.pipes.IWarpPipe;
 import cd4017be.automation.pipes.WarpPipePhysics;
 import cd4017be.lib.templates.IPipe;
-import cd4017be.lib.templates.MutiblockTile;
+import cd4017be.lib.templates.MultiblockTile;
 import cd4017be.lib.util.Utils;
 
-public class WarpPipe extends MutiblockTile<BasicWarpPipe, WarpPipePhysics> implements IPipe, IItemPipeCon, IFluidPipeCon {
+public class WarpPipe extends MultiblockTile<BasicWarpPipe, WarpPipePhysics> implements IPipe, IItemPipeCon, IFluidPipeCon {
 
 	private Cover cover = null;
 

@@ -21,10 +21,10 @@ import cd4017be.automation.shaft.ShaftComponent;
 import cd4017be.automation.shaft.ShaftPhysics;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.templates.IPipe;
-import cd4017be.lib.templates.MutiblockTile;
+import cd4017be.lib.templates.MultiblockTile;
 import cd4017be.lib.util.Utils;
 
-public class Shaft extends MutiblockTile<ShaftComponent, ShaftPhysics> implements IPipe {
+public class Shaft extends MultiblockTile<ShaftComponent, ShaftPhysics> implements IPipe {
 
 	private Cover cover;
 	public PipeEnergy energy;
