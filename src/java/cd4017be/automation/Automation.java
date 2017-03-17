@@ -124,7 +124,6 @@ public class Automation {
 	}
 
 	private void initItems() {
-		material = new ItemMaterial("material");
 		selectionTool = new ItemSelectionTool("selectionTool");
 		voltMeter = new ItemVoltMeter("voltMeter");
 		rotationSensor = new ItemRotationSensor("rotationSensor");

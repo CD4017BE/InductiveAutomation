@@ -33,7 +33,6 @@ public class Objects {
 	public static Fluid L_oxygenL; //1296g/l, 90K
 
 	//Items
-	public static ItemMaterial material;
 	public static ItemSelectionTool selectionTool;
 	public static ItemVoltMeter voltMeter;
 	public static ItemRotationSensor rotationSensor;

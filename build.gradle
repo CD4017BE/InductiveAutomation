@@ -24,8 +24,8 @@ version = "${mc_version}-${mod_version}"
 group = "com.cd4017be.automation" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "InductiveAutomation"
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 sourceSets {
     main {
