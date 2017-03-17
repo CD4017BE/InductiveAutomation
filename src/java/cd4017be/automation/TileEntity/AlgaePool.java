@@ -3,7 +3,7 @@ package cd4017be.automation.TileEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-import cd4017be.automation.Automation;
+import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.automation.Config;
 import cd4017be.automation.Objects;
 import cd4017be.lib.BlockItemRegistry;
@@ -68,7 +68,7 @@ public class AlgaePool extends AutomatedTile implements IGuiData, ISlotClickHand
 			inventory.items[1] = BlockItemRegistry.stack("m.LCAlgae", inventory.items[1].stackSize);
 		}
 		if (algae > 0) updateAlgaeGrowing();
-		int[] n = Automation.proxy.getLnutrients(inventory.items[4]);
+		int[] n = AutomationRecipes.getLnutrients(inventory.items[4]);
 		if (n != null && nutrient + n[0] <= Config.tankCap[1] && tanks.getAmount(0) >= n[0])
 		{
 			tanks.drain(0, n[0], true);

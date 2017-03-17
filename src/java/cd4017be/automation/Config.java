@@ -59,7 +59,6 @@ public class Config {
 	public static int steam_biomass_burning = 25;
 	public static int Lsteam_Kfuel_burning = 1;
 	//BioReactor
-	public static int Lnutrients_healAmount = 20;
 	public static float algaeGrowing = 0.00009F;
 	public static float algaeDecaying = 0.0002F;
 
@@ -108,7 +107,7 @@ public class Config {
 		af = data.getFloatArray("SolarGen.Pmax");
 		if (af.length == Psolar.length) Psolar = af;
 		PfuelCell = data.getInt("FuelCell.maxHUse", PfuelCell);
-		Lnutrients_healAmount = data.getInt("Mach.bioReact.FoodNutr", Lnutrients_healAmount);
+		AutomationRecipes.Lnutrients_healAmount = data.getInt("Mach.bioReact.FoodNutr", (int)AutomationRecipes.Lnutrients_healAmount);
 		algaeGrowing *= data.getFloat("Mach.bioReact.growth", 1F);
 		algaeDecaying *= data.getFloat("Mach.bioReact.decay", 1F);
 		//Energy conversions

@@ -1,17 +1,14 @@
 package cd4017be.automation.jeiPlugin;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
+import cd4017be.api.recipes.AutomationRecipes.BioEntry;
 import cd4017be.automation.Objects;
-import cd4017be.automation.CommonProxy.BioEntry;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.TooltipInfo;
 import cd4017be.lib.util.OreDictStack;
@@ -32,23 +29,7 @@ public class BioFuelRecipeWrapper extends BlankRecipeWrapper {
 		this.recipe = recipe;
 		if (recipe.item instanceof ItemStack) this.inputs = Collections.singletonList((ItemStack)recipe.item);
 		else if (recipe.item instanceof OreDictStack) this.inputs = Arrays.asList(((OreDictStack)recipe.item).getItems());
-		else if (recipe.item instanceof Class) {
-			this.inputs = new ArrayList<ItemStack>();
-			Class<?> c = (Class<?>)recipe.item;
-			if (Block.class.isAssignableFrom(c)) {
-				Item item;
-				for (Block block : Block.REGISTRY)
-					if (c.isInstance(block)) {
-						item = Item.getItemFromBlock(block);
-						if (item != null) this.inputs.add(new ItemStack(item));
-					}
-			} else if (Item.class.isAssignableFrom(c)) {
-				for (Item item : Item.REGISTRY)
-					if (c.isInstance(item)) {
-						this.inputs.add(new ItemStack(item));
-					}
-			}
-		} else this.inputs = Collections.emptyList();
+		else this.inputs = Collections.emptyList();
 		this.fullContainer = BlockItemRegistry.stack("m.LCAlgae", 1);
 		if (recipe.algae > MaxAlgae) MaxAlgae = recipe.algae;
 		if (recipe.nutrients > MaxAlgae) MaxAlgae = recipe.nutrients;

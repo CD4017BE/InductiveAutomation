@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 import cd4017be.api.Capabilities.*;
 import cd4017be.api.automation.AreaProtect;
-import cd4017be.api.recipes.AutomationRecipes;
 import cd4017be.api.recipes.RecipeAPI;
+import cd4017be.api.recipes.RecipeScriptContext;
 import cd4017be.automation.Block.BlockOre.Ore;
 import cd4017be.automation.jetpack.JetPackConfig;
 import cd4017be.automation.jetpack.PacketHandler;
@@ -27,14 +27,18 @@ import cd4017be.lib.DefaultItem;
 import cd4017be.lib.DefaultItemBlock;
 import cd4017be.lib.ModFluid;
 import cd4017be.lib.TileBlock;
+import cd4017be.lib.script.ScriptFiles.Version;
 import cd4017be.lib.templates.BlockPipe;
 import cd4017be.lib.templates.BlockSuperfluid;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockMushroom;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
+import net.minecraft.item.ItemSeeds;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -63,6 +67,10 @@ public class Automation {
 	public static CreativeTabs tabAutomation;
 	public static CreativeTabs tabFluids;
 
+	public Automation() {
+		RecipeScriptContext.scriptRegistry.add(new Version("inductiveAutomation", 1000, "/assets/automation/config/recipes.rcp"));
+	}
+
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		Config.loadConfig(ConfigurationFile.init(event, "inductiveAutomation.cfg", "/assets/automation/config/preset.cfg", true));
@@ -72,8 +80,7 @@ public class Automation {
 		initFluids();
 		initItems();
 		initBlocks();
-		//initOres();
-		RecipeAPI.registerScript(event, "inductiveAutomation.rcp", "/assets/automation/config/recipes.rcp");
+		RecipeScriptContext.instance.run("inductiveAutomation.PRE_INIT");
 		if (event.getSide().isClient()) JetPackConfig.loadData();
 	}
 
@@ -84,23 +91,30 @@ public class Automation {
 		AreaProtect.register(this);
 		
 		//TODO change to container Items
-		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_biomass, FluidContainerRegistry.BUCKET_VOLUME), stack("m.LCBiomass", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_nitrogenL, 100), stack("m.LCNitrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_hydrogenL, 100), stack("m.LCHydrogen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_heliumL, 100), stack("m.LCHelium", 1), FluidContainerRegistry.EMPTY_BOTTLE));
-		FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_oxygenL, 100), stack("m.LCOxygen", 1), FluidContainerRegistry.EMPTY_BOTTLE));
+		ItemStack item;
+		if ((item = stack("m.LCBiomass", 1)) != null)
+			FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_biomass, FluidContainerRegistry.BUCKET_VOLUME), item, FluidContainerRegistry.EMPTY_BOTTLE));
+		if ((item = stack("m.LCNitrogen", 1)) != null)
+			FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_nitrogenL, 100), item, FluidContainerRegistry.EMPTY_BOTTLE));
+		if ((item = stack("m.LCHydrogen", 1)) != null)
+			FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_hydrogenL, 100), item, FluidContainerRegistry.EMPTY_BOTTLE));
+		if ((item = stack("m.LCHelium", 1)) != null)
+			FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_heliumL, 100), item, FluidContainerRegistry.EMPTY_BOTTLE));
+		if ((item = stack("m.LCOxygen", 1)) != null)
+			FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_oxygenL, 100), item, FluidContainerRegistry.EMPTY_BOTTLE));
 		
 		System.out.println("Automation: Set Explosion-Resistance of Bedrock to: " + Block.getBlockFromName("bedrock").setResistance(2000000.0F).getExplosionResistance(null));
 		
-		proxy.registerRenderers();
+		RecipeAPI.createOreDictEntries(ItemSeeds.class, "itemSeeds");
+		RecipeAPI.createOreDictEntries(BlockMushroom.class, "blockMushroom");
 		
-		proxy.registerBioFuels();//TODO to recipe config
+		proxy.registerRenderers();
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-		for (String s : Config.data.getStringArray("rcp.Pulverize.oreIn")) AutomationRecipes.addItemCrushingRecipes(s);
-		this.cleanConfig();
+		ArrayList<String> rem = Config.data.getVariables("B.recipe", "AT.rcp", "AF.rcp", "I.rcp");
+		Config.data.removeEntry(rem.toArray(new String[rem.size()]));
 	}
 
 	private void initCapabilities() {
@@ -279,14 +293,6 @@ public class Automation {
 		BlockSuperfluid.effects.put(L_antimatter, new PotionEffect[]{new PotionEffect(Potion.wither.id, 50), new PotionEffect(Potion.blindness.id, 50), new PotionEffect(Potion.hunger.id, 50)});
 		*/
 		if (L_hydrogenG.canBePlacedInWorld()) Blocks.FIRE.setFireInfo(L_hydrogenG.getBlock(), 500, 20);
-	}
-
-	/**
-	 * clears configuration data that is not used anymore after initialization to improve performance and save RAM
-	 */
-	private void cleanConfig() {
-		ArrayList<String> rem = Config.data.getVariables("B.recipe", "AT.rcp", "AF.rcp", "I.rcp");
-		Config.data.removeEntry(rem.toArray(new String[rem.size()]));
 	}
 
 	private Fluid registerFluid(Fluid fluid) {

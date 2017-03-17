@@ -2,7 +2,6 @@ package cd4017be.automation.jeiPlugin;
 
 import net.minecraft.item.ItemStack;
 import cd4017be.api.recipes.AutomationRecipes;
-import cd4017be.automation.Automation;
 import cd4017be.automation.Objects;
 import cd4017be.automation.Gui.GuiAdvancedFurnace;
 import cd4017be.automation.Gui.GuiAlgaePool;
@@ -70,7 +69,7 @@ public class InductiveAutomationPlugin extends BlankModPlugin {
 		registry.addRecipes(AutomationRecipes.getCoolerRecipes());
 		registry.addRecipes(AutomationRecipes.getElectrolyserRecipes());
 		registry.addRecipes(AutomationRecipes.getGraviCondRecipes());
-		registry.addRecipes(Automation.proxy.getBioFuels());
+		registry.addRecipes(AutomationRecipes.getBioFuels());
 		
 		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.autoCrafting), VanillaRecipeCategoryUid.CRAFTING);
 		registry.addRecipeCategoryCraftingItem(new ItemStack(Objects.portableCrafter), VanillaRecipeCategoryUid.CRAFTING);
