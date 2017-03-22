@@ -18,11 +18,12 @@ public class FluidDestination extends FluidComp implements IFluidDest {
 	public boolean onClicked(EntityPlayer player, EnumHand hand, ItemStack item, long uid) {
 		if (player == null) ((ModTileEntity)pipe.tile).dropStack(new ItemStack(Objects.liquidPipe, 1, BlockLiquidPipe.ID_Injection));
 		if (super.onClicked(player, hand, item, uid) || player == null) return true;
-		if (player.getHeldItemMainhand() == null && player.isSneaking()) {
+		if (item == null && player.isSneaking()) {
 			((ModTileEntity)pipe.tile).dropStack(new ItemStack(Objects.liquidPipe, 1, BlockLiquidPipe.ID_Injection));
 			pipe.con[side] = 0;
 			pipe.network.remConnector(pipe, side);
 			pipe.updateCon = true;
+			pipe.hasFilters &= ~(1 << side);
 			((ModTileEntity)pipe.tile).markUpdate();
 			return true;
 		}

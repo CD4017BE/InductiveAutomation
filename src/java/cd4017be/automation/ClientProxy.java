@@ -3,6 +3,8 @@ package cd4017be.automation;
 import cd4017be.automation.TileEntity.AntimatterBomb;
 import cd4017be.automation.TileEntity.Builder;
 import cd4017be.automation.TileEntity.Farm;
+import cd4017be.automation.TileEntity.ItemPipe;
+import cd4017be.automation.TileEntity.LiquidPipe;
 import cd4017be.automation.TileEntity.Miner;
 import cd4017be.automation.TileEntity.PneumaticPiston;
 import cd4017be.automation.TileEntity.Pump;
@@ -11,12 +13,7 @@ import cd4017be.automation.TileEntity.Tank;
 import cd4017be.automation.TileEntity.Teleporter;
 import cd4017be.automation.TileEntity.VertexShematicGen;
 import cd4017be.automation.jetpack.TickHandler;
-import cd4017be.automation.render.FluidTextures;
-import cd4017be.automation.render.PistonRenderer;
-import cd4017be.automation.render.Render3DVertexShem;
-import cd4017be.automation.render.ShaftRenderer;
-import cd4017be.automation.render.TileEntityAntimatterBombRenderer;
-import cd4017be.automation.render.TileEntityTankRenderer;
+import cd4017be.automation.render.*;
 import cd4017be.lib.BlockItemRegistry;
 import cd4017be.lib.ClientInputHandler;
 import cd4017be.lib.TileBlockRegistry;
@@ -161,6 +158,8 @@ public class ClientProxy extends CommonProxy {
 		BlockItemRegistry.registerRender(remBlockType);
 		BlockItemRegistry.registerRender(vertexSel);
 		//Tiles
+		ClientRegistry.bindTileEntitySpecialRenderer(ItemPipe.class, new ItemPipeRenderer());
+		ClientRegistry.bindTileEntitySpecialRenderer(LiquidPipe.class, new FluidPipeRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(Miner.class, new SelectionRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(Builder.class, new SelectionRenderer());
 		ClientRegistry.bindTileEntitySpecialRenderer(Farm.class, new SelectionRenderer());
@@ -266,12 +265,12 @@ public class ClientProxy extends CommonProxy {
 		SpecialModelLoader.registerFluid(L_oxygenG);
 		SpecialModelLoader.registerFluid(L_oxygenL);
 		//pipe models
-		SpecialModelLoader.registerBlockModel(Objects.itemPipe, new ModelPipe("automation:itemPipe", 3, 3));
-		SpecialModelLoader.registerBlockModel(Objects.liquidPipe, new ModelPipe("automation:liquidPipe", 3, 3));
+		SpecialModelLoader.registerBlockModel(Objects.itemPipe, new ModelPipe("automation:itemPipe", 3, 5));
+		SpecialModelLoader.registerBlockModel(Objects.liquidPipe, new ModelPipe("automation:liquidPipe", 3, 5));
 		SpecialModelLoader.registerBlockModel(Objects.wireC, new ModelPipe("automation:wireC", 1, 1));
 		SpecialModelLoader.registerBlockModel(Objects.wireA, new ModelPipe("automation:wireA", 1, 1));
 		SpecialModelLoader.registerBlockModel(Objects.wireH, new ModelPipe("automation:wireH", 1, 1));
-		SpecialModelLoader.registerBlockModel(Objects.warpPipe, new ModelPipe("automation:warpPipe", 1, 5));
+		SpecialModelLoader.registerBlockModel(Objects.warpPipe, new ModelPipe("automation:warpPipe", 1, 9));
 		SpecialModelLoader.registerBlockModel(Objects.shaft, new ModelPipe("automation:shaft", 0, 1));
 		SpecialModelLoader.registerBlockModel(Objects.gasPipe, new ModelPipe("automation:gasPipe", 1, 1));
 		SpecialModelLoader.registerItemModel(Objects.fluidDummy, new FluidTextures());

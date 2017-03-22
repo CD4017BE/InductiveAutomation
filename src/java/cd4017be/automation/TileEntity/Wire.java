@@ -17,6 +17,7 @@ import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 
 /**
  *
@@ -49,7 +50,6 @@ public class Wire extends AutomatedTile implements IPipe {
 
 	@Override
 	public boolean onActivated(EntityPlayer player, EnumHand hand, ItemStack item, EnumFacing dir, float X, float Y, float Z) {
-		int s = dir.getIndex();
 		if (player.isSneaking() && item == null && cover != null) {
 			if (worldObj.isRemote) return true;
 			player.setHeldItem(hand, cover.item);
@@ -58,24 +58,17 @@ public class Wire extends AutomatedTile implements IPipe {
 			return true;
 		} else if (player.isSneaking() && item == null) {
 			if (worldObj.isRemote) return true;
-			X -= 0.5F;
-			Y -= 0.5F;
-			Z -= 0.5F;
-			float dx = Math.abs(X);
-			float dy = Math.abs(Y);
-			float dz = Math.abs(Z);
-			if (dy > dz && dy > dx) s = Y < 0 ? 0 : 1;
-			else if (dz > dx) s = Z < 0 ? 2 : 3;
-			else s = X < 0 ? 4 : 5;
+			dir = getClickedSide(X, Y, Z);
+			int s = dir.getIndex();
 			boolean con = energy.isConnected(s);
 			energy.sideCfg ^= 1 << s;
 			this.markUpdate();
-			TileEntity te = Utils.getTileOnSide(this, (byte)s);
+			ICapabilityProvider te = getTileOnSide(dir);
 			if (te != null && te instanceof Wire) {
 				PipeEnergy pipe = ((Wire)te).energy;
 				if (pipe != null) {
-					if (con) pipe.sideCfg |= 1 << (s^1);
-					else pipe.sideCfg &= ~(1 << (s^1));
+					if (con) pipe.sideCfg &= ~(1 << (s^1));
+					else pipe.sideCfg |= 1 << (s^1);
 					((Wire)te).markUpdate();
 				}
 			}

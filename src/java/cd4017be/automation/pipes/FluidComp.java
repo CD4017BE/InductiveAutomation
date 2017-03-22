@@ -28,7 +28,10 @@ public class FluidComp extends ConComp implements IObjLink {
 
 	@Override
 	public void load(NBTTagCompound nbt) {
-		if (nbt.hasKey("mode")) filter = PipeUpgradeFluid.load(nbt);
+		if (nbt.hasKey("mode")) {
+			filter = PipeUpgradeFluid.load(nbt);
+			pipe.hasFilters |= 1 << side;
+		} else pipe.hasFilters &= ~(1 << side);
 	}
 
 	@Override
@@ -60,6 +63,7 @@ public class FluidComp extends ConComp implements IObjLink {
 			filter = null;
 			((ModTileEntity)pipe.tile).dropStack(item);
 			pipe.network.reorder(this);
+			pipe.hasFilters &= ~(1 << side);
 			return true;
 		} else if (filter == null && item != null && item.getItem() == Objects.fluidUpgrade && item.getTagCompound() != null) {
 			filter = PipeUpgradeFluid.load(item.getTagCompound());
@@ -67,6 +71,7 @@ public class FluidComp extends ConComp implements IObjLink {
 			if (item.stackSize <= 0) item = null;
 			player.setHeldItem(hand, item);
 			pipe.network.reorder(this);
+			pipe.hasFilters |= 1 << side;
 			return true;
 		}
 		return false;

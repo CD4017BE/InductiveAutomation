@@ -1,0 +1,7 @@
+{
+	"parent": "automation:block/pipeCon4F",
+    "textures": {
+        "tex": "automation:blocks/pipes/itemEx",
+		"filter": "automation:blocks/pipes/itemFilter"
+    }
+}

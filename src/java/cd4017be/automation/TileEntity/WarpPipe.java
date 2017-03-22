@@ -51,7 +51,10 @@ public class WarpPipe extends MultiblockTile<BasicWarpPipe, WarpPipePhysics> imp
 		if (t >= 2) {
 			long uid = WarpPipePhysics.SidedPosUID(comp.getUID(), s);
 			ConComp con = comp.network.connectors.get(uid);
-			if (con != null && con.onClicked(player, hand, item, uid)) return true;
+			if (con != null && con.onClicked(player, hand, item, uid)) {
+				markUpdate();
+				return true;
+			}
 		} else if (player.isSneaking() && item == null) {
 			comp.setConnect(s, t != 0);
 			this.markUpdate();
@@ -92,9 +95,11 @@ public class WarpPipe extends MultiblockTile<BasicWarpPipe, WarpPipePhysics> imp
 
 	@Override
 	public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
-		cover = Cover.read(pkt.getNbtCompound(), "cover");
-		byte[] data = pkt.getNbtCompound().getByteArray("con");
+		NBTTagCompound nbt = pkt.getNbtCompound();
+		cover = Cover.read(nbt, "cover");
+		byte[] data = nbt.getByteArray("con");
 		if (data.length == 6) System.arraycopy(data, 0, comp.con, 0, 6);
+		comp.hasFilters = nbt.getByte("filt");
 		this.markUpdate();
 	}
 
@@ -105,6 +110,7 @@ public class WarpPipe extends MultiblockTile<BasicWarpPipe, WarpPipePhysics> imp
 		byte[] data = new byte[comp.con.length];
 		System.arraycopy(comp.con, 0, data, 0, data.length);
 		nbt.setByteArray("con", data);
+		nbt.setByte("filt", comp.hasFilters);
 		return new SPacketUpdateTileEntity(getPos(), -1, nbt);
 	}
 
@@ -112,7 +118,8 @@ public class WarpPipe extends MultiblockTile<BasicWarpPipe, WarpPipePhysics> imp
 	public int textureForSide(byte s) {
 		if (s < 0 || s > 5) return 0;
 		byte t = comp.con[s];
-		if (t > 0) return t == 1 ? -1 : t - 1;
+		if (t == 1) return -1;
+		else if (t > 1) return t - 1 + (comp.hasFilters >> s & 1) * 4;
 		TileEntity te = Utils.getTileOnSide(this, s);
 		return te != null && te.hasCapability(Objects.WARP_PIPE_CAP, EnumFacing.VALUES[s^1]) ? 0 : -1;
 	}
@@ -143,5 +150,8 @@ public class WarpPipe extends MultiblockTile<BasicWarpPipe, WarpPipePhysics> imp
 		byte t = comp.con[s];
 		return (byte)(t == 4 ? 1 : t == 5 ? 2 : 0);
 	}
+
+	@Override
+	public ItemStack insert(ItemStack item, EnumFacing side) {return item;}
 
 }

@@ -41,6 +41,7 @@ public class FluidExtractor extends FluidComp implements ITickable {
 			pipe.con[side] = 0;
 			pipe.network.remConnector(pipe, side);
 			pipe.updateCon = true;
+			pipe.hasFilters &= ~(1 << side);
 			((ModTileEntity)pipe.tile).markUpdate();
 			return true;
 		}

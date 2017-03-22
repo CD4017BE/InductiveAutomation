@@ -8,6 +8,8 @@
 		"core2": { "model": "automation:itemPipeE_core" },
 		"con0": { "model": "automation:itemPipeT_con" },
 		"con1": { "model": "automation:itemPipeI_con" },
-		"con2": { "model": "automation:itemPipeE_con" }
+		"con2": { "model": "automation:itemPipeE_con" },
+		"con3": { "model": "automation:itemPipeIF_con" },
+		"con4": { "model": "automation:itemPipeEF_con" }
 	}
 }

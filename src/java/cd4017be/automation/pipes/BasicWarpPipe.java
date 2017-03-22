@@ -11,6 +11,7 @@ import cd4017be.lib.templates.SharedNetwork;
 public class BasicWarpPipe extends MultiblockComp<BasicWarpPipe, WarpPipePhysics> {
 
 	public final byte[] con = new byte[6];
+	public byte hasFilters = 0;
 	public boolean redstone = false;
 
 	public BasicWarpPipe(ModTileEntity pipe) {
