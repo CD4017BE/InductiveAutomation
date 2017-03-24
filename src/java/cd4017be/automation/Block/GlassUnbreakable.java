@@ -66,17 +66,22 @@ public class GlassUnbreakable extends DefaultBlock {
 
 	@Override
 	public boolean canEntityDestroy(IBlockState state, IBlockAccess world, BlockPos pos, Entity entity) {
+		//I know this is bad programming practice but...
+		//YOU SHALL NOT PASS!
+		BlockUnbreakable.repellEntity(pos, entity);
 		return false;
 	}
 
 	@Override
 	public float getExplosionResistance(Entity exploder) {
+		//prevent WitherSkulls from ignoring explosion resistance
 		if (exploder != null && exploder instanceof EntityWitherSkull) ((EntityWitherSkull)exploder).setInvulnerable(false);
 		return Float.POSITIVE_INFINITY;
 	}
 
 	@Override
 	public float getExplosionResistance(World world, BlockPos pos, Entity exploder, Explosion explosion) {
+		//prevent WitherSkulls from ignoring explosion resistance
 		if (exploder != null && exploder instanceof EntityWitherSkull) ((EntityWitherSkull)exploder).setInvulnerable(false);
 		return Float.POSITIVE_INFINITY;
 	}
