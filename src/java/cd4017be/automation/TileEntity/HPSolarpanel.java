@@ -14,7 +14,7 @@ public class HPSolarpanel extends Solarpanel {
 	protected float getRcond() {return Config.Rcond[1];}
 
 	@Override
-	protected int getUmax() {return Config.Umax[0];}
+	protected int getUmax() {return Config.Ugenerator[4];}
 
 	@Override
 	public void update() 
@@ -26,7 +26,7 @@ public class HPSolarpanel extends Solarpanel {
 		if (sl < 0) sl = 0;
 		if (worldObj.provider.getDimensionType().equals(DimensionType.THE_END)) sl = 5;
 		float power = (float)(sl * sl * sl + bl) / 3.375F; //Skylight = 15 -> power = 1
-		energy.addEnergy(power * Config.Psolar[1]);
+		energy.addEnergy(power * Config.Pgenerator[4]);
 		energy.update(this);
 	}
 	

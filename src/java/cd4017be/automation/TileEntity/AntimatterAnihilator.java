@@ -28,16 +28,19 @@ import net.minecraftforge.fluids.FluidStack;
 public class AntimatterAnihilator extends AutomatedTile implements IGuiData, IEnergyAccess {
 
 	public static final int AMEnergy = 90000;
-	private static final int MaxPower = 160;
 	private static final int AMHeat = 1;
-	public static final int MaxTemp = 800;
 	private static final int CoolRes = 5;
-	
+	private static int MaxPower, MaxTemp;
+	public static void setP(float P) {
+		MaxPower = (int)Math.ceil(P * 1000F / (float)AMEnergy);
+		MaxTemp = MaxPower * CoolRes * AMHeat;
+	}
+
 	public int Uref, power, fracHe, heat;
 	public float Estor;
 	
 	public AntimatterAnihilator() {
-		energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
+		energy = new PipeEnergy(Config.Ugenerator[6], Config.Rcond[2]);
 		tanks = new TankContainer(3, 3).tank(0, Config.tankCap[1], Utils.IN, 0, -1, Objects.L_heliumL).tank(1, Config.tankCap[1], Utils.OUT, -1, 1, Objects.L_heliumG).tank(2, Config.tankCap[1], Utils.IN, 2, -1, Objects.L_antimatter);
 		inventory = new Inventory(3, 0, null);
 		/**

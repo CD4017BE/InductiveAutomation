@@ -3,6 +3,7 @@ package cd4017be.automation.TileEntity;
 import net.minecraft.network.PacketBuffer;
 
 import java.io.IOException;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -62,9 +63,11 @@ import net.minecraftforge.items.SlotItemHandler;
 @Optional.Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")
 public class Miner extends AutomatedTile implements IOperatingArea, IAccessHandler, Environment, IGuiData {
 
+	public static int Umax = 1200;
 	public static float Energy = 40000F;
-	private static final float resistor = 25F;
-	private static final float eScale = (float)Math.sqrt(1D - 1D / resistor);
+	public static float resistor = 25F;
+	public static float eScale = (float)Math.sqrt(1D - 1D / resistor);
+	public static byte maxSpeed = 16;
 	private int[] area = new int[6];
 	private int px;
 	private int py;
@@ -80,7 +83,7 @@ public class Miner extends AutomatedTile implements IOperatingArea, IAccessHandl
 
 	public Miner() {
 		inventory = new Inventory(29, 2, this).group(0, 0, 6, Utils.IN).group(1, 6, 24, Utils.OUT);
-		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		energy = new PipeEnergy(Umax, Config.Rcond[1]);
 	}
 
 	@Override
@@ -106,7 +109,7 @@ public class Miner extends AutomatedTile implements IOperatingArea, IAccessHandl
 		storage += e;
 		storage -= ComputerAPI.update(this, node, storage * 0.5D);
 		if (active)
-			for (int i = 0; i < Config.taskQueueSize; i++) {
+			for (int i = 0; i < maxSpeed; i++) {
 				if (breakBlock(new BlockPos(px, py, pz)))
 				{
 					py--;
@@ -128,13 +131,10 @@ public class Miner extends AutomatedTile implements IOperatingArea, IAccessHandl
 			}
 		else if (worldObj.isBlockIndirectlyGettingPowered(getPos()) >= 8) active = true;
 		else {
-			MineTask task;
-			synchronized(this.sheduledTasks) {
-				while (!this.sheduledTasks.isEmpty()) {
-					task = this.sheduledTasks.get(0);
-					if (task.execute(this)) {
-						this.sheduledTasks.remove(0);
-					} else break;
+			synchronized(sheduledTasks) {
+				while (!sheduledTasks.isEmpty()) {
+					if (sheduledTasks.getFirst().execute(this)) sheduledTasks.removeFirst();
+					else break;
 				}
 			}
 		}
@@ -413,7 +413,7 @@ public class Miner extends AutomatedTile implements IOperatingArea, IAccessHandl
 		return slave;
 	}
 	
-	private ArrayList<MineTask> sheduledTasks = new ArrayList<MineTask>();
+	private ArrayDeque<MineTask> sheduledTasks = new ArrayDeque<MineTask>(Config.taskQueueSize);
 
 	//OpenComputers:
 	

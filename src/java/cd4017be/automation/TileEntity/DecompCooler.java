@@ -24,8 +24,9 @@ import net.minecraftforge.items.SlotItemHandler;
  *
  * @author CD4017BE
  */
-public class DecompCooler extends AutomatedTile implements IGuiData
-{
+public class DecompCooler extends AutomatedTile implements IGuiData {
+
+	public static int Umax = 1200;
 	private float powerScale; 
 	private CoolRecipe recipe;
 	public int Rw;
@@ -33,7 +34,7 @@ public class DecompCooler extends AutomatedTile implements IGuiData
 	
 	public DecompCooler() {
 		inventory = new Inventory(4, 4, null).group(0, 0, 1, Utils.IN).group(1, 1, 2, Utils.IN).group(2, 2, 3, Utils.OUT).group(3, 3, 4, Utils.OUT);
-		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		energy = new PipeEnergy(Umax, Config.Rcond[1]);
 		tanks = new TankContainer(4, 4).tank(0, Config.tankCap[1], Utils.IN, 0, -1).tank(1, Config.tankCap[1], Utils.IN, 1, -1).tank(2, Config.tankCap[1], Utils.OUT, -1, 2).tank(3, Config.tankCap[1], Utils.OUT, -1, 3);
 		Rw = Config.Rmin;
 		powerScale = Config.Pscale;

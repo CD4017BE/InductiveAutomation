@@ -1,6 +1,6 @@
 !To prevent your changes in this file being overidden with the next mod update, change the version number to '1000000' or more.
 !To force restore the preset, just delete this file from your config folder.
-VERSION = 1000;
+VERSION = 1001;
 WILDCARD = 32767;
 
 PRE_INIT() {
@@ -51,6 +51,13 @@ genTypes(type, id, do) {
 }
 
 INIT() {
+	!Fluid Containers
+	add("fluidCont", fl("biomass", 1000), it("m.LCBiomass"), it("minecraft:glass_bottle"));
+	add("fluidCont", fl("nitrogenl", 100), it("m.LCNitrogen"), it("minecraft:glass_bottle"));
+	add("fluidCont", fl("hydrogenl", 100), it("m.LCHydrogen"), it("minecraft:glass_bottle"));
+	add("fluidCont", fl("heliuml", 100), it("m.LCHelium"), it("minecraft:glass_bottle"));
+	add("fluidCont", fl("oxygenl", 100), it("m.LCOxygen"), it("minecraft:glass_bottle"));
+	
 	!Ore processing
 	Loc i = 0; for(i < #metals) {
 		Loc ingot = ["ore:ingot", metals:i]$,

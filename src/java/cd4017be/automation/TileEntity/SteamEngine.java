@@ -20,13 +20,13 @@ import net.minecraftforge.fluids.FluidStack;
  */
 public class SteamEngine extends AutomatedTile implements IGuiData {
 
-	protected int getTier() {return 0;}
-	public float getPower() {return Config.PsteamGen[0];}
+	protected int getUmax() {return Config.Ugenerator[0];}
+	public float getPower() {return Config.Pgenerator[0];}
 	protected float getDissipation() {return 0.1F;}
 	public float Estor;
 
 	public SteamEngine() {
-		energy = new PipeEnergy(Config.Umax[this.getTier()], Config.Rcond[this.getTier()]);
+		energy = new PipeEnergy(getUmax(), Config.Rcond[1]);
 		inventory = new Inventory(2, 0, null);
 		tanks = new TankContainer(2, 2).tank(0, Config.tankCap[1], Utils.IN, 1, -1, Objects.L_steam).tank(1, Config.tankCap[1], Utils.OUT, -1, 0, Objects.L_waterG);
 	}

@@ -8,7 +8,7 @@ import cd4017be.automation.Config;
  */
 public class SteamTurbine extends SteamEngine {
 	@Override
-	protected int getTier() {return 1;}
+	protected int getUmax() {return Config.Ugenerator[2];}
 	@Override
-	public float getPower() {return Config.PsteamGen[2];}
+	public float getPower() {return Config.Pgenerator[2];}
 }

@@ -42,9 +42,10 @@ import net.minecraftforge.items.IItemHandler;
  */
 public class Pump extends AutomatedTile implements IGuiData, IAccessHandler, IOperatingArea {
 
+	public static int Umax = 1200;
 	public static float Energy = 8000F;
-	private static final float resistor = 25F;
-	private static final float eScale = (float)Math.sqrt(1D - 1D / resistor);
+	public static float resistor = 25F;
+	public static float eScale = (float)Math.sqrt(1D - 1D / resistor);
 	private int[] area = new int[6];
 	private int px;
 	private int py;
@@ -76,7 +77,7 @@ public class Pump extends AutomatedTile implements IGuiData, IAccessHandler, IOp
 	public Pump() {
 		inventory = new Inventory(6, 0, null);
 		tanks = new TankContainer(1, 1).tank(0, Config.tankCap[1] * 2, Utils.OUT, -1, 0);
-		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		energy = new PipeEnergy(Umax, Config.Rcond[1]);
 	}
 
 	@Override

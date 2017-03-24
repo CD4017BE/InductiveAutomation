@@ -38,23 +38,17 @@ import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemSeeds;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraftforge.fluids.Fluid;
-import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
 import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import cd4017be.automation.Item.*;
 import cd4017be.automation.Block.*;
 import static cd4017be.automation.Objects.*;
-import static cd4017be.lib.BlockItemRegistry.stack;
 
 /**
  *
  * @author CD4017BE
  */
-@SuppressWarnings("deprecation")
 @Mod(modid="Automation", useMetadata=true)
 public class Automation {
 
@@ -68,7 +62,7 @@ public class Automation {
 	public static CreativeTabs tabFluids;
 
 	public Automation() {
-		RecipeScriptContext.scriptRegistry.add(new Version("inductiveAutomation", 1000, "/assets/automation/config/recipes.rcp"));
+		RecipeScriptContext.scriptRegistry.add(new Version("inductiveAutomation", 1001, "/assets/automation/config/recipes.rcp"));
 	}
 
 	@Mod.EventHandler
@@ -89,19 +83,6 @@ public class Automation {
 		BlockGuiHandler.registerMod(this);
 		PacketHandler.register();
 		AreaProtect.register(this);
-		
-		//TODO change to container Items
-		ItemStack item;
-		if ((item = stack("m.LCBiomass", 1)) != null)
-			FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_biomass, FluidContainerRegistry.BUCKET_VOLUME), item, FluidContainerRegistry.EMPTY_BOTTLE));
-		if ((item = stack("m.LCNitrogen", 1)) != null)
-			FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_nitrogenL, 100), item, FluidContainerRegistry.EMPTY_BOTTLE));
-		if ((item = stack("m.LCHydrogen", 1)) != null)
-			FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_hydrogenL, 100), item, FluidContainerRegistry.EMPTY_BOTTLE));
-		if ((item = stack("m.LCHelium", 1)) != null)
-			FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_heliumL, 100), item, FluidContainerRegistry.EMPTY_BOTTLE));
-		if ((item = stack("m.LCOxygen", 1)) != null)
-			FluidContainerRegistry.registerFluidContainer(new FluidContainerData(new FluidStack(L_oxygenL, 100), item, FluidContainerRegistry.EMPTY_BOTTLE));
 		
 		System.out.println("Automation: Set Explosion-Resistance of Bedrock to: " + Block.getBlockFromName("bedrock").setResistance(2000000.0F).getExplosionResistance(null));
 		

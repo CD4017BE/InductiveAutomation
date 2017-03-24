@@ -112,8 +112,8 @@ public class ElectricCoil extends AutomatedTile implements IKineticComp, IGuiDat
 
 	private static final float[] C = {20F, 10F, 4F};
 	private static final float[] R = {0.1F, 0.2F, 0.5F};
-	public static final int[] Nmax = {200, 400, 1000};
-	public static final int[] Nmin = {5, 10, 25};
+	public static int[] Nmax = {200, 400, 1000};
+	public static int[] Nmin = {5, 10, 25};
 	public static final float Mag = 0.01F;
 
 	private float F, v0;

@@ -28,6 +28,7 @@ import net.minecraftforge.items.SlotItemHandler;
  */
 public class ElectricCompressor extends AutomatedTile implements IGuiData, IAccessHandler {
 
+	public static int Umax = 1200;
 	public static float Energy = 200F;
 	private float powerScale = 0;
 	private boolean craftInvChange = true;
@@ -36,7 +37,7 @@ public class ElectricCompressor extends AutomatedTile implements IGuiData, IAcce
 
 	public ElectricCompressor() {
 		inventory = new Inventory(6, 5, this).group(0, 0, 1, Utils.IN).group(1, 1, 2, Utils.IN).group(2, 2, 3, Utils.IN).group(3, 3, 4, Utils.IN).group(4, 4, 5, Utils.OUT);
-		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		energy = new PipeEnergy(Umax, Config.Rcond[1]);
 		Rw = Config.Rmin;
 		powerScale = Config.Pscale;
 	}

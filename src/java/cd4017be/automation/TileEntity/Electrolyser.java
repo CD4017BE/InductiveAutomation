@@ -23,13 +23,14 @@ import net.minecraftforge.items.SlotItemHandler;
 
 public class Electrolyser extends AutomatedTile implements IGuiData {
 
+	public static int Umax = 1200;
 	private float powerScale;
 	private ElRecipe recipe;
 	public int Rw;
 	public float Estor, Eneed, Uc;
 	
 	public Electrolyser() {
-		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		energy = new PipeEnergy(Umax, Config.Rcond[1]);
 		inventory = new Inventory(3, 3, null).group(0, 0, 1, Utils.IN).group(1, 1, 2, Utils.OUT).group(2, 2, 3, Utils.OUT);
 		tanks = new TankContainer(3, 3).tank(0, Config.tankCap[1], Utils.IN, 0, -1).tank(1, Config.tankCap[1], Utils.OUT, -1, 1).tank(2, Config.tankCap[1], Utils.OUT, -1, 2);
 		/**

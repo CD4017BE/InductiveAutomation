@@ -54,9 +54,9 @@ import net.minecraftforge.common.DimensionManager;
 @Optional.Interface(iface = "li.cil.oc.api.network.Environment", modid = "OpenComputers")
 public class Teleporter extends AutomatedTile implements IOperatingArea, Environment, IGuiData, IAccessHandler, ISlotClickHandler {
 
-	private static final float resistor = 50F;
-	private static final float eScale = (float)Math.sqrt(1D - 1D / resistor);
-	
+	public static int Umax = 8000;
+	public static float resistor = 50F;
+	public static float eScale = (float)Math.sqrt(1D - 1D / resistor);
 	public static float Energy = 2000F;
 	private int[] area = new int[6];
 	private int[] target = new int[4];
@@ -68,7 +68,7 @@ public class Teleporter extends AutomatedTile implements IOperatingArea, Environ
 	
 	public Teleporter() {
 		inventory = new Inventory(16, 1, null).group(0, 1, 2, 0);
-		energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
+		energy = new PipeEnergy(Umax, Config.Rcond[2]);
 		//mode[int 3]: 0x1 = use rst, 0x2 = rel coord, 0x4 = last rst, 0x8 = teleport, 0x10 = copy
 	}
 	

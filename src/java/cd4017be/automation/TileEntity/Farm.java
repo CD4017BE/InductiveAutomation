@@ -54,9 +54,10 @@ import net.minecraftforge.items.SlotItemHandler;
  */
 public class Farm extends AutomatedTile implements IOperatingArea, IGuiData, IAccessHandler, ISlotClickHandler {
 
+	public static int Umax = 1200;
 	public static float Energy = 25000F;
-	private static final float resistor = 20F;
-	private static final float eScale = (float)Math.sqrt(1D - 1D / resistor);
+	public static float resistor = 20F;
+	public static float eScale = (float)Math.sqrt(1D - 1D / resistor);
 	private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "#Farm");
 	private int[] area = new int[6];
 	private int px;
@@ -72,7 +73,7 @@ public class Farm extends AutomatedTile implements IOperatingArea, IGuiData, IAc
 
 	public Farm() {
 		inventory = new Inventory(38, 2, this).group(0, 20, 32, Utils.OUT).group(1, 8, 20, Utils.ACC);
-		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		energy = new PipeEnergy(Umax, Config.Rcond[1]);
 	}
 	
 	@Override

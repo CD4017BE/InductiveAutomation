@@ -102,7 +102,7 @@ public class GuiItemMatterInterface extends GuiMachine {
 		@Override
 		public void drawOverlay(int mx, int my) {
 			int s = (my - py) / 8 * 2 + scroll * 12 + (mx > px + w / 2 ? 1 : 0);
-			if (s >= 0 && s < list.length) renderToolTip(list[s], mx - guiLeft, my - guiTop);
+			if (s >= 0 && s < list.length) renderToolTip(list[s], mx, my);
 		}
 
 		@Override
@@ -126,8 +126,8 @@ public class GuiItemMatterInterface extends GuiMachine {
 			int src = (Integer)getDisplVar(id);
 			for (int i = cont.invPlayerS; i < cont.invPlayerE; i++) {
 				Slot slot = cont.inventorySlots.get(i);
-				if (slot.getSlotIndex() == src) drawTexturedModalRect(slot.xDisplayPosition, slot.yDisplayPosition, 194, 18, 16, 16);
-				else if (slot.getSlotIndex() == target) drawTexturedModalRect(slot.xDisplayPosition, slot.yDisplayPosition, 210, 18, 16, 16);
+				if (slot.getSlotIndex() == src) drawTexturedModalRect(slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, 194, 18, 16, 16);
+				else if (slot.getSlotIndex() == target) drawTexturedModalRect(slot.xDisplayPosition + guiLeft, slot.yDisplayPosition + guiTop, 210, 18, 16, 16);
 			}
 		}
 

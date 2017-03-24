@@ -1,6 +1,5 @@
 package cd4017be.automation.TileEntity;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -32,6 +31,8 @@ import net.minecraft.world.WorldServer;
  */
 public class SecuritySys extends AutomatedTile implements IGuiData {
 
+	public static int Umax = 1200;
+	public static float Ecap = 16000;
 	public AreaConfig prot = new AreaConfig(this);
 	public HashMap<String, ItemStack[]> itemStorage = new HashMap<String, ItemStack[]>();
 	public boolean enabled = false;
@@ -43,7 +44,7 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 	
 	public SecuritySys()
 	{
-		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		energy = new PipeEnergy(Umax, Config.Rcond[1]);
 		/**
 		 * long:
 		 * int: voltage, energyUse, rstMode{1:ProtSrc, 2:ProtInv, 4:LoadSrc, 8:LoadInv}, energyUseC
@@ -59,13 +60,13 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 		float e = (energy.Ucap * energy.Ucap - (float)(Uref * Uref)) * 0.001F;
 		if (e > 0) {
 			energy.Ucap = Uref;
-			if (Estor + e < Config.Ecap[0])
+			if (Estor + e < Ecap)
 			{
 				Estor += e;
 			} else
 			{
-				e -= Config.Ecap[0] - Estor;
-				Estor = Config.Ecap[0];
+				e -= Ecap - Estor;
+				Estor = Ecap;
 				energy.addEnergy(e * 1000F);
 			}
 		}
@@ -80,14 +81,14 @@ public class SecuritySys extends AutomatedTile implements IGuiData {
 		boolean enabledCl = enabledC;
 		if ((rstCtr & 8) == 0) enabledC = (rstCtr & 4) != 0;
 		else enabledC = (rstCtr & 4) != 0 ^ rst;
-		if (Estor < EuseL || (!enabledCl && Estor < Config.Ecap[0] / 2)) enabledC = false;
+		if (Estor < EuseL || (!enabledCl && Estor < Ecap / 2)) enabledC = false;
 		else if (enabledC) Estor -= EuseL;
 		prot.update |= enabledC ^ enabledCl;
 		prot.tick();
 	}
 
 	public float getStorage() {
-		return Estor / (float)Config.Ecap[0];
+		return Estor / Ecap;
 	}
 
 	@Override

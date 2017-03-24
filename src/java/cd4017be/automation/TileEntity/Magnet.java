@@ -28,10 +28,11 @@ import net.minecraftforge.items.ItemHandlerHelper;
  */
 public class Magnet extends ModTileEntity implements ITickable {
 
+	public static int Umax = 8000;
 	public static float Energy = 0.1F;
 	public static final float rad = 8;
 	public static final float accleration = 1;
-	private PipeEnergy energy = new PipeEnergy(Config.Umax[2], Config.Rcond[1]);
+	private PipeEnergy energy = new PipeEnergy(Umax, Config.Rcond[1]);
 	
 	@Override
 	public void update() 

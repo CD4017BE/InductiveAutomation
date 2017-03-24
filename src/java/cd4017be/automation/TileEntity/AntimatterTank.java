@@ -24,9 +24,8 @@ import net.minecraftforge.items.SlotItemHandler;
  *
  * @author CD4017BE
  */
-public class AntimatterTank extends AutomatedTile implements IGuiData
-{
-	public static final int MaxCap = 160000000;// =0.16g
+public class AntimatterTank extends AutomatedTile implements IGuiData {
+
 	private int fillRate = 0;
 	
 	public AntimatterTank()

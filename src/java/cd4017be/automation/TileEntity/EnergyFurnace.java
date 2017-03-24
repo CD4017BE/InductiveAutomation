@@ -25,6 +25,7 @@ import net.minecraftforge.items.SlotItemHandler;
  */
 public class EnergyFurnace extends AutomatedTile implements IGuiData {
 
+	public static int Umax = 1200;
 	public static float Euse = 200F;
 	private float powerScale;
 	public int Rw;
@@ -32,7 +33,7 @@ public class EnergyFurnace extends AutomatedTile implements IGuiData {
 
 	public EnergyFurnace() {
 		inventory = new Inventory(5, 2, null).group(0, 0, 2, Utils.IN).group(1, 2, 4, Utils.OUT);
-		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		energy = new PipeEnergy(Umax, Config.Rcond[1]);
 		Rw = Config.Rmin;
 		powerScale = Config.Pscale;
 	}

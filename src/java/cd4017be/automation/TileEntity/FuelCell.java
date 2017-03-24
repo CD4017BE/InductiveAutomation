@@ -27,7 +27,7 @@ public class FuelCell extends AutomatedTile implements IEnergyAccess, IGuiData {
 	public float Estor;
 	
 	public FuelCell() {
-		energy = new PipeEnergy(Config.Umax[2], Config.Rcond[2]);
+		energy = new PipeEnergy(Config.Ugenerator[5], Config.Rcond[1]);
 		inventory = new Inventory(3, 0, null);
 		tanks = new TankContainer(3, 3).tank(0, Config.tankCap[1], Utils.IN, 0, -1, Objects.L_hydrogenG).tank(1, Config.tankCap[1], Utils.IN, 1, -1, Objects.L_oxygenG).tank(2, Config.tankCap[1], Utils.OUT, -1, 2, Objects.L_waterG);
 	}
@@ -41,7 +41,7 @@ public class FuelCell extends AutomatedTile implements IEnergyAccess, IGuiData {
 		float e1 = this.addEnergy(e);
 		if (e1 != e) energy.addEnergy(-e1);
 		else energy.Ucap = Uref;
-		int p = (int)Math.ceil((1F - Estor / (Config.Ecap[0] * 1000F) * 2F) * Config.PfuelCell * 0.5F);
+		int p = (int)Math.ceil((1F - Estor / (Config.Ecap[0] * 1000F) * 2F) * Config.Pgenerator[5] * 0.5F);
 		if (p * 2 > tanks.getAmount(0)) p = tanks.getAmount(0) / 2;
 		if (p > tanks.getAmount(1)) p = tanks.getAmount(1);
 		if (p > 0) {
@@ -58,7 +58,7 @@ public class FuelCell extends AutomatedTile implements IEnergyAccess, IGuiData {
 	}
 
 	public float getPower() {
-		return (float)power / (float)Config.PfuelCell;
+		return (float)power / Config.Pgenerator[5];
 	}
 
 	@Override
@@ -82,6 +82,7 @@ public class FuelCell extends AutomatedTile implements IEnergyAccess, IGuiData {
 	{
 		if (cmd == 0) {
 			Uref = dis.readShort();
+			if (Uref > Config.Ugenerator[5]) Uref = Config.Ugenerator[5];
 		}
 	}
 

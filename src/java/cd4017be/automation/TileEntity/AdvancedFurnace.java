@@ -31,6 +31,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
  */
 public class AdvancedFurnace extends AutomatedTile implements IGuiData, ISlotClickHandler{
 
+	public static int Umax = 1200;
 	private float powerScale;
 	private LFRecipe recipe;
 	public int Rw;
@@ -39,7 +40,7 @@ public class AdvancedFurnace extends AutomatedTile implements IGuiData, ISlotCli
 	public AdvancedFurnace() {
 		inventory = new Inventory(8, 2, null).group(0, 2, 5, Utils.IN).group(1, 5, 8, Utils.OUT);
 		tanks = new TankContainer(2, 2).tank(0, Config.tankCap[1], Utils.IN, 0, -1).tank(1, Config.tankCap[1], Utils.OUT, -1, 1);
-		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		energy = new PipeEnergy(Umax, Config.Rcond[1]);
 		Rw = Config.Rmin;
 		powerScale = Config.Pscale;
 	}

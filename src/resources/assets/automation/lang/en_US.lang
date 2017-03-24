@@ -101,85 +101,111 @@ tile.cd4017be.pneumaticPiston.name=Pneumatic Piston
 tile.cd4017be.solidFuelHeater.name=Solid Fueled Heater
 tile.cd4017be.heatedFurnace.name=External Heated Furnace
 # tooltips
-tile.cd4017be.ore\:0.tip=spawns @lvl 5-60 (16 best).
-tile.cd4017be.ore\:1.tip=spawns @lvl 5-64 (40 best).
-tile.cd4017be.ore\:2.tip=spawns @lvl 5-60 (30 best).
-tile.cd4017be.placementHelper.tip=You shouldn't be able to get this.\nJust throw it away it's useless for you.\nPlacement controllers will temporary place\nthese blocks to click items against them.
-tile.cd4017be.pool.tip=Place directly or indirectly next to an BioReactor.\nIncreases Algae capacity by \\<AI.FluidTiers.TankCap:1>L.\nOptimal if it has access to sunlight.
-tile.cd4017be.unbrStone.tip=Unbreakable with infinite explosion resistance\nand indestructable for mobs.\nSneak-click is the only possible way to remove it.
-tile.cd4017be.unbrGlass.tip=Unbreakable with infinite explosion resistance\nand indestructable for mobs.\nSneak-click is the only possible way to remove it.
-tile.cd4017be.lightShaft.tip=Emits skylight so you can also run\nSolarpanels & Bio Reactors below surface.\nOnly works if the world has a sky.\nNote: day/night still affects brightness.
-tile.cd4017be.wireC.tip=Umax = \\<AI.EnergyTiers.Umax:0> V\nRcond = \\<AF.EnergyTiers.Rcond:0> Ohm\nClick with solid Blocks to cover.
-tile.cd4017be.wireA.tip=Umax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nClick with solid Blocks to cover.
-tile.cd4017be.wireH.tip=Umax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm\nClick with solid Blocks to cover.
-tile.cd4017be.liquidPipe\:0.tip=Transfers fluids from extraction to injection pipes.\nMoves \\<AI.FluidTiers.TankCap:0> L/t from red to green connections.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
-tile.cd4017be.liquidPipe\:1.tip=Fills fluids into connected tanks/machines.\nCan be upgraded with a Fluid Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
-tile.cd4017be.liquidPipe\:2.tip=Pumps fluids out of connected tanks/machines.\nCan be upgraded with a Fluid Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
-tile.cd4017be.itemPipe\:0.tip=Transfers items from extraction to injection pipes.\nMoves 1 stack/t from red to green connections.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
-tile.cd4017be.itemPipe\:1.tip=Puts items into connected inventories.\nCan be upgraded with an Item Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
-tile.cd4017be.itemPipe\:2.tip=Pulls items out of connected inventories.\nCan be upgraded with an Item Pipe Filter.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
-tile.cd4017be.warpPipe.tip=Transfers items & fluids between connected blocks instantly\nwithout internal storage at 1 stack/t extraction rate.\nClick with Item/Fluid extraction/injection Pipe on\nside to extract/inject items/fluids from that side.\nItem/Fluid Pipe Filters are applied per connected side.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
-tile.cd4017be.voltageTransformer.tip=replaced by Electric Coils
-tile.cd4017be.SCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:0> V\nRcond = \\<AF.EnergyTiers.Rcond:0> Ohm
-tile.cd4017be.OCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
-tile.cd4017be.CCSU.tip=Can store Energy and charge tools.\nUmax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm
+tile.cd4017be.ore\:0.tipA=spawns @lvl 5-60 (16 best).
+tile.cd4017be.ore\:1.tipA=spawns @lvl 5-64 (40 best).
+tile.cd4017be.ore\:2.tipA=spawns @lvl 5-60 (30 best).
+tile.cd4017be.pool.tip=Place directly or indirectly next to an §6Bio Reactor§7.\nIncreases Algae capacity by \\<AI.FluidTiers.TankCap:1>L.\nOptimal if it has access to sunlight.
+tile.cd4017be.unbrStone\:0.tip=Unbreakable with infinite explosion resistance\nand indestructable for mobs.\nAlso impassable for Ender Dragons (almost).\nSneak-click is the only possible way to remove it.
+tile.cd4017be.unbrGlass.tip=Unbreakable with infinite explosion resistance\nand indestructable for mobs.\nAlso impassable for Ender Dragons (almost).\nSneak-click is the only possible way to remove it.
+tile.cd4017be.lightShaft.tip=Emits skylight so you can also run\nSolarpanels & Bio Reactors below surface.\nOnly works if the world has a sky.\nNote: day/night still affects brightness.\nWarning: may cause heavy light glitches!
+tile.cd4017be.wireC.tip=Low Voltage Energy transfer\nClick with solid Blocks to cover.
+tile.cd4017be.wireC.tipA=Umax = \\<AI.EnergyTiers.Umax:0> V\nRcond = \\<AF.EnergyTiers.Rcond:0> Ohm
+tile.cd4017be.wireA.tip=Medium Voltage Energy transfer\nClick with solid Blocks to cover.
+tile.cd4017be.wireA.tipA=Umax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
+tile.cd4017be.wireH.tip=High Voltage lossless Energy transfer\nClick with solid Blocks to cover.
+tile.cd4017be.wireH.tipA=Umax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm
+tile.cd4017be.liquidPipe\:0.tip=Transfers fluids from §6extraction§7 to §6injection pipes§7.\nMoves \\<AI.FluidTiers.TankCap:0> L/t from red to green connections.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.liquidPipe\:1.tip=Fills fluids into connected tanks/machines.\nCan be upgraded with a §6Fluid Pipe Filter§7.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.liquidPipe\:2.tip=Pumps fluids out of connected tanks/machines.\nCan be upgraded with a §6Fluid Pipe Filter§7.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.itemPipe\:0.tip=Transfers items from §6extraction§7 to §6injection pipes§7.\nMoves 1 stack/t from red to green connections.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.itemPipe\:1.tip=Puts items into connected inventories.\nCan be upgraded with an §6Item Pipe Filter§7.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.itemPipe\:2.tip=Pulls items out of connected inventories.\nCan be upgraded with an §6Item Pipe Filter§7.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.warpPipe.tip=Transfers items & fluids between connected blocks instantly\nwithout internal storage at 1 stack/t extraction rate.\nClick with §6(Item|Fluid) (Extraction|Injection) Pipe§7 on\nside to extract/inject items/fluids from that side.\n§6(Item|Fluid) Pipe Filter§7s are applied per connected side.\nSneak-click to remove a pipe connection.\nClick with solid Blocks to cover.
+tile.cd4017be.SCSU.tip=Can store Energy and charge tools.
+tile.cd4017be.SCSU.tipA=Umax = \\<AI.EnergyTiers.Umax:0> V
+tile.cd4017be.OCSU.tip=Can store Energy and charge tools.
+tile.cd4017be.OCSU.tipA=Umax = \\<AI.EnergyTiers.Umax:1> V
+tile.cd4017be.CCSU.tip=Can store Energy and charge tools.
+tile.cd4017be.CCSU.tipA=Umax = \\<AI.EnergyTiers.Umax:2> V
 tile.cd4017be.CEU.tip=Infinite energy source (or sink)\nfor experimenting in creative mode.\nCan be set to any voltage you want.\nAlso measures transfered energy.
-tile.cd4017be.steamEngine.tip=Converts Steam into Water and Energy.\nPmax = \\<AF.SteamGen.Pmax:0> kW\nUmax = \\<AI.EnergyTiers.Umax:0> V\nRcond = \\<AF.EnergyTiers.Rcond:0> Ohm
-tile.cd4017be.steamTurbine.tip=Converts Steam into Water and Energy.\nPmax = \\<AF.SteamGen.Pmax:2> kW\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
-tile.cd4017be.steamGenerator.tip=Converts Steam into Water and Energy.\nPmax = \\<AF.SteamGen.Pmax:1> kW\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
-tile.cd4017be.steamBoiler.tip=Converts Furnace-fuel and Water into Steam.\nPmax = 40 L/t
-tile.cd4017be.lavaCooler.tip=Converts Lava and Water into Steam\nand optional Cobblestone/Stone/Obsidian\nP = 20 L/t
-tile.cd4017be.energyFurnace.tip=A furnace powered by electric Energy\nEuse = \\<F.Mach.Furnace.Euse> kJ/op\nRwork = configurable\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 op/t)
-tile.cd4017be.solarpanel.tip=Produces Energy from sunlight.\n(and a very tiny amount from blocklight)\nPsun = 500 W , Pblock = 2.2 W\nUmax = 120 V\nRcond = \\<AF.EnergyTiers.Rcond:0> Ohm
-tile.cd4017be.farm.tip=Places specific plants and harvests blocks that drop a specific\nitem and can be broken by hand inside of a cuboid area.\nSelection tool needed to set area.\nEuse = \\<F.Mach.Farm.Euse> kJ/place,harvest\nRwork = 25 Ohm\nUmax = \\<AI.EnergyTiers.Umax:1> V (can be upgraded)\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 block/t)
-tile.cd4017be.miner.tip=Breaks blocks inside of a cuboid area. Needs\nDrills for blocks that can't be harvested by hand.\nSelection tool needed to set area.\nEuse = dependsOnBlockHardness\nRwork = 25 Ohm\nUmax = \\<AI.EnergyTiers.Umax:1> V (can be upgraded)\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 16 blocks/t)\nUse as Computercraft peripheral for more detailed control.
-tile.cd4017be.magnet.tip=Attracts Entities and collects Items.\nItems are stored in adjacent inventories.\nP = 0.1 W/t/entity\nUmax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nRange = U * 0.015625 m/V
-tile.cd4017be.link.tip=Stores Energy inside of a connected Block.\nThese may be: Storage units, cables,\nThermalExpansion storage devices\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
-tile.cd4017be.linkHV.tip=Stores Energy inside of a connected Block.\n(see standard Energy Link)\nUmax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm
-tile.cd4017be.texMaker.tip=Used to draw block layers for the builder.
-tile.cd4017be.builder.tip=Can build layers of different blocks into an cuboid area.\nUse Builder Textures if layers should be built out of multiple block types.\nSelection tool needed to set area.\nEuse = \\<F.Mach.Builder.Euse> kJ/block\nRwork = 25 Ohm\nUmax = \\<AI.EnergyTiers.Umax:1> V (can be upgraded)\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 16 blocks/t)\nUse as Computercraft peripheral for more detailed control.
-tile.cd4017be.algaePool.tip=Converts Water and organic stuff into Biomass using Algae.\nThe algae will reproduce when fed and die over time producing biomass.\nPut Lilly Pads into the reactor to get a first amount of algae to start with.\n(needs Algae Pools and sunlight to function)
-tile.cd4017be.teslaTransmitter.tip=Transfers Energy to other transmitters with equal frequency.\nClick with Ender Matrix to make it Interdimensional -> distance <= 200m\nTransferRate = (U2^2 - U1^2) / distance^2 * 1Fm^2\nUmax = \\<AI.EnergyTiers.Umax:4> V\n(stores up to 14.400.000 kJ)
-tile.cd4017be.teslaTransmitterLV.tip=Transfers Energy to other transmitters with equal frequency.\nClick with Ender Matrix to make it Interdimensional -> distance <= 200m\nTransferRate = (U2^2 - U1^2) / distance^2 * 1Fm^2\nUmax = \\<AI.EnergyTiers.Umax:3> V\n(stores up to 576.000 kJ)
-tile.cd4017be.teleporter.tip=Teleports an entire cuboid area of blocks\nand entities to specific coordinates.\nSelection tool needed to set area.\nEuse = areaVolume * distance * \\<F.Mach.Teleport.Emult> kJ/m^4\nRwork = 50 Ohm\nUmax = \\<AI.EnergyTiers.Umax:2> V (can be upgraded)\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm\nUse as Computercraft peripheral for more detailed control.
-tile.cd4017be.advancedFurnace.tip=A multifunctional crafting Machine for:\nAlloy smelting, Magma smelting, Steam crushing, ...\nEuse = dependsOnRecipe\nRwork = configurable\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 op/t)
-tile.cd4017be.pump.tip=Can pump liquids out of a cuboid area or from entire lakes.\nSelection tool needed to set area.\nEuse = \\<F.Mach.Pump.Euse> kJ/fluidBlock\nRwork = 25 Ohm\nUmax = \\<AI.EnergyTiers.Umax:1> V (can be upgraded)\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 block/t)
+tile.cd4017be.teslaTransmitter.tip=Transfers Energy to other transmitters with equal frequency.\nClick with §6Ender Matrix§7 to make it Interdimensional -> distance <= 200m
+tile.cd4017be.teslaTransmitterLV.tip=Transfers Energy to other transmitters with equal frequency.\nClick with §6Ender Matrix§7 to make it Interdimensional -> distance <= 200m
+tile.cd4017be.teslaTransmitter.tipA=TransferRate = (U2^2 - U1^2) / distance^2 * 1Fm^2\nUmax = \\<AI.EnergyTiers.Umax:4> V\n(stores up to 14.400.000 kJ)
+tile.cd4017be.teslaTransmitterLV.tipA=TransferRate = (U2^2 - U1^2) / distance^2 * 1Fm^2\nUmax = \\<AI.EnergyTiers.Umax:3> V\n(stores up to 576.000 kJ)
+tile.cd4017be.link.tip=Stores Energy inside of a connected Block.\nThese may be: §6Storage Units§7, §6Wires§7.\nAlso compatible with §bRF§7, §bEU§7, §bTesla§7 storage devices
+tile.cd4017be.linkHV.tip=Stores Energy inside of a connected Block.\n(see §6Energy Link§7)
+tile.cd4017be.link.tipA=Umax = \\<AI.EnergyTiers.Umax:1> V
+tile.cd4017be.linkHV.tipA=Umax = \\<AI.EnergyTiers.Umax:2> V
+tile.cd4017be.steamEngine.tip=Generates Energy by decompressing §6Steam§7.
+tile.cd4017be.steamTurbine.tip=Generates Energy by decompressing §6Steam§7.
+tile.cd4017be.steamGenerator.tip=Generates Energy by decompressing §6Steam§7.
+tile.cd4017be.steamEngine.tipA=Pmax = \\<AF.Generators.Pmax:0> kW\nUmax = \\<AI.Generators.Umax:0> V\nEgen = \\<F.EnergyConv.Steam> kJ/L Steam
+tile.cd4017be.steamGenerator.tipA=Pmax = \\<AF.Generators.Pmax:1> kW\nUmax = \\<AI.Generators.Umax:1> V\nEgen = \\<F.EnergyConv.Steam> kJ/L Steam
+tile.cd4017be.steamTurbine.tipA=Pmax = \\<AF.Generators.Pmax:2> kW\nUmax = \\<AI.Generators.Umax:2> V\nEgen = \\<F.EnergyConv.Steam> kJ/L Steam
+tile.cd4017be.solarpanel.tip=Produces Energy from sunlight.\n(and a very tiny amount from blocklight)
+tile.cd4017be.hpSolarpanel.tip=Produces Energy from sunlight.\n(and a tiny amount from blocklight and cosmic radiation)
+tile.cd4017be.solarpanel.tipA=Pmax = \\<AF.Generators.Pmax:3> kW\nUmax = \\<AI.Generators.Umax:3> V
+tile.cd4017be.hpSolarpanel.tipA=Pmax = \\<AF.Generators.Pmax:4> kW\nUmax = \\<AI.Generators.Umax:4> V
+tile.cd4017be.fuelCell.tip=Lets §6Hydrogen§7 & §6Oxygen§7 react into\nWater Vapor to produce electric Energy
+tile.cd4017be.fuelCell.tipA=Pmax = \\<AF.Generators.Pmax:5> kW\nUmax = \\<AI.Generators.Umax:5> V\nEgen = 2kJ/(1L oxygen, 2L hydrogen)
+tile.cd4017be.antimatterAnihilator.tip=Anihilates §6Antimatter§7 with Matter back to Energy.\nNeeds to be cooled with §6Liquid Helium§7.
+tile.cd4017be.antimatterAnihilator.tipA=Pmax = \\<AF.Generators.Pmax:6> kW\nUmax = \\<AI.Generators.Umax:6> V\nEgen = 90 kJ/ng (E=mc^2)
+tile.cd4017be.antimatterFabricator.tip=Creates pairs of Matter & §6Antimatter§7 out of Energy.\nNeeds to be cooled with §6Liquid Helium§7.
+tile.cd4017be.antimatterFabricator.tipA=Pmax = 14.400 kW\nUmax = \\<AI.EnergyTiers.Umax:2> V\nEuse = 90 kJ/ng (E=mc^2)
+tile.cd4017be.energyFurnace.tip=A furnace powered by electric Energy\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.energyFurnace.tipA=Euse = \\<F.Furnace.Euse> kJ/op\nRwork = \\<I.Rwork.min>-... Ohm\nUmax = \\<I.Furnace.Umax> V
+tile.cd4017be.advancedFurnace.tip=A multifunctional crafting machine for:\nAlloy smelting, Magma smelting, Steam crushing, ...\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.advancedFurnace.tipA=Euse = dependsOnRecipe\nRwork = \\<I.Rwork.min>-... Ohm\nUmax = \\<I.AdvFurn.Umax> V
+tile.cd4017be.electricCompressor.tip=Used to assemble casings, circuits, and other parts.\nPowered by Electricity\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.electricCompressor.tipA=Euse = \\<F.ElCompr.Euse> kJ/op\nRwork = \\<I.Rwork.min>-... Ohm\nUmax = \\<I.ElCompr.Umax> V
+tile.cd4017be.decompCooler.tip=Used to pump heat out of a material into another material.\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.decompCooler.tipA=Euse = dependsOnRecipe\nRwork = \\<I.Rwork.min>-... Ohm\nUmax = \\<I.Cooler.Umax> V
+tile.cd4017be.electrolyser.tip=Separates materials into their chemical compounds.\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.electrolyser.tipA=Euse = dependsOnRecipe\nRwork = \\<I.Rwork.min>-... Ohm\nUmax = \\<I.Electrolyser.Umax> V
+tile.cd4017be.gravCond.tip=Compacts huge amounts of matter with\nmaterials to create more dense materials.\nActs like a trash, must be supplied\nwith any items or fluids to operate.\n(emits redstone proportional to fill state)
+tile.cd4017be.gravCond.tipA=Uses \\<F.GravCond.Euse> J/kg consumed\nNeeds \\<F.GravCond.Eforce> J/kg storage\nUmax = \\<I.GravCond.Umax> V
+tile.cd4017be.electricCoilC.tip=Place against other §6Coil§7 to get a transformer,\nplace against magnetic §6Shaft§7 to get a motor/dynamo\nor insert into §6Shaft§7 to make it electromagnetic.
+tile.cd4017be.electricCoilC.tipA=Nmin = 5, Nmax = 200\nUmax = \\<AI.EnergyTiers.Umax:0> V\nTransformer: Coil-winding ratio N1:N2\n= Voltage ratio U1:U2
+tile.cd4017be.electricCoilA.tip=Place against other §6Coil§7 to get a transformer,\nplace against magnetic §6Shaft§7 to get a motor/dynamo\nor insert into §6Shaft§7 to make it electromagnetic.
+tile.cd4017be.electricCoilA.tipA=Nmin = 10, Nmax = 400\nUmax = \\<AI.EnergyTiers.Umax:1> V\nTransformer: Coil-winding ratio N1:N2\n= Voltage ratio U1:U2
+tile.cd4017be.electricCoilH.tip=Place against other §6Coil§7 to get a transformer,\nplace against magnetic §6Shaft§7 to get a motor/dynamo\nor insert into §6Shaft§7 to make it electromagnetic.
+tile.cd4017be.electricCoilH.tipA=Nmin = 25, Nmax = 1000\nUmax = \\<AI.EnergyTiers.Umax:2> V\nTransformer: Coil-winding ratio N1:N2\n= Voltage ratio U1:U2
+tile.cd4017be.miner.tip=Breaks blocks inside of a cuboid area. Needs\n§6Drill§7s for blocks that can't be harvested by hand.\n§6Area Configuration Tool§7 needed to set area.\nAlso controlable with §bOpenComputers§7.
+tile.cd4017be.miner.tipA=Euse = \\<F.Miner.Emult> kJ/block * hardn. / eff.\nRwork = \\<F.Miner.Rwork> Ohm\nUmax = \\<I.Miner.Umax> V (upgradable)\nOperation speed depends on power supply (max \\<W.Miner.maxSpeed> blocks/t)
+tile.cd4017be.builder.tip=Can build layers of different blocks into an cuboid area.\nUse §6Building Texture§7s if layers should be built out of multiple block types.\n§6Area Configuration Tool§7 needed to set area.\nAlso controlable with §bOpenComputers§7.
+tile.cd4017be.builder.tipA=Euse = \\<F.Builder.Euse> kJ/block\nRwork = \\<F.Builder.Rwork> Ohm\nUmax = \\<I.Builder.Umax> V (upgradable)\nOperation speed depends on power supply (max \\<W.Builder.maxSpeed> blocks/t)
+tile.cd4017be.farm.tip=Places specific plants and harvests blocks that drop a specific\nitem and can be broken by hand inside of a cuboid area.\n§6Area Configuration Tool§7 needed to set area.
+tile.cd4017be.farm.tipA=Euse = \\<F.Farm.Euse> kJ/place,harvest\nRwork = \\<F.Farm.Rwork> Ohm\nUmax = \\<I.Farm.Umax> V (upgradable)\nOperation speed depends on power supply (max 1 block/t)
+tile.cd4017be.pump.tip=Can pump liquids out of a cuboid area or from entire lakes.\n§6Area Configuration Tool§7 needed to set area.
+tile.cd4017be.pump.tipA=Euse = \\<F.Pump.Euse> kJ/fluidBlock\nRwork = \\<F.Pump.Rwork> Ohm\nUmax = \\<I.Pump.Umax> V (upgradable)\nOperation speed depends on power supply (max 1 block/t)
+tile.cd4017be.teleporter.tip=Teleports an entire cuboid area of blocks\nand entities to specific coordinates.\n§6Area Configuration Tool§7 needed to set area.\nAlso controlable with §bOpenComputers§7.
+tile.cd4017be.teleporter.tipA=Euse = areaVolume * distance * \\<F.Teleport.Emult> kJ/m^4\nRwork = \\<F.Teleport.Rwork> Ohm\nUmax = \\<I.Teleport.Umax> V (upgradable)
+tile.cd4017be.magnet.tip=Attracts Entities and collects Items.\nItems are stored in adjacent inventories.
+tile.cd4017be.magnet.tipA=Puse = \\<F.Magnet.Euse> kW/entity\nUmax = \\<I.Magnet.Umax> V\nRange = U * 0.015625 m/V
+tile.cd4017be.security.tip=Can keep chunks loaded and/or protect them from\nbeing grieved by non whitelisted players.\nRequires constant power supply to function.
+tile.cd4017be.security.tipA=Umax = \\<I.SecuritySys.Umax> V\nP_load = \\<AF.SecuritySys.Euse:4> kW/chunk\nP_prot = [\\<AF.SecuritySys.Euse:1>|\\<AF.SecuritySys.Euse:2>|\\<AF.SecuritySys.Euse:3>] kW/chunk
+tile.cd4017be.texMaker.tip=Used to draw block layers for the §6Builder§7.
+tile.cd4017be.algaePool.tip=Converts Water and organic stuff into §6Biomass§7 using Algae.\nThe algae will reproduce when fed and die over time producing biomass.\nPut Lilly Pads or Leaves into the reactor for kickstart.\n(needs §6Algae Pools§7 and sunlight to function)
 tile.cd4017be.massstorageChest.tip=A chest with 64 slots each holding up to 4096 items.\n(keeps its content when broken)
-tile.cd4017be.matterOrb.tip=Can store up to 256 different item types\neach holding up to 2.147.483.647 items.\nItems can only be piped in.\nPut into a Matter Interface to access contents.
-tile.cd4017be.antimatterBombE.tip=Needs to be crafted into the fuseable form.\nThe internal Matterorb contains all the loot collected\nby the antimatter explosion, it should be pulled out\nbefore crafting this into the fuseable version again.
-tile.cd4017be.antimatterBombF.tip=Fill this with antimatter, place it anywhere (better far away),\napply a redstone signal and RUN! When it detonates don't\nlook at the bomb or stand in clear sight to it (High-Energy-Gamma-Rays).\nWill detonate 10s after rst.-signal, break block to defuse.\nExplosion strength depends on the amount of antimatter filled in.
-tile.cd4017be.antimatterTank.tip=Stores up to 160 milligrams of antimatter.\n(equivalent Energy capacity: 14.4 TJ)
-tile.cd4017be.antimatterFabricator.tip=Creates pairs of Matter & Antimatter out of Energy.\nNeeds to be cooled with liquid helium.\nEuse = 90 kJ/ng (E=mc^2)\nPmax = 14.400 kW\nUmax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm
-tile.cd4017be.antimatterAnihilator.tip=Anihilates Antimatter with Matter back to Energy.\nNeeds to be cooled with liquid helium.\nEgen = 90 kJ/ng (E=mc^2)\nPmax = 14.400 kW\nUmax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm
-tile.cd4017be.hpSolarpanel.tip=Produces Energy from sunlight.\n(and a tiny amount from blocklight and in the END)\nPsun = 4 kW , Pend = 148 W , Pblock = 17.8 W\nUmax = \\<AI.EnergyTiers.Umax:0> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
-tile.cd4017be.autoCrafting.tip=Can automatically craft stuff using a slot-index-pattern.
-tile.cd4017be.geothermalFurnace.tip=A furnace powered by Lava.\nCan also run from Furnace-fuel\nor use it to produce Lava out of Stone.\n25% more fuel efficient than normal Furnace.
-tile.cd4017be.steamCompressor.tip=Used to assemble casings, circuits, and other parts.\nPowered by Steam-pressure: uses 800 L/op
-tile.cd4017be.electricCompressor.tip=Used to assemble casings, circuits, and other parts.\nPowered by Electricity: uses \\<F.Mach.ElCompr.Euse> kJ/op\nRwork = configurable\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 op/t)
+tile.cd4017be.matterOrb.tip=Can store up to 256 different item types\neach holding up to 2.147.483.647 items.\nItems can only be piped in.\nPut into a §6Matter Interface§7 to access contents.
+tile.cd4017be.antimatterBombE.tip=Needs to be crafted into the fuseable form.\nThe internal §6Matter Orb§7 contains all the loot collected\nby the antimatter explosion, it should be pulled out\nbefore crafting this into the fuseable version again.
+tile.cd4017be.antimatterBombF.tip=Fill this with §6Antimatter§7, place it anywhere (better far away),\napply a redstone signal and RUN! When it detonates don't\nlook at the bomb or stand in clear sight to it (High-Energy-Gamma-Rays).\nWill detonate 10s after rst.-signal, break block to defuse.\nExplosion strength depends on the amount of antimatter filled in.
+tile.cd4017be.antimatterTank.tip=Stores up to 160 milligrams of §6Antimatter§7.\n(equivalent Energy capacity: 14.4 TJ)
+tile.cd4017be.autoCrafting.tip=Can automatically craft stuff\nby arranging whatever items it receives\nin a specific pattern on the craftig grid.
 tile.cd4017be.tank.tip=64 m³ Fluid storage.\nKeeps its content when broken.\nCan be used as Fluid container in other tanks.
-tile.cd4017be.security.tip=Can keep chunks loaded and/or protect them from\nbeing grieved by non whitelisted players.\nRequires constant power supply to function.\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm
-tile.cd4017be.decompCooler.tip=Used to pump heat out of a material into another material.\nEuse = dependsOnRecipe\nRwork = configurable\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 op/t)
-tile.cd4017be.collector.tip=Sucks in liquid blocks in front of it\nor optionally extracts Oxygen/Nitrogen from air.
+tile.cd4017be.collector.tip=Sucks in liquid blocks in front of it\nor optionally extracts §6Oxygen§7/§6Nitrogen§7 from air.
 tile.cd4017be.trash.tip=Deletes items and liquids.
-tile.cd4017be.electrolyser.tip=Separates materials into their chemical compounds.\nEuse = dependsOnRecipe\nRwork = configurable\nUmax = \\<AI.EnergyTiers.Umax:1> V\nRcond = \\<AF.EnergyTiers.Rcond:1> Ohm\nOperation speed depends on power supply (max 1 op/t)
-tile.cd4017be.fuelCell.tip=Lets Hydrogen & Oxygen react into\nSteam to produce electric Energy\nPmax = 80 L/t + 144 kW\nUmax = \\<AI.EnergyTiers.Umax:2> V\nRcond = \\<AF.EnergyTiers.Rcond:2> Ohm
-tile.cd4017be.detector.tip=Emits redstone signals depending on configurable triggers for:\nitem storage, fluid storage and energy storage (also MJ,RF,EU).\nUse as Computercraft peripheral for more detailed control.
-tile.cd4017be.itemSorter.tip=Routes items into 5 different slots with 4 Item Filters + else.
-tile.cd4017be.wormhole.tip=Creates an interdimensional link between two points being anywhere.\nWalk into this block to get teleported to its link.\nCan transfer entities, items, fluids & energy (also RF).\nCan be used by Teleporters to teleport between dimensions:\nClick this block with paper to get the coordinates.\nAlso acts as warp pipe.
-tile.cd4017be.matterInterfaceB.tip=Used to automatically insert/extract\nitems from a Matter Orb item.
-tile.cd4017be.fluidPacker.tip=Converts fluids into an item-version that can be stored in chests etc.\nNeeds 1 ng antimatter per 1000 L fluid.
+tile.cd4017be.itemSorter.tip=Routes items into 5 different slots\nwith 4 §6Item Pipe Filters§7 + else.
+tile.cd4017be.wormhole.tip=Creates an interdimensional link between two points being anywhere.\nWalk into this block to get teleported to its link.\nCan transfer entities, items, fluids, energy,...\nCan be used by §6Teleporters§7 to teleport between dimensions:\nClick this block with paper to get the coordinates.\nAlso connects with §6Warp Pipe§7s.
+tile.cd4017be.matterInterfaceB.tip=Used to automatically insert/extract\nitems from a §6Matter Orb§7 item.
+tile.cd4017be.fluidPacker.tip=Converts fluids into an item-version that can be stored in chests etc.\nNeeds 1 ng §6Antimatter§7 per 1000 L fluid.
 tile.cd4017be.hugeTank.tip=A bigger tank with 4.096 m³ capacity.
 tile.cd4017be.fluidVent.tip=Can fill liquids into valleys or holes in landscape.
-tile.cd4017be.gravCond.tip=Compacts huge amounts of matter with\nmaterials to create more dense materials.\nActs like a trash, must be supplied\nwith any items or fluids to operate.\nUses \\<F.Mach.GravCond.Euse> J/kg consumed\nNeeds \\<F.Mach.GravCond.Eforce> J/kg storage\nUmax = \\<I.Mach.GravCond.Umax> V\n(emits redstone proportional to fill state)
 tile.cd4017be.itemBuffer.tip=Distributes incoming items over two\noutputs at a specific ratio and/or\ncombines them to higher stack sizes to\nuse slow pipes more efficiently. 
 tile.cd4017be.quantumTank.tip=Another even bigger tank with 2.097.152 m³ capacity.
-tile.cd4017be.vertShemGen.tip=Used to print 3D-Vertex schematics\nto let a Builder build them automated.\n(A Vertex Selection Tool can be used\ninstead of typing in coordinates manually)
-tile.cd4017be.heatRadiator.tip=Cools or heats fluids to environment temperature.\nUsed to turn Water Vapor into liquid Water.
-tile.cd4017be.shaft.tip=Connects to kinectic components next to it.\nMass = 1000kg default, 2000kg with component, 16000kg with iron block.\nLike pipes it can be covered with blocks.
-tile.cd4017be.electricCoilC.tip=Place against other coil to get a transformer,\nplace against magnetic shaft to get a motor/dynamo\nor insert into shaft to make it electromagnetic.\nNmin = 5, Nmax = 200\nUmax = \\<AI.EnergyTiers.Umax:0> V
-tile.cd4017be.electricCoilA.tip=Place against other coil to get a transformer,\nplace against magnetic shaft to get a motor/dynamo\nor insert into shaft to make it electromagnetic.\nNmin = 10, Nmax = 400\nUmax = \\<AI.EnergyTiers.Umax:1> V
-tile.cd4017be.electricCoilH.tip=Place against other coil to get a transformer,\nplace against magnetic shaft to get a motor/dynamo\nor insert into shaft to make it electromagnetic.\nNmin = 25, Nmax = 1000\nUmax = \\<AI.EnergyTiers.Umax:2> V
-tile.cd4017be.electricHeater.tip=Unfinished, currently just replaces Heating Coil.
+tile.cd4017be.vertShemGen.tip=Used to print 3D-Vertex schematics\nto let a §6Builder§7 build them automated.\n(A §6Vertex Selection Tool§7 can be used\ninstead of typing in coordinates manually)
+tile.cd4017be.heatRadiator.tip=Cools or heats fluids to environment temperature.\nUsed to turn §6Water Vapor§7 into liquid Water.
+tile.cd4017be.shaft.tip=Connects to kinectic components next to it.\nLike pipes it can be covered with blocks.
 tile.cd4017be.thermIns.tip=Has high temperature resistance\nand low thermic conductivity.
 tile.cd4017be.solidFuelHeater.tip=Produces heat by burning furnace fuel.\n1 Ft Fuel -> 10 kJ heat\nBack side has best heat conductivity.
 tile.cd4017be.electricHeater.tip=Converts electric energy into heat.\nFront side has best heat conductivity.\nUmax = \\<AI.EnergyTiers.Umax:1> V
@@ -187,6 +213,11 @@ tile.cd4017be.heatedFurnace.tip=Smelts items like normal furnace but requires\ne
 tile.cd4017be.pneumaticPiston.tip=Moves gas from one reservoir (GasPipe) to another.\nPerforms adiabatic compression/expansion\non moved gas depending on pressure.\nMust be connected to a shaft.
 tile.cd4017be.gasPipe.tip=Transports and stores gas.\nCover block affects heat conductivity to neighbors.
 tile.cd4017be.gasVent.tip=Provides access to the\nenvironment gas atmosphere.
+tile.cd4017be.geothermalFurnace.tip=A furnace powered by §6Lava§7.\nCan also run from Furnace-fuel\nor use it to produce §6Lava§7 out of §6Stone§7.\n25% more fuel efficient than normal Furnace.
+tile.cd4017be.steamCompressor.tip=Used to assemble casings, circuits, and other parts.\nPowered by §6Steam§7-pressure: uses 800 L/op
+tile.cd4017be.steamBoiler.tip=Converts Furnace-fuel and §6Water§7 into §6Steam§7.\nPmax = 40 L/t
+tile.cd4017be.lavaCooler.tip=Converts §6Lava§7 and §6Water§7 into §6Steam§7\nand optional §6Cobblestone§7/§6Stone§7/§6Obsidian§7\nP = 20 L/t
+
 
 # Fluid names
 fluid.steam.name=Steam
@@ -219,9 +250,6 @@ fluid.hydrogenL.tip=Extremely cold pressurized hydrogen.\nIf cooled even more it
 
 # Items
 # Material names
-item.cd4017be.material.name=WARNING! DEPRECATED ITEM!
-item.cd4017be.material.tip=This item §4will disappear§7 with the §4next§7 mod\n§4version§7 as it moved to a diferent item ID.\n§2Put in your inventory or drop it to convert.
-
 item.cd4017be.m\:ingotCopper.name=Copper Ingot
 item.cd4017be.m\:ingotSilver.name=Silver Ingot
 item.cd4017be.m\:ingotAluminium.name=Aluminium Ingot
@@ -288,7 +316,7 @@ item.cd4017be.m\:DenseM.name=Ultra Dense Material
 item.cd4017be.m\:Neutron.name=Neutronium-10^42
 item.cd4017be.m\:BlackHole.name=Black Hole
 # Tool names
-item.cd4017be.selectionTool.name=Machine Configuration
+item.cd4017be.selectionTool.name=Area Configuration Tool
 item.cd4017be.selectionTool\:0.name=Area Configuration Tool (Start new)
 item.cd4017be.selectionTool\:1.name=Area Configuration Tool (Add pos)
 item.cd4017be.selectionTool\:2.name=Area Configuration Tool (Expand)
@@ -341,53 +369,60 @@ item.cd4017be.synchronizer\:4.name=Machine CO-OP Synchronizer (Builder)
 item.cd4017be.remBlockType.name=Remove Block Pattern
 item.cd4017be.vertexSel.name=Vertex Selection Tool
 # tooltips
-item.cd4017be.selectionTool.tip=Used to define the working-area of machines.\nSneak-click on machine to link/unlink.\nSneak-click in air to change mode.\nClick block/air to perform selected action.\nUse configure mode to install upgrades.
+item.cd4017be.selectionTool\:0.tip=Used to define the working-area of machines.\nSneak-click on machine to link/unlink.\nSneak-click in air to change mode.
+item.cd4017be.selectionTool\:0.tipA=Click block to set new area containing that block.
+item.cd4017be.selectionTool\:1.tipA=Click block to expand area including that block.
+item.cd4017be.selectionTool\:2.tipA=Click in air to expand area by 1 into the direction looking.
+item.cd4017be.selectionTool\:3.tipA=Click in air to contract area by 1 from the direction looking.
+item.cd4017be.selectionTool\:4.tipA=Click in air to move area by 1 in the direction looking.
+item.cd4017be.selectionTool\:5.tipA=Click in air to open Config GUI for currently linked machine\nor Sneak-click a compatible machine to open its Config GUI.\nThere you can apply upgrades or set the area by coordinates.
+
 item.cd4017be.voltMeter.tip=Used to measure cable voltage.\nSneak-click on machine/cable to link.\n(§bAutomatedRedstone§7 compatible)
-item.cd4017be.rotationSensor.tip=Measures shaft rotations per second.\nSneak-click on §3Shaft§7 to link.\n(§bAutomatedRedstone§7 compatible)
+item.cd4017be.rotationSensor.tip=Measures shaft rotations per second.\nSneak-click on §6Shaft§7 to link.\n(§bAutomatedRedstone§7 compatible)
 item.cd4017be.thermometer.tip=Measures temperatures in Kelvin.\nSneak-click on machine or environment block to link.\n(§bAutomatedRedstone§7 compatible)
-item.cd4017be.manometer.tip=Measures gas pressure in Pascal (N/m²).\nSneak-click on §3Gas Pipe§7 to link.\n(§bAutomatedRedstone§7 compatible)
-item.cd4017be.energyCell.tip=Can be charged/discharged in storage units.
+item.cd4017be.manometer.tip=Measures gas pressure in Pascal (N/m²).\nSneak-click on §6Gas Pipe§7 to link.\n(§bAutomatedRedstone§7 compatible)
+item.cd4017be.energyCell.tip=Can be charged/discharged in §6storage unit§7s.
 item.cd4017be.chisle.tip=Pickaxe, Axe & Shovel in one\nUses \\<I.Tool.Chisle.Euse>kJ to break a block.
 item.cd4017be.cutter.tip=Shears & Sword in one\nHits faster than normal weapon (8 damage).\nUses \\<I.Tool.Cutter.Euse>kJ to hit an entity / break a block.\n(ignores the 1.9 combat nerf :b)
 item.cd4017be.portableMagnet.tip=Pulls nearby items and XP towards you if on.\nClick to turn on/off or put in\nmost top right inventory slot to disable.\nSneak-click to change mode.\nUses 1kW while pulling stuff.
 item.cd4017be.portableMagnet.auto0=Mode: always running when on.
 item.cd4017be.portableMagnet.auto1=Mode: shutdown near Players.
-item.cd4017be.builderTexture.tip=Used in a Builder to build layers of different block types.\nPut Paper into a Texture drawing table to create this.
-item.cd4017be.teleporterCoords.tip=Stores locations for a Teleporter.\nClick to set position.\nSneak-click to set previous position\nrelative to clicked position.\nPut Paper into a Teleporter to create this.
-item.cd4017be.stoneDrill.tip=Lets a Miner break blocks with harvest-lvl stone.\nLasts for \\<AS.minerDrill.durability:0> blocks.\nCan be enchanted & repaired in anvil.\nRepair material: Stone (x20)
-item.cd4017be.ironDrill.tip=Lets a Miner break blocks with harvest-lvl iron.\nLasts for \\<AS.minerDrill.durability:1> blocks.\nCan be enchanted & repaired in anvil.\nRepair material: Iron (x16)
-item.cd4017be.diamondDrill.tip=Lets a Miner break blocks with harvest-lvl diamond.\nLasts for \\<AS.minerDrill.durability:2> blocks.\nCan be enchanted & repaired in anvil.\nRepair material: Diamond (x12)
-item.cd4017be.amLaser.tip=Click to insta-break any block within 128m distance.\nDropped items are stored in internal Matterorb.\nSneak-click only causes entity damage.\nSneak-scroll to cycle between operation modes.\nSneak-middle-click to open Enchantment GUI.\nUses \\<I.Tool.AMLaser.Euse>kJ + antimatter depending on explosion resistance.
-item.cd4017be.mCannon.tip=Click to interact any block within 128m distance\nusing the currently selected item in internal Matterorb.\nSneak-scroll to change selected item.\nSneak-middle-click to change operation mode.\nUses \\<I.Tool.MCannon.Euse>kJ per operation.
+item.cd4017be.builderTexture.tip=Used in a §6Builder§7 to build layers of different block types.\nPut Paper into a §6Texture Drawing Table§7 to create this.
+item.cd4017be.teleporterCoords.tip=Stores locations for a §6Teleporter§7.\nClick to set position.\nSneak-click to set previous position\nrelative to clicked position.\nPut Paper into a Teleporter to create this.
+item.cd4017be.stoneDrill.tip=Lets a §6Miner§7 break blocks with harvest-lvl stone.\nLasts for \\<AS.minerDrill.durability:0> blocks.\nCan be enchanted & repaired in anvil.\nRepair material: Stone (x20)
+item.cd4017be.ironDrill.tip=Lets a §6Miner§7 break blocks with harvest-lvl iron.\nLasts for \\<AS.minerDrill.durability:1> blocks.\nCan be enchanted & repaired in anvil.\nRepair material: Iron (x16)
+item.cd4017be.diamondDrill.tip=Lets a §6Miner§7 break blocks with harvest-lvl diamond.\nLasts for \\<AS.minerDrill.durability:2> blocks.\nCan be enchanted & repaired in anvil.\nRepair material: Diamond (x12)
+item.cd4017be.amLaser.tip=Click to insta-break any block within 128m distance.\nDropped items are stored in internal §6Matter Orb§7.\nSneak-click only causes entity damage.\nSneak-scroll to cycle between operation modes.\nSneak-middle-click to open Enchantment GUI.\nUses \\<I.Tool.AMLaser.Euse>kJ + §6Antimatter§7 depending on explosion resistance.
+item.cd4017be.mCannon.tip=Click to interact any block within 128m distance\nusing the currently selected item in internal §6Matter Orb§7.\nSneak-scroll to change selected item.\nSneak-middle-click to change operation mode.\nUses \\<I.Tool.MCannon.Euse>kJ per operation.
 item.cd4017be.contLiquidAir.tip=Refills air underwater for \\<I.Tool.AirTank.dur> seconds.
 item.cd4017be.contAlgaeFood.tip=Refills your food bar for \\<I.Tool.AlgaeFood.dur> food-points.
-item.cd4017be.contInvEnergy.tip=Charges your tools held in hotbar if on.\nClick to turn on/off.\nCan be also used instead of Jetpack Fuel.
-item.cd4017be.contJetFuel.tip=Powers the Jetpack using Hydrogen & Oxygen gas.\nCan be filled like a normal Fluid Container.\n(see also Inventory Energy Container)
-item.cd4017be.jetpack.tip=Equip in chestplate-slot to use.\nPress Jump to increase / Sneak to decrease thrust.\nPress control-mode when off to open config menu.\nPress control-mode when on to toggle between configured modes.\n(open controls-menu to view keys)
-item.cd4017be.jetpackIron.tip=Provides armor like iron chestplate.\nBecomes normal Jetpack when armor breaks.\n(see Jetpack item for more info)
-item.cd4017be.jetpackSteel.tip=Provides a bit more armor than iron chestplate.\nBecomes normal Jetpack when armor breaks.\n(see Jetpack item for more info)
-item.cd4017be.jetpackGraphite.tip=Provides armor like diamond chestplate.\nBecomes normal Jetpack when armor breaks.\n(see Jetpack item for more info)
-item.cd4017be.jetpackUnbr.tip=Provides armor like diamond chestplate.\nArmor will never break.\n(see Jetpack item for more info)
-item.cd4017be.matterInterface.tip=Used to access the content of a Matterorb.\nClick to open GUI.
-item.cd4017be.fluidUpgrade.tip=A filter for liquid extraction/injection pipes.\nClick in air to open GUI.\nClick on pipe to insert.
-item.cd4017be.itemUpgrade.tip=A filter for item extraction/injection pipes & item sorter.\nClick in air to open GUI.\nClick on pipe to insert.
-item.cd4017be.portableFurnace.tip=An electric furnace that runs in your inventory.\nInsert an Item Pipe Filter to auto smelt specific items.\nClick to open GUI.\nUses \\<I.Tool.Furnace.Euse> kJ/op
-item.cd4017be.portableInventory.tip=Offers additional item storage space.\nInsert Item Pipe Filters to move specific items\nbetween your inventory and this storage automatically.\nClick to open GUI.
+item.cd4017be.contInvEnergy.tip=Charges your tools held in hotbar if on.\nClick to turn on/off.\nCan be also used instead of §6Jetpack§7 Fuel.
+item.cd4017be.contJetFuel.tip=Powers the §6Jetpack§7 using §6Hydrogen§7 & §6Oxygen§7 gas.\nCan be filled like a normal Fluid Container.\n(s.a. §6Inventory Energy Container§7)
+item.cd4017be.jetpack.tip=Equip in chestplate-slot to use.\nPress Jump to increase / Sneak to decrease thrust.\nPress control-mode when off to open config menu.\nPress control-mode when on to toggle between configured modes.\n(open controls-menu to view keys)\nRequires some type of §6Jetpack Fuel§7.
+item.cd4017be.jetpackIron.tip=Provides armor like iron chestplate.\nBecomes normal Jetpack when armor breaks.\n(see §6Jetpack§7 item for more info)
+item.cd4017be.jetpackSteel.tip=Provides a bit more armor than iron chestplate.\nBecomes normal Jetpack when armor breaks.\n(see §6Jetpack§7 item for more info)
+item.cd4017be.jetpackGraphite.tip=Provides armor like diamond chestplate.\nBecomes normal Jetpack when armor breaks.\n(see §6Jetpack§7 item for more info)
+item.cd4017be.jetpackUnbr.tip=Provides armor like diamond chestplate.\nArmor will never break.\n(see §6Jetpack§7 item for more info)
+item.cd4017be.matterInterface.tip=Used to access the content of a §6Matter Orb§7.\nClick to open GUI.
+item.cd4017be.fluidUpgrade.tip=A filter for §6Liquid (Extraction|Injection) Pipe§7s.\nClick in air to open GUI.\nClick on pipe to insert.
+item.cd4017be.itemUpgrade.tip=A filter for §6Item (Extraction|Injection) Pipe§7s,\nalso used in §6Item Sorter§7 and §6Farm§7.\nClick in air to open GUI.\nClick on pipe to insert.
+item.cd4017be.portableFurnace.tip=An electric furnace that runs in your inventory.\nInsert an §6Item Pipe Filter§7 to auto smelt specific items.\nClick to open GUI.\nUses \\<I.Tool.Furnace.Euse> kJ/op
+item.cd4017be.portableInventory.tip=Offers additional item storage space.\nInsert §6Item Pipe Filter§7s to move specific items\nbetween your inventory and this storage automatically.\nClick to open GUI.
 item.cd4017be.portableCrafter.tip=Can perform a configured recipe to either\ncraft a specific total amount of items or\ncraft items if their amount is below a specific value.\nClick to open GUI.
-item.cd4017be.portableGenerator.tip=Charges electric tools in inventory using furnace fuel.\nInsert an Item Pipe Filter to insert fuel automatically.\nClick to open GUI.\nPower: \\<AF.SteamGen.Pmax:0> kW
-item.cd4017be.portableRemoteInv.tip=Allowes remote access to a block's inventory.\nInsert Item Pipe Filters to move specific items between\nyour inventory and the linked block automatically.\nClick on block to link.\nClick in air to open GUI.
+item.cd4017be.portableGenerator.tip=Charges electric tools in inventory using furnace fuel.\nInsert an §6Item Pipe Filter§7 to insert fuel automatically.\nClick to open GUI.\nPower: \\<AF.SteamGen.Pmax:0> kW
+item.cd4017be.portableRemoteInv.tip=Allowes remote access to a block's inventory.\nInsert §6Item Pipe Filter§7s to move specific items between\nyour inventory and the linked block automatically.\nClick on block to link.\nClick in air to open GUI.
 item.cd4017be.portableTeleporter.tip=Sneak-click to teleport to the block looking at.\nClick to open waypoint list.\nUses \\<F.Tool.Teleport.Emult> kJ/m teleported.\n(entities standing close are moved with you)
 item.cd4017be.portablePump.tip=Click on liquid blocks to drain (16m range).\nSneak to drain without block updates.\nStores 16000L of liquid internally.\nAutomatically outputs into fluid containers in your inventory.\nUses \\<I.Tool.Pump.Euse> kJ/block.
 item.cd4017be.translocator.tip=Click on Block to pickup then click\nsomewhere else to place down.\nThe moved Block will keep all its data/content.
-item.cd4017be.portableTesla.tip=Functions like a LV Tesla Transmitter.\nCan charge items in your inventory\nusing its stored energy.\nClick in air to open GUI. 
-item.cd4017be.placement.tip=Will perform the block and item placement\noperations configured in GUI using items\nfrom your inventory when clicked on the ground.\nClick in air to open GUI.\nCan be used by the Builder and Farm. 
+item.cd4017be.portableTesla.tip=Functions like a §6LV Tesla Transmitter§7.\nCan charge items in your inventory\nusing its stored energy.\nClick in air to open GUI. 
+item.cd4017be.placement.tip=Will perform the block and item placement\noperations configured in GUI using items\nfrom your inventory when clicked on the ground.\nClick in air to open GUI.\nCan be used by the §6Builder§7 and §6Farm§7. 
 item.cd4017be.synchronizer\:0.tip=Used to let a machine work for another machine.\nSneak-click on a machine to link.\nUse a Selection Tool in configure-mode to insert.\nFunctions as upgrade for another machine.
 item.cd4017be.synchronizer\:1.tip=This machine can't be used by other machines!
-item.cd4017be.synchronizer\:2.tip=Insert into Miner to let it also "mine" fluids.\nInsert into Builder to drain fluid blocks before replacing them.
-item.cd4017be.synchronizer\:3.tip=Insert into Builder to let it break already existing blocks.\nInsert into Farm to allow it harvesting stronger blocks.
-item.cd4017be.synchronizer\:4.tip=Insert into Pump or Miner to let them replace drained/mined blocks\nusing the material set in the Builders first config-slot.
-item.cd4017be.remBlockType.tip=If a Builder is upgraded with a Pump or Miner you\ncan use this as material type to let it remove blocks.
-item.cd4017be.vertexSel.tip=Sneak-click on a 3D-Vertex Schematic Printer to link.\nSneak-click in air to switch between the\nvertices of the currently selected Polygon\nand right-click on block/air to set it's position.\nclick in air with "open GUI" mode to open linked machine. 
+item.cd4017be.synchronizer\:2.tip=Insert into §6Miner§7 to let it also "mine" fluids.\nInsert into §6Builder§7 to drain fluid blocks before replacing them.
+item.cd4017be.synchronizer\:3.tip=Insert into §6Builder§7 to let it break already existing blocks.\nInsert into §6Farm§7 to allow it harvesting stronger blocks.
+item.cd4017be.synchronizer\:4.tip=Insert into §6Pump§7 or §6Miner§7 to let them replace drained/mined blocks\nusing the material set in the §6Builder§7s first config-slot.
+item.cd4017be.remBlockType.tip=If a Builder is upgraded with a §6Pump§7 or §6Miner§7 you\ncan use this as material type to let it remove blocks.
+item.cd4017be.vertexSel.tip=Sneak-click on a §63D-Vertex Schematic Printer§7 to link.\nSneak-click in air to switch between the\nvertices of the currently selected Polygon\nand right-click on block/air to set it's position.\nclick in air with "open GUI" mode to open linked machine. 
 
 # GUI
 # Inventory names
@@ -600,7 +635,7 @@ gui.cd4017be.areaCfg.Umax_=Max Voltage:\n%d V
 gui.cd4017be.areaCfg.Umax=insert Superconductive Coil\nto increase max Voltage by\n50% * stacksize
 gui.cd4017be.areaCfg.dspl=insert Glowstone dust\nto display selected area box
 gui.cd4017be.areaCfg.copy=set to last selected area
-gui.cd4017be.areaCfg.synch=insert Machine co-op synchronizer\nto let this machine control the linked one.
+gui.cd4017be.areaCfg.synch=insert a co-op synchronizer\nto let this machine control the linked one.
 gui.cd4017be.buffer.stack0=Take first stack first
 gui.cd4017be.buffer.stack1=Take biggest stack first
 gui.cd4017be.buffer.overfl=min amount of slots filled\nbefore output overflow.\nLMB: +/- 1\nRMB: +/- 6

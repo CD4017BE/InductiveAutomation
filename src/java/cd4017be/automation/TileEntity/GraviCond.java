@@ -24,7 +24,7 @@ public class GraviCond extends AutomatedTile implements IGuiData, ISlotClickHand
 	public static int blockWeight = 1000;
 	public static float energyCost = 2.0F;
 	public static float forceEnergy = 4.0F;
-	public static int maxVoltage = 16000;
+	public static int Umax = 16000;
 	public int matter, need;
 	public float Estor;
 	
@@ -35,7 +35,7 @@ public class GraviCond extends AutomatedTile implements IGuiData, ISlotClickHand
 		 */
 		inventory = new Inventory(4, 3, null).group(0, 0, 1, Utils.IN).group(1, 1, 2, Utils.IN).group(2, 2, 3, Utils.OUT);
 		tanks = new TankContainer(1, 1).tank(0, Config.tankCap[1], Utils.IN, 3, -1);
-		energy = new PipeEnergy(maxVoltage, Config.Rcond[2]);
+		energy = new PipeEnergy(Umax, Config.Rcond[2]);
 	}
 
 	@Override

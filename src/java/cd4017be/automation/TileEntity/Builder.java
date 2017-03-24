@@ -2,7 +2,7 @@ package cd4017be.automation.TileEntity;
 
 import net.minecraft.network.PacketBuffer;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.UUID;
 
 import net.minecraftforge.fml.common.Optional;
@@ -282,10 +282,12 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 		}
 	}
 	
+	public static int Umax = 1200;
 	public static float Energy = 25000F;
-	public static final float resistor = 25F;
+	public static float resistor = 25F;
 	private static final GameProfile defaultUser = new GameProfile(new UUID(0, 0), "#Builder");
-	private static final float eScale = (float)Math.sqrt(1D - 1D / resistor);
+	public static float eScale = (float)Math.sqrt(1D - 1D / resistor);
+	public static byte maxSpeed = 16;
 	private static final short S_Offline = 0;
 	private static final short S_FrameY = 1;
 	private static final short S_FrameZ = 2;
@@ -320,7 +322,7 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 	public Builder()
 	{
 		inventory = new Inventory(50, 1, this).group(0, 17, 44, Utils.ACC);
-		energy = new PipeEnergy(Config.Umax[1], Config.Rcond[1]);
+		energy = new PipeEnergy(Umax, Config.Rcond[1]);
 	}
 	
 	@Override
@@ -349,20 +351,21 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 			energy.Ucap *= eScale;
 		}
 		storage -= ComputerAPI.update(this, node, storage * 0.5D);
-		for (int i = 0; i < Config.taskQueueSize; i++) 
+		
+		if (thick[8] == S_Offline)
+			synchronized(sheduledTasks) {
+				while(!sheduledTasks.isEmpty())
+					if (sheduledTasks.getFirst().execute(this)) sheduledTasks.removeFirst();
+					else break;
+			}
+		else for (int i = 0; i < maxSpeed; i++)
 			if (!build()) break;
 	}
 	
 	private boolean build()
 	{
 		switch (thick[8]) {
-		case S_Offline:
-			synchronized(this.sheduledTasks) {
-				if (!this.sheduledTasks.isEmpty() && this.sheduledTasks.get(0).execute(this)) {
-					this.sheduledTasks.remove(0);
-					return true;
-				} else return false;
-			}
+		case S_Offline: return false;
 		case S_FrameY:
 			if (placeBlock(D_Y)) {
 				py++;
@@ -806,8 +809,8 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 			} else return false;
 		}
 	}
-	
-	ArrayList<BuildTask> sheduledTasks = new ArrayList<BuildTask>();
+
+	ArrayDeque<BuildTask> sheduledTasks = new ArrayDeque<BuildTask>(Config.taskQueueSize);
 
 	//Redstone commands: 0xTTZZYYXX
 
@@ -821,7 +824,7 @@ public class Builder extends AutomatedTile implements IOperatingArea, Environmen
 			int y = area[1] + (value >> 8 & 0xff);
 			int z = area[2] + (value >> 16 & 0xff);
 			int t = (value >> 26 & 0x1f) - 1;
-			if (sheduledTasks.size() < Config.taskQueueSize * 4 && x < area[3] && y < area[4] && z < area[5] && t >= 0 && t < 16)
+			if (sheduledTasks.size() < Config.taskQueueSize && x < area[3] && y < area[4] && z < area[5] && t >= 0 && t < 16)
 				sheduledTasks.add(new BuildTask(null, x, y, z, t, false));
 		}
 	}

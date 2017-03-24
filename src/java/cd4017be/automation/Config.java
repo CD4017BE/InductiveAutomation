@@ -20,19 +20,27 @@ import cd4017be.automation.Item.ItemJetpackFuel;
 import cd4017be.automation.Item.ItemMatterCannon;
 import cd4017be.automation.Item.ItemPortablePump;
 import cd4017be.automation.Item.ItemPortableTeleporter;
+import cd4017be.automation.TileEntity.AdvancedFurnace;
+import cd4017be.automation.TileEntity.AntimatterAnihilator;
 import cd4017be.automation.TileEntity.AntimatterBomb;
 import cd4017be.automation.TileEntity.Builder;
+import cd4017be.automation.TileEntity.DecompCooler;
 import cd4017be.automation.TileEntity.ElectricCompressor;
+import cd4017be.automation.TileEntity.Electrolyser;
 import cd4017be.automation.TileEntity.EnergyFurnace;
 import cd4017be.automation.TileEntity.Farm;
 import cd4017be.automation.TileEntity.GeothermalFurnace;
 import cd4017be.automation.TileEntity.GraviCond;
+import cd4017be.automation.TileEntity.ItemPipe;
+import cd4017be.automation.TileEntity.LiquidPipe;
 import cd4017be.automation.TileEntity.Magnet;
 import cd4017be.automation.TileEntity.Miner;
 import cd4017be.automation.TileEntity.Pump;
+import cd4017be.automation.TileEntity.SecuritySys;
 import cd4017be.automation.TileEntity.SteamCompressor;
 import cd4017be.automation.TileEntity.Teleporter;
 import cd4017be.lib.ConfigurationFile;
+import cd4017be.lib.templates.Inventory;
 
 /**
  *
@@ -48,9 +56,8 @@ public class Config {
 	//energy
 	public static float E_Steam = 0.2F; // kJ/L
 	//Power
-	public static float[] PsteamGen = {4.0F, 24.0F, 120.0F};
-	public static int PfuelCell = 160;
-	public static float[] Psolar = {0.5F, 4.0F};
+	public static float[] Pgenerator = {4.0F, 24.0F, 120.0F, 0.5F, 4.0F, 160.0F, 14400.0F};
+	public static int[] Ugenerator = {240, 1200, 1200, 120, 240, 4000, 8000};
 	//steamBoiler, LavaCooler
 	public static int steam_water = 200;
 	public static int steam_biomassIn = 125;
@@ -61,11 +68,8 @@ public class Config {
 	//BioReactor
 	public static float algaeGrowing = 0.00009F;
 	public static float algaeDecaying = 0.0002F;
-
 	public static int m_interdimDist = 10000;
-
 	public static int taskQueueSize = 16;
-
 	public static int Rmin = 5;
 	public static float Pscale = 0.894427191F;
 
@@ -102,14 +106,14 @@ public class Config {
 		if (ai.length >= Ecap.length) Ecap = ai;
 		ai = data.getIntArray("FluidTiers.TankCap");
 		if (ai.length >= tankCap.length) tankCap = ai;
-		af = data.getFloatArray("SteamGen.Pmax");
-		if (af.length == PsteamGen.length) PsteamGen = af;
-		af = data.getFloatArray("SolarGen.Pmax");
-		if (af.length == Psolar.length) Psolar = af;
-		PfuelCell = data.getInt("FuelCell.maxHUse", PfuelCell);
-		AutomationRecipes.Lnutrients_healAmount = data.getInt("Mach.bioReact.FoodNutr", (int)AutomationRecipes.Lnutrients_healAmount);
-		algaeGrowing *= data.getFloat("Mach.bioReact.growth", 1F);
-		algaeDecaying *= data.getFloat("Mach.bioReact.decay", 1F);
+		af = data.getFloatArray("Generators.Pmax");
+		if (af.length == Pgenerator.length) Pgenerator = af;
+		ai = data.getIntArray("Generators.Umax");
+		if (ai.length == Ugenerator.length) Ugenerator = ai;
+		AntimatterAnihilator.setP(Pgenerator[6]);
+		AutomationRecipes.Lnutrients_healAmount = data.getInt("bioReact.FoodNutr", (int)AutomationRecipes.Lnutrients_healAmount);
+		algaeGrowing *= data.getFloat("bioReact.growth", 1F);
+		algaeDecaying *= data.getFloat("bioReact.decay", 1F);
 		//Energy conversions
 		E_Steam = data.getFloat("EnergyConv.Steam", E_Steam);
 		EnergyAPI.RF_value = data.getFloat("EnergyConv.RF", (float)EnergyAPI.RF_value / 1000F) * 1000F;
@@ -117,19 +121,42 @@ public class Config {
 		EnergyAPI.OC_value = data.getFloat("EnergyConv.OC", (float)EnergyAPI.OC_value / 1000F) * 1000F;
 		//Energy usage
 		float f = 1000F;
-		Builder.Energy = f * data.getFloat("Mach.Builder.Euse", Builder.Energy / f);
-		ElectricCompressor.Energy = data.getFloat("Mach.ElCompr.Euse", ElectricCompressor.Energy);
-		SteamCompressor.Euse = data.getInt("Mach.StCompr.Euse", SteamCompressor.Euse);
-		EnergyFurnace.Euse = data.getFloat("Mach.Furnace.Euse", EnergyFurnace.Euse);
-		GeothermalFurnace.Euse = data.getInt("Mach.GeothFurn.Euse", GeothermalFurnace.Euse);
-		Farm.Energy = f * data.getFloat("Mach.Farm.Euse", Farm.Energy / f);
-		Magnet.Energy = f * data.getFloat("Mach.Magnet.Euse", Magnet.Energy / f);
-		Miner.Energy = f * data.getFloat("Mach.Miner.Emult", Miner.Energy / f);
-		Pump.Energy = f * data.getFloat("Mach.Pump.Euse", Pump.Energy / f);
-		Teleporter.Energy = f * data.getFloat("Mach.Teleport.Emult", Teleporter.Energy / f);
-		AutomationRecipes.LFEmult = data.getFloat("Mach.AdvFurn.Emult", AutomationRecipes.LFEmult);
-		AutomationRecipes.CoolEmult = data.getFloat("Mach.Cooler.Emult", AutomationRecipes.CoolEmult);
-		AutomationRecipes.ElEmult = data.getFloat("Mach.Electrolyser.Emult", AutomationRecipes.ElEmult);
+		Inventory.ticks = data.getByte("inventory.ticks", (byte)Inventory.ticks);
+		ItemPipe.ticks = data.getByte("itemPipe.ticks", (byte)ItemPipe.ticks);
+		LiquidPipe.ticks = data.getByte("fluidPipe.ticks", (byte)LiquidPipe.ticks);
+		Builder.Energy = f * data.getFloat("Builder.Euse", Builder.Energy / f);
+		Builder.resistor = data.getFloat("Builder.Rwork", Builder.resistor);
+		Builder.eScale = (float)Math.sqrt(1D - 1D / Builder.resistor);
+		Builder.Umax = data.getInt("Builder.Umax", Builder.Umax);
+		Builder.maxSpeed = data.getByte("Builder.maxSpeed", Builder.maxSpeed);
+		ElectricCompressor.Energy = data.getFloat("ElCompr.Euse", ElectricCompressor.Energy);
+		ElectricCompressor.Umax = data.getInt("ElCompr.Umax", ElectricCompressor.Umax);
+		SteamCompressor.Euse = data.getInt("StCompr.Euse", SteamCompressor.Euse);
+		EnergyFurnace.Euse = data.getFloat("Furnace.Euse", EnergyFurnace.Euse);
+		EnergyFurnace.Umax = data.getInt("Furnace.Umax", EnergyFurnace.Umax);
+		GeothermalFurnace.Euse = data.getInt("GeothFurn.Euse", GeothermalFurnace.Euse);
+		AdvancedFurnace.Umax = data.getInt("AdvFurn.Umax", AdvancedFurnace.Umax);
+		DecompCooler.Umax = data.getInt("Cooler.Umax", DecompCooler.Umax);
+		Electrolyser.Umax = data.getInt("Electrolyser.Umax", Electrolyser.Umax);
+		Magnet.Energy = f * data.getFloat("Magnet.Euse", Magnet.Energy / f);
+		Magnet.Umax = data.getInt("Magnet.Umax", Magnet.Umax);
+		Farm.Energy = f * data.getFloat("Farm.Euse", Farm.Energy / f);
+		Farm.resistor = data.getFloat("Farm.Rwork", Farm.resistor);
+		Farm.eScale = (float)Math.sqrt(1D - 1D / Farm.resistor);
+		Farm.Umax = data.getInt("Farm.Umax", Farm.Umax);
+		Miner.Energy = f * data.getFloat("Miner.Emult", Miner.Energy / f);
+		Miner.resistor = data.getFloat("Miner.Rwork", Miner.resistor);
+		Miner.eScale = (float)Math.sqrt(1D - 1D / Miner.resistor);
+		Miner.Umax = data.getInt("Miner.Umax", Miner.Umax);
+		Miner.maxSpeed = data.getByte("Miner.maxSpeed", Miner.maxSpeed);
+		Pump.Energy = f * data.getFloat("Pump.Euse", Pump.Energy / f);
+		Pump.resistor = data.getFloat("Pump.Rwork", Pump.resistor);
+		Pump.eScale = (float)Math.sqrt(1D - 1D / Pump.resistor);
+		Pump.Umax = data.getInt("Pump.Umax", Pump.Umax);
+		Teleporter.Energy = f * data.getFloat("Teleport.Emult", Teleporter.Energy / f);
+		Teleporter.resistor = data.getFloat("Teleport.Rwork", Teleporter.resistor);
+		Teleporter.eScale = (float)Math.sqrt(1D - 1D / Teleporter.resistor);
+		Teleporter.Umax = data.getInt("Teleporter.Umax", Teleporter.Umax);
 		ItemAntimatterLaser.EnergyUsage = data.getInt("Tool.AMLaser.Euse", ItemAntimatterLaser.EnergyUsage);
 		ItemFurnace.energyUse = data.getInt("Tool.Furnace.Euse", ItemFurnace.energyUse);
 		ItemMatterCannon.EnergyUsage = data.getInt("Tool.MCannon.Euse", ItemMatterCannon.EnergyUsage);
@@ -149,13 +176,13 @@ public class Config {
 		ItemJetpackFuel.H2Mult = data.getFloat("Jetpack.H2.val", ItemJetpackFuel.H2Mult * 1000F) / 1000F;
 		ItemJetpackFuel.O2Mult = ItemJetpackFuel.H2Mult * 2F;
 		ItemJetpackFuel.electricEmult = data.getFloat("Jetpack.el.val", ItemJetpackFuel.electricEmult * 1000F) / 1000F;
-		GraviCond.energyCost = data.getFloat("Mach.GravCond.Euse", GraviCond.energyCost);
-		GraviCond.forceEnergy = data.getFloat("Mach.GravCond.Eforce", GraviCond.forceEnergy);
-		GraviCond.maxVoltage = data.getInt("Mach.GravCond.Umax", GraviCond.maxVoltage);
-		GraviCond.blockWeight = data.getInt("Mach.GravCond.mBlock", GraviCond.blockWeight);
-		GraviCond.itemWeight = data.getInt("Mach.GravCond.mItem", GraviCond.itemWeight);
-		taskQueueSize = data.getShort("ComputercraftAPI.taskQueue.size", (short)taskQueueSize);
-		Rmin = data.getByte("Mach.Rwork.min", (byte)Rmin);
+		GraviCond.energyCost = data.getFloat("GravCond.Euse", GraviCond.energyCost);
+		GraviCond.forceEnergy = data.getFloat("GravCond.Eforce", GraviCond.forceEnergy);
+		GraviCond.Umax = data.getInt("GravCond.Umax", GraviCond.Umax);
+		GraviCond.blockWeight = data.getInt("GravCond.mBlock", GraviCond.blockWeight);
+		GraviCond.itemWeight = data.getInt("GravCond.mItem", GraviCond.itemWeight);
+		taskQueueSize = data.getShort("computer.taskQueue.size", (short)taskQueueSize);
+		Rmin = data.getInt("Rwork.min", Rmin);
 		if (Rmin < 1) Rmin = 1;
 		Pscale = (float)Math.sqrt(1D - 1D / (double)Rmin);
 		AreaProtect.permissions = data.getByte("SecuritySys.permMode", AreaProtect.permissions);
@@ -170,7 +197,9 @@ public class Config {
 		af = data.getFloatArray("SecuritySys.Euse");
 		ProtectLvl[] lvls = ProtectLvl.values();
 		for (int i = 0; i < lvls.length && i < af.length; i++) lvls[i].energyCost = af[i];
-		if (af.length >= 5) AreaConfig.ChunkLoadCost = af[4]; 
+		if (af.length >= 5) AreaConfig.ChunkLoadCost = af[4];
+		SecuritySys.Umax = data.getInt("SecuritySys.Umax", SecuritySys.Umax);
+		SecuritySys.Ecap = data.getFloat("SecuritySys.Ecap", SecuritySys.Ecap);
 	}
 
 }

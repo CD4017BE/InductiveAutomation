@@ -19,7 +19,7 @@ public class Solarpanel extends ModTileEntity implements ITickable {
 	protected PipeEnergy energy = new PipeEnergy(this.getUmax(), this.getRcond());
 
 	protected float getRcond() {return Config.Rcond[0];}
-	protected int getUmax() {return Config.Umax[0] / 2;}
+	protected int getUmax() {return Config.Ugenerator[3];}
 
 	@Override
 	public void update() {
@@ -29,7 +29,7 @@ public class Solarpanel extends ModTileEntity implements ITickable {
 		sl -= this.worldObj.getSkylightSubtracted();
 		if (sl < 0) sl = 0;
 		float power = (float)(sl * sl * sl + bl) / 3.375F; //Skylight = 15 -> power = 1
-		energy.addEnergy(power * Config.Psolar[0]);
+		energy.addEnergy(power * Config.Pgenerator[3]);
 		energy.update(this);
 	}
 
